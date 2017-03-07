@@ -19,11 +19,15 @@ def skeletonize(segmentation):
 
     from matplotlib import pyplot as plt
 
-    print dt.shape
     dt = np.reshape(dt, (zres, yres, xres), order='c')
-
-    dt = np.array(dt, dtype=np.float64)
-    dt = dt / np.amax(dt)
 
     plt.imshow(dt[0,:,:])
     plt.savefig('test.png')
+
+    plt.imshow(segmentation[0,:,:])
+    plt.savefig('segmentation.png')
+
+    import h5py
+
+    with h5py.File('test.h5', 'w') as hf:
+        hf.create_dataset('main', data=dt)
