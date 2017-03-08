@@ -1,0 +1,1 @@
+unsigned long *Seg2Gold(unsigned long *segmentation, unsigned int *gold, long nentries);
