@@ -10,7 +10,7 @@ from scipy.spatial import KDTree
 # add parent directory
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
-from utilities import dataIO
+from utilities import dataIO, seg2gold
 
 
 
@@ -19,7 +19,6 @@ def main():
     parser.add_argument('segmentation', type=str, help='filename for segmentation dataset')
     parser.add_argument('gold', type=str, help='filename for gold dataset')
     parser.add_argument('max_distance', type=int, help='maximum distance between two considered endpoints in nanometers')
-    parser.add_argument('closest_neighbors', type=int, help='the number of closest neighbors between ')
     parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='print progress (default: False)')
 
     args = parser.parse_args()
@@ -32,6 +31,8 @@ def main():
     prefix = args.segmentation.split('/')[1].split('_')[0]
 
     # read in the meta data
+    (zres, yres, xres) = segmentation.shape
+    assert (segmentation.shape == gold.shape)
     (zsamp, ysamp, xsamp) = dataIO.ReadMeta(prefix)
 
     # create an array for all of the skeletons
@@ -44,7 +45,6 @@ def main():
 
         # see if this skeleton exists
         if not os.path.isfile(skeleton_filename):
-            print 'Unable to read ' + str(skeleton_filename)
             continue
 
         # read the skeletons
@@ -90,6 +90,8 @@ def main():
 
             potential_merges.append((index_one, index_two))
 
+    seg2gold_mapping = seg2gold.seg2gold(segmentation, gold)
+
     output_filename = 'skeletons/' + prefix + '_merge_candidates.merge'
 
     with open(output_filename, 'wb') as fd:
@@ -108,8 +110,29 @@ def main():
             # find the middle point for this merge
             mid_point = (position_one + position_two) / 2
 
+            # get the downsampled x, y, and z location
+            xpoint = mid_point[0] / xsamp
+            ypoint = mid_point[1] / ysamp
+            zpoint = mid_point[2] / zsamp
+
+            # get the label values
+            label_one = endpoint_labels[index_one]
+            label_two = endpoint_labels[index_two]
+
+            # should these two segments merge
+            ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+
+            # make sure the bounding box is contained within the global volume
+            xradius = args.max_distance / xsamp
+            yradius = args.max_distance / ysamp
+            zradius = args.max_distance / zsamp
+
+            # skip points whose bounding boxes extend too far
+            if (xpoint - xradius < 0 or ypoint - yradius < 0 or zpoint - zradius < 0): continue
+            if (xpoint + xradius > xres - 1 or ypoint + yradius > yres - 1 or zpoint + zradius > zres - 1): continue
+
             # create a string of relevant information
-            fd.write(struct.pack('QQQQddd', index_one, index_two, endpoint_labels[index_one], endpoint_labels[index_two], mid_point[0] / xsamp, mid_point[1] / ysamp, mid_point[2] / zsamp))
+            fd.write(struct.pack('QQQQdddB', index_one, index_two, label_one, label_two, xpoint, ypoint, zpoint, ground_truth))
 
 
 if __name__ == '__main__':
