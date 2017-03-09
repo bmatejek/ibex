@@ -98,6 +98,8 @@ def main():
         # write the number of potential merges
         fd.write(struct.pack('Q', len(potential_merges)))
 
+        nentries = 0
+
         # find the center for all of the boundary examples
         for pair in potential_merges:
             index_one = pair[0]
@@ -111,9 +113,9 @@ def main():
             mid_point = (position_one + position_two) / 2
 
             # get the downsampled x, y, and z location
-            xpoint = mid_point[0] / xsamp
-            ypoint = mid_point[1] / ysamp
-            zpoint = mid_point[2] / zsamp
+            xpoint = long(mid_point[0] / xsamp)
+            ypoint = long(mid_point[1] / ysamp)
+            zpoint = long(mid_point[2] / zsamp)
 
             # get the label values
             label_one = endpoint_labels[index_one]
@@ -132,7 +134,13 @@ def main():
             if (xpoint + xradius > xres - 1 or ypoint + yradius > yres - 1 or zpoint + zradius > zres - 1): continue
 
             # create a string of relevant information
-            fd.write(struct.pack('QQQQdddB', index_one, index_two, label_one, label_two, xpoint, ypoint, zpoint, ground_truth))
+            fd.write(struct.pack('QQQQQQQB', index_one, index_two, label_one, label_two, xpoint, ypoint, zpoint, ground_truth))
+
+            nentries += 1
+
+        fd.seek(0)
+        fd.write(struct.pack('Q', nentries))
+
 
 
 if __name__ == '__main__':

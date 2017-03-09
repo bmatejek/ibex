@@ -2,7 +2,6 @@ cimport cython
 cimport numpy as np
 import numpy as np
 import ctypes
-from math import ceil
 
 cdef extern from "cpp-skeletonize.h":
     unsigned long *Skeletonize(unsigned long *segmentation, int zres, int yres, int xres)
