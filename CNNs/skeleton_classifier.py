@@ -146,7 +146,7 @@ def train_network(args):
     adadelta = Adadelta(lr=args.learning_rate)
     model.compile(loss='categorical_crossentropy', optimizer=adadelta, metrics=['accuracy'])
 
-    model.fit_generator(data_generator(args, args.training_prefix), samples_per_epoch=args.epoch_size, verbose=2, nb_epoch=args.num_epochs,
+    model.fit_generator(data_generator(args, args.training_prefix), samples_per_epoch=args.epoch_size, verbose=1, nb_epoch=args.num_epochs,
                         validation_data=data_generator(args, args.validation_prefix), nb_val_samples=args.validation_size)
 
     return model
