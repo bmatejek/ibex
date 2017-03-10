@@ -12,64 +12,7 @@ from numba import jit
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from utilities import dataIO
-
-class MergeCandidate():
-    def __init__(self, label_one, label_two, x, y, z, ground_truth):
-        self.label_one = label_one
-        self.label_two = label_two
-        self.x = x
-        self.y = y
-        self.z = z
-        self.ground_truth = ground_truth
-
-def ReadMergeFilename(filename):
-    with open(filename, 'rb') as fd:
-        # read the number of potential merges
-        potential_merges, = struct.unpack('Q', fd.read(8))
-        
-        # create an array for merge candidates
-        merge_candidates = []
-
-        # iterate over all potential merge candidates
-        for im in range(potential_merges):
-            index_one, index_two, label_one, label_two, xpoint, ypoint, zpoint, ground_truth, = struct.unpack('QQQQQQQB', fd.read(57))
-
-            merge_candidates.append(MergeCandidate(label_one, label_two, xpoint, ypoint, zpoint, ground_truth))
-
-    return merge_candidates
-
-def make_window(segmentation, merge_candidate, width):
-    # get the proper label for this window
-    label = merge_candidate.ground_truth
-
-    # get the center location
-    x, y, z = merge_candidate.x, merge_candidate.y, merge_candidate.z
-
-    # TODO fix hardcoded values
-    xradius, yradius, zradius = (100, 100, 13)
-
-    # get the labels for the merge candidates
-    label_one = merge_candidate.label_one
-    label_two = merge_candidate.label_two
-
-    segment = segmentation[z-zradius:z+zradius,y-yradius:y+yradius,x-xradius:x+xradius]
-    (zres, yres, xres) = segment.shape
-
-    example = np.zeros((width, width, width), dtype=np.uint8)
-
-    for iz in range(width):
-        for iy in range(width):
-            for ix in range(width):
-                segmentz = long(float(zres) / float(width) * iz)
-                segmenty = long(float(yres) / float(width) * iy)
-                segmentx = long(float(xres) / float(width) * ix)
-
-                if segment[segmentz, segmenty, segmentx] == label_one or segment[segmentz, segmenty, segmentx] == label_two:
-                    example[iz,iy,ix] = 1
-                else:
-                    example[iz,iy,ix] = 0
-
-    return example, label
+from skeleton_classifier import make_window, ReadMergeFilename
 
 
 def data_generator(args, prefix):
@@ -96,7 +39,7 @@ def data_generator(args, prefix):
             merge_candidate = merge_candidates[total]
 
             # make the window given the merge candidate
-            window, label = make_window(segmentation, merge_candidate, args.window_width)
+            window, label = make_window(segmentation, merge_candidate.label_one, merge_candidate.label_two, merge_candidate.x, merge_candidate.y, merge_candidate.z, merge_candidate.ground_truth, args.window_width)
 
             # update the input vectors
             examples[index,:,:,:,0] = window

@@ -94,6 +94,9 @@ def main():
 
     output_filename = 'skeletons/' + prefix + '_merge_candidates.merge'
 
+    nmerges = 0
+    nsplits = 0
+
     with open(output_filename, 'wb') as fd:
         # write the number of potential merges
         fd.write(struct.pack('Q', len(potential_merges)))
@@ -133,6 +136,9 @@ def main():
             if (xpoint - xradius < 0 or ypoint - yradius < 0 or zpoint - zradius < 0): continue
             if (xpoint + xradius > xres - 1 or ypoint + yradius > yres - 1 or zpoint + zradius > zres - 1): continue
 
+            if ground_truth: nmerges += 1
+            else: nsplits += 1
+
             # create a string of relevant information
             fd.write(struct.pack('QQQQQQQB', index_one, index_two, label_one, label_two, xpoint, ypoint, zpoint, ground_truth))
 
@@ -141,6 +147,8 @@ def main():
         fd.seek(0)
         fd.write(struct.pack('Q', nentries))
 
+    print 'Examples to merge: ' + str(nmerges)
+    print 'Examples to split: ' + str(nsplits)
 
 
 if __name__ == '__main__':

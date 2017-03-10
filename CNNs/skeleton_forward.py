@@ -66,7 +66,7 @@ def main():
     true_negatives = 0
 
     for ie in range(len(predictions)):
-        label = bool(labels[ie,0])
+        label = bool(1 - labels[ie,0])
         prediction = (predictions[ie,1] > predictions[ie,0])
         if label and prediction:
             true_positives += 1
