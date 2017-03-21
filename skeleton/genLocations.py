@@ -26,13 +26,13 @@ def main():
     # open the segmentation and gold files
     segmentation = dataIO.ReadH5File(args.segmentation, 'main')
     gold = dataIO.ReadH5File(args.gold, 'stack')
+    assert (segmentation.shape == gold.shape)
 
     # get filename prefix
     prefix = args.segmentation.split('/')[1].split('_')[0]
 
     # read in the meta data
     (zres, yres, xres) = segmentation.shape
-    assert (segmentation.shape == gold.shape)
     (zsamp, ysamp, xsamp) = dataIO.ReadMeta(prefix)
 
     # create an array for all of the skeletons

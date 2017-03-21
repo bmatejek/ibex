@@ -10,6 +10,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from utilities import dataIO
 from skeleton_classifier import make_window, ReadMergeFilename
+from evaluation import classification
 
 
 def data_generator(args, prefix):
@@ -52,41 +53,20 @@ def main():
 
     # read in all of the data
 
-    print 'Reading in data...',
-    start_time = time.time()
     (examples, labels) = data_generator(args, args.prefix)
-    print 'done in %0.2f seconds' % (time.time() - start_time)
-    print 'Generating predictions...'
-    predictions = model.predict_proba(examples, verbose=1)
 
-    print predictions
+    probabilities = model.predict_proba(examples, verbose=1)
+    nexamples = probabilities.shape[0]
 
-    # get the precision and recall
-    true_positives = 0
-    false_positives = 0
-    false_negatives = 0
-    true_negatives = 0
-
-    for ie in range(len(predictions)):
-        label = labels[ie]
-        prediction = (predictions[ie,1] < predictions[ie,0])
-        if label and prediction:
-            true_positives += 1
-        elif not label and prediction:
-            false_positives += 1
-        elif label and not prediction:
-            false_negatives += 1
+    # create the predictions for precision and recall
+    predictions = np.zeros(nexamples, dtype=np.uint8)
+    for ie in range(nexamples):
+        if probabilities[ie,1] > probabilities[ie,0]:
+            predictions[ie] = 1
         else:
-            true_negatives += 1
+            predictions[ie] = 0
 
-    print 'TP: ' + str(true_positives)
-    print 'FP: ' + str(false_positives)
-    print 'FN: ' + str(false_negatives)
-    print 'TN: ' + str(true_negatives)
-
-    print 'Precision: ' + str(float(true_positives) / float(true_positives + false_positives))
-    print 'Recall: ' + str(float(true_positives) / float(true_positives + false_negatives))
-    print 'Accuracy: ' + str(float(true_positives + true_negatives) / float(true_positives + false_positives + false_negatives + true_negatives))
+    classification.PrecisionAndRecall(labels, predictions)
 
 if __name__ == '__main__':
     main()
