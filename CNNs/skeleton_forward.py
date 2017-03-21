@@ -19,21 +19,21 @@ def data_generator(args, prefix):
 
     # read in potential merge locations
     merge_filename = 'skeletons/' + prefix + '_merge_candidates.merge'
-    merge_candidates = ReadMergeFilename(merge_filename)
+    merge_candidates, npositives, nnegatives = ReadMergeFilename(merge_filename)
 
     num_locations = len(merge_candidates)
 
-    examples = np.zeros((num_locations, args.window_width, args.window_width, args.window_width, 1))
-    labels = np.zeros((num_locations, 2))
+    examples = np.zeros((num_locations, args.window_width, args.window_width, args.window_width, 3))
+    labels = np.zeros(num_locations)
 
     for index in range(num_locations):
         # get this merge candidate
         merge_candidate = merge_candidates[index]
 
-        window, label = make_window(segmentation, merge_candidate.label_one, merge_candidate.label_two, merge_candidate.x, merge_candidate.y, merge_candidate.z, merge_candidate.ground_truth, args.window_width)
+        window = make_window(segmentation, merge_candidate.label_one, merge_candidate.label_two, merge_candidate.x, merge_candidate.y, merge_candidate.z, args.window_width)
 
-        examples[index,:,:,:,0] = window
-        labels[index,:] = label
+        examples[index,:,:,:,:] = window
+        labels[index] = merge_candidate.ground_truth
 
     return (examples, labels)
 
@@ -57,7 +57,9 @@ def main():
     (examples, labels) = data_generator(args, args.prefix)
     print 'done in %0.2f seconds' % (time.time() - start_time)
     print 'Generating predictions...'
-    predictions = model.predict(examples, verbose=1)
+    predictions = model.predict_proba(examples, verbose=1)
+
+    print predictions
 
     # get the precision and recall
     true_positives = 0
@@ -66,8 +68,8 @@ def main():
     true_negatives = 0
 
     for ie in range(len(predictions)):
-        label = bool(1 - labels[ie,0])
-        prediction = (predictions[ie,1] > predictions[ie,0])
+        label = labels[ie]
+        prediction = (predictions[ie,1] < predictions[ie,0])
         if label and prediction:
             true_positives += 1
         elif not label and prediction:

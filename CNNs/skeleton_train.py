@@ -22,13 +22,13 @@ def data_generator(args, prefix):
 
     # read in potential merge locations
     merge_filename = 'skeletons/' + prefix + '_merge_candidates.merge'
-    merge_candidates = ReadMergeFilename(merge_filename)
+    merge_candidates, _, _ = ReadMergeFilename(merge_filename)
 
     num_locations = len(merge_candidates)
     batch_num = 0
     while 1:
         # create empty examples and labels arrays
-        examples = np.zeros((args.batch_size, args.window_width, args.window_width, args.window_width, 1))
+        examples = np.zeros((args.batch_size, args.window_width, args.window_width, args.window_width, 3))
         labels = np.zeros((args.batch_size, 2))
 
         # populate the examples and labels array
@@ -39,11 +39,11 @@ def data_generator(args, prefix):
             merge_candidate = merge_candidates[total]
 
             # make the window given the merge candidate
-            window, label = make_window(segmentation, merge_candidate.label_one, merge_candidate.label_two, merge_candidate.x, merge_candidate.y, merge_candidate.z, merge_candidate.ground_truth, args.window_width)
+            window = make_window(segmentation, merge_candidate.label_one, merge_candidate.label_two, merge_candidate.x, merge_candidate.y, merge_candidate.z, args.window_width)
 
             # update the input vectors
-            examples[index,:,:,:,0] = window
-            labels[index,:] = label
+            examples[index,:,:,:,:] = window
+            labels[index,:] = 1 - merge_candidate.ground_truth
 
         # restart the batch number if needed
         batch_num += 1
@@ -54,9 +54,15 @@ def data_generator(args, prefix):
         yield (examples, labels)
 
 def train_network(args):
+    # read in potential merge locations
+    training_filename = 'skeletons/' + args.training_prefix + '_merge_candidates.merge'
+    _, npositives, nnegatives = ReadMergeFilename(training_filename)
+
+    weights = (nnegatives / float(npositives + nnegatives), npositives / float(npositives + nnegatives))
+
     model = Sequential()
     model.add(Convolution3D(32, 3, 3, 3, border_mode='valid',  # (49 x 49 x 49 x 32) for args.window_width = 51
-                            input_shape=(args.window_width, args.window_width, args.window_width, 1)))
+                            input_shape=(args.window_width, args.window_width, args.window_width, 3)))
     model.add(Activation('relu'))
     model.add(Convolution3D(32, 3, 3, 3))  # (47 x 47 x 47 x 32)
     model.add(Activation('relu'))
@@ -88,7 +94,7 @@ def train_network(args):
     model.compile(loss='categorical_crossentropy', optimizer=adadelta, metrics=['accuracy'])
 
     model.fit_generator(data_generator(args, args.training_prefix), samples_per_epoch=args.epoch_size, verbose=1, nb_epoch=args.num_epochs,
-                        validation_data=data_generator(args, args.validation_prefix), nb_val_samples=args.validation_size)
+                        validation_data=data_generator(args, args.validation_prefix), nb_val_samples=args.validation_size, class_weight=weights)
 
     return model
 
@@ -99,7 +105,7 @@ def main():
     parser.add_argument('validation_prefix', help='Prefix for the validation dataset')
     parser.add_argument('output', help='Path to save the trained Keras model as an .h5 file')
     parser.add_argument('--learning_rate', default=0.5, type=float, help='Learning rate for Adadelta optimizer')
-    parser.add_argument('--batch_size', default=20, type=int, help='Batch size to use during training')
+    parser.add_argument('--batch_size', default=1, type=int, help='Batch size to use during training')
     parser.add_argument('--num_epochs', default=15, type=int, help='Number of epochs in training')
     parser.add_argument('--epoch_size', default=5000, type=int, help='Number of examples per epoch.')
     parser.add_argument('--validation_size', default=2500, type=int, help='Number of examples to use for validation')
