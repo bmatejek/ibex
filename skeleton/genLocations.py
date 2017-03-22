@@ -12,6 +12,154 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from utilities import dataIO, seg2gold
 
+def ReadSkeletons(prefix, segmentation):
+    # create an array for all of the skeletons
+    skeletons = []
+
+    # read in all skeletons
+    npoints = 0
+    for label in np.unique(segmentation):
+        skeleton_filename = 'skeletons/' + prefix + '/' + 'tree_' + str(label) + '.swc'
+
+        # see if this skeleton exists
+        if not os.path.isfile(skeleton_filename):
+            continue
+
+        # read the skeletons
+        skeleton = Skeleton(prefix, label)
+        npoints += len(skeleton.endpoints)
+
+        # add to the list of skeletons
+        skeletons.append(skeleton)
+
+    return skeletons, npoints
+
+
+
+def GenerateKDTree(skeletons, npoints, world_res):
+    # create a locations array for the kdtree and mapping from endpoint to label
+    locations = np.zeros((npoints, 3), dtype=np.float32)
+    point_labels = np.zeros(npoints, dtype=np.uint64)
+
+    # get the sampling resolution for each dimension
+    (zsamp, ysamp, xsamp) = world_res
+
+    index = 0
+    for skeleton in skeletons:
+        for endpoint in skeleton.endpoints:
+
+            # set the x, y, and z coordinates for the skeleton
+            locations[index,0] = xsamp * endpoint.x
+            locations[index,1] = ysamp * endpoint.y
+            locations[index,2] = zsamp * endpoint.z
+
+            # update the label mapping
+            point_labels[index] = skeleton.label
+
+            index += 1
+
+    # create a KDTree
+    kdtree = KDTree(locations)
+
+    return locations, kdtree, point_labels
+
+
+
+def GenerateMergeLocations(endpoint_pairs, point_labels):
+    # create an array of all boundary examples
+    merge_locations = []
+
+    # get all pairs of endpoints that should be considered
+    for index_one, pairs in enumerate(endpoint_pairs):
+        for index_two in pairs:
+            # avoid double counting
+            if (index_one > index_two): continue
+
+            # if these two endpoints belong to the same segment they can't be merged
+            if point_labels[index_one] == point_labels[index_two]: continue
+
+            merge_locations.append((index_one, index_two))
+
+    return merge_locations
+
+
+
+def SaveCNNFile(prefix, pairs, locations, labels, seg2gold_mapping, dim_size, world_res, max_distance, forward=False):
+    if (forward): filename = 'skeletons/' + prefix + '_merge_candidates_forward_' + str(max_distance) + 'nm.merge'
+    else: filename = 'skeletons/' + prefix + '_merge_candidates_train_' + str(max_distance) + 'nm.merge'
+
+    # get the size of each dimension
+    (zres, yres, xres) = dim_size
+
+    # get the sampling resolution for each dimension
+    (zsamp, ysamp, xsamp) = world_res
+
+    # get the radius for the bounding box in grid coordinates
+    (zradius, yradius, xradius) = (max_distance / zsamp, max_distance / ysamp, max_distance / xsamp)
+
+    # keep track of the number of positive and negative locations
+    npositives = 0
+    nnegatives = 0
+
+    # write to a binary file
+    with open(filename, 'wb') as fd:
+        # write an empty header
+        fd.write(struct.pack('QQQ', 0, 0, 0))
+        fd.write(struct.pack('QQQ', 0, 0, 0))
+
+        # iterate through all pairs
+        for pair in pairs:
+            # get the indices of the endpoints
+            index_one = pair[0]
+            index_two = pair[1]
+
+            # get the positions of the endpoints
+            position_one = locations[index_one,:]
+            position_two = locations[index_two,:]
+
+            # find the middle point between these locations
+            midpoint = (position_one + position_two) / 2
+
+            # get the downsampled location
+            xpoint = long(midpoint[0] / xsamp)
+            ypoint = long(midpoint[1] / ysamp)
+            zpoint = long(midpoint[2] / zsamp)
+
+            # get the label for both points
+            label_one = labels[index_one]
+            label_two = labels[index_two]
+
+            # get the ground truth
+            ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+
+            # only include locations that do not extend past the boundary
+            if (xpoint - xradius < 0 or xpoint + xradius > xres - 1): continue
+            if (ypoint - yradius < 0 or ypoint + yradius > yres - 1): continue
+            if (zpoint - zradius < 0 or zpoint + zradius > zres - 1): continue
+
+            # add in augmentation here for training
+            for aug_iter in range(8):
+                if ground_truth: npositives += 1
+                else: nnegatives += 1
+
+                # output the labels corresponding to this segment
+                fd.write(struct.pack('QQ', label_one, label_two))
+                # write the midpoint coordinates in the grid coordiante system
+                fd.write(struct.pack('QQQ', xpoint, ypoint, zpoint))
+                # write the ground truth for this merge pair
+                fd.write(struct.pack('B', ground_truth))
+
+                # if this is for a CNN forward pass file skip augmentation
+                if forward: break
+
+                # write a final variable corresponding to a rotation in training
+                fd.write(struct.pack('B', aug_iter))
+
+        # rewrite the header with the number of examples
+        fd.seek(0)
+        fd.write(struct.pack('QQQ', npositives + nnegatives, npositives, nnegatives))
+        fd.write(struct.pack('QQQ', xradius, yradius, zradius))
+
 
 
 def main():
@@ -31,128 +179,30 @@ def main():
     # get filename prefix
     prefix = args.segmentation.split('/')[1].split('_')[0]
 
-    # read in the meta data
-    (zres, yres, xres) = segmentation.shape
-    (zsamp, ysamp, xsamp) = dataIO.ReadMeta(prefix)
+    # read in the meta data which includes the sampling resolution in nanometers
+    dim_size = segmentation.shape
+    world_res = dataIO.ReadMeta(prefix)
 
-    # create an array for all of the skeletons
-    skeletons = []
+    # read in the skeleton and number of endpoints
+    skeletons, npoints = ReadSkeletons(prefix, segmentation)
 
-    # read in all skeletons
-    nendpoints = 0
-    for label in np.unique(segmentation):
-        skeleton_filename = 'skeletons/' + prefix + '/' + 'tree_' + str(label) + '.swc'
-
-        # see if this skeleton exists
-        if not os.path.isfile(skeleton_filename):
-            continue
-
-        # read the skeletons
-        skeleton = Skeleton(prefix, label)
-        nendpoints += len(skeleton.endpoints)
-
-        # add to the list of skeletons
-        skeletons.append(skeleton)
-
-    # create a data array for the kdtree and mapping from endpoint to label
-    data = np.zeros((nendpoints, 3), dtype=np.float32)
-    endpoint_labels = np.zeros(nendpoints, dtype=np.uint64)
-
-    index = 0
-    for skeleton in skeletons:
-        for endpoint in skeleton.endpoints:
-
-            # set the x, y, and z coordinates for the skeleton
-            data[index,0] = xsamp * endpoint.x
-            data[index,1] = ysamp * endpoint.y
-            data[index,2] = zsamp * endpoint.z
-
-            # update the label mapping
-            endpoint_labels[index] = skeleton.label
-
-            index += 1
-
-    # create a KDTree
-    kdtree = KDTree(data)
+    # create a kd tree
+    locations, kdtree, point_labels = GenerateKDTree(skeletons, npoints, world_res)
 
     # find all pairs of neighbors within max_distance
-    close_pairs = kdtree.query_ball_tree(kdtree, args.max_distance)
+    endpoint_pairs = kdtree.query_ball_tree(kdtree, args.max_distance)
 
+    # find all of the merge locations
+    merge_locations = GenerateMergeLocations(endpoint_pairs, point_labels)
 
-    # create an array of all boundary examples
-    potential_merges = []
-
-    # get all pairs of endpoints that should be considered
-    for index_one, pairs in enumerate(close_pairs):
-        for index_two in pairs:
-            if (index_one > index_two): continue
-            if endpoint_labels[index_one] == endpoint_labels[index_two]: continue
-
-            potential_merges.append((index_one, index_two))
-
+    # create a mapping from segmentation to gold
     seg2gold_mapping = seg2gold.seg2gold(segmentation, gold)
 
-    output_filename = 'skeletons/' + prefix + '_merge_candidates.merge'
+    # create training file for training data
+    SaveCNNFile(prefix, merge_locations, locations, point_labels, seg2gold_mapping, dim_size, world_res, args.max_distance)
 
-    npositives = 0
-    nnegatives = 0
-
-    with open(output_filename, 'wb') as fd:
-        # write the number of potential merges
-        fd.write(struct.pack('QQQ', len(potential_merges), len(potential_merges), len(potential_merges)))
-
-        nentries = 0
-
-        # find the center for all of the boundary examples
-        for pair in potential_merges:
-            index_one = pair[0]
-            index_two = pair[1]
-
-            # get the location for the two skeleton endpoints
-            position_one = data[index_one,:]
-            position_two = data[index_two,:]
-
-            # find the middle point for this merge
-            mid_point = (position_one + position_two) / 2
-
-            # get the downsampled x, y, and z location
-            xpoint = long(mid_point[0] / xsamp)
-            ypoint = long(mid_point[1] / ysamp)
-            zpoint = long(mid_point[2] / zsamp)
-
-            # get the label values
-            label_one = endpoint_labels[index_one]
-            label_two = endpoint_labels[index_two]
-
-            # should these two segments merge
-            ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
-
-            # make sure the bounding box is contained within the global volume
-            xradius = args.max_distance / xsamp
-            yradius = args.max_distance / ysamp
-            zradius = args.max_distance / zsamp
-
-            # skip points whose bounding boxes extend too far
-            if (xpoint - xradius < 0 or ypoint - yradius < 0 or zpoint - zradius < 0): continue
-            if (xpoint + xradius > xres - 1 or ypoint + yradius > yres - 1 or zpoint + zradius > zres - 1): continue
-
-            if ground_truth: npositives += 1
-            else: nnegatives += 1
-
-            # create a string of relevant information
-            fd.write(struct.pack('QQQQQQQB', index_one, index_two, label_one, label_two, xpoint, ypoint, zpoint, ground_truth))
-
-            nentries += 1
-
-        # rewrite header with useful information
-        fd.seek(0)
-        fd.write(struct.pack('Q', nentries))
-        fd.write(struct.pack('Q', npositives))
-        fd.write(struct.pack('Q', nnegatives))
-
-    print 'Examples to merge: ' + str(npositives)
-    print 'Examples to split: ' + str(nnegatives)
-
+    # create file for forward pass on data
+    SaveCNNFile(prefix, merge_locations, locations, point_labels, seg2gold_mapping, dim_size, world_res, args.max_distance, forward=True)
 
 if __name__ == '__main__':
     main()    
