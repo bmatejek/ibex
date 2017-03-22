@@ -1,5 +1,28 @@
 import numpy as np
+from numba import jit
 
+@jit(nopython=True)
+def prob2pred(probabilities):
+    # get the number of entries and the number of classes
+    nentries = probabilities.shape[0]
+    nclasses = probabilities.shape[1]
+
+    # for now only allow 256 unique classes
+    assert (nclasses <= 256)
+
+    predictions = np.zeros(nentries, dtype=np.uint8)
+
+    # iterate through every entry and every 
+    for ie in range(nentries):
+        max_probability = -1
+        for ic in range(nclasses):
+            if probabilities[ie,ic] > max_probability:
+                max_probability = probabilities[ie,ic]
+                predictions[ie] = ic
+
+    return predictions
+
+#@jit(nopython=True)
 def PrecisionAndRecall(ground_truth, predictions):
     # make sure there are an equal number of elements
     assert (ground_truth.shape == predictions.shape)
@@ -34,4 +57,3 @@ def PrecisionAndRecall(ground_truth, predictions):
     print 'Recall: ' + str(float(TP) / float(TP + FN))
     print 'Accuracy: ' + str(float(TP + TN) / float(TP + FP + FN + TN))
 
-    
