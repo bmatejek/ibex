@@ -3,7 +3,8 @@ import numpy as np
 import sys
 import os
 import time
-from keras.models import Sequential, load_model
+from keras.models import Model, Sequential, model_from_json
+import struct
 
 # add parent directory
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
@@ -11,7 +12,26 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from utilities import dataIO
 from skeleton_classifier import make_window, ReadMergeFilename
 from evaluation import classification
+from transforms import seg2seg
+from keras import backend as K
+from skeleton_train import weighted_mse, maybe_print
 
+def ReadCandidates(args, prefix):
+    # read in potential merge locations
+    # TODO remove hardcoding
+    merge_filename = 'skeletons/' + prefix + '_merge_candidates_forward_400nm.merge'
+    merge_candidates, _, _, _ = ReadMergeFilename(merge_filename)
+
+    num_locations = len(merge_candidates)
+    labels = np.zeros(num_locations)
+
+    for index in range(num_locations):
+        # get this merge candidate
+        merge_candidate = merge_candidates[index]
+
+        labels[index] = merge_candidate.ground_truth
+
+    return merge_candidates, labels
 
 def data_generator(args, prefix):
     # read in h5 file
@@ -19,24 +39,75 @@ def data_generator(args, prefix):
     segmentation = dataIO.ReadH5File(filename, 'main')
 
     # read in potential merge locations
-    merge_filename = 'skeletons/' + prefix + '_merge_candidates.merge'
-    merge_candidates, npositives, nnegatives = ReadMergeFilename(merge_filename)
+    # TODO remove hardcoding
+    merge_filename = 'skeletons/' + prefix + '_merge_candidates_forward_400nm.merge'
+    merge_candidates, npositives, nnegatives, radii = ReadMergeFilename(merge_filename)
 
-    num_locations = len(merge_candidates)
+    index = 0
 
-    examples = np.zeros((num_locations, args.window_width, args.window_width, args.window_width, 3))
-    labels = np.zeros(num_locations)
-
-    for index in range(num_locations):
+    while True:
+        if (index % 100 == 0): 
+            print index
         # get this merge candidate
-        merge_candidate = merge_candidates[index]
+        if index >= len(merge_candidates):
+            print index
+            merge_candidate = merge_candidates[0]
+        else:
+            merge_candidate = merge_candidates[index]
 
-        window = make_window(segmentation, merge_candidate.label_one, merge_candidate.label_two, merge_candidate.x, merge_candidate.y, merge_candidate.z, args.window_width)
+        # get the labels for this candidate
+        label_one = merge_candidate.label_one
+        label_two = merge_candidate.label_two
 
-        examples[index,:,:,:,:] = window
-        labels[index] = merge_candidate.ground_truth
+        # get the position for this candidate
+        xposition = merge_candidate.x
+        yposition = merge_candidate.y
+        zposition = merge_candidate.z
 
-    return (examples, labels)
+        window = make_window(segmentation, label_one, label_two, xposition, yposition, zposition, radii, args.window_width)
+
+        example = np.zeros((1, args.window_width, args.window_width, args.window_width, 1))
+        example[0,:,:,:,:] = window
+
+        index += 1
+
+        yield example
+
+
+def GenerateMultiCutInput(args, segmentation):
+    # create the output for multi-cut algorithm
+    filename = 'rhoana/' + args.prefix + '_rhoana.h5'
+    segmentation = dataIO.ReadH5File(filename, 'main')
+
+    # get the mapping to a smaller set of vertices
+    forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
+
+    # create multi-cut file
+    multicut_filename = 'multicut/' + args.prefix + '_skeleton_400nm.graph'
+
+    # open a file to write multi-cut information
+    with open(multicut_filename, 'wb') as fd:
+        # write the number of vertices and the number of edges
+        fd.write(struct.pack('QQ', reverse_mapping.size, len(candidates)))
+
+        # for every merge candidate, determine the weight of the edge
+        for ie  in range(len(candidates)):
+            candidate = candidates[ie]
+
+            # get the probability of merge from neural network
+            probability = probabilities[ie,1]
+
+            # get the labels for these two candidates
+            label_one = candidate.label_one
+            label_two = candidate.label_two
+
+            # get the new label
+            reduced_label_one = forward_mapping[label_one]
+            reduced_label_two = forward_mapping[label_two]
+
+            # write the label for both segments and the probability of merge from neural network
+            fd.write(struct.pack('QQd', reduced_label_one, reduced_label_two, probability))
+
 
 
 def main():
@@ -49,24 +120,23 @@ def main():
     args = parser.parse_args()
 
     # load the model
-    model = load_model(args.model)
+    #model = load_model(args.model)
+    model = model_from_json(open(args.model.replace('h5', 'json'), 'r').read())
+    model.load_weights(args.model)
 
-    # read in all of the data
+    # get the candidate locations
+    candidates, labels = ReadCandidates(args, args.prefix)
 
-    (examples, labels) = data_generator(args, args.prefix)
+    print len(candidates)
 
-    probabilities = model.predict_proba(examples, verbose=1)
-    nexamples = probabilities.shape[0]
+    # generate probabilities and predictions
+    probabilities = model.predict_generator(data_generator(args, args.prefix), len(candidates))
+    predictions = classification.prob2pred(probabilities)
 
-    # create the predictions for precision and recall
-    predictions = np.zeros(nexamples, dtype=np.uint8)
-    for ie in range(nexamples):
-        if probabilities[ie,1] > probabilities[ie,0]:
-            predictions[ie] = 1
-        else:
-            predictions[ie] = 0
-
+    # output the accuracy of this network
     classification.PrecisionAndRecall(labels, predictions)
+
+
 
 if __name__ == '__main__':
     main()

@@ -48,12 +48,21 @@ def PrecisionAndRecall(ground_truth, predictions):
         else:
             TN += 1
 
-    print 'True Positives: ' + str(TP)
-    print 'True Negatives: ' + str(TN)
-    print 'False Positives: ' + str(FP)
-    print 'False Negatives: ' + str(FN)
+    print
+    print 'Positive Examples: ' + str(TP + FN)
+    print 'Negative Examples: ' + str(FP + TN)
+    print
+    print '+--------------+----------------+'
+    print '|%14s|%13s%3s|' % ('', 'Prediction', '')
+    print '+--------------+----------------+'
+    print '|%14s|%7s%7s  |' % ('', 'Merge', 'Split')
+    print '|%8s%5s |%7d%7d  |' % ('', 'Merge', TP, FN)
+    print '| %-13s|%7s%7s  |' % ('Truth', '', '')
+    print '|%8s%5s |%7d%7d  |' % ('', 'Split', FP, TN) 
+    print '+--------------+----------------+'
+    print
 
     print 'Precision: ' + str(float(TP) / float(TP + FP))
     print 'Recall: ' + str(float(TP) / float(TP + FN))
     print 'Accuracy: ' + str(float(TP + TN) / float(TP + FP + FN + TN))
-
+    print

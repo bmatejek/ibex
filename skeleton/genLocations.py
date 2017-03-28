@@ -3,6 +3,7 @@ import os
 import sys
 import numpy as np
 import struct
+import random
 
 from swc import Skeleton
 from scipy.spatial import KDTree
@@ -104,7 +105,7 @@ def SaveCNNFile(prefix, pairs, locations, labels, seg2gold_mapping, dim_size, wo
     # write to a binary file
     with open(filename, 'wb') as fd:
         # write an empty header
-        fd.write(struct.pack('QQQ', 0, 0, 0))
+        fd.write(struct.pack('QQ', 0, 0))
         fd.write(struct.pack('QQQ', 0, 0, 0))
 
         # iterate through all pairs
@@ -138,7 +139,7 @@ def SaveCNNFile(prefix, pairs, locations, labels, seg2gold_mapping, dim_size, wo
             if (zpoint - zradius < 0 or zpoint + zradius > zres - 1): continue
 
             # add in augmentation here for training
-            for aug_iter in range(8):
+            for aug_iter in range(1):
                 if ground_truth: npositives += 1
                 else: nnegatives += 1
 
@@ -148,16 +149,16 @@ def SaveCNNFile(prefix, pairs, locations, labels, seg2gold_mapping, dim_size, wo
                 fd.write(struct.pack('QQQ', xpoint, ypoint, zpoint))
                 # write the ground truth for this merge pair
                 fd.write(struct.pack('B', ground_truth))
+                # write a final variable corresponding to a rotation in training
+                fd.write(struct.pack('B', aug_iter))
 
                 # if this is for a CNN forward pass file skip augmentation
                 if forward: break
 
-                # write a final variable corresponding to a rotation in training
-                fd.write(struct.pack('B', aug_iter))
 
         # rewrite the header with the number of examples
         fd.seek(0)
-        fd.write(struct.pack('QQQ', npositives + nnegatives, npositives, nnegatives))
+        fd.write(struct.pack('QQ', npositives, nnegatives))
         fd.write(struct.pack('QQQ', xradius, yradius, zradius))
 
 
@@ -194,6 +195,9 @@ def main():
 
     # find all of the merge locations
     merge_locations = GenerateMergeLocations(endpoint_pairs, point_labels)
+
+    # randomize the locations
+    random.shuffle(merge_locations)
 
     # create a mapping from segmentation to gold
     seg2gold_mapping = seg2gold.seg2gold(segmentation, gold)
