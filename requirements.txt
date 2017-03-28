@@ -1,0 +1,40 @@
+# packages in environment at /home/brian/software/miniconda2/envs/ibex_env:
+#
+cycler                    0.10.0                    <pip>
+cython                    0.25.2                   py27_0  
+enum34                    1.1.6                    py27_0  
+funcsigs                  1.0.2                    py27_0  
+h5py                      2.6.0                     <pip>
+Keras                     2.0.2                     <pip>
+libgfortran               3.0.0                         1  
+llvmlite                  0.16.0                   py27_0  
+mako                      1.0.6                    py27_0  
+markupsafe                0.23                     py27_2  
+matplotlib                2.0.0                     <pip>
+mkl                       2017.0.1                      0  
+mkl-service               1.1.2                    py27_3  
+nose                      1.3.7                    py27_1  
+numba                     0.31.0              np112py27_0  
+numpy                     1.12.1                    <pip>
+numpy                     1.12.0                   py27_0  
+numpy                     1.12.0                    <pip>
+openssl                   1.0.2k                        1  
+pip                       9.0.1                    py27_1  
+pygpu                     2016.7.15                py27_1    trung
+pyparsing                 2.1.10                    <pip>
+python                    2.7.13                        0  
+python-dateutil           2.6.0                     <pip>
+pytz                      2016.10                   <pip>
+readline                  6.2                           2  
+scipy                     0.18.1                    <pip>
+scipy                     0.19.0                    <pip>
+scipy                     0.18.1              np112py27_1  
+setuptools                27.2.0                   py27_0  
+singledispatch            3.4.0.3                  py27_0  
+six                       1.10.0                   py27_0  
+sqlite                    3.13.0                        0  
+subprocess32              3.2.7                     <pip>
+Theano                    0.9.0                     <pip>
+tk                        8.5.18                        0  
+wheel                     0.29.0                   py27_0  
+zlib                      1.2.8                         3  
