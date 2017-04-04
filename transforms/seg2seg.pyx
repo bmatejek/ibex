@@ -62,33 +62,3 @@ def ReduceLabels(segmentation):
 
     # return the forward and reverse mapping
     return mapping, unique
-
-# function to split segmentation into two parts (along the z dimension)
-def SplitSegmentation(filename, dataset, axis=0, threshold=0.5):
-    # get file components
-    components = os.path.split(filename)
-    folder = components[0]
-    prefix = components[1].split('_')[0]
-    suffix = components[1].split('_')[1]
-
-    # open data
-    with h5py.File(filename, 'r') as hf:
-        data = np.array(hf[dataset])
-
-    separation = int(threshold * data.shape[axis])
-
-    ## TODO ONLY WORKS FOR Z DIMENSION
-    training_data = data[0:separation,:,:]
-    validation_data = data[separation:,:,:]
-
-    # free data memory
-    del data
-
-    # create the training data
-    training_filename = folder + '/train_' + prefix + '_' + suffix
-    validation_filename = folder + '/validation_' + prefix + '_' + suffix
-
-    with h5py.File(training_filename, 'w') as hf:
-        hf.create_dataset(dataset, data=training_data)
-    with h5py.File(validation_filename, 'w') as hf:
-        hf.create_dataset(dataset, data=validation_data)
