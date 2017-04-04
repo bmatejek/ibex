@@ -26,6 +26,11 @@ def ReadH5File(filename, dataset):
     return data
 
 
+def WriteH5File(data, filename, dataset):
+    with h5py.File(filename, 'w') as hf:
+        hf.create_dataset(dataset, data=data)
+
+
 
 def ReadSegmentationData(prefix):
     filename = 'rhoana/{0}_rhoana.h5'.format(prefix)
