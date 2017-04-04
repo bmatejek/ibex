@@ -1,1 +1,1 @@
-unsigned long *Seg2Gold(unsigned long *segmentation, unsigned int *gold, long nentries);
+unsigned long *CppMapping(unsigned long *segmentation, unsigned int *gold, long nentries);

@@ -1,0 +1,1 @@
+unsigned long *CppMapLabels(unsigned long *segmentation, unsigned long *mapping, unsigned long nentries);
