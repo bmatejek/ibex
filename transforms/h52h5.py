@@ -1,5 +1,6 @@
 # general functions for transforming h5 files
 from numba import jit
+import numpy as np
 
 
 # downsample the data by (z, y, x) ratio
