@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 unsigned long *CppMapLabels(unsigned long *segmentation, unsigned long *mapping, unsigned long nentries)
 {
     unsigned long *updated_segmentation = new unsigned long[nentries];
