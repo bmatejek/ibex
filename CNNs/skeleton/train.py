@@ -83,7 +83,7 @@ def Train(prefix, maximum_distance, output_prefix, num_epochs=-1, window_width=1
     ncandidates = len(candidates)
     
     # the number of rotations for every example
-    nrotations = 4
+    nrotations = 8
 
     # create the model
     model = Sequential()
