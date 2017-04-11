@@ -81,9 +81,9 @@ def Train(prefix, maximum_distance, output_prefix, num_epochs=-1, window_width=1
     # get all of the candidates for this prefix
     candidates = FindCandidates(prefix, maximum_distance, forward=False)
     ncandidates = len(candidates)
-
+    
     # the number of rotations for every example
-    nrotations = 8
+    nrotations = 4
 
     # create the model
     model = Sequential()
