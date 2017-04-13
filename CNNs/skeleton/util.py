@@ -101,11 +101,22 @@ def ScaleSegment(segment, window_width, labels, nchannels=1):
 
 
 # extract the feature given the location and segmentation'
-def ExtractFeature(segmentation, labels, location, radii, window_width, rotation=0, nchannels=1):
+def ExtractFeature(segmentation, labels, location, radii, window_width, rotations=0, nchannels=1, padding=0):
     assert (nchannels == 1 or nchannels == 3)
+
+    # get any translations
+    translation = rotations / 8
+    rotation = rotations % 8
+
     # get the data in a more convenient form
     zradius, yradius, xradius = radii
     zpoint, ypoint, xpoint = location
+
+    # apply a translation
+    if translation == 1: xpoint = xpoint - padding
+    elif translation == 2: xpoint = xpoint + padding
+    elif translation == 3: ypoint = ypoint - padding
+    elif translation == 4: ypoint = ypoint + padding
 
     # extract the small window from this segment
     segment = segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]

@@ -143,7 +143,7 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
         positive_location = positive_candidate.Location()
 
         # get the example for this candidate and rotation
-        positive_example = ExtractFeature(segmentation, positive_labels, positive_location, radii, window_width, positive_candidate_rotation, nchannels)
+        positive_example = ExtractFeature(segmentation, positive_labels, positive_location, radii, window_width, positive_candidate_rotation, nchannels, padding)
 
         # increment the index
         index += 1
@@ -160,7 +160,7 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
         negative_location = negative_candidate.Location()
 
         # get the example for this candidate rotation
-        negative_example = ExtractFeature(segmentation, negative_labels, negative_location, radii, window_width, negative_candidate_rotation, nchannels)
+        negative_example = ExtractFeature(segmentation, negative_labels, negative_location, radii, window_width, negative_candidate_rotation, nchannels, padding)
 
         # increment the index
         index += 1
