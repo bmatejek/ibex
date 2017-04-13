@@ -38,9 +38,9 @@ class Candidate:
 
 
 # find the candidates for this prefix and distance
-def FindCandidates(prefix, maximum_distance, forward=False):
-    if forward: filename = 'skeletons/{0}_{1}nm_forward.candidates'.format(prefix, maximum_distance)
-    else: filename = 'skeletons/{0}_{1}nm_train.candidates'.format(prefix, maximum_distance)
+def FindCandidates(prefix, maximum_distance, padding=0, forward=False):
+    if forward: filename = 'skeletons/candidates/{}-{}nm-{}pad_forward.candidates'.format(prefix, maximum_distance, padding)
+    else: filename = 'skeletons/candidates/{}-{}nm-{}pad_train.candidates'.format(prefix, maximum_distance, padding)
 
     # read the candidate filename
     with open(filename, 'rb') as fd:

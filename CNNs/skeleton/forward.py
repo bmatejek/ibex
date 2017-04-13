@@ -84,8 +84,9 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
     model = model_from_json(open(model_prefix + '.json', 'r').read())
     model.load_weights(model_prefix + '.h5')
 
-    # get the candidate locations
-    candidates = FindCandidates(prefix, maximum_distance, forward=True)
+    # get the candidate locations 
+    # there is no reason to use the padded data - that is only for training
+    candidates = FindCandidates(prefix, maximum_distance, padding=0, forward=True)
     ncandidates = len(candidates)
 
     # create an array of labels

@@ -67,7 +67,7 @@ def AddDenseLayer(model, filter_size, dropout, activation):
 
 
 # train a convolutional neural network for merging skeletons
-def Train(prefix, maximum_distance, output_prefix, num_epochs=-1, window_width=106, nchannels=1, nrotations=8):
+def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=8, padding=0):
     # make sure the number of channels is 1 or 3
     assert (nchannels == 1 or nchannels == 3)
 
@@ -82,7 +82,7 @@ def Train(prefix, maximum_distance, output_prefix, num_epochs=-1, window_width=1
     radii = (maximum_distance / world_res[0], maximum_distance / world_res[1], maximum_distance / world_res[2])
 
     # get all of the candidates for this prefix
-    candidates = FindCandidates(prefix, maximum_distance, forward=False)
+    candidates = FindCandidates(prefix, maximum_distance, padding, forward=False)
     ncandidates = len(candidates)
     
     # create the model
@@ -118,8 +118,7 @@ def Train(prefix, maximum_distance, output_prefix, num_epochs=-1, window_width=1
     model.compile(loss='mean_squared_error', optimizer=adm)
 
     # if the number of epochs is -1, run once for every example and every permutation
-    if num_epochs == -1:
-        num_epochs = nrotations * ncandidates / 2
+    num_epochs = nrotations * ncandidates / 2
 
     # keep track of the number of epochs here separately
     # this may reset to 0 if number of examples reached

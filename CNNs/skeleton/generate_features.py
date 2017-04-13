@@ -3,6 +3,7 @@ import struct
 import random
 from scipy.spatial import KDTree
 from ibex.utilities import dataIO
+from ibex.utilities.constants import *
 from ibex.transforms import seg2gold
 from util import Candidate
 
@@ -14,7 +15,7 @@ def GenerateKDTree(endpoints, world_res):
     npoints = len(endpoints)
 
     # create an array for locations
-    locations = np.zeros((npoints, 3), dtype=np.float32)
+    locations = np.zeros((npoints, NDIMS), dtype=np.float32)
 
     # go through every endpoint
     for ip, endpoint in enumerate(endpoints):
@@ -27,7 +28,7 @@ def GenerateKDTree(endpoints, world_res):
 
 
 # further restrict the locations for candidates
-def PruneNeighbors(neighbors, endpoints, radii, max_distance, grid_size):
+def PruneNeighbors(neighbors, endpoints, radii, grid_size, padding):
     # create an array for merge locations
     pruned_neighbors = []
 
@@ -49,9 +50,17 @@ def PruneNeighbors(neighbors, endpoints, radii, max_distance, grid_size):
 
             # if this location extends past boundary ignore
             interior_neighbor = True
-            for dim in range(3):
+            for dim in range(NDIMS):
                 if (midpoint[dim] - radii[dim] < 0): interior_neighbor = False
-                if (midpoint[dim] + radii[dim] > grid_size[dim]): interior_neighbor = False
+                if (midpoint[dim] + radii[dim] >= grid_size[dim]): interior_neighbor = False
+
+            # if either x or y is too close to boundary skip
+            # this allows for 4 translations in training
+            if (midpoint[IB_X] - padding - radii[IB_X] < 0): interior_neighbor = False
+            if (midpoint[IB_Y] - padding - radii[IB_Y] < 0): interior_neighbor = False
+            if (midpoint[IB_X] + padding + radii[IB_X] >= grid_size[IB_X]): interior_neighbor = False
+            if (midpoint[IB_Y] + padding + radii[IB_Y] >= grid_size[IB_Y]): interior_neighbor = False
+
             if not interior_neighbor: continue
 
             # append these neighbors to the 
@@ -63,7 +72,8 @@ def PruneNeighbors(neighbors, endpoints, radii, max_distance, grid_size):
 
 # create the skeleton merge candidate
 def GenerateCandidates(neighbors, endpoints, seg2gold):
-    candidates = []
+    positive_candidates = []
+    negative_candidates = []
 
     # iterate through all of the neighbors
     for (neighbor_one, neighbor_two) in neighbors:
@@ -83,66 +93,41 @@ def GenerateCandidates(neighbors, endpoints, seg2gold):
 
         # create the candidate and add to the list
         candidate = Candidate(label_one, label_two, midpoint, ground_truth)
-        candidates.append(candidate)
+        if ground_truth:
+            positive_candidates.append(candidate)
+        else:
+            negative_candidates.append(candidate)
 
-    return candidates
+    return positive_candidates, negative_candidates
 
 
 
 # save the candidate files for the CNN
-def SaveCandidates(prefix, maximum_distance, candidates, radii, forward=False):
-    # randomly shuffle the array
-    random.shuffle(candidates)
-
-    # count the number of positive and negative candidates
-    npositive_candidates = 0
-    nnegative_candidates = 0
-
-    for candidate in candidates:
-        if candidate.GroundTruth():
-            npositive_candidates += 1
-        else:
-            nnegative_candidates += 1
-
-    # just checking...if this ever breaks cap the number of negative candidates
-    assert (npositive_candidates < nnegative_candidates)
-
-    # if this is for training, make the number of positive and negative examples equal
-    if forward: pruned_candidates = candidates
+def SaveCandidates(output_filename, positive_candidates, negative_candidates, forward=False):
+    if forward:
+        # concatenate the two lists
+        candidates = positive_candidates + negative_candidates
+        random.shuffle(candidates)
     else:
-        positive_candidates = []
-        negative_candidates = []
+        # randomly shuffle the arrays
+        random.shuffle(positive_candidates)
+        random.shuffle(negative_candidates)
 
-        nnegative_examples = 0
-
-        for candidate in candidates:
-            if candidate.GroundTruth():
-                positive_candidates.append(candidate)
-            else:
-                # this make sures that there
-                if (nnegative_examples == npositive_candidates): continue
-                else:
-                    negative_candidates.append(candidate)
-
-                    # increment the number of negative candidates seen
-                    nnegative_examples += 1
-
-        # create an array of pruned examples
-        pruned_candidates = []
-        for iv in range(len(positive_candidates)):
-            pruned_candidates.append(positive_candidates[iv])
-            pruned_candidates.append(negative_candidates[iv])
-
+        # get the minimum length of the two candidates - train in pairs
+        min_length = min(len(positive_candidates), len(negative_candidates))
         
-    # get the output filename
-    if forward: output_filename = 'skeletons/{0}_{1}nm_forward.candidates'.format(prefix, maximum_distance)
-    else: output_filename = 'skeletons/{0}_{1}nm_train.candidates'.format(prefix, maximum_distance)
-
+        # create an array of positive + negative candidate pairs
+        candidates = []
+        for index in range(min_length):
+            candidates.append(positive_candidates[index])
+            candidates.append(negative_candidates[index])
+            
+    # write all candidates to the file
     with open(output_filename, 'wb') as fd:
-        fd.write(struct.pack('I', len(pruned_candidates)))
+        fd.write(struct.pack('I', len(candidates)))
 
         # add every candidate to the binary file
-        for candidate in pruned_candidates:
+        for candidate in candidates:
             # get the labels for this candidate
             label_one = candidate.LabelOne()
             label_two = candidate.LabelTwo()
@@ -159,7 +144,7 @@ def SaveCandidates(prefix, maximum_distance, candidates, radii, forward=False):
 
 
 # generate the candidates for a given segmentation
-def GenerateFeatures(prefix, maximum_distance, verbose=1):
+def GenerateFeatures(prefix, maximum_distance, padding=0, verbose=1):
     # read the segmentation and gold datasets
     segmentation = dataIO.ReadSegmentationData(prefix)
     gold = dataIO.ReadGoldData(prefix)
@@ -174,9 +159,9 @@ def GenerateFeatures(prefix, maximum_distance, verbose=1):
         print 'Generating candidates for ' + prefix + ':'
         print '  Considering neighboring segments within a {:d}nm radius.'.format(maximum_distance)
         # print the grid size (x, y, z)
-        print '  Grid Size: {:d} {:d} {:d}'.format(grid_size[2], grid_size[1], grid_size[0])
+        print '  Grid Size: {:d} {:d} {:d}'.format(grid_size[IB_Z], grid_size[IB_Y], grid_size[IB_X])
         # print the sampling resolution (x, y, z)
-        print '  Sampling Resolution: {:d}nm x {:d}nm x {:d}nm'.format(world_res[2], world_res[1], world_res[0])
+        print '  Sampling Resolution: {:d}nm x {:d}nm x {:d}nm'.format(world_res[IB_Z], world_res[IB_Y], world_res[IB_X])
 
     # read in the skeletons (ignore the joints here)
     skeletons, joints, endpoints = dataIO.ReadSkeletons(prefix, segmentation)        
@@ -188,17 +173,27 @@ def GenerateFeatures(prefix, maximum_distance, verbose=1):
     neighbors = kdtree.query_ball_tree(kdtree, maximum_distance)
 
     # get the radius in grid coordinates
-    radii = (maximum_distance / world_res[0], maximum_distance / world_res[1], maximum_distance / world_res[2])
+    radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
 
     # find all locations where potential merges should occur
-    neighbors = PruneNeighbors(neighbors, endpoints, radii, maximum_distance, grid_size)
+    neighbors = PruneNeighbors(neighbors, endpoints, radii, grid_size, padding)
 
     # create a mapping from segmentation to gold
     seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
 
     # generate all of the candidates with the SkeletonFeature class
-    candidates = GenerateCandidates(neighbors, endpoints, seg2gold_mapping)
+    positive_candidates, negative_candidates = GenerateCandidates(neighbors, endpoints, seg2gold_mapping)
 
-    # save the skeleton candidates
-    SaveCandidates(prefix, maximum_distance, candidates, radii, forward=True)
-    SaveCandidates(prefix, maximum_distance, candidates, radii, forward=False)
+    # print the number of candidates found
+    if verbose:
+        print 'Found candidates:'
+        print '  {} positive'.format(len(positive_candidates))
+        print '  {} negative'.format(len(negative_candidates))
+
+    # get the output filename
+    forward_filename = 'skeletons/candidates/{}-{}nm-{}pad_forward.candidates'.format(prefix, maximum_distance, padding)
+    train_filename = 'skeletons/candidates/{}-{}nm-{}pad_train.candidates'.format(prefix, maximum_distance, padding)
+
+    # no reason to save forward candidates if there is padding - only used for training
+    if not padding: SaveCandidates(forward_filename, positive_candidates, negative_candidates, forward=True)
+    SaveCandidates(train_filename, positive_candidates, negative_candidates, forward=False)
