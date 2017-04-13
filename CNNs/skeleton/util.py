@@ -59,13 +59,14 @@ def FindCandidates(prefix, maximum_distance, forward=False):
 
 
 @jit(nopython=True)
-def ScaleSegment(segment, window_width, labels):
+def ScaleSegment(segment, window_width, labels, nchannels=1):
     # get the size of the larger segment
     zres, yres, xres = segment.shape
     label_one, label_two = labels
 
     # create the example to be returned
-    example = np.zeros((1, window_width, window_width, window_width, 1), dtype=np.uint8)
+    assert (nchannels == 1 or nchannels == 3)
+    example = np.zeros((1, window_width, window_width, window_width, nchannels), dtype=np.uint8)
 
     # iterate over the example coordinates
     for iz in range(window_width):
@@ -76,19 +77,32 @@ def ScaleSegment(segment, window_width, labels):
                 iv = int(float(yres) / float(window_width) * iy)
                 iu = int(float(xres) / float(window_width) * ix)
 
-                if segment[iw,iv,iu] == label_one:
-                    example[0,iz,iy,ix,0] = 1
-                elif segment[iw,iv,iu] == label_two:
-                    example[0,iz,iy,ix,0] = 1
+                if nchannels == 1:
+                    if segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two:
+                        example[0,iz,iy,ix,0] = 1
+                    else:
+                        example[0,iz,iy,ix,0] = 0
                 else:
-                    example[0,iz,iy,ix,0] = 0
-
+                    if segment[iw,iv,iu] == label_one:
+                        example[0,iz,iy,ix,0] = 1
+                        example[0,iz,iy,ix,1] = 0
+                        example[0,iz,iy,ix,2] = 1
+                    elif segment[iw,iv,iu] == label_two:
+                        example[0,iz,iy,ix,0] = 0
+                        example[0,iz,iy,ix,1] = 1
+                        example[0,iz,iy,ix,2] = 1
+                    else:
+                        example[0,iz,iy,ix,0] = 0
+                        example[0,iz,iy,ix,1] = 0
+                        example[0,iz,iy,ix,2] = 0
+                        
     return example
 
 
 
 # extract the feature given the location and segmentation'
-def ExtractFeature(segmentation, labels, location, radii, window_width, rotation=0):
+def ExtractFeature(segmentation, labels, location, radii, window_width, rotation=0, nchannels=1):
+    assert (nchannels == 1 or nchannels == 3)
     # get the data in a more convenient form
     zradius, yradius, xradius = radii
     zpoint, ypoint, xpoint = location
@@ -105,4 +119,4 @@ def ExtractFeature(segmentation, labels, location, radii, window_width, rotation
     elif rotation == 6: segment = np.flip(np.flip(segment, 1), 2)
     elif rotation == 7: segment = np.flip(np.flip(np.flip(segment, 0,), 1), 2)
 
-    return ScaleSegment(segment, window_width, labels)
+    return ScaleSegment(segment, window_width, labels, nchannels)

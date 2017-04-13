@@ -10,7 +10,8 @@ from util import FindCandidates, ExtractFeature
 
 
 # generate candidate features for the predict function
-def CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width):
+def CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width, nchannels):
+    assert (nchannels == 1 or nchannels == 3)
     # get the grid size and the world resolution in (z, y, x)
     world_res = dataIO.ReadMetaData(prefix)
 
@@ -37,7 +38,7 @@ def CandidateGenerator(prefix, segmentation, candidates, maximum_distance, windo
         labels = candidate.Labels()
         location = candidate.Location()
 
-        example = ExtractFeature(segmentation, labels, location, radii, window_width)
+        example = ExtractFeature(segmentation, labels, location, radii, window_width, nchannels=nchannels)
         yield example
 
 
@@ -76,7 +77,9 @@ def GenerateMultiCutInput(prefix, segmentation, maximum_distance, candidates, pr
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, maximum_distance, model_prefix, window_width=106):
+def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=1):
+    assert (nchannels == 1 or nchannels == 3)
+
     # read in the trained model
     model = model_from_json(open(model_prefix + '.json', 'r').read())
     model.load_weights(model_prefix + '.h5')
@@ -94,92 +97,10 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106):
     segmentation = dataIO.ReadSegmentationData(prefix)
 
     # get the probabilities, max_q_size = 1 keeps from overflow
-    probabilities = model.predict_generator(CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width), ncandidates, max_q_size=1)
+    probabilities = model.predict_generator(CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width, nchannels), ncandidates, max_q_size=1)
     predictions = classification.prob2pred(probabilities)
 
     # output the accuracy of this network
     classification.PrecisionAndRecall(labels, predictions)
 
     GenerateMultiCutInput(prefix, segmentation, maximum_distance, candidates, probabilities)
-
-
-# import argparse
-# import numpy as np
-# import sys
-# import os
-# import time
-# from keras.models import Model, Sequential, model_from_json
-# import struct
-
-# from ibex.utilities import dataIO
-# from skeleton_classifier import make_window, ReadMergeFilename
-# from ibex.evaluation import classification
-# from ibex.transforms import seg2seg
-
-
-
-
-
-
-# def ReadCandidates(args, prefix):
-#     # read in potential merge locations
-#     # TODO remove hardcoding
-#     merge_filename = 'skeletons/' + prefix + '_merge_candidates_forward_400nm.merge'
-#     merge_candidates, _ = ReadMergeFilename(merge_filename)
-
-#     num_locations = len(merge_candidates)
-#     labels = np.zeros(num_locations)
-
-#     for index in range(num_locations):
-#         # get this merge candidate
-#         merge_candidate = merge_candidates[index]
-
-#         labels[index] = merge_candidate.ground_truth
-
-#     return merge_candidates, labels
-
-# def data_generator(args, prefix):
-#     # read in h5 file
-#     filename = 'rhoana/' + prefix + '_rhoana.h5'
-#     segmentation = dataIO.ReadH5File(filename, 'main')
-
-#     # read in potential merge locations
-#     # TODO remove hardcoding
-#     merge_filename = 'skeletons/' + prefix + '_merge_candidates_forward_400nm.merge'
-#     merge_candidates, radii = ReadMergeFilename(merge_filename)
-
-#     index = 0
-
-#     while True:
-#         # get this merge candidate
-#         if index >= len(merge_candidates):
-#             merge_candidate = merge_candidates[0]
-#         else:
-#             merge_candidate = merge_candidates[index]
-
-#         # get the labels for this candidate
-#         label_one = merge_candidate.label_one
-#         label_two = merge_candidate.label_two
-
-#         # get the position for this candidate
-#         xposition = merge_candidate.x
-#         yposition = merge_candidate.y
-#         zposition = merge_candidate.z
-
-#         window = make_window(segmentation, label_one, label_two, xposition, yposition, zposition, radii, args.window_width)
-
-#         example = np.zeros((1, args.window_width, args.window_width, args.window_width, 1))
-#         example[0,:,:,:,:] = window
-
-#         index += 1
-
-#         yield example
-
-
-
-
-
-
-
-# if __name__ == '__main__':
-#     main()
