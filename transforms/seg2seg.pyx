@@ -22,6 +22,7 @@ def MapLabels(segmentation, mapping):
     cpp_mapping = np.ascontiguousarray(mapping, dtype=ctypes.c_uint64)
 
     cdef unsigned long *mapped_segmentation = CppMapLabels(&(cpp_segmentation[0,0,0]), &(cpp_mapping[0]), nentries)
+
     cdef unsigned long[:] tmp_segmentation = <unsigned long[:segmentation.size]> mapped_segmentation
 
     return np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))
