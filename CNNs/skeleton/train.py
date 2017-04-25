@@ -128,12 +128,10 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
     adm = Adam(lr=initial_learning_rate, beta_1=0.99, beta_2=0.999, epsilon=1e-08)
     model.compile(loss='mean_squared_error', optimizer=adm)
 
-    # if the number of epochs is -1, run once for every example and every permutation
-    if num_epochs == -1:
-        if not (nrotations * ncandidates) % batch_size:
-            num_epochs = nrotations * ncandidates / batch_size
-        else:
-            num_epochs = nrotations * ncandidates / batch_size + 1
+    if not (nrotations * ncandidates) % batch_size:
+        num_epochs = nrotations * ncandidates / batch_size
+    else:
+        num_epochs = nrotations * ncandidates / batch_size + 1
 
     # keep track of the number of epochs here separately
     # this may reset to 0 if number of examples reached
