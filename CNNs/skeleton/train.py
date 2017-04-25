@@ -158,11 +158,11 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
             candidate = candidates[candidate_index]
 
             # get the information about this candidate
-            labels = candidate.Labels()
-            location = candidate.Location()
+            candidate_labels = candidate.Labels()
+            candidate_location = candidate.Location()
             
             # get the example for this candidate
-            example = ExtractFeature(segmentation, labels, location, radii, window_width, candidate_rotation, nchannels, padding)
+            example = ExtractFeature(segmentation, candidate_labels, candidate_location, radii, window_width, candidate_rotation, nchannels, padding)
 
             examples[ib,:,:,:,:] = example
             labels[ib,:] = candidate.GroundTruth()
