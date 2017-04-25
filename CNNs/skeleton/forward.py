@@ -94,8 +94,6 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
     for ie, candidate in enumerate(candidates):
         labels[ie] = candidate.GroundTruth()
 
-    print ncandidates
-
     # read in the segmentation file
     segmentation = dataIO.ReadSegmentationData(prefix)
 
