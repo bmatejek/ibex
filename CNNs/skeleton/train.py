@@ -68,9 +68,12 @@ def AddDenseLayer(model, filter_size, dropout, activation):
 
 
 # train a convolutional neural network for merging skeletons
-def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=8, padding=0):
+def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=8, padding=0, batch_size=2):
     # make sure the number of channels is 1 or 3
     assert (nchannels == 1 or nchannels == 3)
+
+    # make sure the batch size is even 
+    assert (batch_size % 2 == 0)
 
     # make sure a folder for the output prefix exists
     root_location = output_prefix.rfind('/')
@@ -126,7 +129,11 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
     model.compile(loss='mean_squared_error', optimizer=adm)
 
     # if the number of epochs is -1, run once for every example and every permutation
-    num_epochs = nrotations * ncandidates / 2
+    if num_epochs == -1:
+        if not (nrotations * ncandidates) % batch_size:
+            num_epochs = nrotations * ncandidates / batch_size
+        else:
+            num_epochs = nrotations * ncandidates / batch_size + 1
 
     # keep track of the number of epochs here separately
     # this may reset to 0 if number of examples reached
@@ -139,50 +146,45 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
             print '{0}/{1} in {2:4f} seconds'.format(epoch, num_epochs, time.time() - start_time)
             start_time = time.time()
 
-        # get the index and the rotation
-        positive_candidate_rotation = index / ncandidates
-        positive_candidate_index = index % ncandidates
-        
-        # receive the candidate
-        positive_candidate = candidates[positive_candidate_index]
+        # create arrays for the examples and labels
+        examples = np.zeros((batch_size, window_width, window_width, window_width, nchannels))
+        labels = np.zeros((batch_size, 1))
 
-        # get the information about this candidate
-        positive_labels = positive_candidate.Labels()
-        positive_location = positive_candidate.Location()
+        # iterate over the entire batch
+        for ib in range(batch_size):
+            # get the index and the rotation
+            candidate_rotation = index / ncandidates
+            candidate_index = index % ncandidates
 
-        # get the example for this candidate and rotation
-        positive_example = ExtractFeature(segmentation, positive_labels, positive_location, radii, window_width, positive_candidate_rotation, nchannels, padding)
+            # retrieve the actual candidate
+            candidate = candidates[candidate_index]
 
-        # increment the index
-        index += 1
+            # get the information about this candidate
+            labels = candidate.Labels()
+            location = candidate.Location()
+            
+            # get the example for this candidate
+            example = ExtractFeature(segmentation, labels, location, radii, window_width, candidate_rotation, nchannels, padding)
 
-        # get the index and the rotation
-        negative_candidate_rotation = index / ncandidates
-        negative_candidate_index = index % ncandidates
+            examples[ib,:,:,:,:] = example
+            labels[ib,:] = candidate.GroundTruth()
+            
+            index += 1
 
-        # receive the candidate
-        negative_candidate = candidates[negative_candidate_index]
+            # provide overflow relief
+            if index >= ncandidates * nrotations:
+                index = 0
 
-        # get the information about this candidate
-        negative_labels = negative_candidate.Labels()
-        negative_location = negative_candidate.Location()
+        # TODO delete - guarantee equal proportions
+        positive_examples = 0
+        negative_examples = 0
+        for ib in range(batch_size):
+            if labels[ib,0]:
+                positive_examples += 1
+            else:
+                negative_examples += 1
+        assert (positive_examples == negative_examples)
 
-        # get the example for this candidate rotation
-        negative_example = ExtractFeature(segmentation, negative_labels, negative_location, radii, window_width, negative_candidate_rotation, nchannels, padding)
-
-        # increment the index
-        index += 1
-
-        # merge the two examples together
-        examples = np.zeros((2, window_width, window_width, window_width, nchannels))
-        examples[0,:,:,:,:] = positive_example
-        examples[1,:,:,:,:] = negative_example
-
-        # create the label for this example
-        labels = np.zeros((2, 1))
-        labels[0,:] = positive_candidate.GroundTruth()
-        labels[1,:] = negative_candidate.GroundTruth()
-        assert (labels[0,0] != labels[1,0])
 
         # update the learning rate
         current_learning_rate = initial_learning_rate / (1.0 + (epoch - 1) * decay_rate)
@@ -191,7 +193,8 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
         # fit the model
         model.fit(examples, labels, epochs=1, verbose=0)
 
-        if not epoch % 500:
+        # save for every 1000 examples seen
+        if not epoch % (1000 / batch_size):
             # save an indermediate model
             json_string = model.to_json()
             open(output_prefix + '-' + str(epoch) + '.json', 'w').write(json_string)
