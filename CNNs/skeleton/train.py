@@ -1,3 +1,4 @@
+import os
 import time
 import numpy as np
 from ibex.utilities import dataIO
@@ -70,6 +71,13 @@ def AddDenseLayer(model, filter_size, dropout, activation):
 def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=8, padding=0):
     # make sure the number of channels is 1 or 3
     assert (nchannels == 1 or nchannels == 3)
+
+    # make sure a folder for the output prefix exists
+    root_location = output_prefix.rfind('/')
+    output_folder = output_prefix[:root_location]
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
     # read in the h5 segmentation file
     segmentation = dataIO.ReadSegmentationData(prefix)

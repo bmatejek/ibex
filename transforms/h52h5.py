@@ -25,13 +25,22 @@ def DownsampleData(data, ratio=(1, 2, 2)):
 
 # split the data to create training and validation data
 @jit(nopython=True)
-def CreateTrainValidation(data, threshold=0.5):
-    # get the separation idnex
-    separation = int(threshold * data.shape[0])
+def CreateTrainValidation(data, threshold=0.5, axis=0):
+    assert (0 <= axis and axis < 3)
+
+    # get the separation index
+    separation = int(threshold * data.shape[axis])
 
     # split the data into two components
-    training_data = data[0:separation,:,:]
-    validation_data = data[separation:,:,:]
-
+    if (axis == 0):
+        training_data = data[0:separation,:,:]
+        validation_data = data[separation:,:,:]
+    elif (axis == 1):
+        training_data = data[:,0:separation,:]
+        validation_data = data[:,separation:,:]
+    else:
+        training_data = data[:,:,0:separation]
+        validation_data = data[:,:,separation:]
+        
     # return the training and validation data
     return training_data, validation_data

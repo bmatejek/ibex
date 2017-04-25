@@ -18,7 +18,7 @@ def prob2pred(probabilities):
     return predictions
 
 #@jit(nopython=True)
-def PrecisionAndRecall(ground_truth, predictions):
+def PrecisionAndRecall(ground_truth, predictions, output_filename):
     # make sure there are an equal number of elements
     assert (ground_truth.shape == predictions.shape)
 
@@ -43,27 +43,19 @@ def PrecisionAndRecall(ground_truth, predictions):
         else:
             TN += 1
 
-    print
-    print 'Positive Examples: ' + str(TP + FN)
-    print 'Negative Examples: ' + str(FP + TN)
-    print
-    print '+--------------+----------------+'
-    print '|%14s|%13s%3s|' % ('', 'Prediction', '')
-    print '+--------------+----------------+'
-    print '|%14s|%7s%7s  |' % ('', 'Merge', 'Split')
-    print '|%8s%5s |%7d%7d  |' % ('', 'Merge', TP, FN)
-    print '| %-13s|%7s%7s  |' % ('Truth', '', '')
-    print '|%8s%5s |%7d%7d  |' % ('', 'Split', FP, TN) 
-    print '+--------------+----------------+'
-    print
-
-    if not TP + FP == 0:
-        print 'Precision: ' + str(float(TP) / float(TP + FP))
-    else: 
-        print 'Precision: N/A'
-    if not TP + FN == 0:
-        print 'Recall: ' + str(float(TP) / float(TP + FN))
-    else:
-        print 'Recall: N/A'
-    print 'Accuracy: ' + str(float(TP + TN) / float(TP + FP + FN + TN))
-    print
+    # open the filename to write
+    with open(output_filename, 'a') as fd:
+        fd.write('Positive Examples: {}\n'.format(TP + FN))
+        fd.write('Negative Examples: {}\n'.format(FP + TN))
+        fd.write('\n')
+        fd.write('+--------------+----------------+\n')
+        fd.write('|{:14s}|{:3s}{:13s}|\n'.format('', '', 'Prediction'))
+        fd.write('+--------------+----------------+\n')
+        fd.write('|{:14s}|  {:7s}{:7s}|\n'.format('', 'Merge', 'Split'))
+        fd.write('|{:8s}{:5s} |{:7d}{:7d}  |\n'.format('', 'Merge', TP, FN))
+        fd.write('| {:13s}|{:7s}{:7s}  |\n'.format('Truth', '', ''))
+        fd.write('|{:8s}{:5s} |{:7d}{:7d}  |\n'.format('', 'Split', FP, TN))
+        fd.write('+--------------+----------------+\n')
+        fd.write('Precision: {}\n'.format(float(TP) / float(TP + FP)))
+        fd.write('Recall: {}\n'.format(float(TP) / float(TP + FN)))
+        fd.write('Accuracy: {}\n\n'.format(float(TP + TN) / float(TP + FP + FN + TN)))
