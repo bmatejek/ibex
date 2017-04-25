@@ -87,7 +87,6 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
     # get the candidate locations 
     # there is no reason to use the padded data - that is only for training
     candidates = FindCandidates(prefix, maximum_distance, padding=0, forward=True)
-    candidates = candidates[:100]
     ncandidates = len(candidates)
 
     # create an array of labels
