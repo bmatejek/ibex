@@ -49,7 +49,7 @@ def GenerateMultiCutInput(prefix, segmentation, maximum_distance, candidates, pr
     forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
 
     # create multi-cut file
-    multicut_filename = 'multicut/{0}_skeleton_{1}nm.graph'.format(prefix, maximum_distance)
+    multicut_filename = 'multicut/{}_skeleton_{}nm.graph'.format(prefix, maximum_distance)
 
     # open a file to write multi-cut information
     with open(multicut_filename, 'wb') as fd:
@@ -94,6 +94,8 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
     labels = np.zeros(ncandidates, dtype=np.uint8)
     for ie, candidate in enumerate(candidates):
         labels[ie] = candidate.GroundTruth()
+
+    print ncandidates
 
     # read in the segmentation file
     segmentation = dataIO.ReadSegmentationData(prefix)
