@@ -68,7 +68,7 @@ def AddDenseLayer(model, filter_size, dropout, activation):
 
 
 # train a convolutional neural network for merging skeletons
-def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=8, padding=0, batch_size=2):
+def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=8, padding=0, batch_size=2, niterations=1):
     # make sure the number of channels is 1 or 3
     assert (nchannels == 1 or nchannels == 3)
 
@@ -129,9 +129,9 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
     model.compile(loss='mean_squared_error', optimizer=adm)
 
     if not (nrotations * ncandidates) % batch_size:
-        num_epochs = nrotations * ncandidates / batch_size
+        num_epochs = niterations * nrotations * ncandidates / batch_size
     else:
-        num_epochs = nrotations * ncandidates / batch_size + 1
+        num_epochs = niterations * nrotations * ncandidates / batch_size + 1
 
     # keep track of the number of epochs here separately
     # this may reset to 0 if number of examples reached
@@ -173,19 +173,10 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
             if index >= ncandidates * nrotations:
                 index = 0
 
-        # TODO delete - guarantee equal proportions
-        positive_examples = 0
-        negative_examples = 0
-        for ib in range(batch_size):
-            if labels[ib,0]:
-                positive_examples += 1
-            else:
-                negative_examples += 1
-        assert (positive_examples == negative_examples)
-
-
         # update the learning rate
-        current_learning_rate = initial_learning_rate / (1.0 + (epoch - 1) * decay_rate)
+        # TODO divide by two since that is what happened when batch == 2
+        example_pairs = epoch * batch_size / 2
+        current_learning_rate = initial_learning_rate / (1.0 + example_pairs * decay_rate)
         backend.set_value(model.optimizer.lr, current_learning_rate)
 
         # fit the model
