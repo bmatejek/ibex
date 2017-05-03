@@ -38,9 +38,11 @@ class Candidate:
 
 
 # find the candidates for this prefix and distance
-def FindCandidates(prefix, maximum_distance, padding=0, forward=False):
-    if forward: filename = 'skeletons/candidates/{}-{}nm-{}pad_forward.candidates'.format(prefix, maximum_distance, padding)
-    else: filename = 'skeletons/candidates/{}-{}nm-{}pad_train.candidates'.format(prefix, maximum_distance, padding)
+def FindCandidates(prefix, maximum_distance, forward=False):
+    if forward:
+        filename = 'skeletons/candidates/{}-{}nm_forward.candidates'.format(prefix, maximum_distance)
+    else:
+        filename = 'skeletons/candidates/{}-{}nm_train.candidates'.format(prefix, maximum_distance)
 
     # read the candidate filename
     with open(filename, 'rb') as fd:
@@ -101,33 +103,37 @@ def ScaleSegment(segment, window_width, labels, nchannels=1):
 
 
 # extract the feature given the location and segmentation'
-def ExtractFeature(segmentation, labels, location, radii, window_width, rotations=0, nchannels=1, padding=0):
+def ExtractFeature(segmentation, labels, location, radii, window_width, rotations=0, nchannels=1):
     assert (nchannels == 1 or nchannels == 3)
-
-    # get any translations
-    translation = rotations / 8
-    rotation = rotations % 8
+    assert (rotations < 32)
 
     # get the data in a more convenient form
     zradius, yradius, xradius = radii
     zpoint, ypoint, xpoint = location
 
-    # apply a translation
-    if translation == 1: xpoint = xpoint - padding
-    elif translation == 2: xpoint = xpoint + padding
-    elif translation == 3: ypoint = ypoint - padding
-    elif translation == 4: ypoint = ypoint + padding
-
     # extract the small window from this segment
     segment = segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
+    
+    # rescale the segment
+    segment = ScaleSegment(segment, window_width, labels, nchannels)
 
-    # rotate the segment
-    if rotation == 1: segment = np.flip(segment, 0)
-    elif rotation == 2: segment = np.flip(segment, 1)
-    elif rotation == 3: segment = np.flip(segment, 2)
-    elif rotation == 4: segment = np.flip(np.flip(segment, 0), 1)
-    elif rotation == 5: segment = np.flip(np.flip(segment, 0), 2)
-    elif rotation == 6: segment = np.flip(np.flip(segment, 1), 2)
-    elif rotation == 7: segment = np.flip(np.flip(np.flip(segment, 0,), 1), 2)
+    # constant variables
+    nrotations = 32
+    half_nrotations = 16
 
-    return ScaleSegment(segment, window_width, labels, nchannels)
+    # should we flip the x-axis
+    flip_xaxis = rotations / 16
+    if flip_xaxis:
+        segment = np.flip(segment, 3)
+    
+    # update the value of rotations
+    rotations = rotations % 16
+
+    # should we rotate towards Y or Z
+    rotate_towards_Y = rotations / 4
+    rotate_towards_Z = rotations % 4
+
+    segment = np.rot90(segment, k=rotate_towards_Y, axes=(3,2))
+    segment = np.rot90(segment, k=rotate_towards_Z, axes=(3,1))
+    
+    return segment

@@ -4,7 +4,7 @@ import random
 from scipy.spatial import KDTree
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
-from ibex.transforms import seg2gold
+from ibex.transforms import seg2gold, seg2seg
 from util import Candidate
 
 
@@ -28,7 +28,7 @@ def GenerateKDTree(endpoints, world_res):
 
 
 # further restrict the locations for candidates
-def PruneNeighbors(neighbors, endpoints, radii, grid_size, padding):
+def PruneNeighbors(neighbors, endpoints, radii, grid_size):
     # create an array for merge locations
     pruned_neighbors = []
 
@@ -56,10 +56,10 @@ def PruneNeighbors(neighbors, endpoints, radii, grid_size, padding):
 
             # if either x or y is too close to boundary skip
             # this allows for 4 translations in training
-            if (midpoint[IB_X] - padding - radii[IB_X] < 0): interior_neighbor = False
-            if (midpoint[IB_Y] - padding - radii[IB_Y] < 0): interior_neighbor = False
-            if (midpoint[IB_X] + padding + radii[IB_X] >= grid_size[IB_X]): interior_neighbor = False
-            if (midpoint[IB_Y] + padding + radii[IB_Y] >= grid_size[IB_Y]): interior_neighbor = False
+            if (midpoint[IB_X] - radii[IB_X] < 0): interior_neighbor = False
+            if (midpoint[IB_Y] - radii[IB_Y] < 0): interior_neighbor = False
+            if (midpoint[IB_X] + radii[IB_X] >= grid_size[IB_X]): interior_neighbor = False
+            if (midpoint[IB_Y] + radii[IB_Y] >= grid_size[IB_Y]): interior_neighbor = False
 
             if not interior_neighbor: continue
 
@@ -144,11 +144,14 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, fo
 
 
 # generate the candidates for a given segmentation
-def GenerateFeatures(prefix, maximum_distance, padding=0, verbose=1):
+def GenerateFeatures(prefix, maximum_distance, threshold=10000, verbose=1):
     # read the segmentation and gold datasets
     segmentation = dataIO.ReadSegmentationData(prefix)
     gold = dataIO.ReadGoldData(prefix)
     assert (segmentation.shape == gold.shape)
+
+    # remove all components under the threshold size
+    seg2seg.RemoveSmallConnectedComponents(segmentation, min_size=threshold)
 
     # get the grid size and the world resolution in (z, y, x)
     grid_size = segmentation.shape
@@ -176,7 +179,7 @@ def GenerateFeatures(prefix, maximum_distance, padding=0, verbose=1):
     radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
 
     # find all locations where potential merges should occur
-    neighbors = PruneNeighbors(neighbors, endpoints, radii, grid_size, padding)
+    neighbors = PruneNeighbors(neighbors, endpoints, radii, grid_size)
 
     # create a mapping from segmentation to gold
     seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
@@ -191,9 +194,8 @@ def GenerateFeatures(prefix, maximum_distance, padding=0, verbose=1):
         print '  {} negative'.format(len(negative_candidates))
 
     # get the output filename
-    forward_filename = 'skeletons/candidates/{}-{}nm-{}pad_forward.candidates'.format(prefix, maximum_distance, padding)
-    train_filename = 'skeletons/candidates/{}-{}nm-{}pad_train.candidates'.format(prefix, maximum_distance, padding)
+    forward_filename = 'skeletons/candidates/{}-{}nm_forward.candidates'.format(prefix, maximum_distance)
+    train_filename = 'skeletons/candidates/{}-{}nm_train.candidates'.format(prefix, maximum_distance)
 
-    # no reason to save forward candidates if there is padding - only used for training
-    if not padding: SaveCandidates(forward_filename, positive_candidates, negative_candidates, forward=True)
+    SaveCandidates(forward_filename, positive_candidates, negative_candidates, forward=True)
     SaveCandidates(train_filename, positive_candidates, negative_candidates, forward=False)

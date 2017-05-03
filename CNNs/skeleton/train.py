@@ -68,7 +68,7 @@ def AddDenseLayer(model, filter_size, dropout, activation):
 
 
 # train a convolutional neural network for merging skeletons
-def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=8, padding=0, batch_size=2, niterations=1):
+def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=32, batch_size=2, niterations=1, network_width=16, starting_epoch=1):
     # make sure the number of channels is 1 or 3
     assert (nchannels == 1 or nchannels == 3)
 
@@ -93,27 +93,27 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
     radii = (maximum_distance / world_res[0], maximum_distance / world_res[1], maximum_distance / world_res[2])
 
     # get all of the candidates for this prefix
-    candidates = FindCandidates(prefix, maximum_distance, padding, forward=False)
+    candidates = FindCandidates(prefix, maximum_distance, forward=False)
     ncandidates = len(candidates)
     
     # create the model
     model = Sequential()
 
-    AddConvolutionLayer(model, 16, (3, 3, 3), padding='valid', activation='relu', input_shape=(window_width, window_width, window_width, nchannels))
-    AddConvolutionLayer(model, 16, (3, 3, 3), padding='valid', activation='relu')
+    AddConvolutionLayer(model, network_width, (3, 3, 3), padding='valid', activation='relu', input_shape=(window_width, window_width, window_width, nchannels))
+    AddConvolutionLayer(model, network_width, (3, 3, 3), padding='valid', activation='relu')
     AddPoolingLayer(model, (2, 2, 2), dropout=0.00)
 
     if window_width > 100:
-        AddConvolutionLayer(model, 32, (3, 3, 3), padding='valid', activation='relu')
-        AddConvolutionLayer(model, 32, (3, 3, 3), padding='valid', activation='relu')
+        AddConvolutionLayer(model, 2 * network_width, (3, 3, 3), padding='valid', activation='relu')
+        AddConvolutionLayer(model, 2 * network_width, (3, 3, 3), padding='valid', activation='relu')
         AddPoolingLayer(model, (2, 2, 2), dropout=0.00)
 
-    AddConvolutionLayer(model, 64, (3, 3, 3), padding='valid', activation='relu')
-    AddConvolutionLayer(model, 64, (3, 3, 3), padding='valid', activation='relu')
+    AddConvolutionLayer(model, 4 * network_width, (3, 3, 3), padding='valid', activation='relu')
+    AddConvolutionLayer(model, 4 * network_width, (3, 3, 3), padding='valid', activation='relu')
     AddPoolingLayer(model, (2, 2, 2), dropout=0.00)
     
-    AddConvolutionLayer(model, 128, (3, 3, 3), padding='valid', activation='relu')
-    AddConvolutionLayer(model, 128, (3, 3, 3), padding='valid', activation='relu')
+    AddConvolutionLayer(model, 8 * network_width, (3, 3, 3), padding='valid', activation='relu')
+    AddConvolutionLayer(model, 8 * network_width, (3, 3, 3), padding='valid', activation='relu')
     AddPoolingLayer(model, (2, 2, 2), dropout=0.00)
 
     AddFlattenLayer(model)
@@ -137,9 +137,22 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
     # this may reset to 0 if number of examples reached
     index = 0
 
+    # using a pretrained network
+    if not starting_epoch == 1:
+        # update the decay rate 
+        example_pairs = starting_epoch * batch_size / 2
+        current_learning_rate = initial_learning_rate / (1.0 + example_pairs * decay_rate)
+        backend.set_value(model.optimizer.lr, current_learning_rate)
+
+        # set the index
+        index = (starting_epoch * batch_size) % (ncandidates * nrotations)
+
+        # load the model weights
+        model.load_weights(output_prefix + '-' + str(starting_epoch) + '.h5')
+        
     # run for all epochs and time for every group of 20
     start_time = time.time()
-    for epoch in range(1, num_epochs + 1):
+    for epoch in range(starting_epoch, num_epochs + 1):
         if not epoch % 20:
             print '{0}/{1} in {2:4f} seconds'.format(epoch, num_epochs, time.time() - start_time)
             start_time = time.time()
@@ -162,7 +175,7 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
             candidate_location = candidate.Location()
             
             # get the example for this candidate
-            example = ExtractFeature(segmentation, candidate_labels, candidate_location, radii, window_width, candidate_rotation, nchannels, padding)
+            example = ExtractFeature(segmentation, candidate_labels, candidate_location, radii, window_width, candidate_rotation, nchannels)
 
             examples[ib,:,:,:,:] = example
             labels[ib,:] = candidate.GroundTruth()
