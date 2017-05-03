@@ -1,16 +1,29 @@
 import numpy as np
 from numba import jit
 
+
+
+def ThresholdPredictions(ground_truth, probabilities, output_filename):
+    for ie in range(100):
+        threshold = float(ie) / 100.0
+        predictions = prob2pred(probabilities, threshold=threshold)
+
+        TP, TN, FP, FN = PrecisionAndRecall(ground_truth, predictions)
+
+        print '{}: {} - {} = '.format(threshold, TP, FP, float(TP) / float(TP + FP))
+
+
+
 ## TODO add compilation
 #@jit(nopython=True)
-def prob2pred(probabilities):
+def prob2pred(probabilities, threshold=0.5):
     # get the number of entries and the number of classes
     nentries = probabilities.shape[0]
     predictions = np.zeros(nentries, dtype=np.uint8)
-
+    
     # iterate through every entry and every 
     for ie in range(nentries):
-        if probabilities[ie] > 0.5:
+        if probabilities[ie] > threshold:
             predictions[ie] = 1
         else: 
             predictions[ie] = 0
@@ -18,7 +31,7 @@ def prob2pred(probabilities):
     return predictions
 
 #@jit(nopython=True)
-def PrecisionAndRecall(ground_truth, predictions, output_filename):
+def PrecisionAndRecall(ground_truth, predictions, output_filename=None):
     # make sure there are an equal number of elements
     assert (ground_truth.shape == predictions.shape)
 
@@ -42,20 +55,24 @@ def PrecisionAndRecall(ground_truth, predictions, output_filename):
             FN += 1
         else:
             TN += 1
-
-    # open the filename to write
-    with open(output_filename, 'a') as fd:
-        fd.write('Positive Examples: {}\n'.format(TP + FN))
-        fd.write('Negative Examples: {}\n'.format(FP + TN))
-        fd.write('\n')
-        fd.write('+--------------+----------------+\n')
-        fd.write('|{:14s}|{:3s}{:13s}|\n'.format('', '', 'Prediction'))
-        fd.write('+--------------+----------------+\n')
-        fd.write('|{:14s}|  {:7s}{:7s}|\n'.format('', 'Merge', 'Split'))
-        fd.write('|{:8s}{:5s} |{:7d}{:7d}  |\n'.format('', 'Merge', TP, FN))
-        fd.write('| {:13s}|{:7s}{:7s}  |\n'.format('Truth', '', ''))
-        fd.write('|{:8s}{:5s} |{:7d}{:7d}  |\n'.format('', 'Split', FP, TN))
-        fd.write('+--------------+----------------+\n')
-        fd.write('Precision: {}\n'.format(float(TP) / float(TP + FP)))
-        fd.write('Recall: {}\n'.format(float(TP) / float(TP + FN)))
-        fd.write('Accuracy: {}\n\n'.format(float(TP + TN) / float(TP + FP + FN + TN)))
+    
+    ## TODO this is terrible
+    if not output_filename == None:
+        # open the filename to write
+        with open(output_filename, 'a') as fd:
+            fd.write('Positive Examples: {}\n'.format(TP + FN))
+            fd.write('Negative Examples: {}\n'.format(FP + TN))
+            fd.write('\n')
+            fd.write('+--------------+----------------+\n')
+            fd.write('|{:14s}|{:3s}{:13s}|\n'.format('', '', 'Prediction'))
+            fd.write('+--------------+----------------+\n')
+            fd.write('|{:14s}|  {:7s}{:7s}|\n'.format('', 'Merge', 'Split'))
+            fd.write('|{:8s}{:5s} |{:7d}{:7d}  |\n'.format('', 'Merge', TP, FN))
+            fd.write('| {:13s}|{:7s}{:7s}  |\n'.format('Truth', '', ''))
+            fd.write('|{:8s}{:5s} |{:7d}{:7d}  |\n'.format('', 'Split', FP, TN))
+            fd.write('+--------------+----------------+\n')
+            fd.write('Precision: {}\n'.format(float(TP) / float(TP + FP)))
+            fd.write('Recall: {}\n'.format(float(TP) / float(TP + FN)))
+            fd.write('Accuracy: {}\n\n'.format(float(TP + TN) / float(TP + FP + FN + TN)))
+        
+    return TP, TN, FP, FN
