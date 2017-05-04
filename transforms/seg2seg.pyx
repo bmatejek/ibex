@@ -8,7 +8,7 @@ import os
 
 cdef extern from 'cpp-seg2seg.h':
     unsigned long *CppMapLabels(unsigned long *segmentation, unsigned long *mapping, unsigned long nentries)
-
+    unsigned long *CppRemoveSmallConnectedComponents(unsigned long *segmentation, int threshold, unsigned long nentries)
 
 # map the labels from this segmentation
 def MapLabels(segmentation, mapping):
@@ -29,24 +29,24 @@ def MapLabels(segmentation, mapping):
 
 # remove the components less than min size
 def RemoveSmallConnectedComponents(segmentation, min_size=64):
-    original_dtype = segmentation.dtype
+    nentries = segmentation.size
+    zres, yres, xres = segmentation.shape
 
-    # slight shortcut
-    if min_size == 0: return segmentation
+    cdef np.ndarray[unsigned long, ndim=3, mode='c'] cpp_segmentation
+    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_uint64)
+    
+    cdef unsigned long *updated_segmentation = CppRemoveSmallConnectedComponents(&(cpp_segmentation[0,0,0]), min_size, nentries)
 
-    # get the number of bins for each segment
-    component_sizes = np.bincount(segmentation.ravel())
+    cdef unsigned long[:] tmp_segmentation = <unsigned long[:segmentation.size]> updated_segmentation
 
-    # find the components less than a certain size
-    small_components = component_sizes < min_size
+        
+    segmentation = np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))	
+    print '6: {}'.format(np.amax(segmentation))
+    print '7: {}'.format(len(np.unique(segmentation)))
+    print '8: {}'.format(segmentation)
 
-    # find the locations where these components exist
-    small_locations = small_components[segmentation]
+    return segmentation
 
-    # set the values to 0
-    segmentation[small_locations] = 0
-
-    return segmentation.astype(original_dtype)
 
 def ReduceLabels(segmentation):
     # get the unique labels
