@@ -13,36 +13,50 @@ unsigned long *CppMapping(unsigned long *segmentation, unsigned int *gold, long 
     }
     max_segmentation_value++;
 
-    // create a mapping from segmentation to gold
-    std::map<unsigned long, unsigned long> *mapping = new std::map<unsigned long, unsigned long>[max_segmentation_value];
-    for (unsigned long iv = 0; iv < max_segmentation_value; ++iv)
-        mapping[iv] = std::map<unsigned long, unsigned long>();
-
-    // for every segment, gold label pair, increment the correct mapping
+    // find the maximum gold value
+    unsigned long max_gold_value = 0;
     for (long iv = 0; iv < nentries; ++iv) {
-        mapping[segmentation[iv]][gold[iv]]++;
+        if (gold[iv] > max_gold_value) 
+            max_gold_value = gold[iv];
+    }
+    max_gold_value++;
+
+    /* TODO way too memory expensive */
+    unsigned long **seg2gold_overlap = new unsigned long *[max_segmentation_value];
+    for (unsigned long is = 0; is < max_segmentation_value; ++is) {
+        seg2gold_overlap[is] = new unsigned long[max_gold_value];
+        for (unsigned long ig = 0; ig < max_gold_value; ++ig) {
+            seg2gold_overlap[is][ig] = 0;
+        }
     }
 
-    // find the largest gold label for each mapping
+    // iterate over every voxel
+    for (long iv = 0; iv < nentries; ++iv) {
+        seg2gold_overlap[segmentation[iv]][gold[iv]]++;
+    }
+
+    // create the mapping
     unsigned long *segmentation_to_gold = new unsigned long[max_segmentation_value];
     for (unsigned long is = 0; is < max_segmentation_value; ++is) {
-        unsigned long greatest_match = 0;
-        unsigned long greatest_match_value = 0;
-        for (std::map<unsigned long, unsigned long>::iterator it=mapping[is].begin(); it != mapping[is].end(); ++it) {
-            // skip extracellular material
-            if (it->first == 0) continue;
-
-            // if this is the greatest match continue
-            if (it->second > greatest_match_value) {
-                greatest_match = it->first;
-                greatest_match_value = it->second;
+        unsigned long gold_id = 0;
+        unsigned long gold_max_value = 0;
+        // do not consider extra cellular locations
+        // if the entire thing is extracellular gold_id will be one
+        for (unsigned long ig = 1; ig < max_gold_value; ++ig) {
+            if (seg2gold_overlap[is][ig] > gold_max_value) {
+                gold_max_value = seg2gold_overlap[is][ig];
+                gold_id = ig;
             }
         }
-        segmentation_to_gold[is] = greatest_match;
+
+        segmentation_to_gold[is] = gold_id;
     }
 
     // free memory
-    delete[] mapping;
+    for (unsigned long is = 0; is < max_segmentation_value; ++is) {
+        delete[] seg2gold_overlap[is];
+    }
+    delete[] seg2gold_overlap;
 
     return segmentation_to_gold;
 }

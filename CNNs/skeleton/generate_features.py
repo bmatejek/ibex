@@ -91,6 +91,10 @@ def GenerateCandidates(neighbors, endpoints, seg2gold):
         # should these neighbors merge?
         ground_truth = (seg2gold[label_one] == seg2gold[label_two])
 
+        # if both labels are zero there is no ground truth
+        if not seg2gold[label_one] and not seg2gold[label_two]:
+            continue
+
         # create the candidate and add to the list
         candidate = Candidate(label_one, label_two, midpoint, ground_truth)
         if ground_truth:
