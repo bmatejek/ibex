@@ -35,17 +35,15 @@ def RemoveSmallConnectedComponents(segmentation, min_size=64):
     cdef np.ndarray[unsigned long, ndim=3, mode='c'] cpp_segmentation
     cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_uint64)
     
+    # call the c++ function
     cdef unsigned long *updated_segmentation = CppRemoveSmallConnectedComponents(&(cpp_segmentation[0,0,0]), min_size, nentries)
 
+    # turn into python numpy array
     cdef unsigned long[:] tmp_segmentation = <unsigned long[:segmentation.size]> updated_segmentation
 
-        
-    segmentation = np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))	
-    print '6: {}'.format(np.amax(segmentation))
-    print '7: {}'.format(len(np.unique(segmentation)))
-    print '8: {}'.format(segmentation)
-
-    return segmentation
+    # reshape the array to the original shape
+    thresholded_segmentation = np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))	
+    return thresholded_segmentation
 
 
 def ReduceLabels(segmentation):

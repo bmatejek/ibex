@@ -147,23 +147,12 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, fo
 def GenerateFeatures(prefix, maximum_distance, threshold=10000, verbose=1):
     # read the segmentation and gold datasets
     segmentation = dataIO.ReadSegmentationData(prefix).astype(dtype=np.uint64)
-    print '1: {}'.format(segmentation.dtype)
     gold = dataIO.ReadGoldData(prefix).astype(dtype=np.uint64)
     assert (segmentation.shape == gold.shape)
 
     # remove all components under the threshold size
-    print '2: {}'.format(len(np.unique(segmentation)))
-    print '3: {}'.format(segmentation.shape)
-    print '4: {}'.format(segmentation)
-    segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, min_size=threshold)
-    print '9: {}'.format(segmentation)
-
-    print '10: {}'.format(segmentation.shape)
-    print '11: {}'.format(segmentation.dtype)
-    print '12: {}'.format(np.amax(segmentation))
-    print '13: {}'.format(segmentation[0,0,0])
-    print '14: {}'.format(len(np.unique(segmentation)))
-    print '15: {}'.format(segmentation.shape)
+    # for some reason this seg faults without np.copy
+    segmentation = np.copy(seg2seg.RemoveSmallConnectedComponents(segmentation, min_size=threshold))
     
     # get the grid size and the world resolution in (z, y, x)
     grid_size = segmentation.shape
@@ -180,35 +169,34 @@ def GenerateFeatures(prefix, maximum_distance, threshold=10000, verbose=1):
 
     # read in the skeletons (ignore the joints here)
     skeletons, joints, endpoints = dataIO.ReadSkeletons(prefix, segmentation)        
-    print 'Y'
+
     # generate the kdtree
     locations, kdtree = GenerateKDTree(endpoints, world_res)
-    print 'Z'
+
     # query the kdtree to find close neighbors
     neighbors = kdtree.query_ball_tree(kdtree, maximum_distance)
-    print 'W'
+
     # get the radius in grid coordinates
     radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
-    print 'A'
+
     # find all locations where potential merges should occur
     neighbors = PruneNeighbors(neighbors, endpoints, radii, grid_size)
-    print 'B'
+
     # create a mapping from segmentation to gold
     seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
-    print 'C'
+
     # generate all of the candidates with the SkeletonFeature class
     positive_candidates, negative_candidates = GenerateCandidates(neighbors, endpoints, seg2gold_mapping)
-    print 'D'
+
     # print the number of candidates found
     if verbose:
         print 'Found candidates:'
         print '  {} positive'.format(len(positive_candidates))
         print '  {} negative'.format(len(negative_candidates))
-    print 'E'
+
     # get the output filename
     forward_filename = 'skeletons/candidates/{}-{}nm_forward.candidates'.format(prefix, maximum_distance)
     train_filename = 'skeletons/candidates/{}-{}nm_train.candidates'.format(prefix, maximum_distance)
-    print 'F'
+
     SaveCandidates(forward_filename, positive_candidates, negative_candidates, forward=True)
     SaveCandidates(train_filename, positive_candidates, negative_candidates, forward=False)
-    print 'G'

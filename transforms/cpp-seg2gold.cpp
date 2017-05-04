@@ -9,8 +9,9 @@ unsigned long *CppMapping(unsigned long *segmentation, unsigned int *gold, long 
     unsigned long max_segmentation_value = 0;
     for (long iv = 0; iv < nentries; ++iv) {
         if (segmentation[iv] > max_segmentation_value)
-            max_segmentation_value = segmentation[iv] + 1;
+            max_segmentation_value = segmentation[iv];
     }
+    max_segmentation_value++;
 
     // create a mapping from segmentation to gold
     std::map<unsigned long, unsigned long> *mapping = new std::map<unsigned long, unsigned long>[max_segmentation_value];

@@ -18,6 +18,8 @@ unsigned long *CppRemoveSmallConnectedComponents(unsigned long *segmentation, in
 {
   if (threshold == 0) return segmentation;
   
+  /* TODO can I assume that there are an integer number of voxels */
+
   // find the maximum label
   unsigned long max_segment_label = 0;
   for (unsigned long iv = 0; iv < nentries; ++iv) {
@@ -26,8 +28,8 @@ unsigned long *CppRemoveSmallConnectedComponents(unsigned long *segmentation, in
   max_segment_label++;
   
   // create a counter array for the number of voxels
-  unsigned long *nvoxels_per_segment = new unsigned long[max_segment_label];
-  for (int iv = 0; iv < max_segment_label; ++iv) {
+  int *nvoxels_per_segment = new int[max_segment_label];
+  for (unsigned long iv = 0; iv < max_segment_label; ++iv) {
     nvoxels_per_segment[iv] = 0;
   }
   

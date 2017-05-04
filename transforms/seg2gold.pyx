@@ -12,8 +12,10 @@ def Mapping(segmentation, gold):
     cdef np.ndarray[unsigned int, ndim=3, mode='c'] cpp_gold
     cpp_gold = np.ascontiguousarray(gold, dtype=ctypes.c_uint32)
 
-    max_segmentation = np.amax(segmentation) + 1
+    max_segmentation = np.uint64(np.amax(segmentation) + 1)
 
     cdef unsigned long *mapping = CppMapping(&(cpp_segmentation[0,0,0]), &(cpp_gold[0,0,0]), segmentation.size)
+
     cdef unsigned long[:] tmp_mapping = <unsigned long[:max_segmentation]> mapping;
+
     return np.asarray(tmp_mapping)
