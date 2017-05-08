@@ -2,9 +2,6 @@ cimport cython
 cimport numpy as np
 import ctypes
 import numpy as np
-import h5py
-import struct
-import os
 
 cdef extern from 'cpp-seg2seg.h':
     unsigned long *CppMapLabels(unsigned long *segmentation, unsigned long *mapping, unsigned long nentries)
