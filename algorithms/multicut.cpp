@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <vector>
-//#include "andres/ilp/gurobi.hxx"
+#include "andres/ilp/gurobi.hxx"
 #include "andres/graph/multicut/ilp.hxx"
 #include "andres/graph/graph.hxx"
 #include "andres/graph/multicut/greedy-additive.hxx"
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
     std::clock_t start_time = std::clock();
 
     std::vector<char> edge_labels(nedges, 1);
-    andres::graph::multicut::greedyAdditiveEdgeContraction(graph, weights, edge_labels);
+    andres::graph::multicut::ilp<andres::ilp::Gurobi>(graph, weights, edge_labels, edge_labels);
     printf("%lf\n", (std::clock() - start_time) / (double)CLOCKS_PER_SEC);
 
     int nmerges = 0;
