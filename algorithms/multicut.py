@@ -6,6 +6,9 @@ from ibex.utilities import dataIO
 from ibex.data_structures import UnionFind
 from ibex.evaluation import rhoana_evaluation
 
+def Multicut(prefix, model_prefix):
+    print prefix
+
 def PrintEvaluation(acc):
     print "Rand: correct merge = {0}, correct split = {1}".format(acc['Rand']['merge'],acc['Rand']['split'])
     print "VI: correct merge = {0}, correct split = {1}".format(acc['VI']['merge'],acc['VI']['split'])
