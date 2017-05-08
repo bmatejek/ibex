@@ -120,7 +120,7 @@ def ExtractFeature(segmentation, labels, location, radii, window_width, rotation
     # constant variables
     nrotations = 32
     half_nrotations = 16
-
+    
     # should we flip the x-axis
     flip_xaxis = rotations / 16
     if flip_xaxis:
@@ -132,8 +132,8 @@ def ExtractFeature(segmentation, labels, location, radii, window_width, rotation
     # should we rotate towards Y or Z
     rotate_towards_Y = rotations / 4
     rotate_towards_Z = rotations % 4
-
+    
     segment = np.rot90(segment, k=rotate_towards_Y, axes=(3,2))
     segment = np.rot90(segment, k=rotate_towards_Z, axes=(3,1))
-    
+        
     return segment
