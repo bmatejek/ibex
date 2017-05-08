@@ -44,13 +44,13 @@ def CandidateGenerator(prefix, segmentation, candidates, maximum_distance, windo
 
 
 # create the internal graph structure for multi-cut
-def GenerateMultiCutInput(prefix, segmentation, maximum_distance, candidates, probabilities):
+def GenerateMultiCutInput(model_prefix, prefix, segmentation, maximum_distance, candidates, probabilities):
     # get the mapping to a smaller set of vertices
     forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
 
     # create multi-cut file
-    multicut_filename = 'multicut/{}_skeleton_{}nm.graph'.format(prefix, maximum_distance)
-
+    multicut_filename = 'multicut/{}-{}.graph'.format(model_prefix, prefix)
+    
     # open a file to write multi-cut information
     with open(multicut_filename, 'wb') as fd:
         # write the number of vertices and the number of edges
@@ -72,7 +72,7 @@ def GenerateMultiCutInput(prefix, segmentation, maximum_distance, candidates, pr
             reduced_label_two = forward_mapping[label_two]
 
             # write the label for both segments and the probability of merge from neural network
-            fd.write(struct.pack('QQd', reduced_label_one, reduced_label_two, probability))
+            fd.write(struct.pack('QQQQd', label_one, label_two, reduced_label_one, reduced_label_two, probability))
 
 
 
@@ -109,5 +109,7 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
 
     output_filename = '{}-thresholds.png'.format(model_prefix)
     classification.ThresholdPredictions(labels, probabilities, output_filename)
+
+    model_prefix = model_prefix.split('/')[1]
     
-    GenerateMultiCutInput(prefix, segmentation, maximum_distance, candidates, probabilities)
+    GenerateMultiCutInput(model_prefix, prefix, segmentation, maximum_distance, candidates, probabilities)
