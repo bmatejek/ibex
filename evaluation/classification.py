@@ -9,8 +9,11 @@ def ThresholdPredictions(ground_truth, probabilities, output_filename):
         predictions = prob2pred(probabilities, threshold=threshold)
 
         TP, TN, FP, FN = PrecisionAndRecall(ground_truth, predictions)
-
-        print '{}: {} - {} = '.format(threshold, TP, FP, float(TP) / float(TP + FP))
+        
+        if TP + FP == 0:
+            print '{}: {} - {} = NaN'.format(threshold, TP, FP)
+        else:
+            print '{}: {} - {} = {}'.format(threshold, TP, FP, float(TP) / float(TP + FP))
 
 
 
@@ -71,8 +74,17 @@ def PrecisionAndRecall(ground_truth, predictions, output_filename=None):
             fd.write('| {:13s}|{:7s}{:7s}  |\n'.format('Truth', '', ''))
             fd.write('|{:8s}{:5s} |{:7d}{:7d}  |\n'.format('', 'Split', FP, TN))
             fd.write('+--------------+----------------+\n')
-            fd.write('Precision: {}\n'.format(float(TP) / float(TP + FP)))
-            fd.write('Recall: {}\n'.format(float(TP) / float(TP + FN)))
+
+            if TP + FP == 0:
+                fd.write('Precision: NaN\n')
+            else:
+                fd.write('Precision: {}\n'.format(float(TP) / float(TP + FP)))
+
+            if TP + FN == 0:
+                fd.write('Recall: NaN\n')
+            else:
+                fd.write('Recall: {}\n'.format(float(TP) / float(TP + FN)))
+
             fd.write('Accuracy: {}\n\n'.format(float(TP + TN) / float(TP + FP + FN + TN)))
         
     return TP, TN, FP, FN
