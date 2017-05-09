@@ -35,7 +35,7 @@ def CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos):
     # read all of the labels and merge the result
     for ie in range(nedges):
         # only if this edge should collapse
-        if not collapsed_edges[ie]: continue
+        if collapsed_edges[ie]: continue
 
         # get the original labels
         label_one = reverse_mapping[vertex_ones[ie]]
@@ -70,16 +70,16 @@ def EvaluateMulticut(prefix, multicut_segmentation):
     # temporary - write h5 file
     dataIO.WriteH5File(multicut_segmentation, multicut_filename, 'stack')
 
-    # get the gold filename
+    # # get the gold filename
     gold_filename = 'gold/{}_gold.h5'.format(prefix)
-    segmentation_filename = 'rhoana/{}_rhoana_stack.h5'.format(prefix)
+    # segmentation_filename = 'rhoana/{}_rhoana_stack.h5'.format(prefix)
 
-    print 'Before multicut: '
-    # create the command line 
-    command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
+    # print 'Before multicut: '
+    # # create the command line 
+    # command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
 
-    # execute the command
-    os.system(command)
+    # # execute the command
+    # os.system(command)
 
     print 'After multicut: '
     # create the command line 

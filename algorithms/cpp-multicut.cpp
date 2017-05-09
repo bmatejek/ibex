@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <math.h>
 /*#include "andres/ilp/gurobi.hxx"
 #include "andres/graph/multicut/ilp.hxx"*/
 
@@ -16,7 +17,12 @@ unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsign
     graph.insertVertices(nvertices);
     for (unsigned long ie = 0; ie < nedges; ++ie) {
         graph.insertEdge(vertex_ones[ie], vertex_twos[ie]);
-        weights[ie] = (threshold - edge_weights[ie]);
+
+        // a low beta value encourages not merging (high threshold)
+        double beta = threshold;
+        weights[ie] = log(edge_weights[ie] / (1.0 - edge_weights[ie])) + log((1 - beta) / beta);
+
+        //weights[ie] = (threshold - edge_weights[ie]);
     }
 
     std::vector<char> edge_labels(nedges, 1);
