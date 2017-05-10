@@ -81,7 +81,7 @@ def EvaluateMulticut(prefix, multicut_segmentation):
     # # execute the command
     # os.system(command)
 
-    print 'After multicut: '
+    print 'After multicut - {}: '.format(threshold)
     # create the command line 
     command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(multicut_filename, gold_filename)
 
