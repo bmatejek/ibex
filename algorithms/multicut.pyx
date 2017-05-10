@@ -10,7 +10,7 @@ import os
 import time
 
 cdef extern from 'cpp-multicut.h':
-    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double threshold)
+    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double threshold, int algorithm)
 
 def CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos):
     start_time = time.time()
@@ -90,7 +90,7 @@ def EvaluateMulticut(prefix, multicut_segmentation, threshold):
 
     print 'Evaluated multicut in {} seconds'.format(time.time() - start_time)
 
-def Multicut(prefix, model_prefix, threshold=0.5):
+def Multicut(prefix, model_prefix, threshold=0.5, algorithm=0):
     start_time = time.time()
 
     multicut_filename = 'multicut/{}-{}.graph'.format(model_prefix, prefix)
@@ -121,7 +121,7 @@ def Multicut(prefix, model_prefix, threshold=0.5):
     cdef np.ndarray[double, ndim=1, mode='c'] cpp_edge_weights 
     cpp_edge_weights = np.ascontiguousarray(edge_weights, dtype=ctypes.c_double)
 
-    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), threshold)
+    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), threshold, algorithm)
     cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
     collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
 
