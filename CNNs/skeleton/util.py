@@ -67,7 +67,7 @@ def ScaleSegment(segment, window_width, labels, nchannels=1):
     label_one, label_two = labels
 
     # create the example to be returned
-    assert (nchannels == 1 or nchannels == 3)
+    assert (nchannels == 1 or nchannels == 3 or nchannels == 4)
     example = np.zeros((1, window_width, window_width, window_width, nchannels), dtype=np.uint8)
 
     # iterate over the example coordinates
@@ -97,14 +97,17 @@ def ScaleSegment(segment, window_width, labels, nchannels=1):
                         example[0,iz,iy,ix,0] = 0
                         example[0,iz,iy,ix,1] = 0
                         example[0,iz,iy,ix,2] = 0
+
+                if nchannels == 4:
+                    example[0,iz,iy,ix,3] = image[iw,iv,iu]
                         
     return example
 
 
 
 # extract the feature given the location and segmentation'
-def ExtractFeature(segmentation, labels, location, radii, window_width, rotations=0, nchannels=1):
-    assert (nchannels == 1 or nchannels == 3)
+def ExtractFeature(segmentation, image, labels, location, radii, window_width, rotations=0, nchannels=1):
+    assert (nchannels == 1 or nchannels == 3 or nchannels == 4)
     assert (rotations < 32)
 
     # get the data in a more convenient form
