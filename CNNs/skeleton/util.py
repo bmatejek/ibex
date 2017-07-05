@@ -61,7 +61,7 @@ def FindCandidates(prefix, maximum_distance, forward=False):
 
 
 @jit(nopython=True)
-def ScaleSegment(segment, window_width, labels, nchannels=1):
+def ScaleSegment(segment, window_width, labels, nchannels):
     # get the size of the larger segment
     zres, yres, xres = segment.shape
     label_one, label_two = labels

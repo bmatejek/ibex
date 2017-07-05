@@ -101,17 +101,21 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
 
     AddConvolutionLayer(model, network_width, (3, 3, 3), padding='valid', activation='relu', input_shape=(window_width, window_width, window_width, nchannels))
     AddConvolutionLayer(model, network_width, (3, 3, 3), padding='valid', activation='relu')
+    AddConvolutionLayer(model, network_width, (3, 3, 3), padding='valid', activation='relu')
     AddPoolingLayer(model, (2, 2, 2), dropout=0.00)
 
     if window_width > 100:
+        AddConvolutionLayer(model, 2 * network_width, (3, 3, 3), padding='valid', activation='relu')
         AddConvolutionLayer(model, 2 * network_width, (3, 3, 3), padding='valid', activation='relu')
         AddConvolutionLayer(model, 2 * network_width, (3, 3, 3), padding='valid', activation='relu')
         AddPoolingLayer(model, (2, 2, 2), dropout=0.00)
 
     AddConvolutionLayer(model, 4 * network_width, (3, 3, 3), padding='valid', activation='relu')
     AddConvolutionLayer(model, 4 * network_width, (3, 3, 3), padding='valid', activation='relu')
+    AddConvolutionLayer(model, 4 * network_width, (3, 3, 3), padding='valid', activation='relu')
     AddPoolingLayer(model, (2, 2, 2), dropout=0.00)
-    
+
+    AddConvolutionLayer(model, 8 * network_width, (3, 3, 3), padding='valid', activation='relu')
     AddConvolutionLayer(model, 8 * network_width, (3, 3, 3), padding='valid', activation='relu')
     AddConvolutionLayer(model, 8 * network_width, (3, 3, 3), padding='valid', activation='relu')
     AddPoolingLayer(model, (2, 2, 2), dropout=0.00)
@@ -149,7 +153,7 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
 
         # load the model weights
         model.load_weights(output_prefix + '-' + str(starting_epoch) + '.h5')
-        
+
     # run for all epochs and time for every group of 20
     start_time = time.time()
     for epoch in range(starting_epoch, num_epochs + 1):
