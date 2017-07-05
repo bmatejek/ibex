@@ -116,7 +116,7 @@ def ExtractFeature(segmentation, image, labels, location, radii, window_width, r
 
     # extract the small window from this segment
     segment = segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
-    image_segment = image[zpoint-zradius:zpoint_zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
+    image_segment = image[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
 
     # rescale the segment
     segment = ScaleSegment(segment, image_segment, window_width, labels, nchannels)
