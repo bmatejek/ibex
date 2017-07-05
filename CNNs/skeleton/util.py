@@ -61,7 +61,7 @@ def FindCandidates(prefix, maximum_distance, forward=False):
 
 
 @jit(nopython=True)
-def ScaleSegment(segment, image, window_width, labels, nchannels=1):
+def ScaleSegment(segment, window_width, labels, nchannels):
     # get the size of the larger segment
     zres, yres, xres = segment.shape
     label_one, label_two = labels
@@ -97,17 +97,14 @@ def ScaleSegment(segment, image, window_width, labels, nchannels=1):
                         example[0,iz,iy,ix,0] = 0
                         example[0,iz,iy,ix,1] = 0
                         example[0,iz,iy,ix,2] = 0
-
-                if nchannels == 4:
-                    example[0,iz,iy,ix,3] = image[iw,iv,iu]
                         
     return example
 
 
 
 # extract the feature given the location and segmentation'
-def ExtractFeature(segmentation, image, labels, location, radii, window_width, rotations=0, nchannels=1):
-    assert (nchannels == 1 or nchannels == 3 or nchannels == 4)
+def ExtractFeature(segmentation, labels, location, radii, window_width, rotations=0, nchannels=1):
+    assert (nchannels == 1 or nchannels == 3)
     assert (rotations < 32)
 
     # get the data in a more convenient form
@@ -116,10 +113,9 @@ def ExtractFeature(segmentation, image, labels, location, radii, window_width, r
 
     # extract the small window from this segment
     segment = segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
-    image_segment = image[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
 
     # rescale the segment
-    segment = ScaleSegment(segment, image_segment, window_width, labels, nchannels)
+    segment = ScaleSegment(segment, window_width, labels, nchannels)
 
     # constant variables
     nrotations = 32

@@ -24,7 +24,7 @@ def CandidateGenerator(prefix, segmentation, image, candidates, maximum_distance
     # create a counter for the generator
     start_time = time.time()
 
-    # continual indefinitely
+    # continue indefinitely
     while index >= 0:
         if (not (index + 1) % 1000):
             print 'Ran {0} iterations in {1:4f} seconds'.format(index + 1, time.time() - start_time)
@@ -102,7 +102,7 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
     image = dataIO.ReadImageData(prefix)
 
     # get the probabilities, max_q_size = 1 keeps from overflow
-    probabilities = model.predict_generator(CandidateGenerator(prefix, segmentation, image, candidates, maximum_distance, window_width, nchannels), ncandidates, max_q_size=1)
+    probabilities = model.predict_generator(CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width, nchannels), ncandidates, max_q_size=0)
     predictions = classification.prob2pred(probabilities)
 
     # output the accuracy of this network
