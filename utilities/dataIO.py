@@ -5,7 +5,7 @@ from ibex.data_structures import swc
 
 def ReadMetaData(prefix):
     # generate the meta data default filename
-    filename = 'meta_data/' + prefix + '.meta'
+    filename = 'meta_data/{}.meta'.format(prefix)
 
     # open the meta data filename
     with open(filename, 'r') as fd:
@@ -33,16 +33,23 @@ def WriteH5File(data, filename, dataset):
 
 
 def ReadSegmentationData(prefix):
-    filename = 'rhoana/{0}_rhoana.h5'.format(prefix)
+    filename = 'rhoana/{}_rhoana.h5'.format(prefix)
 
     return ReadH5File(filename, 'main')
 
 
 
 def ReadGoldData(prefix):
-    filename = 'gold/{0}_gold.h5'.format(prefix)
+    filename = 'gold/{}_gold.h5'.format(prefix)
 
     return ReadH5File(filename, 'stack')
+
+
+
+def ReadImageData(prefix):
+    filename = 'image/{}_image.h5'.format(prefix)
+
+    return ReadH5File(image, 'main')
 
 
 

@@ -67,7 +67,7 @@ def ScaleSegment(segment, window_width, labels, nchannels):
     label_one, label_two = labels
 
     # create the example to be returned
-    assert (nchannels == 1 or nchannels == 3)
+    assert (nchannels == 1 or nchannels == 3 or nchannels == 4)
     example = np.zeros((1, window_width, window_width, window_width, nchannels), dtype=np.uint8)
 
     # iterate over the example coordinates
@@ -113,7 +113,7 @@ def ExtractFeature(segmentation, labels, location, radii, window_width, rotation
 
     # extract the small window from this segment
     segment = segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
-    
+
     # rescale the segment
     segment = ScaleSegment(segment, window_width, labels, nchannels)
 

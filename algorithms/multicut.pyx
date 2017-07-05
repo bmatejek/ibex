@@ -10,7 +10,7 @@ import os
 import time
 
 cdef extern from 'cpp-multicut.h':
-    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double threshold)
+    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double threshold, int algorithm)
 
 def CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos):
     start_time = time.time()
@@ -35,7 +35,7 @@ def CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos):
     # read all of the labels and merge the result
     for ie in range(nedges):
         # only if this edge should collapse
-        if not collapsed_edges[ie]: continue
+        if collapsed_edges[ie]: continue
 
         # get the original labels
         label_one = reverse_mapping[vertex_ones[ie]]
@@ -61,7 +61,7 @@ def CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos):
     # return the updated segmentation
     return segmentation
 
-def EvaluateMulticut(prefix, multicut_segmentation):
+def EvaluateMulticut(prefix, multicut_segmentation, threshold):
     start_time = time.time()
 
     # TODO fix this code temporary filename
@@ -70,18 +70,18 @@ def EvaluateMulticut(prefix, multicut_segmentation):
     # temporary - write h5 file
     dataIO.WriteH5File(multicut_segmentation, multicut_filename, 'stack')
 
-    # get the gold filename
+    # # get the gold filename
     gold_filename = 'gold/{}_gold.h5'.format(prefix)
-    segmentation_filename = 'rhoana/{}_rhoana_stack.h5'.format(prefix)
+    # segmentation_filename = 'rhoana/{}_rhoana_stack.h5'.format(prefix)
 
-    print 'Before multicut: '
-    # create the command line 
-    command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
+    # print 'Before multicut: '
+    # # create the command line 
+    # command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
 
-    # execute the command
-    os.system(command)
+    # # execute the command
+    # os.system(command)
 
-    print 'After multicut: '
+    print 'After multicut - {}: '.format(threshold)
     # create the command line 
     command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(multicut_filename, gold_filename)
 
@@ -90,7 +90,7 @@ def EvaluateMulticut(prefix, multicut_segmentation):
 
     print 'Evaluated multicut in {} seconds'.format(time.time() - start_time)
 
-def Multicut(prefix, model_prefix, threshold=0.5):
+def Multicut(prefix, model_prefix, threshold=0.5, algorithm=0):
     start_time = time.time()
 
     multicut_filename = 'multicut/{}-{}.graph'.format(model_prefix, prefix)
@@ -121,7 +121,7 @@ def Multicut(prefix, model_prefix, threshold=0.5):
     cdef np.ndarray[double, ndim=1, mode='c'] cpp_edge_weights 
     cpp_edge_weights = np.ascontiguousarray(edge_weights, dtype=ctypes.c_double)
 
-    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), threshold)
+    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), threshold, algorithm)
     cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
     collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
 
@@ -130,5 +130,5 @@ def Multicut(prefix, model_prefix, threshold=0.5):
     # collapse the edges
     multicut_segmentation = CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos)
 
-    EvaluateMulticut(prefix, multicut_segmentation)
+    EvaluateMulticut(prefix, multicut_segmentation, threshold)
 

@@ -70,7 +70,7 @@ def AddDenseLayer(model, filter_size, dropout, activation):
 # train a convolutional neural network for merging skeletons
 def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1, nrotations=32, batch_size=2, niterations=1, network_width=16, starting_epoch=1, class_weight=None):
     # make sure the number of channels is 1 or 3
-    assert (nchannels == 1 or nchannels == 3)
+    assert (nchannels == 1 or nchannels == 3 or nchannels == 4)
 
     # make sure the batch size is even 
     assert (batch_size % 2 == 0)
