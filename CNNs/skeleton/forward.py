@@ -10,8 +10,8 @@ from util import FindCandidates, ExtractFeature
 
 
 # generate candidate features for the predict function
-def CandidateGenerator(prefix, segmentation, image, candidates, maximum_distance, window_width, nchannels):
-    assert (nchannels == 1 or nchannels == 3 or nchannels == 4)
+def CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width, nchannels):
+    assert (nchannels == 1 or nchannels == 3)
     # get the grid size and the world resolution in (z, y, x)
     world_res = dataIO.ReadMetaData(prefix)
 
@@ -42,7 +42,7 @@ def CandidateGenerator(prefix, segmentation, image, candidates, maximum_distance
         labels = candidate.Labels()
         location = candidate.Location()
 
-        example = ExtractFeature(segmentation, image, labels, location, radii, window_width, nchannels=nchannels)
+        example = ExtractFeature(segmentation, labels, location, radii, window_width, nchannels=nchannels)
         yield example
 
 
