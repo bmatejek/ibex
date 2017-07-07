@@ -49,7 +49,7 @@ def ReadGoldData(prefix):
 def ReadImageData(prefix):
     filename = 'image/{}_image.h5'.format(prefix)
 
-    return ReadH5File(image, 'main')
+    return ReadH5File(filename, 'main')
 
 
 

@@ -28,6 +28,10 @@ def CandidateGenerator(prefix, segmentation, image, candidates, maximum_distance
     while index >= 0:
         if (not (index + 1) % 1000):
             print 'Ran {0} iterations in {1:4f} seconds'.format(index + 1, time.time() - start_time)
+
+        if index >= len(candidates):
+            break
+
         # get the current candidate
         candidate = candidates[index]
 
@@ -97,9 +101,6 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
 
     # read in the segmentation file
     segmentation = dataIO.ReadSegmentationData(prefix)
-
-    # read in the image file
-    image = dataIO.ReadImageData(prefix)
 
     # get the probabilities, max_q_size = 1 keeps from overflow
     probabilities = model.predict_generator(CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width, nchannels), ncandidates, max_q_size=0)
