@@ -28,9 +28,10 @@ def CandidateGenerator(prefix, segmentation, candidates, maximum_distance, windo
     while index >= 0:
         if (not (index + 1) % 1000):
             print 'Ran {0} iterations in {1:4f} seconds'.format(index + 1, time.time() - start_time)
-
+        
+        # this prevents overflow on the queue - the repeated samples are never used
         if index >= len(candidates):
-            break
+            index = 0
 
         # get the current candidate
         candidate = candidates[index]
@@ -91,6 +92,7 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
     # get the candidate locations 
     # there is no reason to use the padded data - that is only for training
     candidates = FindCandidates(prefix, maximum_distance, forward=True)
+    candidates = candidates[:100]
     ncandidates = len(candidates)
 
 
@@ -102,8 +104,8 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
     # read in the segmentation file
     segmentation = dataIO.ReadSegmentationData(prefix)
 
-    # get the probabilities, max_q_size = 1 keeps from overflow
-    probabilities = model.predict_generator(CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width, nchannels), ncandidates, max_q_size=0)
+    # get the probabilities
+    probabilities = model.predict_generator(CandidateGenerator(prefix, segmentation, candidates, maximum_distance, window_width, nchannels), ncandidates, max_q_size=20)
     predictions = classification.prob2pred(probabilities)
 
     # output the accuracy of this network
