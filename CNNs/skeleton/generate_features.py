@@ -143,7 +143,7 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, fo
             ground_truth = candidate.GroundTruth()
 
             # write this candidate to the evaluation candidate list
-            fd.write(struct.pack('QQQQQQ', label_one, label_two, position[0], position[1], position[2], ground_truth))
+            fd.write(struct.pack('QQQQQQ', label_one, label_two, position[IB_Z], position[IB_Y], position[IB_X], ground_truth))
 
 
 
