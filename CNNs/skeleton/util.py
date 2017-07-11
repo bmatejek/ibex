@@ -118,10 +118,6 @@ def ExtractFeature(segmentation, labels, location, radii, window_width, rotation
     # rescale the segment
     segment = ScaleSegment(segment, window_width, labels, nchannels)
 
-    # constant variables
-    nrotations = 32
-    half_nrotations = 16
-    
     # should we flip the x-axis
     flip_xaxis = rotations / 16
     if flip_xaxis:
