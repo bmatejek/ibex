@@ -83,21 +83,14 @@ def ScaleSegment(segment, window_width, labels, nchannels):
                 if nchannels == 1:
                     if segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two:
                         example[0,iz,iy,ix,0] = 1
-                    else:
-                        example[0,iz,iy,ix,0] = 0
                 else:
                     if segment[iw,iv,iu] == label_one:
                         example[0,iz,iy,ix,0] = 1
-                        example[0,iz,iy,ix,1] = 0
                         example[0,iz,iy,ix,2] = 1
+
                     elif segment[iw,iv,iu] == label_two:
-                        example[0,iz,iy,ix,0] = 0
                         example[0,iz,iy,ix,1] = 1
                         example[0,iz,iy,ix,2] = 1
-                    else:
-                        example[0,iz,iy,ix,0] = 0
-                        example[0,iz,iy,ix,1] = 0
-                        example[0,iz,iy,ix,2] = 0
                         
     return example
 
