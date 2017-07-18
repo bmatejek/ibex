@@ -1,19 +1,17 @@
 import os
 import h5py
 import numpy as np
-from ibex.data_structures import swc
+from ibex.data_structures import meta_data, swc
 
 def ReadMetaData(prefix):
-    # generate the meta data default filename
-    filename = 'meta_data/{}.meta'.format(prefix)
+    # return the meta data for this prefix
+    return meta_data.MetaData(prefix)
 
-    # open the meta data filename
-    with open(filename, 'r') as fd:
-        meta_data = fd.readlines()
-        resolutions = meta_data[1].split('x')
 
-    # return the resolution in nanometers (z, y, x)
-    return (int(resolutions[2]), int(resolutions[1]), int(resolutions[0]))
+
+def Resolution(prefix):
+    # return the resolution for this prefix
+    return meta_data.MetaData(prefix).Resolution()
 
 
 
@@ -26,6 +24,7 @@ def ReadH5File(filename, dataset):
     return data
 
 
+
 def WriteH5File(data, filename, dataset):
     with h5py.File(filename, 'w') as hf:
         hf.create_dataset(dataset, data=data)
@@ -33,9 +32,9 @@ def WriteH5File(data, filename, dataset):
 
 
 def ReadSegmentationData(prefix):
-    filename = 'rhoana/{}_rhoana.h5'.format(prefix)
+    filename, dataset = meta_data.MetaData(prefix).SegmentationFilename()
 
-    return ReadH5File(filename, 'main')
+    return ReadH5File(filename, dataset)
 
 
 

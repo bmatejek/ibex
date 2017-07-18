@@ -125,6 +125,7 @@ def Train(prefix, maximum_distance, output_prefix, window_width=106, nchannels=1
     AddDenseLayer(model, 1, dropout=0.00, activation='sigmoid')
 
     # create an initial learning rate with a decay factor
+    # testing for zeta!!!! used to be 1e-4, 5e-8
     initial_learning_rate=1e-4
     decay_rate=5e-8
 

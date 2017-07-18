@@ -40,7 +40,7 @@ def RemoveSmallConnectedComponents(segmentation, min_size=64):
 
     # reshape the array to the original shape
     thresholded_segmentation = np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))	
-    return thresholded_segmentation
+    return np.copy(thresholded_segmentation)
 
 
 def ReduceLabels(segmentation):
