@@ -7,6 +7,7 @@ cdef extern from 'cpp-seg2seg.h':
     unsigned long *CppMapLabels(unsigned long *segmentation, unsigned long *mapping, unsigned long nentries)
     unsigned long *CppRemoveSmallConnectedComponents(unsigned long *segmentation, int threshold, unsigned long nentries)
 
+
 # map the labels from this segmentation
 def MapLabels(segmentation, mapping):
     # get the size of the data
@@ -23,6 +24,7 @@ def MapLabels(segmentation, mapping):
     cdef unsigned long[:] tmp_segmentation = <unsigned long[:segmentation.size]> mapped_segmentation
 
     return np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))
+
 
 # remove the components less than min size
 def RemoveSmallConnectedComponents(segmentation, min_size=64):
@@ -48,10 +50,10 @@ def ReduceLabels(segmentation):
     unique = np.unique(segmentation)
 
     # get the maximum label for the segment
-    maximum_label = np.amax(segmentation) + 1
+    maximum_label = np.amax(segmentation) + np.uint64(1)
 
     # create an array from original segment id to reduced id
-    mapping = np.zeros(maximum_label, dtype=np.int64) - 1
+    mapping = np.zeros(maximum_label, dtype=np.int64) - np.uint64(1)
 
     for ie, label in enumerate(unique):
         mapping[label] = ie
