@@ -2,6 +2,8 @@ import struct
 from ibex.utilities.constants import *
 from numba import jit
 import numpy as np
+from ibex.utilities import dataIO
+
 
 
 # go from world coordinates to grid coordinates
@@ -14,19 +16,88 @@ def WorldToGrid(world_position, bounding_box):
 
 
 
+# read in all of the counters
+def ReadCounters(prefix_one, prefix_two, threshold, maximum_distance):
+    # get the counter filename
+    counter_filename = 'features/ebro/{}-{}-{}-{}nm.counts'.format(prefix_one, prefix_two, threshold, maximum_distance)
+
+    # open the file and read candidates
+    with open(counter_filename, 'rb') as fd:
+        ncandidates, = struct.unpack('Q', fd.read(8))
+
+        # read all of the various counting variables
+        label_one_counts = []
+        label_two_counts = []
+        overlap_counts = []
+        scores = []
+        for iv in range(ncandidates):
+            label_one_count, label_two_count, overlap_count, score, = struct.unpack('QQQd', fd.read(32))
+
+            label_one_counts.append(label_one_count)
+            label_two_counts.append(label_two_count)
+            overlap_counts.append(overlap_count)
+            scores.append(score)
+
+    # return the relevant information
+    return label_one_counts, label_two_counts, overlap_counts, scores
+
+
+
+# read in the feature labels and locations
+def ReadFeatures(prefix_one, prefix_two, threshold, maximum_distance):
+    # get the feature filename
+    feature_filename = 'features/ebro/{}-{}-{}-{}nm.candidates'.format(prefix_one, prefix_two, threshold, maximum_distance)
+
+    # open the file and read candidates
+    with open(feature_filename, 'rb') as fd:
+        ncandidates, = struct.unpack('Q', fd.read(8))
+
+        # read all of the labels and locations
+        labels = []
+        locations = []
+        for iv in range(ncandidates):
+            label_one, label_two, centerx, centery, centerz, = struct.unpack('QQQQQ', fd.read(40))
+
+            labels.append((label_one, label_two))
+            locations.append((centerz, centery, centerx))
+
+    # return the relevant information
+    return labels, locations
+
+
+
+# read in the gold file
+def ReadGold(prefix_one, prefix_two, threshold, maximum_distance):
+    # get the gold file
+    gold_filename = 'gold/{}-{}-{}-{}nm.gold'.format(prefix_one, prefix_two, threshold, maximum_distance)
+
+    # open the file and read all candidates
+    with open(gold_filename, 'rb') as fd:
+        ncandidates, = struct.unpack('i', fd.read(4))
+
+        # read all of the ground truth
+        ground_truth = []
+        for iv in range(ncandidates):
+            decision, = struct.unpack('i', fd.read(4))
+            ground_truth.append(decision)
+
+    # return generated ground truth
+    return ground_truth
+
+
+
 # class that contains all import feature data
 class Candidate:
-    def __init__(self, label_one, label_two, location, ground_truth):
-        self.label_one = label_one
-        self.label_two = label_two
+    def __init__(self, labels, location, ground_truth):
+        self.labels = labels
         self.location = location
         self.ground_truth = ground_truth
 
     def Labels(self):
-        return (self.label_one, self.label_two)
+        return self.labels
 
     def Location(self):
-        return self.location[IB_Z], self.location[IB_Y], self.location[IB_X]
+        return self.location
 
     def GroundTruth(self):
         return self.ground_truth
@@ -35,37 +106,23 @@ class Candidate:
 
 # find the candidates for these prefixes, threshold and distance
 def FindCandidates(prefix_one, prefix_two, threshold, maximum_distance):
-    # get feature filename
-    feature_filename = 'features/ebro/{}-{}-{}-{}nm.candidates'.format(prefix_one, prefix_two, threshold, maximum_distance)
-    # get gold filename
-    gold_filename = 'gold/{}-{}-{}-{}nm.gold'.format(prefix_one, prefix_two, threshold, maximum_distance)
+    # get the gold decisions for this arrangement
+    ground_truth = ReadGold(prefix_one, prefix_two, threshold, maximum_distance)
+    ncandidates = len(ground_truth)
 
-    # open the two files
-    feature_fd = open(feature_filename, 'rb')
-    gold_fd = open(gold_filename, 'rb')
-
-    _, = struct.unpack('Q', feature_fd.read(8))
-    ncandidates, = struct.unpack('I', gold_fd.read(4))
+    # get the features for this arrangment
+    labels, locations = ReadFeatures(prefix_one, prefix_two, threshold, maximum_distance)
 
     positive_candidates = []
     negative_candidates = []
+
+    # only consider locations where there is legitimate ground truth
     for iv in range(ncandidates):
-        label_one, label_two, centerx, centery, centerz, = struct.unpack('QQQQQ', feature_fd.read(40))
-        decision, = struct.unpack('I', gold_fd.read(4))
-
-        # merge this candidate
-        if decision == 0:
-            positive_candidates.append(Candidate(label_one, label_two, (centerz, centery, centerx), True))
-        # do not merge this candidate
-        elif decision == 1:
-            negative_candidates.append(Candidate(label_one, label_two, (centerz, centery, centerx), False))
-        # undecided
-        else:
-            continue
-
-    # close the files
-    feature_fd.close()
-    gold_fd.close()
+        # add the positive and negative candidates
+        if ground_truth[iv] == 0:
+            positive_candidates.append(Candidate(labels[iv], locations[iv], True))
+        elif ground_truth[iv] == 1:
+            negative_candidates.append(Candidate(labels[iv], locations[iv], False))
 
     candidates = []
     for iv in range(min(len(positive_candidates), len(negative_candidates))):
@@ -142,3 +199,60 @@ def ExtractFeature(segmentation_one, segmentation_two, image_one, image_two, bbo
         example = np.flip(example, 1)
 
     return example
+
+
+
+@jit(nopython=True)
+def CollapseFeature(example):
+    # collapse three channels into one
+    output = np.zeros((example.shape[IB_Z], example.shape[IB_Y], example.shape[IB_X]), dtype=np.uint8)
+
+    zres, yres, xres, _ = example.shape
+
+    for iz in range(zres):
+        for iy in range(yres):
+            for ix in range(xres):
+                if example[iz,iy,ix,0] and example[iz,iy,ix,1]:
+                    output[iz,iy,ix] = 3
+                elif example[iz,iy,ix,1]:
+                    output[iz,iy,ix] = 2
+                elif example[iz,iy,ix,0]:
+                    output[iz,iy,ix] = 1
+
+    return output
+
+
+
+
+def SaveFeatures(prefix_one, prefix_two, threshold, maximum_distance, nchannels):
+    # read in both segmentation and image files
+    segmentation_one = dataIO.ReadSegmentationData(prefix_one)
+    segmentation_two = dataIO.ReadSegmentationData(prefix_two)
+    assert (segmentation_one.shape == segmentation_two.shape)
+    image_one = dataIO.ReadImageData(prefix_one)
+    image_two = dataIO.ReadImageData(prefix_two)
+    bbox_one = dataIO.GetWorldBBox(prefix_one)
+    bbox_two = dataIO.GetWorldBBox(prefix_two)
+    world_res = dataIO.Resolution(prefix_one)
+    assert (world_res == dataIO.Resolution(prefix_two))
+
+    # get all of the candidates for these prefixes
+    candidates = FindCandidates(prefix_one, prefix_two, threshold, maximum_distance)
+    ncandidates = len(candidates)
+
+    # get the radii for this feature
+    radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
+    width = (2 * radii[IB_Z], 2 * radii[IB_Y], 2 * radii[IB_X])
+
+    for iv, candidate in enumerate(candidates):
+        # with rotation equal to zero
+        example = (ExtractFeature(segmentation_one, segmentation_two, image_one, image_two, bbox_one, bbox_two, candidate, radii, width, 0, nchannels))[0,:,:,:,:]
+
+        # collapse the three channels into one
+        example = CollapseFeature(example)
+
+        # get the output filename
+        filename = 'features/ebro/{}-{}/{}-{}nm-{:05d}.h5'.format(prefix_one, prefix_two, threshold, maximum_distance, iv)
+
+        # write the h5 file
+        dataIO.WriteH5File(example, filename, 'main')

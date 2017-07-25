@@ -73,9 +73,9 @@ def Train(prefix_one, prefix_two, threshold, maximum_distance, output_prefix, wi
     # constants for training
     starting_epoch = 1
     nchannels = 3
-    batch_size = 2
-    nrotations = 4
-    niterations = 1
+    batch_size = 10
+    nrotations = 16
+    niterations = 3
 
     # make sure a folder for the output prefix exists
     root_location = output_prefix.rfind('/')
@@ -101,7 +101,7 @@ def Train(prefix_one, prefix_two, threshold, maximum_distance, output_prefix, wi
     # get the radii for the bounding box in grid coordinates
     radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
 
-    # get all of the candidates for this prefixes
+    # get all of the candidates for these prefixes
     candidates = FindCandidates(prefix_one, prefix_two, threshold, maximum_distance)
     ncandidates = len(candidates)
 

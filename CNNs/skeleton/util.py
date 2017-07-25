@@ -175,13 +175,13 @@ def SaveFeatures(prefix, maximum_distance):
         segment = CollapseSegment(segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius], candidate.LabelOne(), candidate.LabelTwo())
 
         # get the output filename
-        filename = 'features/{}/{:05d}-feature.h5'.format(prefix, ic)
+        filename = 'features/skeleton/{}/{:05d}-feature.h5'.format(prefix, ic)
 
         # output the h5 file
         dataIO.WriteH5File(segment, filename, 'main')
 
     # save the ground truth
-    filename = 'features/{}-ground-truth.txt'.format(prefix)
+    filename = 'features/skeleton/{}-ground-truth.txt'.format(prefix)
 
     with open(filename, 'w') as fd:
         for candidate in candidates:
