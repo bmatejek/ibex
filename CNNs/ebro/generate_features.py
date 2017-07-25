@@ -65,10 +65,12 @@ def FindCenters(segmentation_one, forward_mapping_one, segmentation_two, forward
                 counter[index_one,index_two] += 1
 
 
+
 # save the candidates
 def SaveFeatures(prefix_one, prefix_two, candidates, centers, threshold):
     # get the output filename
     filename = 'features/ebro/{}-{}-{}.candidates'.format(prefix_one, prefix_two, threshold)
+    print filename
     with open(filename, 'wb') as fd:
         fd.write(struct.pack('Q', len(candidates) - 1))
 
@@ -121,7 +123,7 @@ def GenerateFeatures(prefix_one, prefix_two, threshold=10000):
     forward_mapping_one, reverse_mapping_one = seg2seg.ReduceLabels(segmentation_one)
     forward_mapping_two, reverse_mapping_two = seg2seg.ReduceLabels(segmentation_two)
 
-    nlabels_one = reverse_mapping_two.size
+    nlabels_one = reverse_mapping_one.size
     nlabels_two = reverse_mapping_two.size
 
     xsums = np.zeros((nlabels_one, nlabels_two), dtype=np.uint64)
