@@ -64,11 +64,96 @@ def FindCenters(segmentation_one, forward_mapping_one, segmentation_two, forward
                 zsums[index_one,index_two] += iz
                 counter[index_one,index_two] += 1
 
+@jit(nopython=True)
+def PruneCandidate(segmentation_one, segmentation_two, candidate, overlap_dimension, mins, maxs):
+    # get the dimensions of the datasets
+    zdim, ydim, xdim = segmentation_one.shape
+
+    # otherwise see if this presents an issue
+    if overlap_dimension == IB_X:
+        for ix in range(xdim):
+            for iz in range(zdim):
+                if (mins[IB_Y] < 0):
+                    if segmentation_one[iz,0,ix] == candidate[0] or segmentation_two[iz,0,ix] == candidate[1]:
+                        return False
+                if (maxs[IB_Y] >= ydim):
+                    if segmentation_one[iz,ydim-1,ix] == candidate[0] or segmentation_two[iz,ydim-1,ix] == candidate[1]:
+                        return False
+                                            
+            for iy in range(ydim):
+                if (mins[IB_Z] < 0):
+                    if segmentation_one[0,iy,ix] == candidate[0] or segmentation_two[0,iy,ix] == candidate[1]:
+                        return False
+                if (maxs[IB_Z] >= zdim):
+                    if segmentation_one[zdim-1,iy,ix] == candidate[0] or segmentation_two[zdim-1,iy,ix] == candidate[1]:
+                        return False
+    elif overlap_dimension == IB_Y:
+        for iy in range(ydim):
+            for iz in range(zdim):
+                if (mins[IB_X] < 0):
+                    if segmentation_one[iz,iy,0] == candidate[0] or segmentation_two[iz,iy,0] == candidate[1]:
+                        return False
+                if (maxs[IB_X] >= xdim):
+                    if segmentation_one[iz,iy,xdim-1] == candidate[0] or segmentation_two[iz,iy,xdim-1] == candidate[1]:
+                        return False
+            for ix in range(xdim):
+                if (mins[IB_Z] < 0):
+                    if segmentation_one[0,iy,ix] == candidate[0] or segmentation_two[0,iy,ix] == candidate[1]:
+                        return False
+                if (maxs[IB_Z] >= zdim):
+                    if segmentation_one[zdim-1,iy,ix] == candidate[0] or segmentation_two[zdim-1,iy,ix] == candidate[1]:
+                        return False
+    elif overlap_dimension == IB_Z:
+        for iz in range(zdim):
+            for ix in range(xdim):
+                if (mins[IB_Y] < 0):
+                    if segmentation_one[iz,0,ix] == candidate[0] or segmentation_two[iz,0,ix] == candidate[1]:
+                        return False
+                if (maxs[IB_Y] >= ydim):
+                    if segmentation_one[iz,ydim-1,ix] == candidate[0] or segmentation_two[iz,ydim-1,ix] == candidate[1]:
+                        return False
+            for iy in range(ydim):
+                if (mins[IB_X] < 0):
+                    if segmentation_one[iz,iy,0] == candidate[0] or segmentation_two[iz,iy,0] == candidate[1]:
+                        return False
+                if (maxs[IB_X] >= xdim):
+                    if segmentation_one[iz,iy,xdim-1] == candidate[0] or segmentation_two[iz,iy,xdim-1] == candidate[1]:
+                        return False
+    return True
+
+def PruneCandidates(segmentation_one, segmentation_two, candidates, centers, radii, overlap_dimension):
+    assert (segmentation_one.shape == segmentation_two.shape)
+    
+    # create arrays for reduced candidates
+    pruned_candidates = []
+    pruned_centers = []
+
+    # get the dimensions of the grid
+    zdim, ydim, xdim = segmentation_one.shape
+    
+    for iv, candidate in enumerate(candidates):
+        cz, cy, cx = centers[iv]
+        
+        # create a bounding box for this feature
+        mins = (cz - radii[IB_Z], cy - radii[IB_Y], cx - radii[IB_X])
+        maxs = (cz + radii[IB_Z], cy + radii[IB_Y], cx + radii[IB_X])
+        
+        # if completely contained, fine
+        if (0 <= mins[IB_X]) and (0 <= mins[IB_Y]) and (0 <= mins[IB_Z]) and (maxs[IB_X] < xdim) and (maxs[IB_Y] < ydim) and (maxs[IB_Z] < zdim):
+            pruned_candidates.append(candidate)
+            pruned_centers.append(centers[iv])
+            continue
+        if PruneCandidate(segmentation_one, segmentation_two, candidate, overlap_dimension, mins, maxs):
+            pruned_candidates.append(candidate)
+            pruned_centers.append(centers[iv])
+            
+    return pruned_candidates, pruned_centers
+                
 
 # save the candidates
-def SaveFeatures(prefix_one, prefix_two, candidates, centers, threshold):
+def SaveFeatures(prefix_one, prefix_two, candidates, centers, bbox, threshold, radius):
     # get the output filename
-    filename = 'features/ebro/{}-{}-{}.candidates'.format(prefix_one, prefix_two, threshold)
+    filename = 'features/ebro/{}-{}-{}-{}nm.candidates'.format(prefix_one, prefix_two, threshold, radius)
     with open(filename, 'wb') as fd:
         fd.write(struct.pack('Q', len(candidates) - 1))
 
@@ -76,12 +161,12 @@ def SaveFeatures(prefix_one, prefix_two, candidates, centers, threshold):
         for iv, candidate in enumerate(candidates):
             if not candidate[0] or not candidate[1]: continue
 
-            fd.write(struct.pack('QQQQQ', candidate[0], candidate[1], centers[iv][IB_X], centers[iv][IB_Y], centers[iv][IB_Z]))
+            fd.write(struct.pack('QQQQQ', candidate[0], candidate[1], centers[iv][IB_X] + bbox.XMin(), centers[iv][IB_Y] + bbox.YMin(), centers[iv][IB_Z] + bbox.ZMin()))
 
 
 
 # generate the candidates given two segmentations
-def GenerateFeatures(prefix_one, prefix_two, threshold=10000):
+def GenerateFeatures(prefix_one, prefix_two, threshold=10000, radius=600):
     # read the meta data for both prefixes
     meta_data_one = dataIO.ReadMetaData(prefix_one)
     meta_data_two = dataIO.ReadMetaData(prefix_two)
@@ -117,13 +202,16 @@ def GenerateFeatures(prefix_one, prefix_two, threshold=10000):
     candidates.add((np.uint64(0), np.uint64(0)))
     # create four sparse matrices
     FindOverlapCandidates(segmentation_one, segmentation_two, candidates)
-
+    
+    # find the forward and reverse mapping for segmentations
     forward_mapping_one, reverse_mapping_one = seg2seg.ReduceLabels(segmentation_one)
     forward_mapping_two, reverse_mapping_two = seg2seg.ReduceLabels(segmentation_two)
 
-    nlabels_one = reverse_mapping_two.size
+    # get the number of unique labels
+    nlabels_one = reverse_mapping_one.size
     nlabels_two = reverse_mapping_two.size
 
+    # find the center of this feature
     xsums = np.zeros((nlabels_one, nlabels_two), dtype=np.uint64)
     ysums = np.zeros((nlabels_one, nlabels_two), dtype=np.uint64)
     zsums = np.zeros((nlabels_one, nlabels_two), dtype=np.uint64)
@@ -138,12 +226,24 @@ def GenerateFeatures(prefix_one, prefix_two, threshold=10000):
         index_two = forward_mapping_two[candidate[1]]
 
         # get the center location
-        xcenter = int(xsums[index_one,index_two] / counter[index_one,index_two]) + intersected_box.XMin()
-        ycenter = int(ysums[index_one,index_two] / counter[index_one,index_two]) + intersected_box.YMin()
-        zcenter = int(zsums[index_one,index_two] / counter[index_one,index_two]) + intersected_box.ZMin()
+        xcenter = int(xsums[index_one,index_two] / counter[index_one,index_two]) 
+        ycenter = int(ysums[index_one,index_two] / counter[index_one,index_two]) 
+        zcenter = int(zsums[index_one,index_two] / counter[index_one,index_two])
 
         # add to the list of centers
         centers.append((zcenter, ycenter, xcenter))
 
+    # find the overlap dimensions
+    if (not bbox_one.XMin() == bbox_two.XMin()): overlap_dimension = IB_X
+    elif (not bbox_one.YMin() == bbox_two.YMin()): overlap_dimension = IB_Y
+    elif (not bbox_one.ZMin() == bbox_two.ZMin()): overlap_dimension = IB_Z
+        
+    # convert the radius into voxels
+    resolution = meta_data_one.Resolution()
+    radii = (int(radius / resolution[IB_Z]), int(radius / resolution[IB_Y]), int(radius / resolution[IB_X]))
+        
+    # prune the candidates that intersect the bounding box
+    candidates, centers = PruneCandidates(segmentation_one, segmentation_two, candidates, centers, radii, overlap_dimension)
+    
     # save the features
-    SaveFeatures(prefix_one, prefix_two, candidates, centers, threshold)
+    SaveFeatures(prefix_one, prefix_two, candidates, centers, intersected_box, threshold, radius)
