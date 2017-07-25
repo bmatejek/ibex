@@ -102,14 +102,15 @@ def ScaleFeature(segmentation_one, segmentation_two, image_one, image_two, label
                     if segmentation_one[location_one[IB_Z], location_one[IB_Y], location_one[IB_X]] == label_one:
                         feature[0,iz,iy,ix,0] = 1
                         feature[0,iz,iy,ix,2] = 1
-                    feature[0,iz,iy,ix,3] = image_one[location_one[IB_Z], location_one[IB_Y], location_one[IB_X]]
+                    #feature[0,iz,iy,ix,3] = image_one[location_one[IB_Z], location_one[IB_Y], location_one[IB_X]]
                 if location_two[IB_Z] > 0 and location_two[IB_Z] < zres and location_two[IB_Y] > 0 and location_two[IB_Y] < yres and location_two[IB_X] > 0 and location_two[IB_X] < xres:
                     if segmentation_two[location_two[IB_Z], location_two[IB_Y], location_two[IB_X]] == label_two:
                         feature[0,iz,iy,ix,1] = 1
                         feature[0,iz,iy,ix,2] = 1
-                    feature[0,iz,iy,ix,3] = image_two[location_two[IB_Z], location_two[IB_Y], location_two[IB_X]]
+                    #feature[0,iz,iy,ix,3] = image_two[location_two[IB_Z], location_two[IB_Y], location_two[IB_X]]
 
     return feature
+
 
 
 def ExtractFeature(segmentation_one, segmentation_two, image_one, image_two, bbox_one, bbox_two, candidate, radii, width, rotation, nchannels):

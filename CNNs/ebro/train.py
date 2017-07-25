@@ -72,10 +72,10 @@ def AddDenseLayer(model, filter_size, dropout, activation):
 def Train(prefix_one, prefix_two, threshold, maximum_distance, output_prefix, width):
     # constants for training
     starting_epoch = 1
-    nchannels = 4
+    nchannels = 3
     batch_size = 2
-    nrotations = 16
-    niterations = 2
+    nrotations = 4
+    niterations = 1
 
     # make sure a folder for the output prefix exists
     root_location = output_prefix.rfind('/')
@@ -216,5 +216,5 @@ def Train(prefix_one, prefix_two, threshold, maximum_distance, output_prefix, wi
 
     # save the fully trained model
     json_string = model.to_json()
-    open('{}.json'.format(output_prefix)).write(json_string)
+    open('{}.json'.format(output_prefix), 'w').write(json_string)
     model.save_weights('{}.h5'.format(output_prefix))

@@ -94,7 +94,6 @@ def Forward(prefix, maximum_distance, model_prefix, window_width=106, nchannels=
     candidates = FindCandidates(prefix, maximum_distance, forward=True)
     ncandidates = len(candidates)
 
-
     # create an array of labels
     labels = np.zeros(ncandidates, dtype=np.uint8)
     for ie, candidate in enumerate(candidates):
