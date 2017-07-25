@@ -5,16 +5,8 @@ from ibex.utilities import dataIO
 from ibex.utilities.constants import *
 from ibex.geometry import ibbox
 from ibex.transforms import seg2seg
+from util import WorldToGrid
 from scipy import sparse
-
-
-# go from world coordinates to grid coordinates
-def WorldToGrid(world_position, bounding_box):
-    zdiff = world_position[IB_Z] - bounding_box.Min(IB_Z)
-    ydiff = world_position[IB_Y] - bounding_box.Min(IB_Y)
-    xdiff = world_position[IB_X] - bounding_box.Min(IB_X)
-
-    return (zdiff, ydiff, xdiff)
 
 
 

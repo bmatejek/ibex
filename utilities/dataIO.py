@@ -3,6 +3,12 @@ import h5py
 import numpy as np
 from ibex.data_structures import meta_data, swc
 
+def GetWorldBBox(prefix):
+    # return the bounding box for this segment
+    return meta_data.MetaData(prefix).WorldBBox()
+
+
+
 def ReadMetaData(prefix):
     # return the meta data for this prefix
     return meta_data.MetaData(prefix)
@@ -46,9 +52,9 @@ def ReadGoldData(prefix):
 
 
 def ReadImageData(prefix):
-    filename = 'images/{}_image.h5'.format(prefix)
+    filename, dataset = meta_data.MetaData(prefix).ImageFilename()
 
-    return ReadH5File(filename, 'main')
+    return ReadH5File(filename, dataset)
 
 
 

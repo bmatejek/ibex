@@ -59,11 +59,17 @@ class MetaData:
                     sys.exit()
 
 
-    def BBox(self):
+    def WorldBBox(self):
         return self.bounding_box
 
     def Resolution(self):
         return self.resolution
+
+    def ImageFilename(self):
+        if self.image_filename == None:
+            return 'images/{}_image.h5'.format(prefix), 'main'
+        else:
+            return self.image_filename.split()[0], self.image_filename.split()[1]
 
     def SegmentationFilename(self):
         if self.rhoana_filename == None:
