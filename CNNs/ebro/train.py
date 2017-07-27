@@ -182,23 +182,19 @@ def Train(prefix_one, prefix_two, threshold, maximum_distance, output_prefix, wi
 
             # retrieve the actual candidate
             candidate = candidates[candidate_index]
-
-            # get the information about this candidate
-            candidate_labels = candidate.Labels()
-            candidate_location = candidate.Location()
-
+            
             # get the feature for this candidate
             example = ExtractFeature(segmentation_one, segmentation_two, image_one, image_two, bbox_one, bbox_two, candidate, radii, width, candidate_rotation, nchannels)
 
             examples[ib,:,:,:,:] = example
             labels[ib,:] = candidate.GroundTruth()
-
+            
             index += 1
 
             # provide overflow relief
             if index >= ncandidates * nrotations:
                 index = 0
-
+        
         # fit the model
         model.fit(examples, labels, epochs=1, verbose=0)
 

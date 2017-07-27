@@ -105,7 +105,7 @@ class Candidate:
 
 
 # find the candidates for these prefixes, threshold and distance
-def FindCandidates(prefix_one, prefix_two, threshold, maximum_distance):
+def FindCandidates(prefix_one, prefix_two, threshold, maximum_distance, prune=True):
     # get the gold decisions for this arrangement
     ground_truth = ReadGold(prefix_one, prefix_two, threshold, maximum_distance)
     ncandidates = len(ground_truth)
@@ -115,19 +115,22 @@ def FindCandidates(prefix_one, prefix_two, threshold, maximum_distance):
 
     positive_candidates = []
     negative_candidates = []
+    candidates = []
 
     # only consider locations where there is legitimate ground truth
     for iv in range(ncandidates):
+        candidates.append(Candidate(labels[iv], locations[iv], ground_truth[iv] == True))
         # add the positive and negative candidates
         if ground_truth[iv] == 0:
             positive_candidates.append(Candidate(labels[iv], locations[iv], True))
         elif ground_truth[iv] == 1:
             negative_candidates.append(Candidate(labels[iv], locations[iv], False))
-
-    candidates = []
-    for iv in range(min(len(positive_candidates), len(negative_candidates))):
-        candidates.append(positive_candidates[iv])
-        candidates.append(negative_candidates[iv])
+    
+    if prune:
+        candidates = []
+        for iv in range(min(len(positive_candidates), len(negative_candidates))):
+            candidates.append(positive_candidates[iv])
+            candidates.append(negative_candidates[iv])
 
     return candidates
 
@@ -237,7 +240,7 @@ def SaveFeatures(prefix_one, prefix_two, threshold, maximum_distance, nchannels)
     assert (world_res == dataIO.Resolution(prefix_two))
 
     # get all of the candidates for these prefixes
-    candidates = FindCandidates(prefix_one, prefix_two, threshold, maximum_distance)
+    candidates = FindCandidates(prefix_one, prefix_two, threshold, maximum_distance, prune=False)
     ncandidates = len(candidates)
 
     # get the radii for this feature
