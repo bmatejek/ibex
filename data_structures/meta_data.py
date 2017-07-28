@@ -4,6 +4,18 @@ from ibex.utilities.constants import *
 
 class MetaData:
     def __init__(self, prefix):
+        # initialize the prefix variable
+        self.prefix = prefix
+
+        # backwards compatability variable defaults
+        self.affinity_filename = None
+        self.boundary_filename = None
+        self.gold_filename = None
+        self.image_filename = None
+        self.mask_filename = None
+        self.rhoana_filename = None
+        self.synapse = None
+
         # open the meta data txt file
         filename = 'meta_data/{}.meta'.format(prefix)
         with open(filename, 'r') as fd:
@@ -67,12 +79,12 @@ class MetaData:
 
     def ImageFilename(self):
         if self.image_filename == None:
-            return 'images/{}_image.h5'.format(prefix), 'main'
+            return 'images/{}_image.h5'.format(self.prefix), 'main'
         else:
             return self.image_filename.split()[0], self.image_filename.split()[1]
 
     def SegmentationFilename(self):
         if self.rhoana_filename == None:
-            return 'rhoana/{}_rhoana.h5'.format(prefix), 'main'
+            return 'rhoana/{}_rhoana.h5'.format(self.prefix), 'main'
         else:
             return self.rhoana_filename.split()[0], self.rhoana_filename.split()[1]
