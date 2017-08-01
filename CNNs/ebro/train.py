@@ -13,7 +13,6 @@ from ibex.CNNs.ebro.util import ExtractFeature, FindCandidates
 
 
 
-
 # add a convolutional layer to the model
 def AddConvolutionalLayer(model, filter_size, kernel_size, padding, activation, input_shape=None):
     if not input_shape == None: model.add(Convolution3D(filter_size, kernel_size, padding=padding, input_shape=input_shape))
@@ -159,8 +158,8 @@ def Train(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, wid
 
 
         # create arrays for examples and labels
-        examples = np.zeros((batch_size, width[IB_Z], width[IB_Y], width[IB_X], nchannels))
-        labels = np.zeros((batch_size, 1))
+        examples = np.zeros((batch_size, width[IB_Z], width[IB_Y], width[IB_X], nchannels), dtype=np.uint8)
+        labels = np.zeros((batch_size, 1), dtype=np.uint8)
 
         for iv in range(batch_size):
             # get the index and the rotation

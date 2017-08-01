@@ -44,7 +44,8 @@ def Forward(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, w
     # get the candidate locations
     candidates = FindCandidates(prefix_one, prefix_two, threshold, maximum_distance, inference=True)
     ncandidates = len(candidates)
-
+    
+    # get the probabilities
     probabilities = model.predict_generator(EbroCandidateGenerator(prefix_one, prefix_two, maximum_distance, candidates, width), ncandidates, max_q_size=20)
     predictions = Prob2Pred(probabilities)
 
