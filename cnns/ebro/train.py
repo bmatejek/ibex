@@ -9,7 +9,7 @@ from keras import backend
 
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
-from ibex.CNNs.ebro.util import ExtractFeature, FindCandidates
+from ibex.cnns.ebro.util import ExtractFeature, FindCandidates
 
 
 

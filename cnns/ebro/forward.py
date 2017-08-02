@@ -1,8 +1,8 @@
 import numpy as np
 
 from keras.models import model_from_json
-from util import ExtractFeature, FindCandidates
 
+from ibex.cnns.ebro.util import ExtractFeature, FindCandidates
 from ibex.evaluation.classification import *
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO

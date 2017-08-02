@@ -5,7 +5,7 @@ from keras.models import Model, Sequential, model_from_json
 from ibex.utilities import dataIO
 from ibex.evaluation.classification import *
 from ibex.transforms import seg2seg
-from util import FindCandidates, ExtractFeature
+from ibex.cnns.skeleton.util import FindCandidates, ExtractFeature
 
 
 

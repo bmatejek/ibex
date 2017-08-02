@@ -9,7 +9,7 @@ from keras import backend
 
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
-from ibex.CNNs.skeleton.util import ExtractFeature, FindCandidates
+from ibex.cnns.skeleton.util import ExtractFeature, FindCandidates
 
 
 
@@ -84,8 +84,9 @@ def Train(prefix, model_prefix, maximum_distance, width, parameters):
 
     AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
     AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
-    AddPoolingLayer(model, (1, 2, 2), 0.0)
+    AddPoolingLayer(model, (2, 2, 2), 0.0)
 
+    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
     AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
     AddPoolingLayer(model, (2, 2, 2), 0.0)
 
