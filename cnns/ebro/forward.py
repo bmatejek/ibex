@@ -1,3 +1,4 @@
+import struct
 import numpy as np
 
 from keras.models import model_from_json
@@ -57,3 +58,10 @@ def Forward(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, w
     # output the accuracy of this network
     output_filename = '{}-{}-{}-forward.results'.format(model_prefix, prefix_one, prefix_two)
     PrecisionAndRecall(labels, predictions, output_filename)
+
+    # output the probabilities for the network
+    output_filename = 'results/ebro/{}-{}-{}-{}nm.results'.format(prefix_one, prefix_two, threshold, maximum_distance)
+    with open(output_filename, 'wb') as fd:
+        fd.write(struct.pack('i', ncandidates))
+        for prediction in predictions:
+            fd.write(struct.pack('d', prediction))

@@ -3,6 +3,8 @@ import numpy as np
 from numba import jit
 
 from ibex.utilities.constants import *
+from ibex.utilities import dataIO
+
 
 
 # class that contains all import feature data
@@ -83,7 +85,7 @@ def FindCandidates(prefix_one, prefix_two, threshold, maximum_distance, inferenc
     # only consider locations where there is legitimate ground truth
     for iv in range(ncandidates):
         # skip over undecided candidates
-        if ground_truth[iv] == 2: continue
+        if not inference and ground_truth[iv] == 2: continue
 
         candidate = EbroCandidate(labels[iv], locations[iv], ground_truth[iv])
         candidates.append(candidate)
@@ -188,125 +190,35 @@ def ExtractFeature(segmentations, images, bboxes, candidate, width, radii, rotat
 
 
 
+def SaveFeatures(prefix_one, prefix_two, threshold, maximum_distance):
+    # read in both segmentation and image files
+    segmentations = (dataIO.ReadSegmentationData(prefix_one), dataIO.ReadSegmentationData(prefix_two))
+    assert (segmentations[0].shape == segmentations[1].shape)
+    images = (dataIO.ReadImageData(prefix_one), dataIO.ReadImageData(prefix_two))
+    assert (images[0].shape == images[1].shape)
+    bboxes = (dataIO.GetWorldBBox(prefix_one), dataIO.GetWorldBBox(prefix_two))
+    world_res = dataIO.Resolution(prefix_one)
+    assert (world_res == dataIO.Resolution(prefix_two))
 
+    # get the radii for this feature
+    radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
+    width = (2 * radii[IB_Z], 2 * radii[IB_Y], 2 * radii[IB_X], 3)
 
+    # get all of the candidates for these prefixes
+    candidates = FindCandidates(prefix_one, prefix_two, threshold, maximum_distance, True)
+    ncandidates = len(candidates)
 
+    # iterate over all candidates
+    for iv, candidate in enumerate(candidates):
+        # get the example with zero rtation
+        example = ExtractFeature(segmentations, images, bboxes, candidate, width, radii, 0)
 
+        # compress the channels
+        compressed_output = np.zeros((width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
+        compressed_output[example[0,:,:,:,0] == 1] = 1
+        compressed_output[example[0,:,:,:,1] == 1] = 2
+        compressed_output[example[0,:,:,:,2] == 1] = 3
 
-
-# import struct
-# from ibex.utilities.constants import *
-# from numba import jit
-# import numpy as np
-
-
-
-
-
-# from ibex.utilities import dataIO
-# import os
-
-
-
-
-
-# # read in all of the counters
-# def ReadCounters(prefix_one, prefix_two, threshold, maximum_distance):
-#     # get the counter filename
-#     counter_filename = 'features/ebro/{}-{}-{}-{}nm.counts'.format(prefix_one, prefix_two, threshold, maximum_distance)
-
-#     # open the file and read candidates
-#     with open(counter_filename, 'rb') as fd:
-#         ncandidates, = struct.unpack('Q', fd.read(8))
-
-#         # read all of the various counting variables
-#         label_one_counts = []
-#         label_two_counts = []
-#         overlap_counts = []
-#         scores = []
-#         for iv in range(ncandidates):
-#             label_one_count, label_two_count, overlap_count, score, = struct.unpack('QQQd', fd.read(32))
-
-#             label_one_counts.append(label_one_count)
-#             label_two_counts.append(label_two_count)
-#             overlap_counts.append(overlap_count)
-#             scores.append(score)
-
-#     # return the relevant information
-#     return label_one_counts, label_two_counts, overlap_counts, scores
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# @jit(nopython=True)
-# def CollapseFeature(example):
-#     # collapse three channels into one
-#     output = np.zeros((example.shape[IB_Z], example.shape[IB_Y], example.shape[IB_X]), dtype=np.uint8)
-
-#     zres, yres, xres, _ = example.shape
-
-#     for iz in range(zres):
-#         for iy in range(yres):
-#             for ix in range(xres):
-#                 if example[iz,iy,ix,0] and example[iz,iy,ix,1]:
-#                     output[iz,iy,ix] = 3
-#                 elif example[iz,iy,ix,1]:
-#                     output[iz,iy,ix] = 2
-#                 elif example[iz,iy,ix,0]:
-#                     output[iz,iy,ix] = 1
-
-#     return output
-
-
-
-
-# def SaveFeatures(prefix_one, prefix_two, threshold, maximum_distance, nchannels):
-#     # read in both segmentation and image files
-#     segmentation_one = dataIO.ReadSegmentationData(prefix_one)
-#     segmentation_two = dataIO.ReadSegmentationData(prefix_two)
-#     assert (segmentation_one.shape == segmentation_two.shape)
-#     image_one = dataIO.ReadImageData(prefix_one)
-#     image_two = dataIO.ReadImageData(prefix_two)
-#     bbox_one = dataIO.GetWorldBBox(prefix_one)
-#     bbox_two = dataIO.GetWorldBBox(prefix_two)
-#     world_res = dataIO.Resolution(prefix_one)
-#     assert (world_res == dataIO.Resolution(prefix_two))
-
-#     # get all of the candidates for these prefixes
-#     candidates = FindCandidates(prefix_one, prefix_two, threshold, maximum_distance, prune=False)
-#     ncandidates = len(candidates)
-
-#     # get the radii for this feature
-#     radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
-#     width = (2 * radii[IB_Z], 2 * radii[IB_Y], 2 * radii[IB_X])
-
-#     for iv, candidate in enumerate(candidates):
-#         # with rotation equal to zero
-#         example = (ExtractFeature(segmentation_one, segmentation_two, image_one, image_two, bbox_one, bbox_two, candidate, radii, width, 0, nchannels))[0,:,:,:,:]
-
-#         # collapse the three channels into one
-#         example = CollapseFeature(example)
-
-#         # get the output filename
-#         filename = 'features/ebro/{}-{}/{}-{}nm-{:05d}.h5'.format(prefix_one, prefix_two, threshold, maximum_distance, iv)
-
-#         # write the h5 file
-#         dataIO.WriteH5File(example, filename, 'main')
+        # save the output file
+        filename = 'features/ebro/{}-{}/{}-{}nm-{:05d}.h5'.format(prefix_one, prefix_two, threshold, maximum_distance, iv)
+        dataIO.WriteH5File(compressed_output, filename, 'main')

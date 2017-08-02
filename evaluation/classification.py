@@ -16,18 +16,20 @@ def Prob2Pred(probabilities, threshold=0.5):
 
 
 
-def PrecisionAndRecall(ground_truth, predictions, output_filename=None):
+def PrecisionAndRecall(ground_truth, predictions, output_filename=None, binary=True):
     assert (ground_truth.shape == predictions.shape)
-    assert (np.amax(ground_truth) <= 1 and np.amax(predictions) <= 1)
-    assert (np.amin(ground_truth) >= 0 and np.amax(predictions) >= 0)
 
     # set all of the counters to zero
     (TP, FP, FN, TN) = (0, 0, 0, 0)
 
     # iterate through every entry
     for ie in range(predictions.size):
+        # get the label and the prediction
         label = ground_truth[ie]
         prediction = predictions[ie]
+
+        # some slots are used as throwaways
+        if binary and not (label == 0 or label == 1): continue
 
         # increment the proper variables
         if label and prediction: TP += 1
