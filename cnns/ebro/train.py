@@ -82,6 +82,14 @@ def Train(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, wid
     AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'relu')
     AddPoolingLayer(model, (1, 2, 2), 0.0)
 
+    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
+    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
+    AddPoolingLayer(model, (1, 2, 2), 0.0)
+
+    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
+    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
+    AddPoolingLayer(model, (2, 2, 2), 0.0)
+
     AddFlattenLayer(model)
     AddDenseLayer(model, 512, 0.0, 'relu')
     AddDenseLayer(model, 1, 0.0, 'sigmoid')

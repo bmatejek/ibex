@@ -18,9 +18,9 @@ class EbroCandidate:
 
 # go from world coordinates to grid coordinates
 def WorldToGrid(world_position, bounding_box):
-    zdiff = world_position[IB_Z] - bounding_box.Min(IB_Z)
-    ydiff = world_position[IB_Y] - bounding_box.Min(IB_Y)
-    xdiff = world_position[IB_X] - bounding_box.Min(IB_X)
+    zdiff = world_position[IB_Z] - bounding_box.mins[IB_Z]
+    ydiff = world_position[IB_Y] - bounding_box.mins[IB_Y]
+    xdiff = world_position[IB_X] - bounding_box.mins[IB_X]
 
     return (zdiff, ydiff, xdiff)
 
@@ -53,13 +53,13 @@ def ReadFeatures(prefix_one, prefix_two, threshold, maximum_distance):
 
     # open the file and read candidates
     with open(feature_filename, 'rb') as fd:
-        ncandidates, = struct.unpack('Q', fd.read(8))
+        ncandidates, = struct.unpack('i', fd.read(4))
 
         # read all of the labels and locations
         labels = []
         locations = []
         for iv in range(ncandidates):
-            label_one, label_two, centerx, centery, centerz, = struct.unpack('QQQQQ', fd.read(40))
+            label_one, label_two, centerz, centery, centerx, = struct.unpack('QQQQQ', fd.read(40))
 
             labels.append((label_one, label_two))
             locations.append((centerz, centery, centerx))
@@ -68,6 +68,31 @@ def ReadFeatures(prefix_one, prefix_two, threshold, maximum_distance):
     return labels, locations
 
 
+
+# read in the counters
+def ReadCounters(prefix_one, prefix_two, threshold, maximum_distance):
+    # get the counter filename
+    counter_filename = 'features/ebro/{}-{}-{}-{}nm.counters'.format(prefix_one, prefix_two, threshold, maximum_distance)
+
+    # open the file and read counters
+    with open(counter_filename, 'rb') as fd:
+        ncandidates, = struct.unpack('i', fd.read(4))
+
+        # read all of the counts
+        counts_one = []
+        counts_two = []
+        overlap_counts = []
+        for iv in range(ncandidates):
+            count_one, count_two, overlap_count, = struct.unpack('QQQ', fd.read(24))
+
+            counts_one.append(count_one)
+            counts_two.append(count_two)
+            overlap_counts.append(overlap_count)
+
+    # return the relevant information
+    return counts_one, counts_two, overlap_counts
+
+    
 
 # find the candidates for these prefixes, threshold and distance
 def FindCandidates(prefix_one, prefix_two, threshold, maximum_distance, inference):
@@ -190,6 +215,7 @@ def ExtractFeature(segmentations, images, bboxes, candidate, width, radii, rotat
 
 
 
+# save all of the features for these prefixes
 def SaveFeatures(prefix_one, prefix_two, threshold, maximum_distance):
     # read in both segmentation and image files
     segmentations = (dataIO.ReadSegmentationData(prefix_one), dataIO.ReadSegmentationData(prefix_two))
@@ -217,7 +243,8 @@ def SaveFeatures(prefix_one, prefix_two, threshold, maximum_distance):
         compressed_output = np.zeros((width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
         compressed_output[example[0,:,:,:,0] == 1] = 1
         compressed_output[example[0,:,:,:,1] == 1] = 2
-        compressed_output[example[0,:,:,:,2] == 1] = 3
+        # both candidates are present at this location
+        compressed_output[np.logical_and(example[0,:,:,:,0] == 1, example[0,:,:,:,1] == 1)] = 3
 
         # save the output file
         filename = 'features/ebro/{}-{}/{}-{}nm-{:05d}.h5'.format(prefix_one, prefix_two, threshold, maximum_distance, iv)
