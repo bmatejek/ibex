@@ -59,7 +59,7 @@ def WriteLogfiles(model, model_prefix, parameters):
 
 
 # train a neural network for this prefix
-def Train(prefix, model_prefix, maximum_distance, width, parameters):
+def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
     # identify convenient variables
     nchannels = width[3]
     starting_epoch = parameters['starting_epoch']
@@ -120,7 +120,7 @@ def Train(prefix, model_prefix, maximum_distance, width, parameters):
     radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
 
     # get all candidates
-    candidates = FindCandidates(prefix, maximum_distance, inference=False)
+    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=False)
     ncandidates = len(candidates)
 
 

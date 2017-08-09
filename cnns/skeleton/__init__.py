@@ -1,4 +1,7 @@
 import os
 os.environ['THEANO_FLAGS'] = 'device=gpu,floatX=float32'
-from train import *
-from forward import *
+
+# import files from this directory
+from train import Train
+from forward import Forward
+from generate_features import GenerateFeatures

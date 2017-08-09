@@ -15,15 +15,15 @@ class SkeletonCandidate:
 
 
 # find the candidates for this prefix and distance
-def FindCandidates(prefix, maximum_distance, inference=False):
+def FindCandidates(prefix, threshold, maximum_distance, inference=False):
     if inference:
-        filename = 'skeletons/candidates/{}-{}nm_forward.candidates'.format(prefix, maximum_distance)
+        filename = 'features/skeleton/{}-{}-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance)
     else:
-        filename = 'skeletons/candidates/{}-{}nm_train.candidates'.format(prefix, maximum_distance)
+        filename = 'features/skeleton/{}-{}-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance)
 
     # read the candidate filename
     with open(filename, 'rb') as fd:
-        ncandidates, = struct.unpack('I', fd.read(4))
+        ncandidates, = struct.unpack('i', fd.read(4))
         candidates = []
         # iterate over all of the candidate merge locations
         for _ in range(ncandidates):

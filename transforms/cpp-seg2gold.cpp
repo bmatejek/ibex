@@ -40,9 +40,8 @@ unsigned long *CppMapping(unsigned long *segmentation, unsigned int *gold, long 
     for (unsigned long is = 0; is < max_segmentation_value; ++is) {
         unsigned long gold_id = 0;
         unsigned long gold_max_value = 0;
-        // do not consider extra cellular locations
-        // if the entire thing is extracellular gold_id will be one
-        for (unsigned long ig = 1; ig < max_gold_value; ++ig) {
+
+        for (unsigned long ig = 0; ig < max_gold_value; ++ig) {
             if (seg2gold_overlap[is][ig] > gold_max_value) {
                 gold_max_value = seg2gold_overlap[is][ig];
                 gold_id = ig;

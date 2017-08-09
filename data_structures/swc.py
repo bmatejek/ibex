@@ -1,5 +1,7 @@
 import numpy as np
 
+from ibex.utilities.constants import *
+
 class SWCEntry:
     def __init__(self, sample_number, structure_id, x, y, z, radius, parent_sample, label):
         self.sample_number = sample_number
@@ -40,7 +42,7 @@ class SWCEntry:
         return self.label
 
     def WorldPoint(self, world_res):
-        world_location = (self.z * world_res[0], self.y * world_res[1], self.x * world_res[2])
+        world_location = (self.z * world_res[IB_Z], self.y * world_res[IB_Y], self.x * world_res[IB_X])
         return np.array(world_location).astype(dtype=np.uint32)
 
 class Skeleton:

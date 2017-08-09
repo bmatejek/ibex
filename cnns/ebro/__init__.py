@@ -5,3 +5,4 @@ os.environ['THEANO_FLAGS'] = 'device=gpu,floatX=float32'
 from train import Train
 from forward import Forward
 from generate_features import GenerateFeatures
+from baseline import Baseline

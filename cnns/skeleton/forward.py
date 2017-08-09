@@ -35,51 +35,31 @@ def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
 
 
 
-# # create the internal graph structure for multi-cut
-# def GenerateMultiCutInput(model_prefix, prefix, segmentation, maximum_distance, candidates, probabilities):
-#     # get the mapping to a smaller set of vertices
-#     forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
+# create the internal graph structure for multi-cut
+def OutputProbabilities(prefix, model_prefix, threshold, maximum_distance, candidates, probabilities):
+    output_filename = '{}-{}.probabilities'.format(model_prefix, prefix)
 
-#     # create multi-cut file
-#     multicut_filename = 'multicut/{}-{}.graph'.format(model_prefix, prefix)
-    
-#     # open a file to write multi-cut information
-#     with open(multicut_filename, 'wb') as fd:
-#         # write the number of vertices and the number of edges
-#         fd.write(struct.pack('QQ', reverse_mapping.size, len(candidates)))
+    with open(output_filename, 'wb') as fd:
+        fd.write(struct.pack('i', probabilities.size))
 
-#         # for every merge candidate, determine the weight of the edge
-#         for ie in range(len(candidates)):
-#             candidate = candidates[ie]
-
-#             # get the probability of merge from neural network
-#             probability = probabilities[ie]
-
-#             # get the labels for these two candidates
-#             label_one = candidate.label_one
-#             label_two = candidate.label_two
-
-#             # get the new label
-#             reduced_label_one = forward_mapping[label_one]
-#             reduced_label_two = forward_mapping[label_two]
-
-#             # write the label for both segments and the probability of merge from neural network
-#             fd.write(struct.pack('QQQQd', label_one, label_two, reduced_label_one, reduced_label_two, probability))
+        for iv in range(ncandidates):
+            fd.write(struct.pack('QQd', candidates[iv].labels[0], candidates[iv].labels[1], probabilities[iv]))
 
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, maximum_distance, width):
+def Forward(prefix, model_prefix, threshold, maximum_distance, width):
     # read in the trained model
     model = model_from_json(open(model_prefix + '.json', 'r').read())
     model.load_weights(model_prefix + '.h5')
 
     # get the candidate locations 
-    candidates = FindCandidates(prefix, maximum_distance, inference=True)
+    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=True)
     ncandidates = len(candidates)
 
     # get the probabilities
     probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width), ncandidates, max_q_size=20)
+    assert (probabilities.size == ncandidates)
     predictions = Prob2Pred(probabilities)
 
     # create an array of labels
@@ -87,7 +67,8 @@ def Forward(prefix, model_prefix, maximum_distance, width):
     for ie, candidate in enumerate(candidates):
         labels[ie] = candidate.ground_truth
 
-
     # output the accuracy of this network
-    output_filename = '{}-{}-forward.results'.format(model_prefix, prefix)
+    output_filename = '{}-{}.results'.format(model_prefix, prefix)
     PrecisionAndRecall(labels, predictions, output_filename)
+
+    OutputProbabilities(prefix, model_prefix, threshold, maximum_distance, candidates, probabilities)

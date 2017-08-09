@@ -72,7 +72,7 @@ def ReadFeatures(prefix_one, prefix_two, threshold, maximum_distance):
 # read in the counters
 def ReadCounters(prefix_one, prefix_two, threshold, maximum_distance):
     # get the counter filename
-    counter_filename = 'features/ebro/{}-{}-{}-{}nm.counters'.format(prefix_one, prefix_two, threshold, maximum_distance)
+    counter_filename = 'features/ebro/{}-{}-{}-{}nm.counts'.format(prefix_one, prefix_two, threshold, maximum_distance)
 
     # open the file and read counters
     with open(counter_filename, 'rb') as fd:
