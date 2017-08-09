@@ -1,5 +1,5 @@
 import sys
-from ibex.geometry import ibbox
+from ibex.geometry import ib3shapes
 from ibex.utilities.constants import *
 
 class MetaData:
@@ -65,7 +65,7 @@ class MetaData:
                     maxs[2] = tmp
 
                     # save the bounding box
-                    self.bounding_box = ibbox.IBBox(mins, maxs)
+                    self.bounding_box = ib3shapes.IBBox(mins, maxs)
                 else:
                     sys.stderr.write('Unrecognized attribute in {}: {}\n'.format(prefix, comment))
                     sys.exit()
