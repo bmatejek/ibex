@@ -98,69 +98,30 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
 
 
 
+# save the features for viewing
+def SaveFeatures(prefix, threshold, maximum_distance):
+    # read in relevant information
+    segmentation = dataIO.ReadSegmentationData(prefix)
+    grid_size = segmentation.shape
+    world_res = dataIO.Resolution(prefix)
 
+    # get the radii for the bounding box
+    radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
+    width = (2 * radii[IB_Z], 2 * radii[IB_Y], 2 * radii[IB_X], 3)
 
+    # read all candidates
+    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=True)    
+    ncandidates = len(candidates)
 
+    for iv, candidate in enumerate(candidates):
+        # get an example with zero rotation
+        example = ExtractFeature(segmentation, candidate, width, radii, 0)
 
+        # compress the channels
+        compressed_output = np.zeros((width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
+        compressed_output[example[0,:,:,:,0] == 1] = 1
+        compressed_output[example[0,:,:,:,1] == 1] = 2
 
-
-
-
-
-
-# @jit(nopython=True)
-# def CollapseSegment(segmentation, label_one, label_two):
-#     # get the shape for this segment
-#     zres, yres, xres = segmentation.shape
-
-#     # create the output collapsed segment
-#     segment = np.zeros((zres, yres, xres), dtype=np.uint8)
-
-#     for iz in range(zres):
-#         for iy in range(yres):
-#             for ix in range(xres):
-#                 if (segmentation[iz,iy,ix] == label_one):
-#                     segment[iz,iy,ix] = 1
-#                 elif (segmentation[iz,iy,ix] == label_two):
-#                     segment[iz,iy,ix] = 2
-
-#     return segment
-
-
-
-# # save all the features as h5 files
-# def SaveFeatures(prefix, maximum_distance):
-#     # read in the segmentation file
-#     segmentation = dataIO.ReadSegmentationData(prefix)
-
-#     # get the grid size and the world resolution in (z, y, x)
-#     grid_size = segmentation.shape
-#     world_res = dataIO.ReadMetaData(prefix)
-
-#     # get the radii for the bounding box in grid coordinates
-#     candidates = FindCandidates(prefix, maximum_distance, forward=True)
-#     ncandidates = len(candidates)
-
-#     # get the radii for the bounding box
-#     zradius, yradius, xradius = (maximum_distance / world_res[0], maximum_distance / world_res[1], maximum_distance / world_res[2])
-
-#     # iterate over all candidates
-#     for ic, candidate in enumerate(candidates):
-#         # get the center point for this candidate
-#         zpoint, ypoint, xpoint = (candidate.Z(), candidate.Y(), candidate.X())
-
-#         # collapse the segment
-#         segment = CollapseSegment(segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius], candidate.LabelOne(), candidate.LabelTwo())
-
-#         # get the output filename
-#         filename = 'features/skeleton/{}/{:05d}-feature.h5'.format(prefix, ic)
-
-#         # output the h5 file
-#         dataIO.WriteH5File(segment, filename, 'main')
-
-#     # save the ground truth
-#     filename = 'features/skeleton/{}-ground-truth.txt'.format(prefix)
-
-#     with open(filename, 'w') as fd:
-#         for candidate in candidates:
-#             fd.write(str(candidate.GroundTruth()) + '\n')
+        # save the output file
+        filename = 'features/skeleton/{}/{}-{}nm-{:05d}.h5'.format(prefix, threshold, maximum_distance, iv)
+        dataIO.WriteH5File(compressed_output, filename, 'main')
