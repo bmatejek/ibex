@@ -56,12 +56,18 @@ def Forward(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, w
         labels[iv] = candidate.ground_truth
 
     # output the accuracy of this network
-    output_filename = '{}-{}-{}-forward.results'.format(model_prefix, prefix_one, prefix_two)
+    output_filename = '{}-{}-{}-{}-{}nm.results'.format(model_prefix, prefix_one, prefix_two, threshold, maximum_distance)
     PrecisionAndRecall(labels, predictions, output_filename)
+
+    output_filename = '{}-{}-{}-{}-{}nm.probabilities'.format(model_prefix, prefix_one, prefix_two, threshold, maximum_distance)
+    with open(output_filename, 'wb') as fd:
+        fd.write(struct.pack('i', ncandidates))
+        for probability in probabilities:
+            fd.write(struct.pack('d', probability))
 
     # output the probabilities for the network
     output_filename = 'results/ebro/{}-{}-{}-{}nm.results'.format(prefix_one, prefix_two, threshold, maximum_distance)
     with open(output_filename, 'wb') as fd:
         fd.write(struct.pack('i', ncandidates))
-        for prediction in predictions:
-            fd.write(struct.pack('d', prediction))
+        for probability in probabilities:
+            fd.write(struct.pack('d', probability))

@@ -35,19 +35,6 @@ def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
 
 
 
-# create the internal graph structure for multi-cut
-def OutputProbabilities(prefix, model_prefix, threshold, maximum_distance, candidates, probabilities):
-    output_filename = '{}-{}.probabilities'.format(model_prefix, prefix)
-    ncandidates = len(candidates)
-
-    with open(output_filename, 'wb') as fd:
-        fd.write(struct.pack('i', probabilities.size))
-
-        for iv in range(ncandidates):
-            fd.write(struct.pack('QQd', candidates[iv].labels[0], candidates[iv].labels[1], probabilities[iv]))
-
-
-
 # run the forward pass for the given prefix
 def Forward(prefix, model_prefix, threshold, maximum_distance, width):
     # read in the trained model
@@ -69,7 +56,18 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, width):
         labels[ie] = candidate.ground_truth
 
     # output the accuracy of this network
-    output_filename = '{}-{}.results'.format(model_prefix, prefix)
+    output_filename = '{}-{}-{}-{}nm.results'.format(model_prefix, prefix, threshold, maximum_distance)
     PrecisionAndRecall(labels, predictions, output_filename)
 
-    OutputProbabilities(prefix, model_prefix, threshold, maximum_distance, candidates, probabilities)
+    output_filename = '{}-{}-{}-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance)
+    with open(output_filename, 'wb') as fd:
+        fd.write(struct.pack('i', ncandidates))
+        for probability in probabilities:
+            fd.write(struct.pack('d', probability))
+
+    # output the probabilities for the network
+    output_filename = 'results/skeleton/{}-{}-{}nm.results'.format(prefix, threshold, maximum_distance)
+    with open(output_filename, 'wb') as fd:
+        fd.write(struct.pack('i', ncandidates))
+        for probability in probabilities:
+            fd.write(struct.pack('d', probability))
