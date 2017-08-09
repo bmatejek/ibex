@@ -61,6 +61,8 @@ def CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos):
     # return the updated segmentation
     return segmentation
 
+
+
 def EvaluateMulticut(prefix, multicut_segmentation, threshold):
     start_time = time.time()
 
@@ -89,6 +91,8 @@ def EvaluateMulticut(prefix, multicut_segmentation, threshold):
     os.system(command)
 
     print 'Evaluated multicut in {} seconds'.format(time.time() - start_time)
+
+
 
 def Multicut(prefix, model_prefix, threshold=0.5, algorithm=0):
     start_time = time.time()

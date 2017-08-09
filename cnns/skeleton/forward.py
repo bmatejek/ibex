@@ -38,6 +38,7 @@ def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
 # create the internal graph structure for multi-cut
 def OutputProbabilities(prefix, model_prefix, threshold, maximum_distance, candidates, probabilities):
     output_filename = '{}-{}.probabilities'.format(model_prefix, prefix)
+    ncandidates = len(candidates)
 
     with open(output_filename, 'wb') as fd:
         fd.write(struct.pack('i', probabilities.size))
