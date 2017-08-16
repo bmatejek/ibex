@@ -1,1 +1,0 @@
-unsigned long *Skeletonize(unsigned long *segmentation, int zres, int yres, int xres);

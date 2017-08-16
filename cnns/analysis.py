@@ -17,6 +17,20 @@ class NetworkResult:
     def Accuracy(self):
         return [result.accuracy for result in self.results]
 
+    def __cmp__(self, other):
+        self_width = self.architecture.input_size.strip('()').split(', ')
+        other_width = other.architecture.input_size.strip('()').split(', ')
+
+
+        self_input_size = int(self_width[0]) * int(self_width[1]) * int(self_width[2]) * int(self_width[3])
+        other_input_size = int(other_width[0]) * int(other_width[1]) * int(other_width[2]) * int(other_width[3])
+
+        if self_input_size > other_input_size: return 1
+        elif self_input_size < other_input_size: return -1
+        elif self.parameters['iterations'] > other.parameters['iterations']: return 1
+        elif self.parameters['iterations'] < other.parameters['iterations']: return -1
+        else: return 0
+
 
 
 class Result:
@@ -121,4 +135,4 @@ def CNNResults(problem):
             
         networks.append(NetworkResult(name, architecture, parameters, results))
 
-    return networks
+    return sorted(networks)
