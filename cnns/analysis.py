@@ -29,6 +29,8 @@ class NetworkResult:
         elif self_input_size < other_input_size: return -1
         elif self.parameters['iterations'] > other.parameters['iterations']: return 1
         elif self.parameters['iterations'] < other.parameters['iterations']: return -1
+        elif self.parameters['initial_learning_rate'] < other.parameters['initial_learning_rate']: return 1
+        elif self.parameters['initial_learning_rate'] > other.parameters['initial_learning_rate']: return -1
         else: return 0
 
 

@@ -1,7 +1,9 @@
 import time
 import struct
 import numpy as np
+
 from keras.models import Model, Sequential, model_from_json
+
 from ibex.utilities import dataIO
 from ibex.evaluation.classification import *
 from ibex.transforms import seg2seg
