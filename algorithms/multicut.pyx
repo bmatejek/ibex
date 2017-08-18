@@ -1,138 +1,133 @@
-from ibex.transforms import seg2seg
-from ibex.data_structures import UnionFind
-from ibex.utilities import dataIO
+import struct
+import time
+import numpy as np
+import os
+
 cimport cython
 cimport numpy as np
 import ctypes
-import numpy as np
-import struct
-import os
-import time
 
+import ibex.cnns.skeleton.util
+from ibex.transforms import seg2seg
+from ibex.utilities import dataIO
+from ibex.data_structures import unionfind
+from ibex.evaluation.classification import *
+
+
+# c++ external definition
 cdef extern from 'cpp-multicut.h':
-    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double threshold, int algorithm)
+    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double beta)
 
-def CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos):
+
+
+# collapse the edges from multicut
+def CollapseGraph(prefix, segmentation, candidates, collapsed_edges):
     start_time = time.time()
 
-    # read the segmentation data
-    segmentation = dataIO.ReadSegmentationData(prefix)
+    # read the candidates
+    ncandidates = len(candidates)
 
-    # get the mapping to a smaller set of vertices
-    _, reverse_mapping = seg2seg.ReduceLabels(segmentation)
+    # get the ground truth and the predictions
+    ground_truth = np.zeros(ncandidates, dtype=np.bool)
+    predictions = np.zeros(ncandidates, dtype=np.bool)
+    for iv in range(ncandidates):
+        ground_truth[iv] = candidates[iv].ground_truth
+        predictions[iv] = 1 - collapsed_edges[iv]
 
-    # get the number of vertices and edges
-    nvertices = len(reverse_mapping)
-    nedges = vertex_ones.size
-    assert (vertex_ones.size == vertex_twos.size)
-
-    # get the maximum value for the segmentation
-    max_value = np.uint64(np.amax(segmentation) + 1)
+    # output the results for multicut
+    PrecisionAndRecall(ground_truth, predictions)
 
     # create an empty union find data structure
-    union_find = [UnionFind.UnionFindElement(iv) for iv in range(max_value)]
+    max_value = np.uint64(np.amax(segmentation) + 1)
+    union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
 
-    # read all of the labels and merge the result
-    for ie in range(nedges):
-        # only if this edge should collapse
+    # iterate over all collapsed edges
+    for ie in range(ncandidates):
+        # collpased edges is zero where the edge should no longer exist
         if collapsed_edges[ie]: continue
 
-        # get the original labels
-        label_one = reverse_mapping[vertex_ones[ie]]
-        label_two = reverse_mapping[vertex_twos[ie]]
+        label_one, label_two = candidates[ie].labels
 
-        # merge label one and two in the union find data structure
-        UnionFind.Union(union_find[label_one], union_find[label_two])
+        unionfind.Union(union_find[label_one], union_find[label_two])
 
-    # create a mapping
+    # create a mapping for the labels
     mapping = np.zeros(max_value, dtype=np.uint64)
-
-    # update the segmentation
     for iv in range(max_value):
-        label = UnionFind.Find(union_find[iv]).label
+        mapping[iv] = unionfind.Find(union_find[iv]).label
 
-        mapping[iv] = label
-
-    # update the labels
-    segmentation = seg2seg.MapLabels(segmentation, mapping)
+    multicut_segmentation = seg2seg.MapLabels(segmentation, mapping)
 
     print 'Collapsed graph in {} seconds'.format(time.time() - start_time)
 
-    # return the updated segmentation
-    return segmentation
+    return multicut_segmentation
 
 
 
-def EvaluateMulticut(prefix, multicut_segmentation, threshold):
+def EvaluateMulticut(prefix, multicut_segmentation):
     start_time = time.time()
 
-    # TODO fix this code temporary filename
+    # save the multicut file
     multicut_filename = 'multicut/{}-multicut.h5'.format(prefix)
-
-    # temporary - write h5 file
     dataIO.WriteH5File(multicut_segmentation, multicut_filename, 'stack')
 
-    # # get the gold filename
     gold_filename = 'gold/{}_gold.h5'.format(prefix)
-    # segmentation_filename = 'rhoana/{}_rhoana_stack.h5'.format(prefix)
+    segmentation_filename = 'rhoana/{}_rhoana_stack.h5'.format(prefix)
 
-    # print 'Before multicut: '
-    # # create the command line 
-    # command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
+    command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
+    os.system(command)
 
-    # # execute the command
-    # os.system(command)
-
-    print 'After multicut - {}: '.format(threshold)
-    # create the command line 
     command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(multicut_filename, gold_filename)
-
-    # execute the command
     os.system(command)
 
     print 'Evaluated multicut in {} seconds'.format(time.time() - start_time)
 
 
 
-def Multicut(prefix, model_prefix, threshold=0.5, algorithm=0):
-    start_time = time.time()
+# function ro run multicut algorithm
+def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
+    # read the candidates
+    candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
+    ncandidates = len(candidates)
 
-    multicut_filename = 'multicut/{}-{}.graph'.format(model_prefix, prefix)
+    # read the probabilities
+    probabilities_filename = '{}-{}-{}-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance)
+    with open(probabilities_filename, 'rb') as fd:
+        nprobabilities, = struct.unpack('i', fd.read(4))
+        assert (nprobabilities == ncandidates)
+        edge_weights = np.zeros(nprobabilities, dtype=np.float64)
+        for iv in range(nprobabilities):
+            edge_weights[iv], = struct.unpack('d', fd.read(8))
 
-    # open the binary file
-    with open(multicut_filename, 'rb') as fd:
-        # read the number of vertices and edges
-        nvertices, nedges, = struct.unpack('QQ', fd.read(16))
+    # read in the segmentation for this prefix and get the forward and reverse mappigns
+    segmentation = dataIO.ReadSegmentationData(prefix)
+    forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
 
-        # create an array for all of the labels
-        vertex_ones = np.zeros(nedges, dtype=np.uint64)
-        vertex_twos = np.zeros(nedges, dtype=np.uint64)
-        edge_weights = np.zeros(nedges, dtype=np.float64)
+    # get the number of vertices and edges
+    nvertices = reverse_mapping.size
+    nedges = edge_weights.size
 
-        # read in values for all of the edges
-        for ie in range(nedges):
-            # skip over the original labels - not needed
-            fd.read(16)
+    # convert the candidate labels to vertices
+    vertex_ones = np.zeros(nedges, dtype=np.uint64)
+    vertex_twos = np.zeros(nedges, dtype=np.uint64)
 
-            # read in the vertices connected by this edge
-            vertex_ones[ie], vertex_twos[ie], edge_weights[ie], = struct.unpack('QQd', fd.read(24))
+    # populate vertex arrays
+    for iv, candidate in enumerate(candidates):
+        label_one, label_two = candidate.labels
+        vertex_ones[iv] = forward_mapping[label_one]
+        vertex_twos[iv] = forward_mapping[label_two]
 
-    # call the multicut cpp function
-    cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_ones
-    cpp_vertex_ones = np.ascontiguousarray(vertex_ones, dtype=ctypes.c_uint64)
-    cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_twos
-    cpp_vertex_twos = np.ascontiguousarray(vertex_twos, dtype=ctypes.c_uint64)
-    cdef np.ndarray[double, ndim=1, mode='c'] cpp_edge_weights 
-    cpp_edge_weights = np.ascontiguousarray(edge_weights, dtype=ctypes.c_double)
+    # convert to c++ arrays
+    cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_ones = np.ascontiguousarray(vertex_ones, dtype=ctypes.c_uint64)
+    cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_twos = np.ascontiguousarray(vertex_twos, dtype=ctypes.c_uint64)
+    cdef np.ndarray[double, ndim=1, mode='c'] cpp_edge_weights = np.ascontiguousarray(edge_weights, dtype=ctypes.c_double)
 
-    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), threshold, algorithm)
+    # run multicut algorithm
+    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), beta)
     cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
     collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
 
-    print 'Ran multicut in {} seconds'.format(time.time() - start_time)
+    # collapse the edges returned from multicut
+    multicut_segmentation = CollapseGraph(prefix, segmentation, candidates, collapsed_edges)
 
-    # collapse the edges
-    multicut_segmentation = CollapseGraph(prefix, collapsed_edges, vertex_ones, vertex_twos)
-
-    EvaluateMulticut(prefix, multicut_segmentation, threshold)
-
+    # evaluate before and after multicut
+    EvaluateMulticut(prefix, multicut_segmentation)
