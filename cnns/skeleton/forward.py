@@ -13,6 +13,7 @@ from ibex.cnns.skeleton.util import FindCandidates, ExtractFeature
 
 # generate candidate features for the predict function
 def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
+    start_time = time.time()
     # read in all relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     world_res = dataIO.Resolution(prefix)
@@ -23,6 +24,8 @@ def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
 
     # continue indefinitely
     while True:
+        if not ((index + 1) % 100): 
+            print '{}/{}: {}'.format(index + 1,  len(candidates), time.time() - start_time)
         # this prevents overflow on the queue - the repeated samples are never used
         if index >= len(candidates): index = 0
 
@@ -38,17 +41,17 @@ def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, threshold, maximum_distance, width):
+def Forward(prefix, model_prefix, threshold, maximum_distance, width, training_data_only=False):
     # read in the trained model
     model = model_from_json(open(model_prefix + '.json', 'r').read())
     model.load_weights(model_prefix + '.h5')
 
     # get the candidate locations 
-    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=True)
+    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=(not training_data_only))
     ncandidates = len(candidates)
 
     # get the probabilities
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width), ncandidates, max_q_size=20)
+    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width), ncandidates, max_queue_size=20)
     assert (probabilities.size == ncandidates)
     predictions = Prob2Pred(probabilities)
 
@@ -58,6 +61,12 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, width):
         labels[ie] = candidate.ground_truth
 
     # output the accuracy of this network
+    if training_data_only:
+        output_filename = '{}-{}-{}-{}nm-training-only.results'.format(model_prefix, prefix, threshold, maximum_distance)
+        PrecisionAndRecall(labels, predictions, output_filename)
+        return
+    
+    # write the precision and recall values
     output_filename = '{}-{}-{}-{}nm.results'.format(model_prefix, prefix, threshold, maximum_distance)
     PrecisionAndRecall(labels, predictions, output_filename)
 

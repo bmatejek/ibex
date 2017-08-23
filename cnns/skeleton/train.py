@@ -3,7 +3,8 @@ import time
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import Activation, Convolution3D, Dense, Dropout, Flatten, MaxPooling3D
+from keras.layers import Activation, BatchNormalization, Convolution3D, Dense, Dropout, Flatten, MaxPooling3D
+from keras.layers.advanced_activations import LeakyReLU
 from keras.optimizers import Adam
 from keras import backend
 
@@ -17,7 +18,13 @@ from ibex.cnns.skeleton.util import ExtractFeature, FindCandidates
 def AddConvolutionalLayer(model, filter_size, kernel_size, padding, activation, input_shape=None):
     if not input_shape == None: model.add(Convolution3D(filter_size, kernel_size, padding=padding, input_shape=input_shape))
     else: model.add(Convolution3D(filter_size, kernel_size, padding=padding))
-    model.add(Activation(activation))
+
+    # add activation layer
+    if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
+    else: model.add(Activation(activation))
+    
+    # add batch normalization
+    model.add(BatchNormalization())
 
 
 
@@ -38,7 +45,13 @@ def AddFlattenLayer(model):
 def AddDenseLayer(model, filter_size, dropout, activation):
     model.add(Dense(filter_size))
     if (dropout > 0.0): model.add(Dropout(dropout))
-    model.add(Activation(activation))
+
+    # add activation layer
+    if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
+    else: model.add(Activation(activation))
+
+    # add batch normalization
+    model.add(BatchNormalization())
 
 
 
@@ -74,24 +87,24 @@ def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
     model = Sequential()
     
     # add all layers to the model
-    AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'relu', width)
-    AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'relu')
+    #AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'relu', width)
+    #AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'LeakyReLU', width)
+    #AddPoolingLayer(model, (1, 2, 2), 0.0)
+
+    #AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'relu')
+    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'LeakyReLU', width)
     AddPoolingLayer(model, (1, 2, 2), 0.0)
 
-    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'relu')
-    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'relu')
-    AddPoolingLayer(model, (1, 2, 2), 0.0)
-
-    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
-    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
+    #AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
+    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'LeakyReLU')
     AddPoolingLayer(model, (2, 2, 2), 0.0)
 
-    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
-    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
+    #AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
+    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'LeakyReLU')
     AddPoolingLayer(model, (2, 2, 2), 0.0)
 
     AddFlattenLayer(model)
-    AddDenseLayer(model, 512, 0.0, 'relu')
+    AddDenseLayer(model, 512, 0.0, 'LeakyReLU')
     AddDenseLayer(model, 1, 0.0, 'sigmoid')
 
     # compile the model
