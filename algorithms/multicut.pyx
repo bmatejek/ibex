@@ -12,6 +12,7 @@ from ibex.transforms import seg2seg
 from ibex.utilities import dataIO
 from ibex.data_structures import unionfind
 from ibex.evaluation.classification import *
+from ibex.evaluation.segmentation import *
 
 
 # c++ external definition
@@ -63,15 +64,18 @@ def CollapseGraph(prefix, segmentation, candidates, collapsed_edges):
 
 
 
-def EvaluateMulticut(prefix, multicut_segmentation):
+def EvaluateMulticut(prefix, segmentation):
     start_time = time.time()
 
     # save the multicut file
     multicut_filename = 'multicut/{}-multicut.h5'.format(prefix)
-    dataIO.WriteH5File(multicut_segmentation, multicut_filename, 'stack')
+    dataIO.WriteH5File(segmentation, multicut_filename, 'stack')
 
     gold_filename = 'gold/{}_gold.h5'.format(prefix)
     segmentation_filename = 'rhoana/{}_rhoana_stack.h5'.format(prefix)
+
+    gold = dataIO.ReadGoldData(prefix)
+    VariationOfInformation(segmentation, gold)
 
     command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
     os.system(command)
@@ -116,6 +120,8 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
         vertex_ones[iv] = forward_mapping[label_one]
         vertex_twos[iv] = forward_mapping[label_two]
 
+    start_time = time.time()
+
     # convert to c++ arrays
     cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_ones = np.ascontiguousarray(vertex_ones, dtype=ctypes.c_uint64)
     cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_twos = np.ascontiguousarray(vertex_twos, dtype=ctypes.c_uint64)
@@ -125,6 +131,8 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
     cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), beta)
     cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
     collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
+
+    print 'Ran multicut in {} seconds'.format(time.time() - start_time)
 
     # collapse the edges returned from multicut
     multicut_segmentation = CollapseGraph(prefix, segmentation, candidates, collapsed_edges)
