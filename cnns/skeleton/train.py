@@ -23,9 +23,6 @@ def AddConvolutionalLayer(model, filter_size, kernel_size, padding, activation, 
     if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
     else: model.add(Activation(activation))
     
-    # add batch normalization
-    model.add(BatchNormalization())
-
 
 
 # add a pooling layer to the model
@@ -49,9 +46,6 @@ def AddDenseLayer(model, filter_size, dropout, activation):
     # add activation layer
     if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
     else: model.add(Activation(activation))
-
-    # add batch normalization
-    model.add(BatchNormalization())
 
 
 
@@ -87,19 +81,19 @@ def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
     model = Sequential()
     
     # add all layers to the model
-    #AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'relu', width)
-    #AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'LeakyReLU', width)
-    #AddPoolingLayer(model, (1, 2, 2), 0.0)
-
-    #AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'relu')
-    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'LeakyReLU', width)
+    AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'LeakyReLU', width)
+    AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'LeakyReLU')
     AddPoolingLayer(model, (1, 2, 2), 0.0)
 
-    #AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
+    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'LeakyReLU')
+    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'LeakyReLU')
+    AddPoolingLayer(model, (1, 2, 2), 0.0)
+
+    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'LeakyReLU')
     AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'LeakyReLU')
     AddPoolingLayer(model, (2, 2, 2), 0.0)
 
-    #AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
+    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'LeakyReLU')
     AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'LeakyReLU')
     AddPoolingLayer(model, (2, 2, 2), 0.0)
 
