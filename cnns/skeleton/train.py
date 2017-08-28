@@ -29,7 +29,7 @@ def AddConvolutionalLayer(model, filter_size, kernel_size, padding, activation, 
 
 
 # add a pooling layer to the model
-def AddPoolingLayer(model, pool_size, dropout):
+def AddPoolingLayer(model, pool_size, dropout, normalization):
     model.add(MaxPooling3D(pool_size=pool_size))
 
     # add normalization before dropout
@@ -92,12 +92,12 @@ def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
     double_conv = parameters['double_conv']
     normalization = parameters['normalization']
     optimizer = parameters['optimizer']
-    
+    weights = parameters['weights']
 
 
     # create the model
     model = Sequential()
-    
+
     # add all layers to the model
     AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', activation, normalization, width)
     if double_conv: AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', activation, normalization)
@@ -109,10 +109,14 @@ def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
 
     AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
     if double_conv: AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
-    AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
+    AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
 
     AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
     if double_conv: AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
+    AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
+
+    AddConvolutionalLayer(model, 256, (3, 3, 3), 'valid', activation, normalization)
+    if double_conv: AddConvolutionalLayer(model,256, (3, 3, 3), 'valid', activation, normalization)
     AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
 
     AddFlattenLayer(model)
@@ -203,7 +207,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
             if index >= ncandidates * rotations: index = 0
 
         # fit the model
-        model.fit(examples, labels, epochs=1, verbose=0)
+        model.fit(examples, labels, epochs=1, verbose=0, class_weight=weights)
 
 
 

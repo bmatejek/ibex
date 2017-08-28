@@ -51,7 +51,7 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, width, training_d
     ncandidates = len(candidates)
 
     # get the probabilities
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width), ncandidates, max_queue_size=20)
+    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width), ncandidates, max_q_size=20)
     assert (probabilities.size == ncandidates)
     predictions = Prob2Pred(probabilities)
 
