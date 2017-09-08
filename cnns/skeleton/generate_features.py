@@ -108,13 +108,27 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, in
         random.shuffle(negative_candidates)
 
         # get the minimum length of the two candidates - train in pairs
-        min_length = min(len(positive_candidates), len(negative_candidates))
-        
+        npoints = max(len(positive_candidates), len(negative_candidates))
+        positive_index = 0
+        negative_index = 0
+
         # create an array of positive + negative candidate pairs
         candidates = []
-        for index in range(min_length):
-            candidates.append(positive_candidates[index])
-            candidates.append(negative_candidates[index])
+        for _ in range(npoints):
+            candidates.append(positive_candidates[positive_index])
+            candidates.append(negative_candidates[negative_index])
+
+            # increment the indices
+            positive_index += 1
+            negative_index += 1
+
+            # handle dimension mismatch by reseting index and reshuffling array
+            if positive_index >= len(positive_candidates): 
+                positive_index = 0
+                random.shuffle(positive_candidates)
+            if negative_index >= len(negative_candidates): 
+                negative_index = 0
+                random.shuffle(negative_candidates)
             
     # write all candidates to the file
     with open(output_filename, 'wb') as fd:

@@ -3,7 +3,8 @@ import time
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import Activation, Convolution3D, Dense, Dropout, Flatten, MaxPooling3D
+from keras.layers import Activation, BatchNormalization, Convolution3D, Dense, Dropout, Flatten, MaxPooling3D
+from keras.layers.advanced_activations import LeakyReLU
 from keras.optimizers import Adam
 from keras import backend
 
@@ -14,16 +15,27 @@ from ibex.cnns.ebro.util import ExtractFeature, FindCandidates
 
 
 # add a convolutional layer to the model
-def AddConvolutionalLayer(model, filter_size, kernel_size, padding, activation, input_shape=None):
+def AddConvolutionalLayer(model, filter_size, kernel_size, padding, activation, normalization, input_shape=None):
     if not input_shape == None: model.add(Convolution3D(filter_size, kernel_size, padding=padding, input_shape=input_shape))
     else: model.add(Convolution3D(filter_size, kernel_size, padding=padding))
-    model.add(Activation(activation))
+
+    # add activation layer
+    if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
+    else: model.add(Activation(activation))
+    
+    # add normalization after activation
+    if normalization: model.add(BatchNormalization())
 
 
 
 # add a pooling layer to the model
-def AddPoolingLayer(model, pool_size, dropout):
+def AddPoolingLayer(model, pool_size, dropout, normalization):
     model.add(MaxPooling3D(pool_size=pool_size))
+
+    # add normalization before dropout
+    if normalization: model.add(BatchNormalization())
+
+    # add dropout layer
     if dropout > 0.0: model.add(Dropout(dropout))
 
 
@@ -35,10 +47,16 @@ def AddFlattenLayer(model):
 
 
 # add a dense layer to the model
-def AddDenseLayer(model, filter_size, dropout, activation):
+def AddDenseLayer(model, filter_size, dropout, activation, normalization):
     model.add(Dense(filter_size))
     if (dropout > 0.0): model.add(Dropout(dropout))
-    model.add(Activation(activation))
+
+    # add activation layer
+    if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
+    else: model.add(Activation(activation))
+
+    # add normalization after activation
+    if normalization: model.add(BatchNormalization())
 
 
 
@@ -68,35 +86,47 @@ def Train(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, wid
     initial_learning_rate = parameters['initial_learning_rate']
     decay_rate = parameters['decay_rate']
 
+    # architecture parameters
+    activation = parameters['activation']
+    double_conv = parameters['double_conv']
+    normalization = parameters['normalization']
+    optimizer = parameters['optimizer']
+    weights = parameters['weight']
 
 
     # create the model
     model = Sequential()
 
     # add all layers to the model
-    AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'relu', width)
-    AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', 'relu')
-    AddPoolingLayer(model, (1, 2, 2), 0.0)
+    AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', activation, normalization, width)
+    if double_conv: AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', activation, normalization)
+    AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
 
-    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'relu')
-    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', 'relu')
-    AddPoolingLayer(model, (1, 2, 2), 0.0)
+    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', activation, normalization)
+    if double_conv: AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', activation, normalization)
+    AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
 
-    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
-    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', 'relu')
-    AddPoolingLayer(model, (1, 2, 2), 0.0)
+    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
+    if double_conv: AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
+    AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
 
-    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
-    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', 'relu')
-    AddPoolingLayer(model, (2, 2, 2), 0.0)
+    # AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
+    # if double_conv: AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
+    # AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
+
+    # AddConvolutionalLayer(model, 256, (3, 3, 3), 'valid', activation, normalization)
+    # if double_conv: AddConvolutionalLayer(model,256, (3, 3, 3), 'valid', activation, normalization)
+    # AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
 
     AddFlattenLayer(model)
-    AddDenseLayer(model, 512, 0.0, 'relu')
-    AddDenseLayer(model, 1, 0.0, 'sigmoid')
+    AddDenseLayer(model, 512, 0.0, activation, normalization)
+    AddDenseLayer(model, 1, 0.0, 'sigmoid', False)
 
     # compile the model
-    adm = Adam(lr=initial_learning_rate, beta_1=0.99, beta_2=0.999, epsilon=1e-08)
-    model.compile(loss='mean_squared_error', optimizer=adm)
+    if optimizer == 'adam': opt = Adam(lr=initial_learning_rate, decay=decay_rate, beta_1=0.99, beta_2=0.999, epsilon=1e-08)
+    elif optimizer == 'sgd': opt = SGD(lr=initial_learning_rate, decay=decay_rate, momentum=0.9, nesterov=True)
+    model.compile(loss='mean_squared_error', optimizer=opt)
+
 
 
 
@@ -183,7 +213,7 @@ def Train(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, wid
             if index >= ncandidates * rotations: index = 0
 
         # fit the model
-        model.fit(examples, labels, epochs=1, verbose=0)
+        model.fit(examples, labels, epochs=1, verbose=0, class_weight=weights)
 
 
 
