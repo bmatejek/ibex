@@ -41,13 +41,13 @@ def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, threshold, maximum_distance, width, training_data_only=False):
+def Forward(prefix, model_prefix, threshold, maximum_distance, width):
     # read in the trained model
     model = model_from_json(open(model_prefix + '.json', 'r').read())
     model.load_weights(model_prefix + '.h5')
 
     # get the candidate locations 
-    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=(not training_data_only))
+    candidates = FindCandidates(prefix, threshold, maximum_distance)
     ncandidates = len(candidates)
 
     # get the probabilities
@@ -60,12 +60,6 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, width, training_d
     for ie, candidate in enumerate(candidates):
         labels[ie] = candidate.ground_truth
 
-    # output the accuracy of this network
-    if training_data_only:
-        output_filename = '{}-{}-{}-{}nm-training-only.results'.format(model_prefix, prefix, threshold, maximum_distance)
-        PrecisionAndRecall(labels, predictions, output_filename)
-        return
-    
     # write the precision and recall values
     output_filename = '{}-{}-{}-{}nm.results'.format(model_prefix, prefix, threshold, maximum_distance)
     PrecisionAndRecall(labels, predictions, output_filename)
