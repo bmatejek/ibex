@@ -91,7 +91,7 @@ def Train(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, wid
     double_conv = parameters['double_conv']
     normalization = parameters['normalization']
     optimizer = parameters['optimizer']
-    weights = parameters['weight']
+    weights = parameters['weights']
 
 
     # create the model
