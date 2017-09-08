@@ -1,4 +1,5 @@
 import struct
+import random
 import numpy as np
 from numba import jit
 
@@ -119,9 +120,31 @@ def FindCandidates(prefix_one, prefix_two, threshold, maximum_distance, inferenc
 
     if not inference:
         candidates = []
-        for iv in range(min(len(positive_candidates), len(negative_candidates))):
-            candidates.append(positive_candidates[iv])
-            candidates.append(negative_candidates[iv])
+
+        random.shuffle(positive_candidates)
+        random.shuffle(negative_candidates)
+
+        # train in pairs, duplicate when needed
+        npoints = max(len(positive_candidates), len(negative_candidates))
+        
+        positive_index = 0
+        negative_index = 0
+
+        for _ in range(npoints):
+            candidates.append(positive_candidates[positive_index])
+            candidates.append(negative_candidates[negative_index])
+
+            # increment the indices
+            positive_index += 1
+            negative_index += 1
+
+            # handle dimension mismatch by reseting index and reshuffling array
+            if positive_index >= len(positive_candidates):
+                positive_index = 0
+                random.shuffle(positive_candidates)
+            if negative_index >= len(negative_candidates):
+                negative_index = 0
+                random.shuffle(negative_candidates)
 
     return candidates
 

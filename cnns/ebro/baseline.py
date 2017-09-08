@@ -5,6 +5,10 @@ from ibex.cnns.ebro.util import ReadGold, ReadCounters
 
 # generate the baseline results by using Lee's old method
 def Baseline(prefix_one, prefix_two, threshold, maximum_distance):
+    print '---------------------------------------------------'
+    print '                 {} {}                 '.format(prefix_one, prefix_two)
+    print '---------------------------------------------------'
+
     # get the ground truth
     ground_truth = ReadGold(prefix_one, prefix_two, threshold, maximum_distance)
     ncandidates = len(ground_truth)

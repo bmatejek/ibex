@@ -112,7 +112,7 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, in
         positive_index = 0
         negative_index = 0
 
-        # create an array of positive + negative candidate pairs
+        # train in pairs, duplicate when needed
         candidates = []
         for _ in range(npoints):
             candidates.append(positive_candidates[positive_index])
