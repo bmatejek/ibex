@@ -10,14 +10,21 @@
         ], 
         "extra_compile_args": [
             "-O4", 
-            "-std=c++0x"
+            "-std=c++11"
         ], 
         "include_dirs": [
             "/home/bmatejek/software/miniconda2/envs/ibex_env/lib/python2.7/site-packages/numpy/core/include", 
             "/home/bmatejek/software/graph/include", 
             "/opt/gurobi702/linux64/include"
         ], 
-        "language": "c++"
+        "language": "c++", 
+        "libraries": [
+            "gurobi70", 
+            "gurobi_c++"
+        ], 
+        "library_dirs": [
+            "/opt/gurobi702/linux64/lib"
+        ]
     }, 
     "module_name": "multicut"
 }

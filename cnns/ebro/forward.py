@@ -1,4 +1,5 @@
 import struct
+import time
 import numpy as np
 
 from keras.models import model_from_json
@@ -24,7 +25,11 @@ def EbroCandidateGenerator(prefix_one, prefix_two, maximum_distance, candidates,
     # get the radii for the relevant region
     radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
     index = 0
+    start_time = time.time()
     while True:
+        if not ((index + 1) % 100): 
+            print '{}/{}: {}'.format(index + 1,  len(candidates), time.time() - start_time)
+
         # prevent overflow
         if index >= len(candidates): index = 0
 
@@ -47,7 +52,7 @@ def Forward(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, w
     ncandidates = len(candidates)
     
     # get the probabilities
-    probabilities = model.predict_generator(EbroCandidateGenerator(prefix_one, prefix_two, maximum_distance, candidates, width), ncandidates, max_q_size=20)
+    probabilities = model.predict_generator(EbroCandidateGenerator(prefix_one, prefix_two, maximum_distance, candidates, width), ncandidates, max_queue_size=20)
     predictions = Prob2Pred(probabilities)
 
     # create an array of labels
