@@ -122,6 +122,7 @@ def CNNResults(problem):
 
     # iterate over all networks
     for name in network_names:
+        if name == 'small-train': continue
         directory = '{}/{}'.format(parent_directory, name)
 
         # there needs to be a log file for this to work

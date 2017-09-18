@@ -47,7 +47,7 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, width):
     model.load_weights(model_prefix + '.h5')
 
     # get the candidate locations 
-    candidates = FindCandidates(prefix, threshold, maximum_distance)
+    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=True)
     ncandidates = len(candidates)
 
     # get the probabilities
