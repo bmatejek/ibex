@@ -1,4 +1,5 @@
 # general functions for transforming h5 files
+from ibex.utilities.constants import *
 from numba import jit
 import numpy as np
 
@@ -10,8 +11,8 @@ def DownsampleData(data, ratio=(1, 2, 2)):
     (zres, yres, xres) = data.shape
 
     # create an empty array for downsampling
-    (down_zres, down_yres, down_xres) = (zres / ratio[0], yres / ratio[1], xres / ratio[2])
-    downsampled_data = np.zeros((zres / ratio[0], yres / ratio[1], xres / ratio[2]), dtype=data.dtype)
+    (down_zres, down_yres, down_xres) = (zres / ratio[IB_Z], yres / ratio[IB_Y], xres / ratio[IB_X])
+    downsampled_data = np.zeros((zres / ratio[IB_Z], yres / ratio[IB_Y], xres / ratio[IB_X]), dtype=data.dtype)
     
     # fill in the entries of the array
     for iz in range(down_zres):
@@ -25,8 +26,8 @@ def DownsampleData(data, ratio=(1, 2, 2)):
 
 # split the data to create training and validation data
 @jit(nopython=True)
-def CreateTrainValidation(data, threshold=0.5, axis=0):
-    assert (0 <= axis and axis < 3)
+def SplitData(data, axis, threshold=0.5):
+    assert (0 <= axis and axis <= 2)
 
     # get the separation index
     separation = int(threshold * data.shape[axis])
