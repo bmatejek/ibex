@@ -47,9 +47,9 @@ def ReadSegmentationData(prefix):
 
 
 def ReadGoldData(prefix):
-    filename = 'gold/{}_gold.h5'.format(prefix)
+    filename, dataset = meta_data.MetaData(prefix).GoldFilename()
 
-    return ReadH5File(filename, 'stack')
+    return ReadH5File(filename, dataset)
 
 
 

@@ -12,14 +12,14 @@ from ibex.cnns.skeleton.util import FindCandidates, ExtractFeature
 
 
 # generate candidate features for the predict function
-def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
+def SkeletonCandidateGenerator(prefix, window_radius, candidates, width):
     start_time = time.time()
     # read in all relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     world_res = dataIO.Resolution(prefix)
 
     # get the radii for the bounding box in grid coordinates
-    radii = (maximum_distance / world_res[0], maximum_distance / world_res[1], maximum_distance / world_res[2])
+    radii = (window_radius / world_res[0], window_radius / world_res[1], window_radius / world_res[2])
     index = 0
 
     # continue indefinitely
@@ -41,7 +41,7 @@ def SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width):
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, threshold, maximum_distance, width):
+def Forward(prefix, model_prefix, threshold, maximum_distance, window_radius, width):
     # read in the trained model
     model = model_from_json(open(model_prefix + '.json', 'r').read())
     model.load_weights(model_prefix + '.h5')
@@ -51,7 +51,7 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, width):
     ncandidates = len(candidates)
 
     # get the probabilities
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, maximum_distance, candidates, width), ncandidates, max_q_size=20)
+    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, window_radius, candidates, width), ncandidates, max_q_size=20)
     assert (probabilities.size == ncandidates)
     predictions = Prob2Pred(probabilities)
 

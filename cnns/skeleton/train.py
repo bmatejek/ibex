@@ -78,7 +78,7 @@ def WriteLogfiles(model, model_prefix, parameters):
 
 
 # train a neural network for this prefix
-def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
+def Train(prefix, model_prefix, threshold, maximum_distance, window_radius, width, parameters):
     # identify convenient variables
     nchannels = width[3]
     starting_epoch = parameters['starting_epoch']
@@ -109,7 +109,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
 
     AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
     if double_conv: AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
-    AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
+    AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
 
     AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
     if double_conv: AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
@@ -147,7 +147,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
     world_res = dataIO.Resolution(prefix)
 
     # get the radii for the relevant region
-    radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
+    radii = (window_radius / world_res[IB_Z], window_radius / world_res[IB_Y], window_radius / world_res[IB_X])
 
     # get all candidates
     candidates = FindCandidates(prefix, threshold, maximum_distance, inference=False)
@@ -207,7 +207,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, width, parameters):
             if index >= ncandidates * rotations: index = 0
 
         # fit the model
-        model.fit(examples, labels, epochs=1, verbose=0, class_weight=weights)
+        model.fit(examples, labels, batch_size=batch_size, epochs=1, verbose=0, class_weight=weights)
 
 
 

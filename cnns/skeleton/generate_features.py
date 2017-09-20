@@ -190,6 +190,11 @@ def GenerateFeatures(prefix, threshold, maximum_distance):
     positive_candidates, negative_candidates = GenerateCandidates(neighbors, endpoints, seg2gold_mapping)
 
 
+    # print statistics
+    print 'Results for {}, threshold {}, maximum distance {}:'.format(prefix, threshold, maximum_distance)
+    print '  Positive examples: {}'.format(len(positive_candidates))
+    print '  Negative examples: {}'.format(len(negative_candidates))
+
 
     # save the files
     train_filename = 'features/skeleton/{}-{}-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance)

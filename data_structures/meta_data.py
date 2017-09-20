@@ -45,6 +45,9 @@ class MetaData:
                 elif comment == '# synapse filename':
                     self.synapse_filename = value
                 elif comment == '# world bounding box':
+                    if value == 'None': 
+                        self.bounding_box = ib3shapes.IBBox((0, 0, 0), (-1, -1, -1))
+                        continue
                     # separate into minimums and maximums
                     minmax = value.split('-')
                     mins = (minmax[0].strip('()')).split(',')
@@ -76,6 +79,12 @@ class MetaData:
 
     def Resolution(self):
         return self.resolution
+
+    def GoldFilename(self):
+        if self.gold_filename == None:
+            return 'gold/{}_gold.h5'.format(self.prefix), 'main'
+        else:
+            return self.gold_filename.split()[0], self.gold_filename.split()[1]
 
     def ImageFilename(self):
         if self.image_filename == None:
