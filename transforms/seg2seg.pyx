@@ -27,7 +27,7 @@ def MapLabels(segmentation, mapping):
 
 
 # remove the components less than min size
-def RemoveSmallConnectedComponents(segmentation, min_size=64):
+def RemoveSmallConnectedComponents(segmentation, threshold=64):
     nentries = segmentation.size
     zres, yres, xres = segmentation.shape
 
@@ -35,7 +35,7 @@ def RemoveSmallConnectedComponents(segmentation, min_size=64):
     cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_uint64)
     
     # call the c++ function
-    cdef unsigned long *updated_segmentation = CppRemoveSmallConnectedComponents(&(cpp_segmentation[0,0,0]), min_size, nentries)
+    cdef unsigned long *updated_segmentation = CppRemoveSmallConnectedComponents(&(cpp_segmentation[0,0,0]), threshold, nentries)
 
     # turn into python numpy array
     cdef unsigned long[:] tmp_segmentation = <unsigned long[:segmentation.size]> updated_segmentation
