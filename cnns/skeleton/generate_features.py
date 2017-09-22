@@ -64,7 +64,7 @@ def PruneNeighbors(neighbors, endpoints, radii, grid_size):
 
 
 # create the skeleton merge candidate
-def GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mapping):
+def GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mapping, radii):
     positive_candidates = []
     negative_candidates = []
     undetermined_candidates = []
@@ -88,10 +88,9 @@ def GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mappin
         
         # get the small window around which to consider
         # TODO hardcoded change this
-        radius = (20, 100, 100)
-        sample_segment = segmentation[midpoint[IB_Z] - radius[IB_Z]:midpoint[IB_Z] + radius[IB_Z], midpoint[IB_Y] - radius[IB_Y]: midpoint[IB_Y] + radius[IB_Y], midpoint[IB_X] - radius[IB_X]:midpoint[IB_X] + radius[IB_X]]
-        sample_gold = gold[midpoint[IB_Z] - radius[IB_Z]:midpoint[IB_Z] + radius[IB_Z], midpoint[IB_Y] - radius[IB_Y]: midpoint[IB_Y] + radius[IB_Y], midpoint[IB_X] - radius[IB_X]:midpoint[IB_X] + radius[IB_X]]
-        
+        sample_segment = segmentation[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
+        sample_gold = gold[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
+
         seg2gold_sample = seg2gold.Mapping(sample_segment, sample_gold)
         ground_truth = (seg2gold_sample[label_one] == seg2gold_sample[label_two])
         
@@ -181,7 +180,8 @@ def GenerateFeatures(prefix, threshold, maximum_distance):
     world_res = dataIO.Resolution(prefix)
 
     # get the radius in grid coordinates
-    radii = (maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X])
+    ## TODO do not hardcode this!!
+    radii = (20, 100, 100)
 
 
 
@@ -203,7 +203,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance):
     seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
 
     # generate all the candidates with the SkeletonFeature class
-    positive_candidates, negative_candidates, undetermined_candidates = GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mapping)
+    positive_candidates, negative_candidates, undetermined_candidates = GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mapping, radii)
 
 
     # print statistics
