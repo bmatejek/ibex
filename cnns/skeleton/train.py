@@ -93,27 +93,31 @@ def Train(prefix, model_prefix, threshold, maximum_distance, window_radius, widt
     normalization = parameters['normalization']
     optimizer = parameters['optimizer']
     weights = parameters['weights']
+    filter_size = parameters['filter_size']
+    depth = parameters['depth']
 
 
     # create the model
     model = Sequential()
 
     # add all layers to the model
-    AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', activation, normalization, width)
-    if double_conv: AddConvolutionalLayer(model, 16, (3, 3, 3), 'valid', activation, normalization)
+    AddConvolutionalLayer(model, filter_size, (3, 3, 3), 'valid', activation, normalization, width)
+    if double_conv: AddConvolutionalLayer(model, filter_size, (3, 3, 3), 'valid', activation, normalization)
     AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
 
-    AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', activation, normalization)
-    if double_conv: AddConvolutionalLayer(model, 32, (3, 3, 3), 'valid', activation, normalization)
+    AddConvolutionalLayer(model, 2 * filter_size, (3, 3, 3), 'valid', activation, normalization)
+    if double_conv: AddConvolutionalLayer(model, 2 * filter_size, (3, 3, 3), 'valid', activation, normalization)
     AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
 
-    AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
-    if double_conv: AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
-    AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
+    if depth > 2:
+        AddConvolutionalLayer(model, 4 * filter_size, (3, 3, 3), 'valid', activation, normalization)
+        if double_conv: AddConvolutionalLayer(model, filter_size, (3, 3, 3), 'valid', activation, normalization)
+        AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
 
-    AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
-    if double_conv: AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
-    AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
+    if depth > 3:
+        AddConvolutionalLayer(model, 8 * filter_size, (3, 3, 3), 'valid', activation, normalization)
+        if double_conv: AddConvolutionalLayer(model, 8 * filter_size, (3, 3, 3), 'valid', activation, normalization)
+        AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
 
     AddFlattenLayer(model)
     AddDenseLayer(model, 512, 0.0, activation, normalization)
