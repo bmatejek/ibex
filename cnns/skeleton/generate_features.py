@@ -64,12 +64,13 @@ def PruneNeighbors(neighbors, endpoints, radii, grid_size):
 
 
 # create the skeleton merge candidate
-def GenerateCandidates(neighbors, endpoints, seg2gold):
+def GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mapping):
     positive_candidates = []
     negative_candidates = []
+    undetermined_candidates = []
 
     # iterate through all of the neighbors
-    for (neighbor_one, neighbor_two) in neighbors:
+    for ie, (neighbor_one, neighbor_two) in enumerate(neighbors):
         # get the label for these neighbors
         label_one = endpoints[neighbor_one].Label()
         label_two = endpoints[neighbor_two].Label()
@@ -82,23 +83,38 @@ def GenerateCandidates(neighbors, endpoints, seg2gold):
         midpoint = (point_one + point_two) / 2
 
         # should these neighbors merge?
-        ground_truth = (seg2gold[label_one] == seg2gold[label_two])
-
+        #ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+        #if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: ground_truth = False
+        
+        # get the small window around which to consider
+        # TODO hardcoded change this
+        radius = (20, 100, 100)
+        sample_segment = segmentation[midpoint[IB_Z] - radius[IB_Z]:midpoint[IB_Z] + radius[IB_Z], midpoint[IB_Y] - radius[IB_Y]: midpoint[IB_Y] + radius[IB_Y], midpoint[IB_X] - radius[IB_X]:midpoint[IB_X] + radius[IB_X]]
+        sample_gold = gold[midpoint[IB_Z] - radius[IB_Z]:midpoint[IB_Z] + radius[IB_Z], midpoint[IB_Y] - radius[IB_Y]: midpoint[IB_Y] + radius[IB_Y], midpoint[IB_X] - radius[IB_X]:midpoint[IB_X] + radius[IB_X]]
+        
+        seg2gold_sample = seg2gold.Mapping(sample_segment, sample_gold)
+        ground_truth = (seg2gold_sample[label_one] == seg2gold_sample[label_two])
+        
         # if either label iz zero there is no ground truth
-        if not seg2gold[label_one] or not seg2gold[label_two]: continue
+        if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: 
+            undetermined_candidates.append(SkeletonCandidate((label_one, label_two), midpoint, ground_truth))
+            continue
 
         # create the candidate and add to the list
         candidate = SkeletonCandidate((label_one, label_two), midpoint, ground_truth)
         if ground_truth: positive_candidates.append(candidate)
         else: negative_candidates.append(candidate)
 
-    return positive_candidates, negative_candidates
+    return positive_candidates, negative_candidates, undetermined_candidates
 
 
 
 # save the candidate files for the CNN
-def SaveCandidates(output_filename, positive_candidates, negative_candidates, inference=False):
-    if inference:
+def SaveCandidates(output_filename, positive_candidates, negative_candidates, inference=False, undetermined_candidates=None):
+    if not undetermined_candidates == None:
+        candidates = undetermined_candidates
+        random.shuffle(candidates)
+    elif inference:
         # concatenate the two lists
         candidates = positive_candidates + negative_candidates
         random.shuffle(candidates)
@@ -158,7 +174,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance):
     assert (segmentation.shape == gold.shape)
 
     # remove small connected components
-    segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, min_size=threshold)
+    segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold)
 
     # get the grid size and the world resolution
     grid_size = segmentation.shape
@@ -187,18 +203,20 @@ def GenerateFeatures(prefix, threshold, maximum_distance):
     seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
 
     # generate all the candidates with the SkeletonFeature class
-    positive_candidates, negative_candidates = GenerateCandidates(neighbors, endpoints, seg2gold_mapping)
+    positive_candidates, negative_candidates, undetermined_candidates = GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mapping)
 
 
     # print statistics
     print 'Results for {}, threshold {}, maximum distance {}:'.format(prefix, threshold, maximum_distance)
     print '  Positive examples: {}'.format(len(positive_candidates))
     print '  Negative examples: {}'.format(len(negative_candidates))
-
+    print '  Ratio: {}'.format(len(negative_candidates) / float(len(positive_candidates)))
 
     # save the files
     train_filename = 'features/skeleton/{}-{}-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance)
     forward_filename = 'features/skeleton/{}-{}-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance)
+    undetermined_filename = 'features/skeleton/{}-{}-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance)
 
     SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False)
     SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
+    SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
