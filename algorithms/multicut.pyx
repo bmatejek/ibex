@@ -45,7 +45,7 @@ def CollapseGraph(prefix, segmentation, candidates, collapsed_edges):
     # iterate over all collapsed edges
     for ie in range(ncandidates):
         # collpased edges is zero where the edge should no longer exist
-        if not candidates[ie].ground_truth: continue
+        if collapsed_edges[ie]: continue
 
         label_one, label_two = candidates[ie].labels
 
