@@ -83,16 +83,16 @@ def GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mappin
         midpoint = (point_one + point_two) / 2
 
         # should these neighbors merge?
-        #ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+        ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
         #if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: ground_truth = False
         
         # get the small window around which to consider
         # TODO hardcoded change this
-        sample_segment = segmentation[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
-        sample_gold = gold[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
+        # sample_segment = segmentation[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
+        # sample_gold = gold[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
 
-        seg2gold_sample = seg2gold.Mapping(sample_segment, sample_gold)
-        ground_truth = (seg2gold_sample[label_one] == seg2gold_sample[label_two])
+        # seg2gold_sample = seg2gold.Mapping(sample_segment, sample_gold)
+        # ground_truth = (seg2gold_sample[label_one] == seg2gold_sample[label_two])
         
         # if either label iz zero there is no ground truth
         if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: 

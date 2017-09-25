@@ -207,7 +207,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, window_radius, widt
             if index >= ncandidates * rotations: index = 0
 
         # fit the model
-        model.fit(examples, labels, batch_size=batch_size, epochs=1, verbose=1, class_weight=weights)
+        model.fit(examples, labels, batch_size=batch_size, epochs=1, verbose=0, class_weight=weights)
 
 
 
