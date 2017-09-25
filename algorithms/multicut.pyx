@@ -45,7 +45,7 @@ def CollapseGraph(prefix, segmentation, candidates, collapsed_edges):
     # iterate over all collapsed edges
     for ie in range(ncandidates):
         # collpased edges is zero where the edge should no longer exist
-        if collapsed_edges[ie]: continue
+        if not candidates[ie].ground_truth: continue
 
         label_one, label_two = candidates[ie].labels
 
@@ -71,14 +71,11 @@ def EvaluateMulticut(prefix, segmentation):
     multicut_filename = 'multicut/{}-multicut.h5'.format(prefix)
     dataIO.WriteH5File(segmentation, multicut_filename, 'stack')
 
-    gold_filename = 'gold/{}_gold.h5'.format(prefix)
-    segmentation_filename = 'rhoana/{}_rhoana_stack.h5'.format(prefix)
+    gold_filename = dataIO.ReadMetaData(prefix).GoldFilename()[0]
+    segmentation_filename = dataIO.ReadMetaData(prefix).SegmentationFilename()[0]
 
-    gold = dataIO.ReadGoldData(prefix)
-    VariationOfInformation(segmentation, gold)
-
-    command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
-    os.system(command)
+    #command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
+    #os.system(command)
 
     command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(multicut_filename, gold_filename)
     os.system(command)
