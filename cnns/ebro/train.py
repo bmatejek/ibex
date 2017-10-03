@@ -108,14 +108,10 @@ def Train(prefix_one, prefix_two, model_prefix, threshold, maximum_distance, wid
 
     AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
     if double_conv: AddConvolutionalLayer(model, 64, (3, 3, 3), 'valid', activation, normalization)
-    AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
+    AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
 
     AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
     if double_conv: AddConvolutionalLayer(model, 128, (3, 3, 3), 'valid', activation, normalization)
-    AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
-
-    AddConvolutionalLayer(model, 256, (3, 3, 3), 'valid', activation, normalization)
-    if double_conv: AddConvolutionalLayer(model,256, (3, 3, 3), 'valid', activation, normalization)
     AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
 
     AddFlattenLayer(model)

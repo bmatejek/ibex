@@ -8,6 +8,9 @@ from ibex.utilities.constants import *
 from ibex.utilities import dataIO
 from ibex.transforms import seg2seg, seg2gold
 from ibex.cnns.skeleton.util import SkeletonCandidate
+from ibex.data_structures import unionfind
+from PixelPred2Seg import comparestacks
+#from ibex.algorithms import multicut
 
 
 # create a kdtree from skeleton endpoints
@@ -64,7 +67,8 @@ def PruneNeighbors(neighbors, endpoints, radii, grid_size):
 
 
 # create the skeleton merge candidate
-def GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mapping, radii):
+def GenerateCandidates(neighbors, endpoints, segmentation, gold, radii):
+    # keep track of all the candidates
     positive_candidates = []
     negative_candidates = []
     undetermined_candidates = []
@@ -82,25 +86,20 @@ def GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mappin
         # get the midpoint between the endpoints
         midpoint = (point_one + point_two) / 2
 
-        # should these neighbors merge?
-        ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
-        #if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: ground_truth = False
-        
         # get the small window around which to consider
-        # TODO hardcoded change this
-        # sample_segment = segmentation[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
-        # sample_gold = gold[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
+        sample_segment = segmentation[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
+        sample_gold = gold[midpoint[IB_Z] - radii[IB_Z]:midpoint[IB_Z] + radii[IB_Z], midpoint[IB_Y] - radii[IB_Y]: midpoint[IB_Y] + radii[IB_Y], midpoint[IB_X] - radii[IB_X]:midpoint[IB_X] + radii[IB_X]]
 
-        # seg2gold_sample = seg2gold.Mapping(sample_segment, sample_gold)
-        # ground_truth = (seg2gold_sample[label_one] == seg2gold_sample[label_two])
-        
+        seg2gold_mapping = seg2gold.Mapping(sample_segment, sample_gold)
+        ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+
         # if either label iz zero there is no ground truth
+        candidate = SkeletonCandidate((label_one, label_two), midpoint, ground_truth)
         if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: 
-            undetermined_candidates.append(SkeletonCandidate((label_one, label_two), midpoint, ground_truth))
+            undetermined_candidates.append(candidate)
             continue
 
         # create the candidate and add to the list
-        candidate = SkeletonCandidate((label_one, label_two), midpoint, ground_truth)
         if ground_truth: positive_candidates.append(candidate)
         else: negative_candidates.append(candidate)
 
@@ -197,13 +196,9 @@ def GenerateFeatures(prefix, threshold, maximum_distance):
     # prune the neighbors
     neighbors = PruneNeighbors(neighbors, endpoints, radii, grid_size)
 
-
-
-    # create a mapping from segmentation to gold
-    seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
-
     # generate all the candidates with the SkeletonFeature class
-    positive_candidates, negative_candidates, undetermined_candidates = GenerateCandidates(neighbors, endpoints, segmentation, gold, seg2gold_mapping, radii)
+    positive_candidates, negative_candidates, undetermined_candidates = GenerateCandidates(neighbors, endpoints, segmentation, gold, radii)
+
 
 
     # print statistics
@@ -220,3 +215,35 @@ def GenerateFeatures(prefix, threshold, maximum_distance):
     SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False)
     SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
     SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
+
+
+
+    # perform some tests to see how well this method can do
+    max_value = np.uint64(np.amax(segmentation) + 1)
+    union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
+
+    # iterate over all collapsed edges
+    for candidate in positive_candidates:
+        label_one, label_two = candidate.labels
+        unionfind.Union(union_find[label_one], union_find[label_two])
+
+    # create a mapping for the labels
+    mapping = np.zeros(max_value, dtype=np.uint64)
+    for iv in range(max_value):
+        mapping[iv] = unionfind.Find(union_find[iv]).label
+    opt_segmentation = seg2seg.MapLabels(segmentation, mapping)
+    comparestacks.Evaluate(opt_segmentation, gold)
+
+
+
+    # run the multicut algorithm
+    # candidates = positive_candidates + negative_candidates
+    # ncandidates = len(candidates)
+    # edge_weights = np.zeros((ncandidates), dtype=np.uint8)
+
+    # # generate ground truth edge weights
+    # for iv in range(ncandidates):
+    #     if iv < len(positive_candidates): edge_weights[iv] = 1
+    #     else: edge_weights[iv] = 0
+
+    # multicut.Multicut(segmentation, gold, candidates, edge_weights, 0.5)

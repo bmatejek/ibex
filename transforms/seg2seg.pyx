@@ -2,10 +2,14 @@ cimport cython
 cimport numpy as np
 import ctypes
 import numpy as np
+import scipy.ndimage
+
+
 
 cdef extern from 'cpp-seg2seg.h':
     unsigned long *CppMapLabels(unsigned long *segmentation, unsigned long *mapping, unsigned long nentries)
     unsigned long *CppRemoveSmallConnectedComponents(unsigned long *segmentation, int threshold, unsigned long nentries)
+    unsigned long *CppForceConnectivity(unsigned long *segmentation, long zres, long yres, long xres)
 
 
 # map the labels from this segmentation
@@ -24,6 +28,7 @@ def MapLabels(segmentation, mapping):
     cdef unsigned long[:] tmp_segmentation = <unsigned long[:segmentation.size]> mapped_segmentation
 
     return np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))
+
 
 
 # remove the components less than min size
@@ -45,6 +50,8 @@ def RemoveSmallConnectedComponents(segmentation, threshold=64):
     return np.copy(thresholded_segmentation)
 
 
+
+# reduce the labeling
 def ReduceLabels(segmentation):
     # get the unique labels
     unique = np.unique(segmentation)
@@ -54,9 +61,38 @@ def ReduceLabels(segmentation):
 
     # create an array from original segment id to reduced id
     mapping = np.zeros(maximum_label, dtype=np.int64) - np.uint64(1)
+    # extraceullar maps to extracellular
+    mapping[0] = 0
 
-    for ie, label in enumerate(unique):
-        mapping[label] = ie
+    # nothing else should map to zero
+    index = 1
+    for label in unique:
+        # prevent extracellular material
+        if label == 0: continue
+
+        # set the mapping to this index and increment
+        mapping[label] = index
+        index += 1
 
     # return the forward and reverse mapping
     return mapping, unique
+
+
+
+def ForceConnectivity(segmentation):
+    # transform into c array
+    cdef np.ndarray[unsigned long, ndim=3, mode='c'] cpp_segmentation
+    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_uint64)
+    zres, yres, xres = segmentation.shape
+
+    # call the c++ function
+    cdef unsigned long *cpp_components = CppForceConnectivity(&(cpp_segmentation[0,0,0]), zres, yres, xres)
+
+    # turn into python numpy array
+    cdef unsigned long[:] tmp_components = <unsigned long[:zres*yres*xres]> cpp_components
+    
+    # reshape the array to the original shape
+    components = np.reshape(np.asarray(tmp_components), (zres, yres, xres)).astype(np.uint32)
+
+    # find which segments have multiple components
+    return components

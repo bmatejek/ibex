@@ -1,5 +1,4 @@
 import struct
-import time
 import numpy as np
 import os
 
@@ -12,7 +11,8 @@ from ibex.transforms import seg2seg
 from ibex.utilities import dataIO
 from ibex.data_structures import unionfind
 from ibex.evaluation.classification import *
-from ibex.evaluation.segmentation import *
+from PixelPred2Seg import comparestacks
+
 
 
 # c++ external definition
@@ -22,9 +22,7 @@ cdef extern from 'cpp-multicut.h':
 
 
 # collapse the edges from multicut
-def CollapseGraph(prefix, segmentation, candidates, collapsed_edges):
-    start_time = time.time()
-
+def CollapseGraph(segmentation, candidates, collapsed_edges):
     # read the candidates
     ncandidates = len(candidates)
 
@@ -56,51 +54,14 @@ def CollapseGraph(prefix, segmentation, candidates, collapsed_edges):
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
 
-    multicut_segmentation = seg2seg.MapLabels(segmentation, mapping)
+    segmentation = seg2seg.MapLabels(segmentation, mapping)
 
-    print 'Collapsed graph in {} seconds'.format(time.time() - start_time)
-
-    return multicut_segmentation
+    return segmentation
 
 
 
-def EvaluateMulticut(prefix, segmentation):
-    start_time = time.time()
-
-    # save the multicut file
-    multicut_filename = 'multicut/{}-multicut.h5'.format(prefix)
-    dataIO.WriteH5File(segmentation, multicut_filename, 'stack')
-
-    gold_filename = dataIO.ReadMetaData(prefix).GoldFilename()[0]
-    segmentation_filename = dataIO.ReadMetaData(prefix).SegmentationFilename()[0]
-
-    #command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(segmentation_filename, gold_filename)
-    #os.system(command)
-
-    command = '~/software/PixelPred2Seg/comparestacks --stack1 {} --stackbase {} --dilate1 1 --dilatebase 1 --relabel1 --relabelbase --filtersize 100 --anisotropic'.format(multicut_filename, gold_filename)
-    os.system(command)
-
-    print 'Evaluated multicut in {} seconds'.format(time.time() - start_time)
-
-
-
-# function ro run multicut algorithm
-def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
-    # read the candidates
-    candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
-    ncandidates = len(candidates)
-
-    # read the probabilities
-    probabilities_filename = '{}-{}-{}-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance)
-    with open(probabilities_filename, 'rb') as fd:
-        nprobabilities, = struct.unpack('i', fd.read(4))
-        assert (nprobabilities == ncandidates)
-        edge_weights = np.zeros(nprobabilities, dtype=np.float64)
-        for iv in range(nprobabilities):
-            edge_weights[iv], = struct.unpack('d', fd.read(8))
-
-    # read in the segmentation for this prefix and get the forward and reverse mappigns
-    segmentation = dataIO.ReadSegmentationData(prefix)
+def Multicut(segmentation, gold, candidates, edge_weights, beta):
+    # get a forward and reverse mapping
     forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
 
     # get the number of vertices and edges
@@ -117,8 +78,6 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
         vertex_ones[iv] = forward_mapping[label_one]
         vertex_twos[iv] = forward_mapping[label_two]
 
-    start_time = time.time()
-
     # convert to c++ arrays
     cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_ones = np.ascontiguousarray(vertex_ones, dtype=ctypes.c_uint64)
     cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_twos = np.ascontiguousarray(vertex_twos, dtype=ctypes.c_uint64)
@@ -129,10 +88,32 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
     cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
     collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
 
-    print 'Ran multicut in {} seconds'.format(time.time() - start_time)
-
     # collapse the edges returned from multicut
-    multicut_segmentation = CollapseGraph(prefix, segmentation, candidates, collapsed_edges)
+    segmentation = CollapseGraph(segmentation, candidates, collapsed_edges)
 
     # evaluate before and after multicut
-    EvaluateMulticut(prefix, multicut_segmentation)
+    comparestacks.Evaluate(segmentation, gold)
+
+
+
+# function ro run multicut algorithm
+def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
+    # read the candidates
+    candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
+    ncandidates = len(candidates)
+    
+    # read the probabilities
+    probabilities_filename = '{}-{}-{}-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance)
+    with open(probabilities_filename, 'rb') as fd:
+        nprobabilities, = struct.unpack('i', fd.read(4))
+        assert (nprobabilities == ncandidates)
+        edge_weights = np.zeros(nprobabilities, dtype=np.float64)
+        for iv in range(nprobabilities):
+            edge_weights[iv], = struct.unpack('d', fd.read(8))
+    
+    # read in the segmentation for this prefix
+    segmentation = dataIO.ReadSegmentationData(prefix)
+    gold = dataIO.ReadGoldData(prefix)
+
+    # run the multicut algorithm
+    Multicut(segmentation, gold, candidates, edge_weights, beta)

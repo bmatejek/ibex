@@ -53,16 +53,16 @@ def ScaleSegment(segment, width, labels):
                 iv = int(float(yres) / float(width[IB_Y]) * iy)
                 iu = int(float(xres) / float(width[IB_X]) * ix)
 
-                if nchannels == 1:
-                    if segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two:
+                if nchannels == 1 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
                         example[0,iz,iy,ix,0] = 1
                 else:
+                    # add second channel
                     if segment[iw,iv,iu] == label_one:
                         example[0,iz,iy,ix,0] = 1
-                        example[0,iz,iy,ix,2] = 1
-
                     elif segment[iw,iv,iu] == label_two:
                         example[0,iz,iy,ix,1] = 1
+                    # add third channel 
+                    if nchannels == 3 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
                         example[0,iz,iy,ix,2] = 1
                         
     return example
