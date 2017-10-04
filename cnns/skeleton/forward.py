@@ -15,14 +15,14 @@ from ibex.cnns.skeleton.util import FindCandidates, ExtractFeature
 
 
 # generate candidate features for the predict function
-def SkeletonCandidateGenerator(prefix, window_radius, candidates, width):
+def SkeletonCandidateGenerator(prefix, network_distance, candidates, width):
     start_time = time.time()
     # read in all relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     world_res = dataIO.Resolution(prefix)
 
     # get the radii for the bounding box in grid coordinates
-    radii = (window_radius / world_res[0], window_radius / world_res[1], window_radius / world_res[2])
+    radii = (network_distance / world_res[0], network_distance / world_res[1], network_distance / world_res[2])
     index = 0
 
     # continue indefinitely
@@ -45,17 +45,17 @@ def SkeletonCandidateGenerator(prefix, window_radius, candidates, width):
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, threshold, maximum_distance, window_radius, width):
+def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance, width):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}.h5'.format(model_prefix))
     
     # get the candidate locations 
-    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=True)
+    candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
 
     # get the probabilities
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, window_radius, candidates, width), ncandidates, max_q_size=20)
+    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width), ncandidates, max_q_size=20)
     predictions = Prob2Pred(probabilities)
 
     # create an array of labels
@@ -84,9 +84,9 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, window_radius, wi
 
 
 # generate a training curve
-def TrainingCurve(prefix, model_prefix, threshold, maximum_distance, window_radius, width, parameters, nsamples=50):
+def TrainingCurve(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters, nsamples=50):
     # get the candidate locations 
-    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=True)
+    candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
 
     # get relevant parameters
@@ -116,7 +116,7 @@ def TrainingCurve(prefix, model_prefix, threshold, maximum_distance, window_radi
         random.shuffle(candidates)
 
         # get the probabilities
-        probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, window_radius, candidates, width), nsamples, max_q_size=20)
+        probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width), nsamples, max_q_size=20)
         predictions = Prob2Pred(probabilities)
 
         # create an array of labels

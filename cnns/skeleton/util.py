@@ -15,11 +15,11 @@ class SkeletonCandidate:
 
 
 # find the candidates for this prefix and distance
-def FindCandidates(prefix, threshold, maximum_distance, inference=False):
+def FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False):
     if inference:
-        filename = 'features/skeleton/{}-{}-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance)
+        filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     else:
-        filename = 'features/skeleton/{}-{}-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance)
+        filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance, network_distance)
 
     # read the candidate filename
     with open(filename, 'rb') as fd:

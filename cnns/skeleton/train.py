@@ -78,7 +78,7 @@ def WriteLogfiles(model, model_prefix, parameters):
 
 
 # train a neural network for this prefix
-def Train(prefix, model_prefix, threshold, maximum_distance, window_radius, width, parameters):
+def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters):
     # identify convenient variables
     nchannels = width[3]
     starting_epoch = parameters['starting_epoch']
@@ -147,10 +147,10 @@ def Train(prefix, model_prefix, threshold, maximum_distance, window_radius, widt
     world_res = dataIO.Resolution(prefix)
 
     # get the radii for the relevant region
-    radii = (window_radius / world_res[IB_Z], window_radius / world_res[IB_Y], window_radius / world_res[IB_X])
+    radii = (network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X])
 
     # get all candidates
-    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=False)
+    candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False)
     ncandidates = len(candidates)
 
 
