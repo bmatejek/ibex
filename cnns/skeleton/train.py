@@ -111,7 +111,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
 
     if depth > 2:
         AddConvolutionalLayer(model, 4 * filter_size, (3, 3, 3), 'valid', activation, normalization)
-        if double_conv: AddConvolutionalLayer(model, filter_size, (3, 3, 3), 'valid', activation, normalization)
+        if double_conv: AddConvolutionalLayer(model, 4 * filter_size, (3, 3, 3), 'valid', activation, normalization)
         AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
 
     if depth > 3:
