@@ -99,7 +99,7 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
 
 
 # save the features for viewing
-def SaveFeatures(prefix, threshold, maximum_distance):
+def SaveFeatures(prefix, threshold, maximum_distance, network_distance):
     # read in relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     grid_size = segmentation.shape
@@ -110,7 +110,7 @@ def SaveFeatures(prefix, threshold, maximum_distance):
     width = (2 * radii[IB_Z], 2 * radii[IB_Y], 2 * radii[IB_X], 3)
 
     # read all candidates
-    candidates = FindCandidates(prefix, threshold, maximum_distance, inference=True)    
+    candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)    
     ncandidates = len(candidates)
 
     for iv, candidate in enumerate(candidates):
