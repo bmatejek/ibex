@@ -97,9 +97,9 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta):
 
 
 # function ro run multicut algorithm
-def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
+def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta):
     # read the candidates
-    candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
+    candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
     
     # read the probabilities

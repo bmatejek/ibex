@@ -2128,6 +2128,7 @@ static const char __pyx_k_reverse_mapping[] = "reverse_mapping";
 static const char __pyx_k_UnionFindElement[] = "UnionFindElement";
 static const char __pyx_k_cpp_edge_weights[] = "cpp_edge_weights";
 static const char __pyx_k_maximum_distance[] = "maximum_distance";
+static const char __pyx_k_network_distance[] = "network_distance";
 static const char __pyx_k_nm_probabilities[] = "{}-{}-{}-{}nm.probabilities";
 static const char __pyx_k_ascontiguousarray[] = "ascontiguousarray";
 static const char __pyx_k_PrecisionAndRecall[] = "PrecisionAndRecall";
@@ -2292,6 +2293,7 @@ static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
 static PyObject *__pyx_kp_u_ndarray_is_not_Fortran_contiguou;
 static PyObject *__pyx_n_s_ndim;
 static PyObject *__pyx_n_s_nedges;
+static PyObject *__pyx_n_s_network_distance;
 static PyObject *__pyx_kp_s_nm_probabilities;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_nprobabilities;
@@ -2341,7 +2343,7 @@ static PyObject *__pyx_n_s_vertex_twos;
 static PyObject *__pyx_n_s_zeros;
 static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_CollapseGraph(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_segmentation, PyObject *__pyx_v_candidates, PyObject *__pyx_v_collapsed_edges); /* proto */
 static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_2Multicut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_segmentation, PyObject *__pyx_v_gold, PyObject *__pyx_v_candidates, PyObject *__pyx_v_edge_weights, PyObject *__pyx_v_beta); /* proto */
-static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_prefix, PyObject *__pyx_v_model_prefix, PyObject *__pyx_v_threshold, PyObject *__pyx_v_maximum_distance, PyObject *__pyx_v_beta); /* proto */
+static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_prefix, PyObject *__pyx_v_model_prefix, PyObject *__pyx_v_threshold, PyObject *__pyx_v_maximum_distance, PyObject *__pyx_v_network_distance, PyObject *__pyx_v_beta); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -4404,9 +4406,9 @@ static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_2Multicut(CYTHON_UNUSED P
 /* "ibex/algorithms/multicut.pyx":100
  * 
  * # function ro run multicut algorithm
- * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):             # <<<<<<<<<<<<<<
+ * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta):             # <<<<<<<<<<<<<<
  *     # read the candidates
- *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
+ *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
  */
 
 /* Python wrapper */
@@ -4417,17 +4419,19 @@ static PyObject *__pyx_pw_4ibex_10algorithms_8multicut_5RunMulticut(PyObject *__
   PyObject *__pyx_v_model_prefix = 0;
   PyObject *__pyx_v_threshold = 0;
   PyObject *__pyx_v_maximum_distance = 0;
+  PyObject *__pyx_v_network_distance = 0;
   PyObject *__pyx_v_beta = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("RunMulticut (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_prefix,&__pyx_n_s_model_prefix,&__pyx_n_s_threshold,&__pyx_n_s_maximum_distance,&__pyx_n_s_beta,0};
-    PyObject* values[5] = {0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_prefix,&__pyx_n_s_model_prefix,&__pyx_n_s_threshold,&__pyx_n_s_maximum_distance,&__pyx_n_s_network_distance,&__pyx_n_s_beta,0};
+    PyObject* values[6] = {0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
         case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
         case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
@@ -4444,28 +4448,33 @@ static PyObject *__pyx_pw_4ibex_10algorithms_8multicut_5RunMulticut(PyObject *__
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_model_prefix)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 5, 5, 1); __PYX_ERR(0, 100, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 6, 6, 1); __PYX_ERR(0, 100, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threshold)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 5, 5, 2); __PYX_ERR(0, 100, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 6, 6, 2); __PYX_ERR(0, 100, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_maximum_distance)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 5, 5, 3); __PYX_ERR(0, 100, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 6, 6, 3); __PYX_ERR(0, 100, __pyx_L3_error)
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_beta)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_network_distance)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 5, 5, 4); __PYX_ERR(0, 100, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 6, 6, 4); __PYX_ERR(0, 100, __pyx_L3_error)
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_beta)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 6, 6, 5); __PYX_ERR(0, 100, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "RunMulticut") < 0)) __PYX_ERR(0, 100, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -4473,29 +4482,31 @@ static PyObject *__pyx_pw_4ibex_10algorithms_8multicut_5RunMulticut(PyObject *__
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
     }
     __pyx_v_prefix = values[0];
     __pyx_v_model_prefix = values[1];
     __pyx_v_threshold = values[2];
     __pyx_v_maximum_distance = values[3];
-    __pyx_v_beta = values[4];
+    __pyx_v_network_distance = values[4];
+    __pyx_v_beta = values[5];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 100, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("RunMulticut", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 100, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("ibex.algorithms.multicut.RunMulticut", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(__pyx_self, __pyx_v_prefix, __pyx_v_model_prefix, __pyx_v_threshold, __pyx_v_maximum_distance, __pyx_v_beta);
+  __pyx_r = __pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(__pyx_self, __pyx_v_prefix, __pyx_v_model_prefix, __pyx_v_threshold, __pyx_v_maximum_distance, __pyx_v_network_distance, __pyx_v_beta);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_prefix, PyObject *__pyx_v_model_prefix, PyObject *__pyx_v_threshold, PyObject *__pyx_v_maximum_distance, PyObject *__pyx_v_beta) {
+static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_prefix, PyObject *__pyx_v_model_prefix, PyObject *__pyx_v_threshold, PyObject *__pyx_v_maximum_distance, PyObject *__pyx_v_network_distance, PyObject *__pyx_v_beta) {
   PyObject *__pyx_v_candidates = NULL;
   Py_ssize_t __pyx_v_ncandidates;
   PyObject *__pyx_v_probabilities_filename = NULL;
@@ -4527,9 +4538,9 @@ static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSE
   __Pyx_RefNannySetupContext("RunMulticut", 0);
 
   /* "ibex/algorithms/multicut.pyx":102
- * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):
+ * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta):
  *     # read the candidates
- *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)             # <<<<<<<<<<<<<<
+ *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)             # <<<<<<<<<<<<<<
  *     ncandidates = len(candidates)
  * 
  */
@@ -4547,7 +4558,7 @@ static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSE
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_FindCandidates); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_prefix);
   __Pyx_GIVEREF(__pyx_v_prefix);
@@ -4558,6 +4569,9 @@ static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSE
   __Pyx_INCREF(__pyx_v_maximum_distance);
   __Pyx_GIVEREF(__pyx_v_maximum_distance);
   PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_v_maximum_distance);
+  __Pyx_INCREF(__pyx_v_network_distance);
+  __Pyx_GIVEREF(__pyx_v_network_distance);
+  PyTuple_SET_ITEM(__pyx_t_2, 3, __pyx_v_network_distance);
   __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_inference, Py_True) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
@@ -4571,7 +4585,7 @@ static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSE
 
   /* "ibex/algorithms/multicut.pyx":103
  *     # read the candidates
- *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
+ *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
  *     ncandidates = len(candidates)             # <<<<<<<<<<<<<<
  * 
  *     # read the probabilities
@@ -5311,9 +5325,9 @@ static PyObject *__pyx_pf_4ibex_10algorithms_8multicut_4RunMulticut(CYTHON_UNUSE
   /* "ibex/algorithms/multicut.pyx":100
  * 
  * # function ro run multicut algorithm
- * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):             # <<<<<<<<<<<<<<
+ * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta):             # <<<<<<<<<<<<<<
  *     # read the candidates
- *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
+ *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
  */
 
   /* function exit code */
@@ -20998,6 +21012,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_ndarray_is_not_Fortran_contiguou, __pyx_k_ndarray_is_not_Fortran_contiguou, sizeof(__pyx_k_ndarray_is_not_Fortran_contiguou), 0, 1, 0, 0},
   {&__pyx_n_s_ndim, __pyx_k_ndim, sizeof(__pyx_k_ndim), 0, 0, 1, 1},
   {&__pyx_n_s_nedges, __pyx_k_nedges, sizeof(__pyx_k_nedges), 0, 0, 1, 1},
+  {&__pyx_n_s_network_distance, __pyx_k_network_distance, sizeof(__pyx_k_network_distance), 0, 0, 1, 1},
   {&__pyx_kp_s_nm_probabilities, __pyx_k_nm_probabilities, sizeof(__pyx_k_nm_probabilities), 0, 0, 1, 0},
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_nprobabilities, __pyx_k_nprobabilities, sizeof(__pyx_k_nprobabilities), 0, 0, 1, 1},
@@ -21371,14 +21386,14 @@ static int __Pyx_InitCachedConstants(void) {
   /* "ibex/algorithms/multicut.pyx":100
  * 
  * # function ro run multicut algorithm
- * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):             # <<<<<<<<<<<<<<
+ * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta):             # <<<<<<<<<<<<<<
  *     # read the candidates
- *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
+ *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
  */
-  __pyx_tuple__36 = PyTuple_Pack(14, __pyx_n_s_prefix, __pyx_n_s_model_prefix, __pyx_n_s_threshold, __pyx_n_s_maximum_distance, __pyx_n_s_beta, __pyx_n_s_candidates, __pyx_n_s_ncandidates, __pyx_n_s_probabilities_filename, __pyx_n_s_fd, __pyx_n_s_nprobabilities, __pyx_n_s_edge_weights, __pyx_n_s_iv, __pyx_n_s_segmentation, __pyx_n_s_gold); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(15, __pyx_n_s_prefix, __pyx_n_s_model_prefix, __pyx_n_s_threshold, __pyx_n_s_maximum_distance, __pyx_n_s_network_distance, __pyx_n_s_beta, __pyx_n_s_candidates, __pyx_n_s_ncandidates, __pyx_n_s_probabilities_filename, __pyx_n_s_fd, __pyx_n_s_nprobabilities, __pyx_n_s_edge_weights, __pyx_n_s_iv, __pyx_n_s_segmentation, __pyx_n_s_gold); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(5, 0, 14, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_bmatejek_ibex_algorithms_m, __pyx_n_s_RunMulticut, 100, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(6, 0, 15, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_bmatejek_ibex_algorithms_m, __pyx_n_s_RunMulticut, 100, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 100, __pyx_L1_error)
 
   /* "View.MemoryView":282
  *         return self.name
@@ -21780,9 +21795,9 @@ PyMODINIT_FUNC PyInit_multicut(void)
   /* "ibex/algorithms/multicut.pyx":100
  * 
  * # function ro run multicut algorithm
- * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, beta):             # <<<<<<<<<<<<<<
+ * def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta):             # <<<<<<<<<<<<<<
  *     # read the candidates
- *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, inference=True)
+ *     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
  */
   __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4ibex_10algorithms_8multicut_5RunMulticut, NULL, __pyx_n_s_ibex_algorithms_multicut); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);

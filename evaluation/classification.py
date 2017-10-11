@@ -9,7 +9,7 @@ def Prob2Pred(probabilities, threshold=0.5):
     predictions = np.zeros(nentries, dtype=np.uint8)
 
     for ie in range(nentries):
-        if probabilities[ie,0] > threshold: predictions[ie] = True
+        if probabilities[ie] > threshold: predictions[ie] = True
         else: predictions[ie] = False
 
     return predictions

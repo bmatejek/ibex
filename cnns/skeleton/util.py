@@ -42,7 +42,7 @@ def ScaleSegment(segment, width, labels):
     nchannels = width[3]
 
     # create the example to be returned
-    example = np.zeros((1, width[IB_Z], width[IB_Y], width[IB_X], nchannels), dtype=np.uint8)
+    example = np.zeros((1, nchannels, width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
 
     # iterate over the example coordinates
     for iz in range(width[IB_Z]):
@@ -54,16 +54,16 @@ def ScaleSegment(segment, width, labels):
                 iu = int(float(xres) / float(width[IB_X]) * ix)
 
                 if nchannels == 1 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
-                        example[0,iz,iy,ix,0] = 1
+                        example[0,0,iz,iy,ix] = 1
                 else:
                     # add second channel
                     if segment[iw,iv,iu] == label_one:
-                        example[0,iz,iy,ix,0] = 1
+                        example[0,0,iz,iy,ix] = 1
                     elif segment[iw,iv,iu] == label_two:
-                        example[0,iz,iy,ix,1] = 1
+                        example[0,1,iz,iy,ix] = 1
                     # add third channel 
                     if nchannels == 3 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
-                        example[0,iz,iy,ix,2] = 1
+                        example[0,2,iz,iy,ix] = 1
                         
     return example
 
@@ -86,13 +86,13 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
     example = ScaleSegment(example, width, labels)
 
     # flip x axis? -> add 1 because of extra filler channel
-    if rotation % 2: example = np.flip(example, IB_X + 1)
+    if rotation % 2: example = np.flip(example, IB_X + 2)
     # flip z axis?
-    if (rotation / 2) % 2: example = np.flip(example, IB_Z + 1)
+    if (rotation / 2) % 2: example = np.flip(example, IB_Z + 2)
 
     # rotate in y?
     yrotation = rotation / 4
-    example = np.rot90(example, k=yrotation, axes=(IB_X + 1, IB_Y + 1))
+    example = np.rot90(example, k=yrotation, axes=(IB_X + 2, IB_Y + 2))
 
     return example
 

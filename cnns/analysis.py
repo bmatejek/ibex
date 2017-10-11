@@ -2,10 +2,10 @@ import glob
 import os
 
 class NetworkResult:
-    def __init__(self, name, architecture, parameters, results):
+    def __init__(self, name, results):
         self.name = name
-        self.architecture = architecture
-        self.parameters = parameters
+        #self.architecture = architecture
+        #self.parameters = parameters
         self.results = results
 
     def Precision(self):
@@ -18,19 +18,24 @@ class NetworkResult:
         return [result.accuracy for result in self.results]
 
     def __cmp__(self, other):
-        self_width = self.architecture.input_size.strip('()').split(', ')
-        other_width = other.architecture.input_size.strip('()').split(', ')
+        #self_width = self.architecture.input_size.strip('()').split(', ')
+        #other_width = other.architecture.input_size.strip('()').split(', ')
 
 
-        self_input_size = int(self_width[0]) * int(self_width[1]) * int(self_width[2]) * int(self_width[3])
-        other_input_size = int(other_width[0]) * int(other_width[1]) * int(other_width[2]) * int(other_width[3])
+        #self_input_size = int(self_width[0]) * int(self_width[1]) * int(self_width[2]) * int(self_width[3])
+        #other_input_size = int(other_width[0]) * int(other_width[1]) * int(other_width[2]) * int(other_width[3])
 
+        if self.name > other.name: return 1
+        else: return -1
+        
         if self_input_size > other_input_size: return 1
         elif self_input_size < other_input_size: return -1
         elif self.parameters['iterations'] > other.parameters['iterations']: return 1
         elif self.parameters['iterations'] < other.parameters['iterations']: return -1
         elif self.parameters['initial_learning_rate'] < other.parameters['initial_learning_rate']: return 1
         elif self.parameters['initial_learning_rate'] > other.parameters['initial_learning_rate']: return -1
+        elif self.name < other.name: return 1
+        elif self.name > other.name: return -1
         else: return 0
 
 
@@ -126,16 +131,16 @@ def CNNResults(problem):
         directory = '{}/{}'.format(parent_directory, name)
 
         # there needs to be a log file for this to work
-        logfile = glob.glob('{}/*.log'.format(directory))[0]
+        #logfile = glob.glob('{}/*.log'.format(directory))[0]
         result_files = glob.glob('{}/*.results'.format(directory))
 
         # parse the results and logfiles
-        architecture, parameters = ParseLogFile(logfile)
+        #architecture, parameters = ParseLogFile(logfile)
 
         results = []
         for filename in result_files:
             results.append(ParseResults(filename))
             
-        networks.append(NetworkResult(name, architecture, parameters, results))
+        networks.append(NetworkResult(name, results))
 
     return sorted(networks)

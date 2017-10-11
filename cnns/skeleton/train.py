@@ -1,83 +1,110 @@
-import os
-import time
 import numpy as np
+import time
+import os
 
-from keras.models import Sequential
-from keras.layers import Activation, BatchNormalization, Convolution3D, Dense, Dropout, Flatten, MaxPooling3D
-from keras.layers.advanced_activations import LeakyReLU
-from keras.optimizers import Adam, SGD
-from keras import backend
+import torch
+import torch.nn as nn
+
 
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
-from ibex.cnns.skeleton.util import ExtractFeature, FindCandidates
+from ibex.cnns.skeleton.util import FindCandidates, ExtractFeature
 
 
 
-# add a convolutional layer to the model
-def AddConvolutionalLayer(model, filter_size, kernel_size, padding, activation, normalization, input_shape=None):
-    if not input_shape == None: model.add(Convolution3D(filter_size, kernel_size, padding=padding, input_shape=input_shape))
-    else: model.add(Convolution3D(filter_size, kernel_size, padding=padding))
+class ConvolutionLayer(nn.Module):
+    def __init__(self, input_size, output_size, kernel_size=(3,3,3), pool_size=(1,2,2), normalization=False):
+        # call parent constructor
+        super(ConvolutionLayer, self).__init__()
+        if normalization:
+            self.conv1 = nn.Sequential(nn.Conv3d(input_size[0], output_size[0], kernel_size=kernel_size), nn.BatchNorm3d(output_size[0]), nn.LeakyReLU(0.001))
+            self.conv2 = nn.Sequential(nn.Conv3d(input_size[1], output_size[1], kernel_size=kernel_size), nn.BatchNorm3d(output_size[1]), nn.LeakyReLU(0.001))
+        else:
+            self.conv1 = nn.Sequential(nn.Conv3d(input_size[0], output_size[0], kernel_size=kernel_size), nn.LeakyReLU(0.001))
+            self.conv2 = nn.Sequential(nn.Conv3d(input_size[1], output_size[1], kernel_size=kernel_size), nn.LeakyReLU(0.001))
+        self.down = nn.MaxPool3d(pool_size)
 
-    # add activation layer
-    if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
-    else: model.add(Activation(activation))
-    
-    # add normalization after activation
-    if normalization: model.add(BatchNormalization())
-
-
-
-# add a pooling layer to the model
-def AddPoolingLayer(model, pool_size, dropout, normalization):
-    model.add(MaxPooling3D(pool_size=pool_size))
-
-    # add normalization before dropout
-    if normalization: model.add(BatchNormalization())
-
-    # add dropout layer
-    if dropout > 0.0: model.add(Dropout(dropout))
+    def forward(self, inputs):
+        return self.down(self.conv2(self.conv1(inputs)))
 
 
+class FlattenLayer(nn.Module):
+    def __init__(self):
+        # call parent constructor
+        super(FlattenLayer, self).__init__()
 
-# add a flattening layer to the model
-def AddFlattenLayer(model):
-    model.add(Flatten())
+    def forward(self, inputs):
+        return inputs.view(inputs.size(0), -1)
 
 
 
-# add a dense layer to the model
-def AddDenseLayer(model, filter_size, dropout, activation, normalization):
-    model.add(Dense(filter_size))
-    if (dropout > 0.0): model.add(Dropout(dropout))
+class DenseLayer(nn.Module):
+    def __init__(self, input_size, output_size, normalization):
+        # call the parent constructor
+        super(DenseLayer, self).__init__()
 
-    # add activation layer
-    if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
-    else: model.add(Activation(activation))
+        if normalization: 
+            self.fc = nn.Sequential(nn.Linear(input_size, output_size), nn.BatchNorm3d(output_size), nn.LeakyReLU(0.001))
+        else:
+            self.fc = nn.Sequential(nn.Linear(input_size, output_size), nn.LeakyReLU(0.001))
 
-    # add normalization after activation
-    if normalization: model.add(BatchNormalization())
-
-
-
-
-# write all relevant information to the log file
-def WriteLogfiles(model, model_prefix, parameters):
-    logfile = '{}.log'.format(model_prefix)
-
-    with open(logfile, 'w') as fd:
-        for layer in model.layers:
-            print '{} {} -> {}'.format(layer.get_config()['name'], layer.input_shape, layer.output_shape)
-            fd.write('{} {} -> {}\n'.format(layer.get_config()['name'], layer.input_shape, layer.output_shape))
-        print 
-        fd.write('\n')
-        for parameter in parameters:
-            print '{}: {}'.format(parameter, parameters[parameter])
-            fd.write('{}: {}\n'.format(parameter, parameters[parameter]))
+    def forward(self, inputs):
+        return self.fc(inputs)
 
 
+class FinalLayer(nn.Module):
+    def __init__(self):
+        # call the parent constructor
+        super(FinalLayer, self).__init__()
 
-# train a neural network for this prefix
+    def forward(self, inputs):
+        return nn.functional.sigmoid(inputs)
+
+
+class SkeletonNetwork(nn.Module):
+    def __init__(self, parameters, width):
+        # call parent constructor
+        super(SkeletonNetwork, self).__init__()
+
+        # save useful instance variables
+        normalization = parameters['normalization']
+        output_width = parameters['output_width']
+        filter_size = parameters['filter_size']
+
+        # get the kernel and pooling sizes
+        kernel_sizes = [(3, 3, 3), (3, 3, 3), (3, 3, 3), (3, 3, 3)]
+        pooling_sizes = [(1, 2, 2), (1, 2, 2), (2, 2, 2), (2, 2, 2)]
+
+        # add all of the convolution layers
+        if parameters['depth'] == 3:
+            self.layers = nn.ModuleList([
+                ConvolutionLayer([3, filter_size], [filter_size, filter_size], kernel_sizes[0], pooling_sizes[0], normalization),
+                ConvolutionLayer([filter_size, 2 * filter_size], [2 * filter_size, 2 * filter_size], kernel_sizes[1], pooling_sizes[1], normalization),
+                ConvolutionLayer([2 * filter_size, 4 * filter_size], [4 * filter_size, 4 * filter_size], kernel_sizes[2], pooling_sizes[2], normalization),
+                FlattenLayer(),
+                DenseLayer(4 * filter_size * output_width * output_width * output_width, 512, normalization),
+                DenseLayer(512, 1, normalization),
+                FinalLayer()
+            ])
+        else:
+            self.layers = nn.ModuleList([
+                ConvolutionLayer([3, filter_size], [filter_size, filter_size], kernel_sizes[0], pooling_sizes[0], normalization),
+                ConvolutionLayer([filter_size, 2 * filter_size], [2 * filter_size, 2 * filter_size], kernel_sizes[1], pooling_sizes[1], normalization),
+                ConvolutionLayer([2 * filter_size,4 * filter_size], [4 * filter_size, 4 * filter_size], kernel_sizes[2], pooling_sizes[2], normalization),
+                ConvolutionLayer([4 * filter_size,8 * filter_size], [8 * filter_size, 8 * filter_size], kernel_sizes[3], pooling_sizes[3], normalization),
+                FlattenLayer(),
+                DenseLayer(8 * filter_size * output_width * output_width * output_width, 512, normalization),
+                DenseLayer(512, 1, normalization),
+                FinalLayer()
+            ])
+
+    def forward(self, inputs):
+        for layer in self.layers:
+            inputs = layer(inputs)
+        return inputs
+
+
+
 def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters):
     # identify convenient variables
     nchannels = width[3]
@@ -89,44 +116,17 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
 
     # architecture parameters
     activation = parameters['activation']
-    double_conv = parameters['double_conv']
-    normalization = parameters['normalization']
-    optimizer = parameters['optimizer']
     weights = parameters['weights']
-    filter_size = parameters['filter_size']
-    depth = parameters['depth']
+    betas = parameters['betas']
+    
+    # set up model
+    model = SkeletonNetwork(parameters, width)
+    model.cuda()
+    model.train()
 
-
-    # create the model
-    model = Sequential()
-
-    # add all layers to the model
-    AddConvolutionalLayer(model, filter_size, (3, 3, 3), 'valid', activation, normalization, width)
-    if double_conv: AddConvolutionalLayer(model, filter_size, (3, 3, 3), 'valid', activation, normalization)
-    AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
-
-    AddConvolutionalLayer(model, 2 * filter_size, (3, 3, 3), 'valid', activation, normalization)
-    if double_conv: AddConvolutionalLayer(model, 2 * filter_size, (3, 3, 3), 'valid', activation, normalization)
-    AddPoolingLayer(model, (1, 2, 2), 0.0, normalization)
-
-    if depth > 2:
-        AddConvolutionalLayer(model, 4 * filter_size, (3, 3, 3), 'valid', activation, normalization)
-        if double_conv: AddConvolutionalLayer(model, 4 * filter_size, (3, 3, 3), 'valid', activation, normalization)
-        AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
-
-    if depth > 3:
-        AddConvolutionalLayer(model, 8 * filter_size, (3, 3, 3), 'valid', activation, normalization)
-        if double_conv: AddConvolutionalLayer(model, 8 * filter_size, (3, 3, 3), 'valid', activation, normalization)
-        AddPoolingLayer(model, (2, 2, 2), 0.0, normalization)
-
-    AddFlattenLayer(model)
-    AddDenseLayer(model, 512, 0.0, activation, normalization)
-    AddDenseLayer(model, 1, 0.0, 'sigmoid', False)
-
-    # compile the model
-    if optimizer == 'adam': opt = Adam(lr=initial_learning_rate, decay=decay_rate, beta_1=0.99, beta_2=0.999, epsilon=1e-08)
-    elif optimizer == 'sgd': opt = SGD(lr=initial_learning_rate, decay=decay_rate, momentum=0.9, nesterov=True)
-    model.compile(loss='mean_squared_error', optimizer=opt)
+    # get the optimizer and loss function
+    optimizer = torch.optim.Adam(model.parameters(), lr=initial_learning_rate, betas=betas, weight_decay=decay_rate)
+    loss_function = torch.nn.MSELoss()
 
 
 
@@ -137,8 +137,15 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    # write out the network parameters to a file
-    WriteLogfiles(model, model_prefix, parameters)
+    # open up the log file with no buffer
+    logfile = open('{}.log'.format(model_prefix), 'w', 0) 
+
+
+
+    # create torch arrays for training
+    x = torch.autograd.Variable(torch.zeros(batch_size, nchannels, width[IB_Z], width[IB_Y], width[IB_X]).cuda(), requires_grad=True)
+    y = torch.autograd.Variable(torch.zeros(batch_size).cuda(), requires_grad=False)
+
 
 
 
@@ -155,6 +162,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
 
 
 
+
     # determine the total number of epochs
     if parameters['augment']: rotations = 16
     else: rotations = 1
@@ -163,35 +171,20 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
         nepochs = (iterations * rotations * ncandidates / batch_size) + 1
     else:
         nepochs = (iterations * rotations * ncandidates / batch_size)
-
-
-
-    # need to adjust learning rate and load in existing weights
-    if starting_epoch == 1: index = 0
-    else:
-        nexamples = starting_epoch * batch_size
-        current_learning_rate = initial_learning_rate / (1.0 + nexamples * decay_rate)
-        backend.set_value(model.optimizer.lr, current_learning_rate)
-
-        index = (starting_epoch * batch_size) % (ncandidates * rotations)
-
-        model.load_weights('{}-{}.h5'.format(model_prefix, starting_epoch))
-
-
+    # set the index to 0
+    index = 0
 
     # iterate for every epoch
-    start_time = time.time()
+    cumulative_time = time.time()
     for epoch in range(starting_epoch, nepochs + 1):
-        # print statistics
-        if not epoch % 20:
-            print '{}/{} in {:4f} seconds'.format(epoch, nepochs, time.time() - start_time)
-            start_time = time.time()
+        start_time = time.time()
 
-
+        # set gradient to zero
+        optimizer.zero_grad()
 
         # create arrays for examples and labels
-        examples = np.zeros((batch_size, width[IB_Z], width[IB_Y], width[IB_X], nchannels), dtype=np.uint8)
-        labels = np.zeros((batch_size, 1), dtype=np.uint8)
+        examples = np.zeros((batch_size, nchannels, width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
+        labels = np.zeros(batch_size, dtype=np.uint8)
 
         for iv in range(batch_size):
             # get the index and the rotation
@@ -200,33 +193,31 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
 
             # get the example and label
             examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, rotation)
-            labels[iv,:] = candidate.ground_truth
+            labels[iv] = candidate.ground_truth
 
             # provide overflow relief
             index += 1
             if index >= ncandidates * rotations: index = 0
 
-        # fit the model
-        model.fit(examples, labels, batch_size=batch_size, epochs=1, verbose=0, class_weight=weights)
+
+        # copy data to torch array
+        x.data.copy_(torch.from_numpy(examples))
+        y.data.copy_(torch.from_numpy(labels))
+        
+        forward_time = time.time()
+        y_prediction = model(x)
+        loss = loss_function(y_prediction, y)
+        loss.backward()
+        optimizer.step()
+
+        # print log
+        end_time = time.time()
+        logfile.write('[Iter {} / {}] loss={} Model Time = {} Total Time = {}\n'.format(epoch, nepochs, loss.data[0], end_time - forward_time, end_time - start_time))
+        if not epoch % 100: 
+            print '[Iter {} / {}] loss={} Total Time = {}'.format(epoch, nepochs, loss.data[0], time.time() - cumulative_time)
+            cumulative_time = time.time()
+            torch.save({'epoch': epoch, 'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}, '{}-{}.arch'.format(model_prefix, epoch))
 
 
-
-        # save for every 1000 examples
-        if not epoch % (1000 / batch_size):
-            json_string = model.to_json()
-            open('{}-{}.json'.format(model_prefix, epoch), 'w').write(json_string)
-            model.save_weights('{}-{}.h5'.format(model_prefix, epoch))
-
-
-
-        # update the learning rate
-        nexamples = epoch * batch_size
-        current_learning_rate = initial_learning_rate / (1.0 + nexamples * decay_rate)
-        backend.set_value(model.optimizer.lr, current_learning_rate)
-
-
-
-    # save the fully trained model
-    json_string = model.to_json()
-    open('{}.json'.format(model_prefix), 'w').write(json_string)
-    model.save_weights('{}.h5'.format(model_prefix))
+    torch.save({'epoch': epoch, 'state_dict': model.state_dict(), 'optmizer': optimizer.state_dict()}, '{}.arch'.format(model_prefix, epoch))
+    logfile.close()
