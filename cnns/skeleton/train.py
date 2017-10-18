@@ -414,11 +414,11 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
         #keras_prediction = model.predict(examples)
 
         if not epoch % 1000:
-            torch.save({'epoch': epoch, 'state_dict': pytorch_model.state_dict(), 'optmizer': optimizer.state_dict()}, '{}.arch'.format(model_prefix, epoch))
+            torch.save({'epoch': epoch, 'state_dict': pytorch_model.state_dict(), 'optmizer': optimizer.state_dict()}, '{}-{}.arch'.format(model_prefix, epoch))
             
         assert (abs(loss.data[0] - history.history['loss'][0]) < 10e-4)
 
-    torch.save({'epoch': epoch, 'state_dict': model.state_dict(), 'optmizer': optimizer.state_dict()}, '{}.arch'.format(model_prefix, epoch))
+    torch.save({'epoch': epoch, 'state_dict': model.state_dict(), 'optmizer': optimizer.state_dict()}, '{}.arch'.format(model_prefix))
 
 
         
