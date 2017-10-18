@@ -256,9 +256,9 @@ def VerifyWeights(pytorch_model, keras_model):
     #print np.mean(abs(np.transpose(pytorch_conv4, (2, 3, 4, 1, 0)) - keras_conv4))
     #print np.mean(abs(np.transpose(pytorch_conv5, (2, 3, 4, 1, 0)) - keras_conv5))
     #print np.mean(abs(np.transpose(pytorch_conv6, (2, 3, 4, 1, 0)) - keras_conv6))
-    print np.mean(abs(np.transpose(pytorch_dense1) - keras_dense1))
-    print np.mean(abs(np.transpose(pytorch_dense2) - keras_dense2))
-        
+    assert (np.mean(abs(np.transpose(pytorch_dense1) - keras_dense1)) < 1e-6)
+    assert (np.mean(abs(np.transpose(pytorch_dense2) - keras_dense2)) < 1e-6)
+    
 
 
 def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters):
@@ -408,13 +408,17 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
         # print verbosity
         keras_time = time.time()
         print 'KERAS [Iter {} / {}] loss = {:.7f} Total Time = {:.2f} seconds'.format(epoch, nepochs, history.history['loss'][0], keras_time - start_time)
-
-        pytorch_prediction = pytorch_model.layers[0].conv1[0](x).data.cpu().numpy()
-        model = Model(input=keras_model.inputs, output=keras_model.layers[0].output)
-        keras_prediction = model.predict(examples)
-                        
-        assert (abs(loss.data[0] - history.history['loss'][0]) < 10e-4)
         
+        #pytorch_prediction = pytorch_model.layers[0].conv1[0](x).data.cpu().numpy()
+        #model = Model(input=keras_model.inputs, output=keras_model.layers[0].output)
+        #keras_prediction = model.predict(examples)
+
+        if not epoch % 1000:
+            torch.save({'epoch': epoch, 'state_dict': pytorch_model.state_dict(), 'optmizer': optimizer.state_dict()}, '{}.arch'.format(model_prefix, epoch))
+            
+        assert (abs(loss.data[0] - history.history['loss'][0]) < 10e-4)
+
+    torch.save({'epoch': epoch, 'state_dict': model.state_dict(), 'optmizer': optimizer.state_dict()}, '{}.arch'.format(model_prefix, epoch))
 
 
         
