@@ -30,13 +30,12 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance,
 
     # set up model
     model = SkeletonNetwork(parameters, width)
-    model.cuda()
-    model.eval()
 
     # get output model filename
     params = torch.load('{}.arch'.format(model_prefix))
     model.load_state_dict(params['state_dict'])
-
+    model.cuda()
+    model.eval()
 
 
     # get the candidates to read
@@ -47,7 +46,9 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance,
 
     # create torch arrays for training
     x = torch.autograd.Variable(torch.zeros(batch_size, nchannels, width[IB_Z], width[IB_Y], width[IB_X]).cuda(), requires_grad=False)
-    nbatches = ncandidates / batch_size
+    if not ncandidates % batch_size: nbatches = ncandidates / batch_size
+    else: nbatches = ncandidates / batch_size + 1
+
 
 
     # get data for features    
@@ -57,20 +58,22 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance,
     index = 0
 
     start_time = time.time()
-    for batch in range(nbatches):
-        if not (batch + 1) % 100: print '{}/{}: {}'.format(batch , nbatches, time.time() - start_time)
+    for batch in range(nbatches):      
+        # account for the last element
+        if batch == nbatches - 1: batch_size = ncandidates - batch_size * (nbatches - 1)
+
         # create arrays for examples
         examples = np.zeros((batch_size, nchannels, width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
 
         for iv in range(batch_size):
             candidate = candidates[index]
 
-            examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, 0)
+            examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, 0, False)
             index += 1
 
         x.data.copy_(torch.from_numpy(examples))
         y_pred = model(x).data.cpu().numpy()
-        probabilities[index-batch_size:index] = y_pred
+        probabilities[index-batch_size:index] = np.squeeze(y_pred)
 
     # create an array of labels
     labels = np.zeros(ncandidates, dtype=np.uint8)

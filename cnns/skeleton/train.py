@@ -44,7 +44,7 @@ class DenseLayer(nn.Module):
         super(DenseLayer, self).__init__()
 
         if normalization: 
-            self.fc = nn.Sequential(nn.Linear(input_size, output_size), nn.BatchNorm3d(output_size), nn.LeakyReLU(0.001))
+            self.fc = nn.Sequential(nn.Linear(input_size, output_size), nn.BatchNorm1d(output_size), nn.LeakyReLU(0.001))
         else:
             self.fc = nn.Sequential(nn.Linear(input_size, output_size), nn.LeakyReLU(0.001))
 
@@ -105,6 +105,7 @@ class SkeletonNetwork(nn.Module):
 
 
 
+
 def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters):
     # identify convenient variables
     nchannels = width[3]
@@ -125,7 +126,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     model.train()
 
     # get the optimizer and loss function
-    optimizer = torch.optim.Adam(model.parameters(), lr=initial_learning_rate, betas=betas, weight_decay=decay_rate)
+    optimizer = torch.optim.Adam(model.parameters(), lr=initial_learning_rate, weight_decay=decay_rate, betas=betas, eps=1e-08)
     loss_function = torch.nn.MSELoss()
 
 
@@ -143,7 +144,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
 
 
     # create torch arrays for training
-    x = torch.autograd.Variable(torch.zeros(batch_size, nchannels, width[IB_Z], width[IB_Y], width[IB_X]).cuda(), requires_grad=True)
+    x = torch.autograd.Variable(torch.zeros(batch_size, nchannels, width[IB_Z], width[IB_Y], width[IB_X]).cuda(), requires_grad=False)
     y = torch.autograd.Variable(torch.zeros(batch_size).cuda(), requires_grad=False)
 
 
@@ -171,6 +172,9 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
         nepochs = (iterations * rotations * ncandidates / batch_size) + 1
     else:
         nepochs = (iterations * rotations * ncandidates / batch_size)
+    
+
+
     # set the index to 0
     index = 0
 
@@ -192,7 +196,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
             candidate = candidates[index % ncandidates]
 
             # get the example and label
-            examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, rotation)
+            examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, rotation, False)
             labels[iv] = candidate.ground_truth
 
             # provide overflow relief
