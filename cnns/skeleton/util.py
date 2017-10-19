@@ -39,22 +39,22 @@ def ScaleSegment(segment, width, labels):
     # get the size of the larger segment
     zres, yres, xres = segment.shape
     label_one, label_two = labels
-    nchannels = width[3]
+    nchannels = width[0]
 
     # create the example to be returned
-    example = np.zeros((1, nchannels, width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
+    example = np.zeros((1, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
 
     # iterate over the example coordinates
-    for iz in range(width[IB_Z]):
-        for iy in range(width[IB_Y]):
-            for ix in range(width[IB_X]):
+    for iz in range(width[IB_Z + 1]):
+        for iy in range(width[IB_Y + 1]):
+            for ix in range(width[IB_X + 1]):
                 # get the global coordiantes from segment
-                iw = int(float(zres) / float(width[IB_Z]) * iz)
-                iv = int(float(yres) / float(width[IB_Y]) * iy)
-                iu = int(float(xres) / float(width[IB_X]) * ix)
-
+                iw = int(float(zres) / float(width[IB_Z + 1]) * iz)
+                iv = int(float(yres) / float(width[IB_Y + 1]) * iy)
+                iu = int(float(xres) / float(width[IB_X + 1]) * ix)
+                
                 if nchannels == 1 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
-                        example[0,0,iz,iy,ix] = 1
+                    example[0,0,iz,iy,ix] = 1
                 else:
                     # add second channel
                     if segment[iw,iv,iu] == label_one:
@@ -64,7 +64,7 @@ def ScaleSegment(segment, width, labels):
                     # add third channel 
                     if nchannels == 3 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
                         example[0,2,iz,iy,ix] = 1
-                        
+
     return example
 
 
@@ -89,7 +89,7 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
     if rotation % 2: example = np.flip(example, IB_X + 2)
     # flip z axis?
     if (rotation / 2) % 2: example = np.flip(example, IB_Z + 2)
-
+    
     # rotate in y?
     yrotation = rotation / 4
     example = np.rot90(example, k=yrotation, axes=(IB_X + 2, IB_Y + 2))
