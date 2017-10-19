@@ -8,6 +8,7 @@ from ibex.cnns.skeleton.util import FindCandidates, ExtractFeature
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
 from ibex.evaluation.classification import *
+import matplotlib.pyplot as plt
 
 
 
@@ -81,7 +82,7 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance,
 
 
 # generate a training curve
-def TrainingCurve(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters, nsamples=50):
+def LearningCurve(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters, nsamples=200):
     # get the candidate locations 
     candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
@@ -113,7 +114,7 @@ def TrainingCurve(prefix, model_prefix, threshold, maximum_distance, network_dis
         random.shuffle(candidates)
 
         # get the probabilities
-        probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width), nsamples, max_q_size=20)
+        probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width), nsamples, max_q_size=200)
         predictions = Prob2Pred(probabilities)
 
         # create an array of labels
@@ -134,4 +135,4 @@ def TrainingCurve(prefix, model_prefix, threshold, maximum_distance, network_dis
     plt.ylabel('Error')
     plt.title('Training Curve {}'.format(prefix))
 
-    plt.savefig('{}-training_curve.png'.format(model_prefix))
+    plt.savefig('{}-{}-training-curve.png'.format(model_prefix, prefix))
