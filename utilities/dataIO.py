@@ -42,14 +42,14 @@ def WriteH5File(data, filename, dataset):
 def ReadSegmentationData(prefix):
     filename, dataset = meta_data.MetaData(prefix).SegmentationFilename()
 
-    return ReadH5File(filename, dataset)
+    return ReadH5File(filename, dataset).astype(np.int64)
 
 
 
 def ReadGoldData(prefix):
     filename, dataset = meta_data.MetaData(prefix).GoldFilename()
 
-    return ReadH5File(filename, dataset)
+    return ReadH5File(filename, dataset).astype(np.int64)
 
 
 
@@ -66,13 +66,8 @@ def ReadSkeletons(prefix, data):
     joints = []
     endpoints = []
 
-    for label in np.unique(data):
-        skeleton_filename = 'skeletons/{}/tree_{}.swc'.format(prefix, label)
-
-        # see if the skeleton exists
-        if not os.path.isfile(skeleton_filename):
-            continue
-
+    max_label = np.amax(data) + 1
+    for label in range(max_label):
         # read the skeleton
         skeleton = swc.Skeleton(prefix, label)
 

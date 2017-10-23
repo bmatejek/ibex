@@ -15,9 +15,11 @@ class SkeletonCandidate:
 
 
 # find the candidates for this prefix and distance
-def FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False):
+def FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=False):
     if inference:
         filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    elif validation:
+        filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     else:
         filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance, network_distance)
 
@@ -80,12 +82,12 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
 
 
     # extract the small window from this segment
-    example = segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
+    example = segmentation[zpoint-zradius:zpoint+zradius+1,ypoint-yradius:ypoint+yradius+1,xpoint-xradius:xpoint+xradius+1]
 
     # rescale the segment
     example = ScaleSegment(example, width, labels)
 
-    # flip x axis? -> add 1 because of extra filler channel
+    # flip x axis? -> add 2 because of extra filler channel
     if rotation % 2: example = np.flip(example, IB_X + 2)
     # flip z axis?
     if (rotation / 2) % 2: example = np.flip(example, IB_Z + 2)

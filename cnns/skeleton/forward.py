@@ -1,6 +1,9 @@
 import numpy as np
 import time
 import struct
+import random
+import os
+import natsort
 
 from keras.models import Model, Sequential, model_from_json
 
@@ -25,7 +28,7 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, width):
 
     # continue indefinitely
     while True:
-        if not ((index + 1) % 100): 
+        if not ((index + 1) % 1000): 
             print '{}/{}: {}'.format(index + 1,  len(candidates), time.time() - start_time)
         # this prevents overflow on the queue - the repeated samples are never used
         if index >= len(candidates): index = 0
@@ -82,40 +85,38 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance,
 
 
 # generate a training curve
-def LearningCurve(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters, nsamples=200):
+def LearningCurve(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters, nsamples=400):
     # get the candidate locations 
     candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
-    ncandidates = len(candidates)
-
-    # get relevant parameters
-    iterations = parameters['iterations']
-    batch_size = parameters['batch_size']
-
-    # find out how many epochs there are
-    if parameters['augment']: rotations = 16
-    else: rotations = 1
-    if rotations * ncandidates % batch_size:
-        max_epoch = (iterations * rotations * ncandidates / batch_size) + 1
-    else:
-        max_epoch = (iterations * rotations * ncandidates / batch_size)
 
     errors = []
     epochs = []
 
     # how often to get the batch size
-    test_frequency = 1000 / batch_size
+    test_frequency = 5
     
+    # make sure the folder for the model prefix exists
+    root_location = model_prefix.rfind('/')
+    output_folder = model_prefix[:root_location]
+    
+    # get the list of saved models
+    saved_models = [model[:-3] for model in natsort.natsorted(os.listdir(output_folder)) if model.endswith('.h5')]
+
     # go through every epoch for a given frequency
-    for epoch in range(test_frequency, max_epoch, test_frequency):
-        # read in the trained model
-        model = model_from_json(open('{}-{}.json'.format(model_prefix, epoch), 'r').read())
-        model.load_weights('{}-{}.h5'.format(model_prefix, epoch))
+    for ie, saved_model in enumerate(saved_models):
+        if (ie == len(saved_models) - 1) or (ie % test_frequency): continue
+        start_time = time.time()
+
+        epoch = int(saved_model.split('-')[1])
+
+        model = model_from_json(open('{}/{}.json'.format(output_folder, saved_model), 'r').read())
+        model.load_weights('{}/{}.h5'.format(output_folder, saved_model))
 
         random.shuffle(candidates)
 
         # get the probabilities
         probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width), nsamples, max_q_size=200)
-        predictions = Prob2Pred(probabilities)
+        predictions = Prob2Pred(np.squeeze(probabilities))
 
         # create an array of labels
         ncorrect = 0
@@ -128,11 +129,15 @@ def LearningCurve(prefix, model_prefix, threshold, maximum_distance, network_dis
         errors.append(1.0 - ncorrect / float(nsamples))
         epochs.append(epoch)
 
+        print '[{} Loss = {} Total Time = {}]'.format(saved_model, 1.0 - ncorrect / float(nsamples), time.time() - start_time)
+
     # plot the curve
     plt.plot(epochs, errors, 'g')
-    plt.axis([0, max_epoch + test_frequency, 0, 1.0])
+    plt.axis([0, max(epochs), 0, 1.0])
     plt.xlabel('Epoch')
     plt.ylabel('Error')
     plt.title('Training Curve {}'.format(prefix))
 
     plt.savefig('{}-{}-training-curve.png'.format(model_prefix, prefix))
+
+    plt.clf()

@@ -1,6 +1,7 @@
 import time
 import numpy as np
 import os
+import math
 
 
 from ibex.utilities.constants import *
@@ -12,7 +13,12 @@ from keras.models import Sequential
 from keras.layers import Activation, BatchNormalization, Convolution3D, Dense, Dropout, Flatten, MaxPooling3D
 from keras.layers.advanced_activations import LeakyReLU
 from keras.optimizers import Adam, SGD
-from keras import backend
+import keras
+
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 
 
@@ -61,6 +67,40 @@ def DenseLayer(model, filter_size, dropout, activation, normalization):
     if normalization: model.add(BatchNormalization())
 
 
+class PlotLosses(keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        self.i = 0
+        self.x = []
+        self.losses = []
+        self.val_losses = []
+        
+        self.fig = plt.figure()
+        
+        self.logs = []
+
+    def on_epoch_end(self, epoch, logs={}):
+        
+        self.logs.append(logs)
+        self.x.append(self.i)
+        self.losses.append(logs.get('loss'))
+        self.val_losses.append(logs.get('val_loss'))
+        self.i += 1
+        
+        plt.plot(self.x, self.losses, label="loss")
+        plt.plot(self.x, self.val_losses, label="val_loss")
+        plt.legend()
+        plt.show();
+        plt.savefig('/tmp/training-curve.png')
+
+
+def scheduler_function(epoch):
+    initial_learning_rate = 0.1
+    drop = 0.5
+    epochs_drop = 10.0
+    learning_rate = initial_learning_rate * math.pow(drop, math.floor((1 + epoch) / epochs_drop))
+    return learning_rate    
+
+        
 
 def SkeletonNetwork(parameters, width):
     # identify convenient variables
@@ -70,7 +110,9 @@ def SkeletonNetwork(parameters, width):
     normalization = parameters['normalization']
     filter_sizes = parameters['filter_sizes']
     depth = parameters['depth']
+    optimizer = parameters['optimizer']
     betas = parameters['betas']
+    loss_function = parameters['loss_function']
     assert (len(filter_sizes) >= depth)
 
     model = Sequential()
@@ -96,8 +138,9 @@ def SkeletonNetwork(parameters, width):
     DenseLayer(model, 512, 0.0, activation, normalization)
     DenseLayer(model, 1, 0.0, 'sigmoid', False)
 
-    optimizer = Adam(lr=initial_learning_rate, decay=decay_rate, beta_1=betas[0], beta_2=betas[1], epsilon=1e-08)
-    model.compile(loss='mean_squared_error', optimizer=optimizer)
+    if optimizer == 'adam': opt = Adam(lr=initial_learning_rate, decay=decay_rate, beta_1=betas[0], beta_2=betas[1], epsilon=1e-08)
+    elif optimizer == 'nesterov': opt = SGD(lr=initial_learning_rate, decay=decay_rate, momentum=0.9, nesterov=True)
+    model.compile(loss=loss_function, optimizer=opt, metrics=['mean_squared_error', 'accuracy'])
     
     return model
 
@@ -118,12 +161,54 @@ def WriteLogfiles(model, model_prefix, parameters):
             fd.write('{}: {}\n'.format(parameter, parameters[parameter]))
 
 
+def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters, width):
+    # get the number of channels for the data
+    nchannels = width[0]
+
+    # read in all relevant information
+    segmentation = dataIO.ReadSegmentationData(prefix)
+    world_res = dataIO.Resolution(prefix)
+
+    # get the radii for the relevant region
+    radii = (network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X])
+
+    # determine the total number of epochs
+    if parameters['augment']: rotations = 16
+    else: rotations = 1
+
+    ncandidates = len(candidates)
+    batch_size = parameters['batch_size']
+    if rotations * ncandidates % batch_size: 
+        nbatches = (rotations * ncandidates / batch_size) + 1
+    else:
+        nbatches = (rotations * ncandidates / batch_size)
+
+    while True:
+        index = 0
+        for _ in range(nbatches):
+            examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
+            labels = np.zeros(batch_size, dtype=np.uint8)
+
+            for iv in range(batch_size):
+                # get the candidate index and the rotation
+                rotation = index / ncandidates
+                candidate = candidates[index % ncandidates]
+
+                # get the example and label
+                examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, rotation)
+                labels[iv] = candidate.ground_truth
+
+                # provide overflow relief
+                index += 1
+                if index >= ncandidates * rotations: index = 0
+            yield (examples, labels)
+
+
 
 def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters):
     # identify convenient variables
     nchannels = width[0]
     starting_epoch = parameters['starting_epoch']
-    iterations = parameters['iterations']
     batch_size = parameters['batch_size']
     initial_learning_rate = parameters['initial_learning_rate']
     decay_rate = parameters['decay_rate']
@@ -151,86 +236,100 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     # write out the network parameters to a file
     WriteLogfiles(model, model_prefix, parameters)
 
-
-    
-    # read in all relevant information
-    segmentation = dataIO.ReadSegmentationData(prefix)
-    world_res = dataIO.Resolution(prefix)
-
-    # get the radii for the relevant region
-    radii = (network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X])
-
     # get all candidates
-    candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False)
-    ncandidates = len(candidates)
+    training_candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=False)
+    ntraining_candidates = len(training_candidates)
+    validation_candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=True)
+    nvalidation_candidates = len(validation_candidates)
 
-
-
+    callbacks = []
+    
+    # stop if patience number of epochs does not improve result
+    earlyStopping=keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+    callbacks.append(earlyStopping)
+    # save the best model seen so far
+    checkpoint = keras.callbacks.ModelCheckpoint('{}-best.h5'.format(model_prefix), monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
+    callbacks.append(checkpoint)
+    plot_losses=PlotLosses()
+    callbacks.append(plot_losses)
+    scheduler = keras.callbacks.LearningRateScheduler(scheduler_function)
 
     # determine the total number of epochs
     if parameters['augment']: rotations = 16
     else: rotations = 1
 
-    if rotations * ncandidates % batch_size: 
-        nepochs = (iterations * rotations * ncandidates / batch_size) + 1
-    else:
-        nepochs = (iterations * rotations * ncandidates / batch_size)
+
+    history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
+                     (rotations * ntraining_candidates / batch_size), epochs=500, verbose=1, class_weight=weights, callbacks=callbacks,\
+                     validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(nvalidation_candidates / batch_size))
 
 
 
-    # need to adjust learning rate and load in existing weights
-    if starting_epoch == 1:
-        index = 0
-    else:
-        nexamples = starting_epoch * batch_size
-        current_learning_rate = initial_learning_rate / (1.0 + nexamples * decay_rate)
-        backend.set_value(model.optimizer.lr, current_learning_rate)
 
-        index = (starting_epoch * batch_size) % (ncandidates * rotations)
 
-        model.load_weights('{}-{}.h5'.format(model_prefix, starting_epoch))
+    # # determine the total number of epochs
+    # if parameters['augment']: rotations = 16
+    # else: rotations = 1
 
-    # iterate for every epoch
-    cumulative_time = time.time()
-    for epoch in range(starting_epoch, nepochs + 1):
+    # if rotations * ncandidates % batch_size: 
+    #     nepochs = (iterations * rotations * ncandidates / batch_size) + 1
+    # else:
+    #     nepochs = (iterations * rotations * ncandidates / batch_size)
 
-        # start statistics
-        start_time = time.time()
 
-        # create arrays for examples and labels
-        examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
-        labels = np.zeros(batch_size, dtype=np.uint8)
+    # # need to adjust learning rate and load in existing weights
+    # if starting_epoch == 1:
+    #     index = 0
+    # else:
+    #     nexamples = starting_epoch * batch_size
+    #     current_learning_rate = initial_learning_rate / (1.0 + nexamples * decay_rate)
+    #     backend.set_value(model.optimizer.lr, current_learning_rate)
 
-        for iv in range(batch_size):
-            # get the candidate index and the rotation
-            rotation = index / ncandidates
-            candidate = candidates[index % ncandidates]
+    #     index = (starting_epoch * batch_size) % (ncandidates * rotations)
 
-            # get the example and label
-            examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, rotation)
-            labels[iv] = candidate.ground_truth
+    #     model.load_weights('{}-{}.h5'.format(model_prefix, starting_epoch))
 
-            # provide overflow relief
-            index += 1
-            if index >= ncandidates * rotations: index = 0
+    # # iterate for every epoch
+    # cumulative_time = time.time()
+    # for epoch in range(starting_epoch, nepochs + 1):
+
+    #     # start statistics
+    #     start_time = time.time()
+
+    #     # create arrays for examples and labels
+    #     examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
+    #     labels = np.zeros(batch_size, dtype=np.uint8)
+
+    #     for iv in range(batch_size):
+    #         # get the candidate index and the rotation
+    #         rotation = index / ncandidates
+    #         candidate = candidates[index % ncandidates]
+
+    #         # get the example and label
+    #         examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, rotation)
+    #         labels[iv] = candidate.ground_truth
+
+    #         # provide overflow relief
+    #         index += 1
+    #         if index >= ncandidates * rotations: index = 0
         
         
-        history = model.fit(examples, labels, batch_size=batch_size, epochs=1, verbose=0, class_weight=weights, shuffle=False)
+    #     history = model.fit(examples, labels, batch_size=batch_size, epochs=1, verbose=0, class_weight=weights, shuffle=False)
 
-        # print verbosity
-        keras_time = time.time()
-        print 'KERAS [Iter {} / {}] loss = {:.7f} Total Time = {:.2f} seconds'.format(epoch, nepochs, history.history['loss'][0], keras_time - start_time)
+    #     # print verbosity
+    #     keras_time = time.time()
+    #     print 'KERAS [Iter {} / {}] loss = {:.7f} Total Time = {:.2f} seconds'.format(epoch, nepochs, history.history['loss'][0], keras_time - start_time)
         
-        # save for every 1000 examples
-        if not epoch % (1000 / batch_size):
-            json_string = model.to_json()
-            open('{}-{}.json'.format(model_prefix, epoch), 'w').write(json_string)
-            model.save_weights('{}-{}.h5'.format(model_prefix, epoch))
+    #     # save for every 1000 examples
+    #     if not epoch % (1000 / batch_size):
+    #         json_string = model.to_json()
+    #         open('{}-{}.json'.format(model_prefix, epoch), 'w').write(json_string)
+    #         model.save_weights('{}-{}.h5'.format(model_prefix, epoch))
 
-        # update the learning rate
-        nexamples = epoch * batch_size
-        current_learning_rate = initial_learning_rate / (1.0 + nexamples * decay_rate)
-        backend.set_value(model.optimizer.lr, current_learning_rate)
+    #     # # update the learning rate
+    #     # nexamples = epoch * batch_size
+    #     # current_learning_rate = initial_learning_rate / (1.0 + nexamples * decay_rate)
+    #     # backend.set_value(model.optimizer.lr, current_learning_rate)
 
 
 
