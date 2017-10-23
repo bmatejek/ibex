@@ -33,5 +33,6 @@
 \#*
 *~
 build/
+algorithms/multicut.cpp
 transforms/seg2seg.cpp
 transforms/seg2gold.cpp
