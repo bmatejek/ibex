@@ -68,6 +68,10 @@ def DenseLayer(model, filter_size, dropout, activation, normalization):
 
 
 class PlotLosses(keras.callbacks.Callback):
+    def __init__(self, model_prefix):
+        super(PlotLosses, self).__init__()
+        self.model_prefix = model_prefix
+
     def on_train_begin(self, logs={}):
         self.i = 0
         self.x = []
@@ -90,15 +94,15 @@ class PlotLosses(keras.callbacks.Callback):
         plt.plot(self.x, self.val_losses, label="val_loss")
         plt.legend()
         plt.show();
-        plt.savefig('/tmp/training-curve.png')
+        plt.savefig('{}-training-curve.png'.format(self.model_prefix))
 
 
-def scheduler_function(epoch):
-    initial_learning_rate = 0.1
-    drop = 0.5
-    epochs_drop = 10.0
-    learning_rate = initial_learning_rate * math.pow(drop, math.floor((1 + epoch) / epochs_drop))
-    return learning_rate    
+# def scheduler_function(epoch):
+#     initial_learning_rate = 0.1
+#     drop = 0.5
+#     epochs_drop = 10.0
+#     learning_rate = initial_learning_rate * math.pow(drop, math.floor((1 + epoch) / epochs_drop))
+#     return learning_rate    
 
         
 
@@ -242,17 +246,20 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     validation_candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=True)
     nvalidation_candidates = len(validation_candidates)
 
+    # create a set of keras callbacks
     callbacks = []
     
     # stop if patience number of epochs does not improve result
-    earlyStopping=keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
-    callbacks.append(earlyStopping)
+    early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+    callbacks.append(early_stopping)
+    
     # save the best model seen so far
     checkpoint = keras.callbacks.ModelCheckpoint('{}-best.h5'.format(model_prefix), monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
     callbacks.append(checkpoint)
-    plot_losses=PlotLosses()
+    
+    # plot the loss functions
+    plot_losses = PlotLosses(model_prefix)
     callbacks.append(plot_losses)
-    scheduler = keras.callbacks.LearningRateScheduler(scheduler_function)
 
     # determine the total number of epochs
     if parameters['augment']: rotations = 16
@@ -261,77 +268,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
 
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
                      (rotations * ntraining_candidates / batch_size), epochs=500, verbose=1, class_weight=weights, callbacks=callbacks,\
-                     validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(nvalidation_candidates / batch_size))
-
-
-
-
-
-    # # determine the total number of epochs
-    # if parameters['augment']: rotations = 16
-    # else: rotations = 1
-
-    # if rotations * ncandidates % batch_size: 
-    #     nepochs = (iterations * rotations * ncandidates / batch_size) + 1
-    # else:
-    #     nepochs = (iterations * rotations * ncandidates / batch_size)
-
-
-    # # need to adjust learning rate and load in existing weights
-    # if starting_epoch == 1:
-    #     index = 0
-    # else:
-    #     nexamples = starting_epoch * batch_size
-    #     current_learning_rate = initial_learning_rate / (1.0 + nexamples * decay_rate)
-    #     backend.set_value(model.optimizer.lr, current_learning_rate)
-
-    #     index = (starting_epoch * batch_size) % (ncandidates * rotations)
-
-    #     model.load_weights('{}-{}.h5'.format(model_prefix, starting_epoch))
-
-    # # iterate for every epoch
-    # cumulative_time = time.time()
-    # for epoch in range(starting_epoch, nepochs + 1):
-
-    #     # start statistics
-    #     start_time = time.time()
-
-    #     # create arrays for examples and labels
-    #     examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
-    #     labels = np.zeros(batch_size, dtype=np.uint8)
-
-    #     for iv in range(batch_size):
-    #         # get the candidate index and the rotation
-    #         rotation = index / ncandidates
-    #         candidate = candidates[index % ncandidates]
-
-    #         # get the example and label
-    #         examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, rotation)
-    #         labels[iv] = candidate.ground_truth
-
-    #         # provide overflow relief
-    #         index += 1
-    #         if index >= ncandidates * rotations: index = 0
-        
-        
-    #     history = model.fit(examples, labels, batch_size=batch_size, epochs=1, verbose=0, class_weight=weights, shuffle=False)
-
-    #     # print verbosity
-    #     keras_time = time.time()
-    #     print 'KERAS [Iter {} / {}] loss = {:.7f} Total Time = {:.2f} seconds'.format(epoch, nepochs, history.history['loss'][0], keras_time - start_time)
-        
-    #     # save for every 1000 examples
-    #     if not epoch % (1000 / batch_size):
-    #         json_string = model.to_json()
-    #         open('{}-{}.json'.format(model_prefix, epoch), 'w').write(json_string)
-    #         model.save_weights('{}-{}.h5'.format(model_prefix, epoch))
-
-    #     # # update the learning rate
-    #     # nexamples = epoch * batch_size
-    #     # current_learning_rate = initial_learning_rate / (1.0 + nexamples * decay_rate)
-    #     # backend.set_value(model.optimizer.lr, current_learning_rate)
-
-
+                     validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
 
     # save the fully trained model
     json_string = model.to_json()
