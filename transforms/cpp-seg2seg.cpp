@@ -5,9 +5,9 @@
 
 
 
-unsigned long *CppMapLabels(unsigned long *segmentation, unsigned long *mapping, unsigned long nentries)
+long *CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
 {
-  unsigned long *updated_segmentation = new unsigned long[nentries];
+  long *updated_segmentation = new long[nentries];
   
   for (unsigned long iv = 0; iv < nentries; ++iv) {
     updated_segmentation[iv] = mapping[segmentation[iv]];
@@ -18,14 +18,14 @@ unsigned long *CppMapLabels(unsigned long *segmentation, unsigned long *mapping,
 
 
 
-unsigned long *CppRemoveSmallConnectedComponents(unsigned long *segmentation, int threshold, unsigned long nentries)
+long *CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long nentries)
 {
   if (threshold == 0) return segmentation;
   
   /* TODO can I assume that there are an integer number of voxels */
 
   // find the maximum label
-  unsigned long max_segment_label = 0;
+  long max_segment_label = 0;
   for (unsigned long iv = 0; iv < nentries; ++iv) {
     if (segmentation[iv] > max_segment_label) max_segment_label = segmentation[iv];
   }
@@ -33,7 +33,7 @@ unsigned long *CppRemoveSmallConnectedComponents(unsigned long *segmentation, in
   
   // create a counter array for the number of voxels
   int *nvoxels_per_segment = new int[max_segment_label];
-  for (unsigned long iv = 0; iv < max_segment_label; ++iv) {
+  for (long iv = 0; iv < max_segment_label; ++iv) {
     nvoxels_per_segment[iv] = 0;
   }
   
@@ -76,11 +76,11 @@ long IndiciesToIndex(long ix, long iy, long iz)
 
 
 
-unsigned long *CppForceConnectivity(unsigned long *segmentation, long zres, long yres, long xres)
+long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
 {
   // create the new components array
   unsigned long nentries = zres * yres * xres;
-  unsigned long *components = new unsigned long[nentries];
+  long *components = new long[nentries];
   for (unsigned long iv = 0; iv < nentries; ++iv)
     components[iv] = 0;
 
@@ -92,8 +92,8 @@ unsigned long *CppForceConnectivity(unsigned long *segmentation, long zres, long
   // create the queue of labels
   std::queue<unsigned long> pixels = std::queue<unsigned long>();
 
-  unsigned long current_index = 0;
-  unsigned long current_label = 1;
+  long current_index = 0;
+  long current_label = 1;
 
   while (current_index < nentries) {
     // set this component and add to the queue
@@ -132,8 +132,8 @@ unsigned long *CppForceConnectivity(unsigned long *segmentation, long zres, long
   }
 
   // create a list of mappings
-  unsigned long max_segment = 0;
-  unsigned long max_component = 0;
+  long max_segment = 0;
+  long max_component = 0;
   for (unsigned long iv = 0; iv < nentries; ++iv) {
     if (segmentation[iv] > max_segment) max_segment = segmentation[iv];
     if (components[iv] > max_component) max_component = components[iv];
@@ -141,27 +141,27 @@ unsigned long *CppForceConnectivity(unsigned long *segmentation, long zres, long
   max_segment++;
   max_component++;
 
-  std::set<unsigned long> *seg2comp = new std::set<unsigned long>[max_segment];
-  for (unsigned long iv = 0; iv < max_segment; ++iv)
-    seg2comp[iv] = std::set<unsigned long>();
+  std::set<long> *seg2comp = new std::set<long>[max_segment];
+  for (long iv = 0; iv < max_segment; ++iv)
+    seg2comp[iv] = std::set<long>();
 
   // see if any segments have multiple components
-  for (unsigned long iv = 0; iv < nentries; ++iv) {
+  for (long iv = 0; iv < nentries; ++iv) {
     seg2comp[segmentation[iv]].insert(components[iv]);
   }
 
-  unsigned long overflow = max_segment;
-  unsigned long *comp2seg = new unsigned long[max_component];
+  long overflow = max_segment;
+  long *comp2seg = new long[max_component];
   for (unsigned long iv = 1; iv < max_segment; ++iv) {
     if (seg2comp[iv].size() == 1) {
       // get the component for this segment
-      unsigned long component = *(seg2comp[iv].begin());
+      long component = *(seg2comp[iv].begin());
       comp2seg[component] = iv;
     }
     else {
       // iterate over the set
-      for (std::set<unsigned long>::iterator it = seg2comp[iv].begin(); it != seg2comp[iv].end(); ++it) {
-        unsigned long component = *it;
+      for (std::set<long>::iterator it = seg2comp[iv].begin(); it != seg2comp[iv].end(); ++it) {
+        long component = *it;
 
         // one of the components keeps the label
         if (it == seg2comp[iv].begin()) comp2seg[component] = iv;
@@ -181,7 +181,7 @@ unsigned long *CppForceConnectivity(unsigned long *segmentation, long zres, long
   }
 
   // print out the segments which have multiple components
-  for (unsigned long iv = 0; iv < max_segment; ++iv) {
+  for (long iv = 0; iv < max_segment; ++iv) {
     if (seg2comp[iv].size() > 1) printf("%lu\n", iv);
   }
 

@@ -1,1 +1,1 @@
-unsigned long *CppMapping(unsigned long *segmentation, unsigned int *gold, long nentries);
+long *CppMapping(long *segmentation, int *gold, long nentries, double low_threshold, double high_threshold);
