@@ -83,12 +83,11 @@ class PlotLosses(keras.callbacks.Callback):
         self.logs = []
 
     def on_epoch_end(self, epoch, logs={}):
-        
         self.logs.append(logs)
         self.x.append(self.i)
         self.losses.append(logs.get('loss'))
         self.val_losses.append(logs.get('val_loss'))
-        self.i += 1
+        self.i = self.i + 1
         
         plt.plot(self.x, self.losses, label="loss")
         plt.plot(self.x, self.val_losses, label="val_loss")
@@ -97,14 +96,6 @@ class PlotLosses(keras.callbacks.Callback):
         plt.savefig('{}-training-curve.png'.format(self.model_prefix))
 
 
-# def scheduler_function(epoch):
-#     initial_learning_rate = 0.1
-#     drop = 0.5
-#     epochs_drop = 10.0
-#     learning_rate = initial_learning_rate * math.pow(drop, math.floor((1 + epoch) / epochs_drop))
-#     return learning_rate    
-
-        
 
 def SkeletonNetwork(parameters, width):
     # identify convenient variables
@@ -123,24 +114,24 @@ def SkeletonNetwork(parameters, width):
 
     ConvolutionalLayer(model, filter_sizes[0], (3, 3, 3), 'valid', activation, normalization, width)
     ConvolutionalLayer(model, filter_sizes[0], (3, 3, 3), 'valid', activation, normalization)
-    PoolingLayer(model, (1, 2, 2), 0.0, normalization)
+    PoolingLayer(model, (1, 2, 2), 0.2, normalization)
 
     ConvolutionalLayer(model, filter_sizes[1], (3, 3, 3), 'valid', activation, normalization)
     ConvolutionalLayer(model, filter_sizes[1], (3, 3, 3), 'valid', activation, normalization)
-    PoolingLayer(model, (1, 2, 2), 0.0, normalization)
+    PoolingLayer(model, (1, 2, 2), 0.2, normalization)
 
     ConvolutionalLayer(model, filter_sizes[2], (3, 3, 3), 'valid', activation, normalization)
     ConvolutionalLayer(model, filter_sizes[2], (3, 3, 3), 'valid', activation, normalization)
-    PoolingLayer(model, (2, 2, 2), 0.0, normalization)
+    PoolingLayer(model, (2, 2, 2), 0.2, normalization)
 
     if depth > 3:
         ConvolutionalLayer(model, filter_sizes[3], (3, 3, 3), 'valid', activation, normalization)
         ConvolutionalLayer(model, filter_sizes[3], (3, 3, 3), 'valid', activation, normalization)
-        PoolingLayer(model, (2, 2, 2), 0.0, normalization)
+        PoolingLayer(model, (2, 2, 2), 0.2, normalization)
 
     FlattenLayer(model)
-    DenseLayer(model, 512, 0.0, activation, normalization)
-    DenseLayer(model, 1, 0.0, 'sigmoid', False)
+    DenseLayer(model, 512, 0.2, activation, normalization)
+    DenseLayer(model, 1, 0.5, 'sigmoid', False)
 
     if optimizer == 'adam': opt = Adam(lr=initial_learning_rate, decay=decay_rate, beta_1=betas[0], beta_2=betas[1], epsilon=1e-08)
     elif optimizer == 'nesterov': opt = SGD(lr=initial_learning_rate, decay=decay_rate, momentum=0.9, nesterov=True)
@@ -254,9 +245,13 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     callbacks.append(early_stopping)
     
     # save the best model seen so far
-    checkpoint = keras.callbacks.ModelCheckpoint('{}-best.h5'.format(model_prefix), monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
-    callbacks.append(checkpoint)
-    
+    best_loss = keras.callbacks.ModelCheckpoint('{}-best-loss.h5'.format(model_prefix), monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
+    callbacks.append(best_loss)
+    best_acc = keras.callbacks.ModelCheckpoint('{}-best-acc.h5'.format(model_prefix), monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
+    callbacks.append(best_acc)
+    all_models = keras.callbacks.ModelCheckpoint(model_prefix + '-{epoch:03d}.h5', verbose=0, save_best_only=False, save_weights_only=True)
+    callbacks.append(all_models)
+
     # plot the loss functions
     plot_losses = PlotLosses(model_prefix)
     callbacks.append(plot_losses)
@@ -265,12 +260,13 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     if parameters['augment']: rotations = 16
     else: rotations = 1
 
-
-    history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
-                     (rotations * ntraining_candidates / batch_size), epochs=500, verbose=1, class_weight=weights, callbacks=callbacks,\
-                     validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
-
-    # save the fully trained model
+    # save the json file
     json_string = model.to_json()
     open('{}.json'.format(model_prefix), 'w').write(json_string)
-    model.save_weights('{}.h5'.format(model_prefix))        
+    
+    history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
+                    (rotations * ntraining_candidates / batch_size), epochs=500, verbose=1, class_weight=weights, callbacks=callbacks,\
+                    validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
+
+    # save the fully trained model
+    model.save_weights('{}.h5'.format(model_prefix))

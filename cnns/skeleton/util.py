@@ -1,4 +1,6 @@
 import struct
+import os
+
 import numpy as np
 from numba import jit
 from ibex.utilities import dataIO
@@ -19,9 +21,9 @@ def FindCandidates(prefix, threshold, maximum_distance, network_distance, infere
     if inference:
         filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     elif validation:
-        filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+        filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     else:
-        filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+        filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
 
     # read the candidate filename
     with open(filename, 'rb') as fd:
@@ -102,6 +104,11 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
 
 # save the features for viewing
 def SaveFeatures(prefix, threshold, maximum_distance, network_distance):
+    # make sure the folder for this model prefix exists
+    output_folder = 'features/skeleton/{}'.format(prefix)
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
     # read in relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     grid_size = segmentation.shape
@@ -125,5 +132,5 @@ def SaveFeatures(prefix, threshold, maximum_distance, network_distance):
         compressed_output[example[0,:,:,:,1] == 1] = 2
 
         # save the output file
-        filename = 'features/skeleton/{}/{}-{}nm-{:05d}.h5'.format(prefix, threshold, maximum_distance, iv)
+        filename = 'features/skeleton/{}/{}-{}nm-{}nm-{:05d}.h5'.format(prefix, threshold, maximum_distance, network_distance, iv)
         dataIO.WriteH5File(compressed_output, filename, 'main')

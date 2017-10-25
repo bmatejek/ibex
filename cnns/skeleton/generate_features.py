@@ -114,33 +114,8 @@ def FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distan
                 candidates.add(neighbor_label)
 
 
-### OPEN QUESTIONS ###
-### SHOULD I ONLY INCLUDE THE  CLOSEST DISTANCE BETWEEN TWO SEGMENT OR ONLY BETWEEN ENDPOINTS ###
-@jit(nopython=True)
-def GroundTruthNeighbors(segmentation):
-    zres, yres, xres = segmentation.shape
-
-    max_label = np.amax(segmentation) + 1
-    neighbors = np.zeros((max_label, max_label), dtype=np.uint8)
-
-
-    for iz in range(zres):
-        for iy in range(yres):
-            for ix in range(xres):
-                if iz > 0 and not segmentation[iz,iy,ix] == segmentation[iz-1,iy,ix]:
-                    neighbors[segmentation[iz,iy,ix],segmentation[iz-1,iy,ix]] = True
-                    neighbors[segmentation[iz-1,iy,ix],segmentation[iz,iy,ix]] = True
-                if iy > 0 and not segmentation[iz,iy,ix] == segmentation[iz,iy-1,ix]:
-                    neighbors[segmentation[iz,iy,ix],segmentation[iz,iy-1,ix]] = True
-                    neighbors[segmentation[iz,iy-1,ix],segmentation[iz,iy,ix]] = True
-                if ix > 0 and not segmentation[iz,iy,ix] == segmentation[iz,iy,ix-1]:
-                    neighbors[segmentation[iz,iy,ix],segmentation[iz,iy,ix-1]] = True
-                    neighbors[segmentation[iz,iy,ix-1],segmentation[iz,iy,ix]] = True
-
-    return neighbors
-
 # generate features for this prefix
-def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endpoint_distance):
+def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endpoint_distance, training_data):
     # read in the relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     gold = dataIO.ReadGoldData(prefix)
@@ -260,13 +235,14 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
             else: negative_candidates.append(candidate)
 
     # save the files
-    train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    validation_filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    validation_filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     forward_filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     undetermined_filename = 'features/skeleton/{}-{}-{}nm-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance, network_distance)
 
-    SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
-    SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
+    if training_data:
+        SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
+        SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
     SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
     SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
 
