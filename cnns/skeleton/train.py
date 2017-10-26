@@ -94,7 +94,7 @@ class PlotLosses(keras.callbacks.Callback):
         plt.legend()
         plt.show();
         plt.savefig('{}-training-curve.png'.format(self.model_prefix))
-
+        plt.gcf().clear()
 
 
 def SkeletonNetwork(parameters, width):
@@ -225,8 +225,15 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
+
+
     # open up the log file with no buffer
     logfile = open('{}.log'.format(model_prefix), 'w', 0) 
+
+    # if the file exists do not continue
+    if os.path.isfile(logfile) and starting_epoch == 1:
+        sys.stderr.write('Discovered {}, exiting'.format(logfile))
+        sys.exit()
 
     # write out the network parameters to a file
     WriteLogfiles(model, model_prefix, parameters)
@@ -264,6 +271,9 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     json_string = model.to_json()
     open('{}.json'.format(model_prefix), 'w').write(json_string)
     
+    if not starting_epoch == 1:
+        model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
+
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
                     (rotations * ntraining_candidates / batch_size), epochs=500, verbose=1, class_weight=weights, callbacks=callbacks,\
                     validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
