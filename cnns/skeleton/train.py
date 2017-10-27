@@ -178,8 +178,8 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters,
     else:
         nbatches = (rotations * ncandidates / batch_size)
 
-    examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
-    labels = np.zeros(batch_size, dtype=np.uint8)
+    examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.float32)
+    labels = np.zeros(batch_size, dtype=np.float32)
     
     while True:
         index = 0

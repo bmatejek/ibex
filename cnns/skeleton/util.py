@@ -46,8 +46,8 @@ def ScaleSegment(segment, width, labels):
     nchannels = width[0]
 
     # create the example to be returned
-    example = np.zeros((1, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
-
+    example = np.zeros((1, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.float32)
+    
     # iterate over the example coordinates
     for iz in range(width[IB_Z + 1]):
         for iy in range(width[IB_Y + 1]):
@@ -56,7 +56,7 @@ def ScaleSegment(segment, width, labels):
                 iw = int(float(zres) / float(width[IB_Z + 1]) * iz)
                 iv = int(float(yres) / float(width[IB_Y + 1]) * iy)
                 iu = int(float(xres) / float(width[IB_X + 1]) * ix)
-                
+
                 if nchannels == 1 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
                     example[0,0,iz,iy,ix] = 1
                 else:
@@ -68,6 +68,8 @@ def ScaleSegment(segment, width, labels):
                     # add third channel 
                     if nchannels == 3 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
                         example[0,2,iz,iy,ix] = 1
+
+    example = example - 0.5
 
     return example
 
