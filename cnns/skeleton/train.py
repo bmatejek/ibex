@@ -228,7 +228,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
 
 
     # open up the log file with no buffer
-    logfile = open('{}.log'.format(model_prefix), 'w', 0) 
+    logfile = '{}.log'.format(model_prefix)
 
     # if the file exists do not continue
     if os.path.isfile(logfile) and starting_epoch == 1:
