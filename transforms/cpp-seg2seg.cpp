@@ -180,11 +180,6 @@ long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
     else components[iv] = comp2seg[components[iv]];
   }
 
-  // print out the segments which have multiple components
-  for (long iv = 0; iv < max_segment; ++iv) {
-    if (seg2comp[iv].size() > 1) printf("%lu\n", iv);
-  }
-
   // free memory
   delete[] seg2comp;
   delete[] comp2seg;
