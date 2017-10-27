@@ -1,4 +1,3 @@
-import time
 import numpy as np
 import os
 import sys
@@ -179,12 +178,12 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters,
     else:
         nbatches = (rotations * ncandidates / batch_size)
 
+    examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
+    labels = np.zeros(batch_size, dtype=np.uint8)
+    
     while True:
         index = 0
         for _ in range(nbatches):
-            examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
-            labels = np.zeros(batch_size, dtype=np.uint8)
-
             for iv in range(batch_size):
                 # get the candidate index and the rotation
                 rotation = index / ncandidates
@@ -197,6 +196,7 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters,
                 # provide overflow relief
                 index += 1
                 if index >= ncandidates * rotations: index = 0
+                
             yield (examples, labels)
 
 
@@ -216,8 +216,6 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     
     # set up the keras model
     model = SkeletonNetwork(parameters, width)
-
-
     
     # make sure the folder for the model prefix exists
     root_location = model_prefix.rfind('/')
