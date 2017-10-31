@@ -37,7 +37,7 @@ After skeletonization, we proceed to identify locations between segments that we
 	\label{fig:skeletonization}
 \end{figure}
 
-\begin{algorithm}
+%\begin{algorithm}
 	\begin{algorithmic}
 		\Function{GenerateEdges}{$skeletons$}
 			\For {$skeleton$ in $skeletons$}
@@ -48,9 +48,9 @@ After skeletonization, we proceed to identify locations between segments that we
 			\EndFor
 		\EndFunction
 	\end{algorithmic}
-	\caption{Edge generation function}
-	\label{alg:generate-edges}
-\end{algorithm}
+%	\caption{Edge generation function}
+%	\label{alg:generate-edges}
+%\end{algorithm}
 \subsection{Edge Probabilities}
 
 The previous section outlines how to generate edges between nodes in our graph structure. Here we will introduce a neural network architecture for generating probabilities that two nodes sharing an edge belong to the same neuron. The neural network takes as input only data from the input segmentation. 
