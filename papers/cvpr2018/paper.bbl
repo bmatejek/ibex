@@ -1,0 +1,43 @@
+\begin{thebibliography}{1}\itemsep=-1pt
+
+\bibitem{chatfield2014return}
+K.~Chatfield, K.~Simonyan, A.~Vedaldi, and A.~Zisserman.
+\newblock Return of the devil in the details: Delving deep into convolutional
+  nets.
+\newblock {\em arXiv preprint arXiv:1405.3531}, 2014.
+
+\bibitem{funahashi1989approximate}
+K.-I. Funahashi.
+\newblock On the approximate realization of continuous mappings by neural
+  networks.
+\newblock {\em Neural networks}, 2(3):183--192, 1989.
+
+\bibitem{kernighan1970efficient}
+B.~W. Kernighan and S.~Lin.
+\newblock An efficient heuristic procedure for partitioning graphs.
+\newblock {\em The Bell system technical journal}, 49(2):291--307, 1970.
+
+\bibitem{maas2013rectifier}
+A.~L. Maas, A.~Y. Hannun, and A.~Y. Ng.
+\newblock Rectifier nonlinearities improve neural network acoustic models.
+\newblock In {\em Proc. ICML}, volume~30, 2013.
+
+\bibitem{nesterov1983method}
+Y.~Nesterov.
+\newblock A method of solving a convex programming problem with convergence
+  rate o (1/k2).
+
+\bibitem{sato2000teasar}
+M.~Sato, I.~Bitter, M.~A. Bender, A.~E. Kaufman, and M.~Nakajima.
+\newblock Teasar: Tree-structure extraction algorithm for accurate and robust
+  skeletons.
+\newblock In {\em Computer Graphics and Applications, 2000. Proceedings. The
+  Eighth Pacific Conference on}, pages 281--449. IEEE, 2000.
+
+\bibitem{zhao2014automatic}
+T.~Zhao and S.~M. Plaza.
+\newblock Automatic neuron type identification by neurite localization in the
+  drosophila medulla.
+\newblock {\em arXiv preprint arXiv:1409.1892}, 2014.
+
+\end{thebibliography}

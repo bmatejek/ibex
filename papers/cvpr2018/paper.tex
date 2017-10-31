@@ -10,6 +10,8 @@
 \usepackage{subcaption}
 \usepackage{booktabs}
 \usepackage{makecell}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
 
 
 % Include other packages here, before hyperref.
@@ -21,7 +23,7 @@
 
 % \cvprfinalcopy % *** Uncomment this line for the final submission
 
-\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\cvprPaperID{446} % *** Enter the CVPR Paper ID here
 \def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
 
 % Pages are numbered in submission mode, and unnumbered in camera-ready
@@ -52,7 +54,7 @@ Cambridge, MA 02138, USA\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-THE ABSTRACT
+Advanced in electron microscopy (EM) image acquisitions has created massive petabyte datasets that are too large for complete manual segmentation. Previous automatic segmentation algorithms work by applying various techniques at the per-voxel level. Oftentimes an agglomeration strategy will build on the per-voxel results to create larger clusters of supervoxels. These results provide a good baseline but are not scalable with the size of the data. We propose a novel framework for building on top of these agglomeration strategies that scales with larger datasets using graph-based optimization strategies. 
 \end{abstract}
 
 %%%%%%%%% BODY TEXT

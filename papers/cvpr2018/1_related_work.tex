@@ -1,4 +1,12 @@
 \section{Related Work}
+Much works has gone into segmentation algorithms at the per-pixel level in connectomics and more generally computer vision. Early advances in connectomics worked on generating segmentations by applying multi-cut algorithms to raw pixel values. More recently, 3D convolutional neural networks predict voxel membrane probabilities and affinities between voxels (CITE VD2D3D, U-Net, SriniNET). Recently, U-Net has been very successful in a wide range of segmentation tasks in the large medical imaging community. When generating affinities, every voxel has three outputs corresponding to the probability that the voxel (x, y, z) belongs to the same neuron as (x + 1, y, z), (x, y + 1, z) and (x, y, z + 1). 
+Most connectomics segmentation pipelines begin by predicting membrane probabilities or voxel affinities and agglomerating voxels using this information. Zwatershed is a common 3D agglomeration strategy that builds on the output of voxel affinities (CITE ZWATERSHED). However, these methods fall short of the desired accuracy and thus the pipelines often rely on random forest classifiers to merge the oversegmented supervoxels. GALA and NeuroProof train random forest classifiers with hand designed shape features at various RESOLUTIONS.   
+Recently, (CITE Srini) has attempted to generate the segmentation with a front-to-back artificial neural network. These flood filling networks have shown some process are expensive to run and have not been applied to large datasets. 
+There has been extensive research into the skeletonization of 3D binary volumes in computer graphics, mathematics, and biomedical visualization. (CITE) focus on generation of topologically consistent skeletons using linear recursive methods. In the graphics community, extensive research has considered the medial axis problem of 3D renderings (CITE). In the field of connectomics, the Tree-structure Extraction Algorithm for Accurate and Robust Skeletons (TEASER) computes skeletons for individual neurons in EM images. 
+
+
+
+
 
 \begin{itemize}
 	\item Connectomics in general
