@@ -9,15 +9,23 @@ An extensive amount of research in computer vision, applied mathematics, and sta
 
 These above neural networks generate probabilities that neighboring voxels belong to the same neuron.
 Many algorithms work at a level above these networks and train random-forest classifiers to produce segmentations of the EM images where every unique neuron in the volume has a unique label~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image} (CITE NEUROPROOF). 
+Despite the success of these classifiers, they often make mistakes based on the local information leading to errors in the segmentation. 
+Proofreading methods create a ``human-in-the-loop" framework that allows users to find errors and correct them \cite{haehn2017scalable,haehn2017guided,haehn2014design,DBLP:journals/corr/abs-1708-02599}. 
+More recently, flood-filling networks merge the process of generating voxel affinities and then producing segmentations by training an end-to-end neural network that outputs segmentations~\cite{januszewski2016flood}. 
+Although these networks produce impressive segmentation accuracies, they are currently too slow for large scale connectomics reconstructions. 
 
+Many segmentation and clustering algorithms use graph partitioning techniques~\cite{andres2012globally}. 
+The multicut graph partitioning algorithm extracts segments the graph and remove edges such that there are no cycles. 
+This closely resembles the biological constraint that neurons have a topological genus of zero. 
+There are several useful multicut heuristics which provide good approximations with reasonable computational costs~\cite{horvnakova2017analysis,kernighan1970efficient,keuper2015efficient}
 
+A sizable amount of computer vision research analyzes various hand-designed shape features for determining similarity between objects~\cite{osada2002shape} and for segmentation\cite{conners1984segmentation}. 
+Currently, the random-forest classifiers used in connectomics rely on hand-designed features to make merge decisions.
+Some of these features encode the distribution of probabilities that voxels along a segment boundary belong to the same neuron as their neighbors~\cite{nunez2014graph,ren2003learning}.
+However, there is evidence that machine-learned features outperform hand-designed ones~\cite{bogovic2013learned}.
 
-Despite the successes of these algorithms they often make early local mistakes leading to errors in the segmentation. Proofreading methods create a "human-in-the-loop" framework that allows users to find errors and correct them \cite{haehn2017scalable,haehn2017guided,haehn2014design}. Flood-filling networks merge these two steps by training an end-to-end network that takes as input raw image data and produces a segmentation \cite{januszewski2016flood}. Although these networks have produced impressed segmentation accuracies, they are currently too slow for large scale connectomics reconstructions. 
-
-ADD SECTION ON CORRECTING SPLIT ERRORS
-
-The fields of computer graphics, mathematics, and biomedical visualization have produced extensive research into the skeletonization of 3D binary volumes. A large amount of research has explored topologically consistent thinning algorithms and potential medical applications of these methods \cite{palagyi20003d,palagyi2001sequential}. In computer graphics, fast medial axis algorithms allow animators to quickly move characters through successive frames \cite{baran2007automatic,bharaj2012automatically}. The Tree-structure Extraction Algorithm for Accurate and Robust Skeletons (TEASER) has been used by connectomics researchers to parameterize 3-D shapes \cite{sato2000teasar,zhao2014automatic}. 
-
-ADD SECTION ON LEARNED SHAPE FEATURES
-
-ADD SECTION ON GRAPH PARTITIONING
+The fields of computer graphics, mathematics, and biomedical visualization produce extensive research into the skeletonization of 3D binary volumes. 
+Some of the research explores topologically consistent thinning algorithms and potential medical applications of these methods~\cite{palagyi20003d,palagyi2001sequential}. 
+In computer graphics, fast medial axis algorithms allow animators to quickly move characters through successive frames~\cite{baran2007automatic,bharaj2012automatically}. 
+In these works, the skeleton acts as the simplest representation of a 3-D volume. 
+The Tree-structure Extraction Algorithm for Accurate and Robust Skeletons (TEASER) has been used by connectomics researchers to parameterize 3-D shapes~\cite{sato2000teasar,zhao2014automatic}. 
