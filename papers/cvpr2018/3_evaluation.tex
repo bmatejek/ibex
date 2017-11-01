@@ -3,11 +3,11 @@
 \subsection{Datasets}
 
 We evaluate our methods on three EM datasets. 
+TODO: Toufiq: add description of the EM datasets (volume size, resolution, type of animal, type of image scan)
 
 \subsubsection{NeuroProof Pipeline}
-
+\label{sec:neuroproof}
 Our methods build on top of existing agglomeration strategies. For the purpose of this paper we used the outputs from two established pipelines. 
-
 TODO: Toufiq description of neuroproof pipeline, description of FlyEM pipeline
 
 \subsection{Preprocessing}
@@ -22,4 +22,6 @@ DISCUSS PARAMETERS FOR CLASSIFICATION
 
 \subsection{Graph Optimization}
 
-We evaluate the improvement of using a graph optimization strategy over a na\"ive approach that performs hierarchical clustering for all segments above a certain threshold. 
+We evaluate the improvement of using a graph optimization strategy over a na\"ive approach that performs hierarchical clustering for all segments above a certain threshold.
+Using a heuristic for multicut prevents the creation of cycles. 
+Using a simple agglomeration strategy generates this many cycles. 
