@@ -19,6 +19,12 @@ G.~Bharaj, T.~Thorm{\"a}hlen, H.-P. Seidel, and C.~Theobalt.
 \newblock In {\em Computer Graphics Forum}, volume~31, pages 755--764. Wiley
   Online Library, 2012.
 
+\bibitem{bogovic2013learned}
+J.~A. Bogovic, G.~B. Huang, and V.~Jain.
+\newblock Learned versus hand-designed feature representations for 3d
+  agglomeration.
+\newblock {\em arXiv preprint arXiv:1312.6159}, 2013.
+
 \bibitem{chatfield2014return}
 K.~Chatfield, K.~Simonyan, A.~Vedaldi, and A.~Zisserman.
 \newblock Return of the devil in the details: Delving deep into convolutional

@@ -54,7 +54,13 @@ Cambridge, MA 02138, USA\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Advanced in electron microscopy (EM) image acquisitions has created massive petabyte datasets that are too large for complete manual segmentation. Previous automatic segmentation algorithms work by applying various techniques at the per-voxel level. Oftentimes an agglomeration strategy will build on the per-voxel results to create larger clusters of supervoxels. These results provide a good baseline but are not scalable with the size of the data. We propose a novel framework for building on top of these agglomeration strategies that scales with larger datasets using graph-based optimization strategies. 
+Advancements in electron microscopy image acquisition has created massive datasets petabytes in size that are too large for complete manual segmentation. 
+Several previous strategies for automatic segmentation of these datasets rely work at the per-voxel level.
+Oftentimes, agglomeration strategies build on top of this layer to produce neuron reconstructions.
+Despite the success of these algorithms, there is significant room for improvement.
+Here, we propose a novel framework for correcting errors in existing agglomeration strategies. 
+We create a level of abstraction on top of the existing methods by reformulating the segmentations as a graph and applying global graph-based optimization strategies. 
+In the process we provide key insights into the use of machine-learned shape features for fixing errors. 
 \end{abstract}
 
 %%%%%%%%% BODY TEXT

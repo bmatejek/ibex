@@ -7,10 +7,26 @@
 	\includegraphics[width=0.42\linewidth]{./figures/intro-cube.png}
 \end{figure}
 
-Connectomics, the field of large-scale nanometer reconstruction of the wiring diagram of the brain, has created datasets petabytes in size. With recent advancements in image acquisition, neuroscientists are producing a terabyte of raw electron micronscopy image data every hour \cite{hildebrand2017whole}. Needless to say, it is impossible for domain experts to manually label this bulk of 3-D image data. However, many neuroscientists believe that they will be able to explore new insights into the workings of the brain by creating a complete wiring diagram of the brain \cite{kasthuri2015saturated}. These observations will create new advancements in neuromedicine, artificial intelligence, and (CITE). 
+The field of connectomics concerns the wiring diagram of the brain at nanometer resolutions. 
+Recent advancements in image acquisition using serial-section electron microscopy (ssEM) has allowed neuroscientists to produce a terabyte of electron micrscopy (EM) image data every hour~\cite{hildebrand2017whole}.
+It is not feasible for domain experts to manually segment the vast amount of 3-D image data to model an entire brain.
+Neuroscientists believe that reconstructing an entire mammilian brain at fine resolution will enable new insights into the workings of the brain~\cite{kasthuri2015saturated}. 
+These observations will allow for new advancements in neuromedicine and artificial intelligence (CITE). 
 
-The access to significant datasets and potential for significant scientific contributions to the field of medicine has created a ripe environment for automatic reconstruction of these EM images. Significant research in the field has focused on extracting complete neuron reconstructions using the raw EM images. These techniques use only the image values acquired from the microscopes to agglomerate pixels into neuron predictions. Frequently, convolutional neural networks predict affinities between pixels \cite{ronneberger2015u,lee2015recursive}. 
+A significant amount of research focuses on automatic reconstruction of the neurons in these EM images because of the scope and importance of the problem. 
+Several of these algorithms attempt to extract complete neurons through the 3-D volumes using only the raw image data as input.
+Oftentimes, convolutional neural networks predict membrane probabilities or affinities between voxels and apply simple thresholds to agglomerate the voxels into clusters~\cite{lee2015recursive,ronneberger2015u}.
+These \textit{per-voxel} algorithms produce useful outputs but currently fall short of complete reconstructions with sufficient accuracy. 
 
-Using only pixel data is not enough for full reconstruction of these datasets (CITE), and so researchers create a level of abstraction on top of the per-pixel algorithms. Under the new domain, researchers used these per-pixel algorithms as input to agglomerate pixels into super-pixels and create larger neuron reconstructions \cite{nunez2014graph} (CITE NEUROPROOF). These algorithms considered higher level information such as the boundary statistics between pixel regions and simple shape descriptors (CITE LASH).  These algorithms outperform the per-pixel methods from before but still do not fully leverage the wealth of information available.
+Researches currently address the failures of the per-voxel algorithms by training random-forest classifiers to agglomerate an oversegmentation of voxels~\cite{nunez2014graph} (CITE NEUROPROOF). 
+These classifiers take the output of the per-voxel algorithms as input and generate high-level statistics such as affinity distributions between pixel regions. 
+Presently, these methods use hand-designed features despite the evidence that machine-learned features perform better~\cite{bogovic2013learned}. 
+These \textit{per-supervoxel} algorithms outperform the per-voxel algorithms but still do not provide the accuracy needed for large scale reconstruction of the brain.
+Additionally, these methods do not fully leverage the wealth of shape information available. 
 
-Here we present another level of abstraction above the agglomeration strategies of the last few years. Our algorithms focus on the overarching shapes of the an oversegmented label volume to determine potential merge candidates. After identifying merge regions, we present a 3-D convolutional neural network to predict merges using only as input the shapes of the regions considered. Lastly, we build all of these techniques into a graph representation of the label volume. This enables us to enforce global constraints on the resulting segmentation that more closely match the biological principles. 
+Here we present a \textit{shape-based} strategy that builds on top of the outputs of per-supervoxel methods. 
+Similarly we take as input the output of the per-supervoxel methods. 
+However, we focus on the overarching shapes traversing through the label volumes to identify potential merge candidates. 
+From these locations we extract machine-learned features and generate a probability that two segments should merge. 
+Lastly, we construct a graphical representation of the input label volume and apply a global segmentation algorithm to produce a better reconstruction.
+Using graph-based optimization strategies enables us to enforce global constraints that more closely match the underlying biology of the images.
