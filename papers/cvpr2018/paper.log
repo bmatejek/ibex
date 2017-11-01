@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  1 NOV 2017 16:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  1 NOV 2017 18:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -480,109 +480,83 @@ File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 ) [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./figures/intro-slice.png> <./figures/intro-cube.png>]
-Underfull \hbox (badness 1303) in paragraph at lines 19--20
+ <./figures/intro-slice.png> <./figures/intro-cube.png>])
+Underfull \hbox (badness 1303) in paragraph at lines 27--70
 []\OT1/ptm/m/n/10 The fields of com-puter graph-ics, math-e-mat-ics, and
  []
 
-) (./2_method.tex
-<./figures/merge_candidate1.png, id=58, 1204.5pt x 1204.5pt>
-File: ./figures/merge_candidate1.png Graphic file (type png)
-<use ./figures/merge_candidate1.png>
-Package pdftex.def Info: ./figures/merge_candidate1.png  used on input line 17.
- on input line 17.
-Package pdftex.def Info: Requested size: 99.59665pt x 99.5967pt on input line 1
-7.
-<./figures/merge_candidate2.png, id=59, 1204.5pt x 1204.5pt>
-File: ./figures/merge_candidate2.png Graphic file (type png)
-<use ./figures/merge_candidate2.png>
-Package pdftex.def Info: ./figures/merge_candidate2.png  used on input line 19.
- on input line 19.
-Package pdftex.def Info: Requested size: 99.59665pt x 99.5967pt on input line 1
-9.
- [2 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png>]
-
-LaTeX Warning: Reference `alg:generate-edges' on page 3 undefined on input line
- 29.
-
-<./figures/skeleton1.png, id=98, 1204.5pt x 1204.5pt>
+(./2_method.tex
+<./figures/skeleton1.png, id=69, 1204.5pt x 1204.5pt>
 File: ./figures/skeleton1.png Graphic file (type png)
 <use ./figures/skeleton1.png>
-Package pdftex.def Info: ./figures/skeleton1.png  used on input line 33. on inp
-ut line 33.
-Package pdftex.def Info: Requested size: 99.59665pt x 99.5967pt on input line 3
-3.
-<./figures/skeleton2.png, id=99, 1204.5pt x 1204.5pt>
+Package pdftex.def Info: ./figures/skeleton1.png  used on input line 25. on inp
+ut line 25.
+Package pdftex.def Info: Requested size: 99.59665pt x 99.5967pt on input line 2
+5.
+<./figures/skeleton2.png, id=70, 1204.5pt x 1204.5pt>
 File: ./figures/skeleton2.png Graphic file (type png)
 <use ./figures/skeleton2.png>
-Package pdftex.def Info: ./figures/skeleton2.png  used on input line 35. on inp
-ut line 35.
-Package pdftex.def Info: Requested size: 99.59665pt x 99.5967pt on input line 3
-5.
-<./figures/network_distance_400.png, id=100, 1204.5pt x 1204.5pt>
+Package pdftex.def Info: ./figures/skeleton2.png  used on input line 27. on inp
+ut line 27.
+Package pdftex.def Info: Requested size: 99.59665pt x 99.5967pt on input line 2
+7.
+ [2]
+<./figures/merge_candidate1.png, id=117, 1204.5pt x 1204.5pt>
+File: ./figures/merge_candidate1.png Graphic file (type png)
+<use ./figures/merge_candidate1.png>
+Package pdftex.def Info: ./figures/merge_candidate1.png  used on input line 58.
+ on input line 58.
+Package pdftex.def Info: Requested size: 99.59665pt x 99.5967pt on input line 5
+8.
+<./figures/merge_candidate2.png, id=118, 1204.5pt x 1204.5pt>
+File: ./figures/merge_candidate2.png Graphic file (type png)
+<use ./figures/merge_candidate2.png>
+Package pdftex.def Info: ./figures/merge_candidate2.png  used on input line 60.
+ on input line 60.
+Package pdftex.def Info: Requested size: 99.59665pt x 99.5967pt on input line 6
+0.
+<./figures/network_distance_400.png, id=119, 1204.5pt x 1204.5pt>
 File: ./figures/network_distance_400.png Graphic file (type png)
 <use ./figures/network_distance_400.png>
 Package pdftex.def Info: ./figures/network_distance_400.png  used on input line
- 65. on input line 65.
+ 91. on input line 91.
 Package pdftex.def Info: Requested size: 149.05838pt x 149.05504pt on input lin
-e 65.
-<./figures/network_distance_600.png, id=101, 1204.5pt x 1204.5pt>
+e 91.
+<./figures/network_distance_600.png, id=120, 1204.5pt x 1204.5pt>
 File: ./figures/network_distance_600.png Graphic file (type png)
 <use ./figures/network_distance_600.png>
 Package pdftex.def Info: ./figures/network_distance_600.png  used on input line
- 66. on input line 66.
+ 92. on input line 92.
 Package pdftex.def Info: Requested size: 149.05838pt x 149.05504pt on input lin
-e 66.
-<./figures/network_distance_800.png, id=102, 1204.5pt x 1204.5pt>
+e 92.
+<./figures/network_distance_800.png, id=121, 1204.5pt x 1204.5pt>
 File: ./figures/network_distance_800.png Graphic file (type png)
 <use ./figures/network_distance_800.png>
 Package pdftex.def Info: ./figures/network_distance_800.png  used on input line
- 67. on input line 67.
+ 93. on input line 93.
 Package pdftex.def Info: Requested size: 149.05838pt x 149.05504pt on input lin
-e 67.
-[3 <./figures/skeleton1.png> <./figures/skeleton2.png>]
-<figures/architecture.png, id=119, 1075.01625pt x 411.5375pt>
+e 93.
+ [3 <./figures/skeleton1.png> <./figures/skeleton2.png> <./figures/merge_candid
+ate1.png> <./figures/merge_candidate2.png>]
+<figures/architecture.png, id=140, 1075.01625pt x 411.5375pt>
 File: figures/architecture.png Graphic file (type png)
 <use figures/architecture.png>
-Package pdftex.def Info: figures/architecture.png  used on input line 83. on in
-put line 83.
+Package pdftex.def Info: figures/architecture.png  used on input line 128. on i
+nput line 128.
 Package pdftex.def Info: Requested size: 472.01192pt x 180.694pt on input line 
-83.
-) (./3_evaluation.tex
+128.
+)
+(./3_evaluation.tex
 
 LaTeX Warning: Reference `alg:generate-edges' on page 4 undefined on input line
  15.
 
-[4 <./figures/network_distance_400.png> <./figures/network_distance_600.png> <.
-/figures/network_distance_800.png>]) (./4_results.tex
-<figures/skeleton-training-curve.png, id=135, 462.528pt x 346.896pt>
-File: figures/skeleton-training-curve.png Graphic file (type png)
-<use figures/skeleton-training-curve.png>
-Package pdftex.def Info: figures/skeleton-training-curve.png  used on input lin
-e 21. on input line 21.
-Package pdftex.def Info: Requested size: 201.56699pt x 151.17378pt on input lin
-e 21.
-<figures/roc-microns-300-test.png, id=136, 462.528pt x 346.896pt>
-File: figures/roc-microns-300-test.png Graphic file (type png)
-<use figures/roc-microns-300-test.png>
-Package pdftex.def Info: figures/roc-microns-300-test.png  used on input line 2
-7. on input line 27.
-Package pdftex.def Info: Requested size: 201.56699pt x 151.17378pt on input lin
-e 27.
-<figures/variation_of_information-train.png, id=138, 462.528pt x 346.896pt>
-File: figures/variation_of_information-train.png Graphic file (type png)
-<use figures/variation_of_information-train.png>
-Package pdftex.def Info: figures/variation_of_information-train.png  used on in
-put line 35. on input line 35.
-Package pdftex.def Info: Requested size: 223.58379pt x 167.68857pt on input lin
-e 35.
-<figures/variation_of_information-test.png, id=139, 462.528pt x 346.896pt>
-File: figures/variation_of_information-test.png Graphic file (type png)
-<use figures/variation_of_information-test.png>
-Package pdftex.def Info: figures/variation_of_information-test.png  used on inp
-ut line 37. on input line 37.
-Package pdftex.def Info: Requested size: 223.58379pt x 167.68857pt on input lin
-e 37.
+) [4 <./figures/network_distance_400.png> <./figures/network_distance_600.png> 
+<./figures/network_distance_800.png>] (./4_results.tex
+
+LaTeX Warning: Reference `fig:training-curve' on page 5 undefined on input line
+ 32.
+
 ) (./5_conclusions.tex
 LaTeX Font Info:    Try loading font information for OMS+ptm on input line 4.
 
@@ -591,39 +565,32 @@ File: omsptm.fd
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 4.
-
-
-LaTeX Warning: Text page 5 contains only floats.
-
-[5 <./figures/architecture.png> <./figures/skeleton-training-curve.png> <./figu
-res/roc-microns-300-test.png>]) (./paper.bbl (./paper.brf)
+) (./paper.bbl
+(./paper.brf)
 \tf@brf=\write3
 \openout3 = `paper.brf'.
 
-
-Underfull \hbox (badness 2318) in paragraph at lines 66--66
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 65.
+ [5 <./figures/architecture.png>]
+Underfull \hbox (badness 2318) in paragraph at lines 73--73
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
 
 
-Underfull \hbox (badness 1052) in paragraph at lines 77--77
+Underfull \hbox (badness 1052) in paragraph at lines 91--91
 []\OT1/ptm/m/n/9 M. Januszewski, J. Maitin-Shepard, P. Li, J. Ko-rn-feld,
  []
 
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 136.
-[6 <./figures/variation_of_information-train.png> <./figures/variation_of_infor
-mation-test.png>])
+)
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 84.
- [7
-
-]
+ [6]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 84.
  (./paper.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 84.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 84.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: 192E026DE000CDCC5FF56E1D6B5DE363;1495.
+(rerunfilecheck)             Checksum: 5050A61FA75D3026F7685D08ED4D3E58;1847.
 
 
 LaTeX Warning: There were undefined references.
@@ -631,13 +598,13 @@ LaTeX Warning: There were undefined references.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 84.
  ) 
 Here is how much of TeX's memory you used:
- 8572 strings out of 492990
- 129461 string characters out of 6132622
- 224175 words of memory out of 5000000
- 11895 multiletter control sequences out of 15000+600000
+ 8583 strings out of 492990
+ 129430 string characters out of 6132622
+ 225284 words of memory out of 5000000
+ 11908 multiletter control sequences out of 15000+600000
  35216 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,39p,1400b,471s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,10n,39p,503b,469s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texl
@@ -645,15 +612,16 @@ ive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texliv
 e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2
 017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/20
 17/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017
-/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf-
-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2017/texmf-dist/fo
-nts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/
-urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/
-utmri8a.pfb>
-Output written on paper.pdf (7 pages, 2147745 bytes).
+/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/
+2017/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/te
+xmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2017/texmf-dis
+t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
+pe1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/ti
+mes/utmri8a.pfb>
+Output written on paper.pdf (6 pages, 2085003 bytes).
 PDF statistics:
- 265 PDF objects out of 1000 (max. 8388607)
- 221 compressed objects within 3 object streams
- 71 named destinations out of 1000 (max. 500000)
- 71 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 278 PDF objects out of 1000 (max. 8388607)
+ 242 compressed objects within 3 object streams
+ 73 named destinations out of 1000 (max. 500000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

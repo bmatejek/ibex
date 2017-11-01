@@ -3,51 +3,55 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: paper.aux
 The style file: ieee.bst
 Database file #1: paper.bib
+Repeated entry---line 298 of file paper.bib
+ : @article{kernighan1970efficient
+ :                                ,
+I'm skipping whatever remains of this entry
 Warning--can't use both volume and number fields in baran2007automatic
 Warning--can't use both volume and number fields in bharaj2012automatically
 Warning--can't use both volume and number fields in haehn2017scalable
 Warning--can't use both volume and number fields in maas2013rectifier
 Warning--empty booktitle in nesterov1983method
 Warning--empty year in nesterov1983method
-You've used 29 entries,
+You've used 35 entries,
             2120 wiz_defined-function locations,
-            665 strings with 10275 characters,
-and the built_in function-call counts, 12374 in all, are:
-= -- 1178
-> -- 779
-< -- 14
-+ -- 311
-- -- 278
-* -- 941
-:= -- 2050
-add.period$ -- 94
-call.type$ -- 29
-change.case$ -- 223
+            700 strings with 11420 characters,
+and the built_in function-call counts, 14889 in all, are:
+= -- 1429
+> -- 902
+< -- 17
++ -- 360
+- -- 320
+* -- 1116
+:= -- 2441
+add.period$ -- 113
+call.type$ -- 35
+change.case$ -- 262
 chr.to.int$ -- 0
-cite$ -- 35
-duplicate$ -- 431
-empty$ -- 816
-format.name$ -- 278
-if$ -- 2554
+cite$ -- 41
+duplicate$ -- 532
+empty$ -- 1006
+format.name$ -- 320
+if$ -- 3098
 int.to.chr$ -- 0
-int.to.str$ -- 29
-missing$ -- 29
-newline$ -- 147
-num.names$ -- 58
-pop$ -- 240
+int.to.str$ -- 35
+missing$ -- 35
+newline$ -- 177
+num.names$ -- 70
+pop$ -- 283
 preamble$ -- 1
-purify$ -- 194
+purify$ -- 227
 quote$ -- 0
-skip$ -- 321
+skip$ -- 401
 stack$ -- 0
-substring$ -- 623
-swap$ -- 134
-text.length$ -- 14
+substring$ -- 788
+swap$ -- 170
+text.length$ -- 17
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 116
+type$ -- 140
 warning$ -- 6
-while$ -- 100
-width$ -- 31
-write$ -- 320
-(There were 6 warnings)
+while$ -- 123
+width$ -- 37
+write$ -- 387
+(There was 1 error message)
