@@ -58,6 +58,12 @@ D.~Haehn, S.~Knowles-Barley, M.~Roberts, J.~Beyer, N.~Kasthuri, J.~W. Lichtman,
 \newblock {\em IEEE Transactions on Visualization and Computer Graphics},
   20(12):2466--2475, 2014.
 
+\bibitem{hildebrand2017whole}
+D.~G.~C. Hildebrand, M.~Cicconet, R.~M. Torres, W.~Choi, T.~M. Quan, J.~Moon,
+  A.~W. Wetzel, A.~S. Champion, B.~J. Graham, O.~Randlett, et~al.
+\newblock Whole-brain serial-section electron microscopy in larval zebrafish.
+\newblock {\em Nature}, 545(7654):345--349, 2017.
+
 \bibitem{januszewski2016flood}
 M.~Januszewski, J.~Maitin-Shepard, P.~Li, J.~Kornfeld, W.~Denk, and V.~Jain.
 \newblock Flood-filling networks.
@@ -67,6 +73,13 @@ M.~Januszewski, J.~Maitin-Shepard, P.~Li, J.~Kornfeld, W.~Denk, and V.~Jain.
 J.~H. Kappes, M.~Speth, G.~Reinelt, and C.~Schn{\"o}rr.
 \newblock Higher-order segmentation via multicuts.
 \newblock {\em Computer Vision and Image Understanding}, 143:104--119, 2016.
+
+\bibitem{kasthuri2015saturated}
+N.~Kasthuri, K.~J. Hayworth, D.~R. Berger, R.~L. Schalek, J.~A. Conchello,
+  S.~Knowles-Barley, D.~Lee, A.~V{\'a}zquez-Reina, V.~Kaynig, T.~R. Jones,
+  et~al.
+\newblock Saturated reconstruction of a volume of neocortex.
+\newblock {\em Cell}, 162(3):648--661, 2015.
 
 \bibitem{kernighan1970efficient}
 B.~W. Kernighan and S.~Lin.

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.7)  31 OCT 2017 01:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.7)  31 OCT 2017 18:57
 entering extended mode
 **./paper.tex
 (paper.tex
@@ -456,26 +456,18 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
  (0_introduction.tex
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 8.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 8.
-
 <./figures/intro-slice.png, id=3, 640.3925pt x 641.39626pt>
 File: ./figures/intro-slice.png Graphic file (type png)
 
 <use ./figures/intro-slice.png>
-Package pdftex.def Info: ./figures/intro-slice.png used on input line 17.
+Package pdftex.def Info: ./figures/intro-slice.png used on input line 5.
 (pdftex.def)             Requested size: 99.59665pt x 99.74814pt.
 
 <./figures/intro-cube.png, id=5, 185.19188pt x 185.19188pt>
 File: ./figures/intro-cube.png Graphic file (type png)
 
 <use ./figures/intro-cube.png>
-Package pdftex.def Info: ./figures/intro-cube.png used on input line 19.
+Package pdftex.def Info: ./figures/intro-cube.png used on input line 7.
 (pdftex.def)             Requested size: 99.59665pt x 99.59802pt.
 ) (1_related_work.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
@@ -492,14 +484,14 @@ Underfull \hbox (badness 1303) in paragraph at lines 9--10
 []\OT1/ptm/m/n/10 The fields of com-puter graph-ics, math-e-mat-ics, and
  []
 
-) (2_method.tex <./figures/merge_candidate1.png, id=54, 1204.5pt x 1204.5pt>
+) (2_method.tex <./figures/merge_candidate1.png, id=60, 1204.5pt x 1204.5pt>
 File: ./figures/merge_candidate1.png Graphic file (type png)
 
 <use ./figures/merge_candidate1.png>
 Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 17.
 (pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
 
-<./figures/merge_candidate2.png, id=55, 1204.5pt x 1204.5pt>
+<./figures/merge_candidate2.png, id=61, 1204.5pt x 1204.5pt>
 File: ./figures/merge_candidate2.png Graphic file (type png)
 
 <use ./figures/merge_candidate2.png>
@@ -511,60 +503,59 @@ LaTeX Warning: Reference `alg:generate-edges' on page 2 undefined on input line
  29.
 
 [2 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png>]
-<./figures/skeleton1.png, id=88, 1204.5pt x 1204.5pt>
+<./figures/skeleton1.png, id=93, 1204.5pt x 1204.5pt>
 File: ./figures/skeleton1.png Graphic file (type png)
 
 <use ./figures/skeleton1.png>
 Package pdftex.def Info: ./figures/skeleton1.png used on input line 33.
 (pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
 
-<./figures/skeleton2.png, id=89, 1204.5pt x 1204.5pt>
+<./figures/skeleton2.png, id=94, 1204.5pt x 1204.5pt>
 File: ./figures/skeleton2.png Graphic file (type png)
 
 <use ./figures/skeleton2.png>
 Package pdftex.def Info: ./figures/skeleton2.png used on input line 35.
 (pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
 
-<./figures/network_distance_400.png, id=90, 1204.5pt x 1204.5pt>
+<./figures/network_distance_400.png, id=95, 1204.5pt x 1204.5pt>
 File: ./figures/network_distance_400.png Graphic file (type png)
 
 <use ./figures/network_distance_400.png>
 Package pdftex.def Info: ./figures/network_distance_400.png used on input line 
-62.
+65.
 (pdftex.def)             Requested size: 149.05838pt x 149.05504pt.
 
-<./figures/network_distance_600.png, id=91, 1204.5pt x 1204.5pt>
+<./figures/network_distance_600.png, id=96, 1204.5pt x 1204.5pt>
 File: ./figures/network_distance_600.png Graphic file (type png)
 
 <use ./figures/network_distance_600.png>
 Package pdftex.def Info: ./figures/network_distance_600.png used on input line 
-63.
+66.
 (pdftex.def)             Requested size: 149.05838pt x 149.05504pt.
 
-<./figures/network_distance_800.png, id=92, 1204.5pt x 1204.5pt>
+<./figures/network_distance_800.png, id=97, 1204.5pt x 1204.5pt>
 File: ./figures/network_distance_800.png Graphic file (type png)
 
 <use ./figures/network_distance_800.png>
 Package pdftex.def Info: ./figures/network_distance_800.png used on input line 
-64.
+67.
 (pdftex.def)             Requested size: 149.05838pt x 149.05504pt.
 
-<figures/architecture.png, id=99, 1075.01625pt x 411.5375pt>
+<figures/architecture.png, id=104, 1075.01625pt x 411.5375pt>
 File: figures/architecture.png Graphic file (type png)
 
 <use figures/architecture.png>
-Package pdftex.def Info: figures/architecture.png used on input line 80.
+Package pdftex.def Info: figures/architecture.png used on input line 83.
 (pdftex.def)             Requested size: 472.01192pt x 180.694pt.
-) [3 <./figures/skeleton1.png> <./figures/skeleton2.png>] (3_evaluation.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
+ [3 <./figures/skeleton1.png> <./figures/skeleton2.png>]) (3_evaluation.tex [4 
+<./figures/network_distance_400.png> <./figures/network_distance_600.png> <./fi
+gures/network_distance_800.png> <./figures/architecture.png>]
 
+LaTeX Warning: Reference `alg:generate-edges' on page 5 undefined on input line
+ 15.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4 <./figures/network_distance_400.png> <./figures/network_distance_600.png> <
-./figures/network_distance_800.png> <./figures/architecture.png>]) (4_results.t
-ex
-<figures/skeleton-training-curve.png, id=123, 462.528pt x 346.896pt>
+) (4_results.tex
+<figures/skeleton-training-curve.png, id=129, 462.528pt x 346.896pt>
 File: figures/skeleton-training-curve.png Graphic file (type png)
 
 <use figures/skeleton-training-curve.png>
@@ -572,7 +563,7 @@ Package pdftex.def Info: figures/skeleton-training-curve.png used on input line
  21.
 (pdftex.def)             Requested size: 201.56699pt x 151.17378pt.
 
-<figures/roc-microns-300-test.png, id=124, 462.528pt x 346.896pt>
+<figures/roc-microns-300-test.png, id=130, 462.528pt x 346.896pt>
 File: figures/roc-microns-300-test.png Graphic file (type png)
 
 <use figures/roc-microns-300-test.png>
@@ -580,7 +571,7 @@ Package pdftex.def Info: figures/roc-microns-300-test.png used on input line 27
 .
 (pdftex.def)             Requested size: 201.56699pt x 151.17378pt.
 
-<figures/variation_of_information-train.png, id=126, 462.528pt x 346.896pt>
+<figures/variation_of_information-train.png, id=132, 462.528pt x 346.896pt>
 File: figures/variation_of_information-train.png Graphic file (type png)
 
 <use figures/variation_of_information-train.png>
@@ -588,40 +579,51 @@ Package pdftex.def Info: figures/variation_of_information-train.png used on inp
 ut line 35.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
 
-<figures/variation_of_information-test.png, id=127, 462.528pt x 346.896pt>
+<figures/variation_of_information-test.png, id=133, 462.528pt x 346.896pt>
 File: figures/variation_of_information-test.png Graphic file (type png)
 
 <use figures/variation_of_information-test.png>
 Package pdftex.def Info: figures/variation_of_information-test.png used on inpu
 t line 37.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
-) (5_conclusions.tex) (paper.bbl (paper.brf)
+) (5_conclusions.tex
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 4.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 4.
+) (paper.bbl
+(paper.brf)
 \tf@brf=\write3
 \openout3 = `paper.brf'.
 
-
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 27.
+ [5 <./figures/skeleton-training-curve.png> <./figures/roc-microns-300-test.png
+>]
 Underfull \hbox (badness 2318) in paragraph at lines 60--60
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
 
 
-Underfull \hbox (badness 1052) in paragraph at lines 65--65
+Underfull \hbox (badness 1052) in paragraph at lines 71--71
 []\OT1/ptm/m/n/9 M. Januszewski, J. Maitin-Shepard, P. Li, J. Ko-rn-feld,
  []
 
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 70.
-[5 <./figures/skeleton-training-curve.png> <./figures/roc-microns-300-test.png>
-])
+[6 <./figures/variation_of_information-train.png> <./figures/variation_of_infor
+mation-test.png>])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 78.
- [6 <./figures/variation_of_information-train.png> <./figures/variation_of_info
-rmation-test.png>]
+ [7
+
+]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 78.
  (paper.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 78.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 78.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: 9DA00D6198EDB4CE12348396CFDFA58C;1195.
+(rerunfilecheck)             Checksum: D4420A52EF76EDB176795BB62A3AFA19;1442.
 
 
 LaTeX Warning: There were undefined references.
@@ -629,13 +631,13 @@ LaTeX Warning: There were undefined references.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 78.
  ) 
 Here is how much of TeX's memory you used:
- 8607 strings out of 493323
- 129289 string characters out of 3139067
- 228804 words of memory out of 3000000
- 11912 multiletter control sequences out of 15000+200000
+ 8619 strings out of 493323
+ 129552 string characters out of 3139067
+ 227890 words of memory out of 3000000
+ 11920 multiletter control sequences out of 15000+200000
  35216 words of font info for 76 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,9n,39p,1402b,469s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 41i,9n,39p,1402b,471s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/Mi
 KTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9
 /fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
@@ -647,9 +649,9 @@ ram Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Program Files/MiKT
 eX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
 1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri
 8a.pfb>
-Output written on paper.pdf (6 pages, 2168802 bytes).
+Output written on paper.pdf (7 pages, 2174007 bytes).
 PDF statistics:
- 233 PDF objects out of 1000 (max. 8388607)
- 65 named destinations out of 1000 (max. 500000)
+ 253 PDF objects out of 1000 (max. 8388607)
+ 69 named destinations out of 1000 (max. 500000)
  71 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -2,17 +2,24 @@
 
 \subsection{Datasets}
 
-We evaluate our methods on EM datasets. The first dataset is the Kashtui dataset  which is a mouse brain (ADD IN STUFF) with an anisotropic resolution of $3\textrm{nm} \times 3 \textrm{nm} \times 30 \textrm{nm}$. The second dataset is from FlyEM and is a (ADD STUFF HERE) with an anisotropic resolution of $3 \textrm{nm} \times 3\textrm{nm} \times 30\textrm{nm}$. 
+We evaluate our methods on three EM datasets. 
 
+\subsubsection{NeuroProof Pipeline}
+
+Our methods build on top of existing agglomeration strategies. For the purpose of this paper we used the outputs from two established pipelines. 
+
+TODO: Toufiq description of neuroproof pipeline, description of FlyEM pipeline
 
 \subsection{Preprocessing}
 
-What percent of edges are considered.
+We perform significant pruning of potential merge candidates by considering only pairs of skeleton endpoints produced by Algorithm \ref{alg:generate-edges}. This strategy greatly reduced the number of false merge candidates that we considered. However, we evaluate the overall effectiveness of this strategy both in reducing trivial split candidates while maintaining a large majority of the candidates which should merge.
 
-Figure (ADD FIGURE) shows a few segments that were not considered. 
+Our candidate generation strategy doesn't enforce an adjacency constraint which allows us to merge candidates that are not consider under existing frameworks. We examine the success of our pipeline in merging said candidates. 
 
 \subsection{Classifier Training}
 
-Here I need to produce the precision and recall curves, (ROC) as well as the final results with thresholding. Also include the training/validation loss functions overtime
+DISCUSS PARAMETERS FOR CLASSIFICATION
 
-\subsection{Experiments}
+\subsection{Graph Optimization}
+
+We evaluate the improvement of using a graph optimization strategy over a na\"ive approach that performs hierarchical clustering for all segments above a certain threshold. 

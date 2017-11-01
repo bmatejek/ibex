@@ -51,6 +51,9 @@ After skeletonization, we proceed to identify locations between segments that we
 %	\caption{Edge generation function}
 %	\label{alg:generate-edges}
 %\end{algorithm}
+
+It is important to note that the above algorithm does not enforce neighboring voxel constraints on nearby segments. There are instances where two segments belong to the same neuron but the segments produced by the per-pixel and per-superpixel algorithms are non-adjacent. Figure (ADD FIGURE) shows two such examples that are not considered by previous research in this field. Finding and merge these examples is one of the benefits of retreating from per-pixel algorithms. Neither of these examples could merge under the GALA or NeuroProof pipelines.
+
 \subsection{Edge Probabilities}
 
 The previous section outlines how to generate edges between nodes in our graph structure. Here we will introduce a neural network architecture for generating probabilities that two nodes sharing an edge belong to the same neuron. The neural network takes as input only data from the input segmentation. 

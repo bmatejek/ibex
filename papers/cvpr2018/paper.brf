@@ -1,8 +1,12 @@
+\backcite {hildebrand2017whole}{{1}{1}{figure.caption.1}}
+\backcite {kasthuri2015saturated}{{1}{1}{figure.caption.1}}
+\backcite {ronneberger2015u,lee2015recursive}{{1}{1}{figure.caption.1}}
+\backcite {nunez2014graph}{{1}{1}{figure.caption.1}}
 \backcite {kappes2016higher,shi2000normalized,tatiraju2008image}{{1}{2}{section.2}}
 \backcite {andres2012globally}{{1}{2}{section.2}}
 \backcite {ciresan2012deep}{{1}{2}{section.2}}
-\backcite {lee2015recursive}{{1}{2}{section.2}}
-\backcite {ronneberger2015u}{{1}{2}{section.2}}
+\backcite {lee2015recursive}{{2}{2}{section.2}}
+\backcite {ronneberger2015u}{{2}{2}{section.2}}
 \backcite {chatfield2014return,maas2013rectifier,nesterov1983method}{{2}{2}{section.2}}
 \backcite {seymour2016rhoananet,nunez2014graph,parag2017anisotropic}{{2}{2}{section.2}}
 \backcite {haehn2017scalable,haehn2017guided,haehn2014design}{{2}{2}{section.2}}
