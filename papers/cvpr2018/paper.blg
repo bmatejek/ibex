@@ -9,45 +9,45 @@ Warning--can't use both volume and number fields in haehn2017scalable
 Warning--can't use both volume and number fields in maas2013rectifier
 Warning--empty booktitle in nesterov1983method
 Warning--empty year in nesterov1983method
-You've used 28 entries,
+You've used 29 entries,
             2120 wiz_defined-function locations,
-            661 strings with 10095 characters,
-and the built_in function-call counts, 12134 in all, are:
-= -- 1155
-> -- 766
+            665 strings with 10275 characters,
+and the built_in function-call counts, 12374 in all, are:
+= -- 1178
+> -- 779
 < -- 14
-+ -- 306
-- -- 274
-* -- 929
-:= -- 2005
-add.period$ -- 91
-call.type$ -- 28
-change.case$ -- 218
++ -- 311
+- -- 278
+* -- 941
+:= -- 2050
+add.period$ -- 94
+call.type$ -- 29
+change.case$ -- 223
 chr.to.int$ -- 0
-cite$ -- 34
-duplicate$ -- 421
-empty$ -- 799
-format.name$ -- 274
-if$ -- 2506
+cite$ -- 35
+duplicate$ -- 431
+empty$ -- 816
+format.name$ -- 278
+if$ -- 2554
 int.to.chr$ -- 0
-int.to.str$ -- 28
-missing$ -- 28
-newline$ -- 142
-num.names$ -- 56
-pop$ -- 235
+int.to.str$ -- 29
+missing$ -- 29
+newline$ -- 147
+num.names$ -- 58
+pop$ -- 240
 preamble$ -- 1
-purify$ -- 190
+purify$ -- 194
 quote$ -- 0
-skip$ -- 313
+skip$ -- 321
 stack$ -- 0
-substring$ -- 618
-swap$ -- 133
+substring$ -- 623
+swap$ -- 134
 text.length$ -- 14
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 112
+type$ -- 116
 warning$ -- 6
-while$ -- 98
-width$ -- 30
-write$ -- 310
+while$ -- 100
+width$ -- 31
+write$ -- 320
 (There were 6 warnings)

@@ -3,13 +3,13 @@
 \backcite {lee2015recursive,ronneberger2015u}{{1}{1}{figure.caption.1}}
 \backcite {nunez2014graph}{{1}{1}{figure.caption.1}}
 \backcite {bogovic2013learned}{{1}{1}{figure.caption.1}}
-\backcite {kappes2016higher,shi2000normalized,tatiraju2008image}{{2}{2}{section.2}}
 \backcite {andres2012globally}{{2}{2}{section.2}}
+\backcite {kappes2016higher,shi2000normalized,tatiraju2008image}{{2}{2}{section.2}}
 \backcite {ciresan2012deep}{{2}{2}{section.2}}
 \backcite {lee2015recursive}{{2}{2}{section.2}}
 \backcite {ronneberger2015u}{{2}{2}{section.2}}
 \backcite {chatfield2014return,maas2013rectifier,nesterov1983method}{{2}{2}{section.2}}
-\backcite {seymour2016rhoananet,nunez2014graph,parag2017anisotropic}{{2}{2}{section.2}}
+\backcite {seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image}{{2}{2}{section.2}}
 \backcite {haehn2017scalable,haehn2017guided,haehn2014design}{{2}{2}{section.2}}
 \backcite {januszewski2016flood}{{2}{2}{section.2}}
 \backcite {palagyi20003d,palagyi2001sequential}{{2}{2}{section.2}}
@@ -18,6 +18,6 @@
 \backcite {sato2000teasar}{{3}{3.1.2}{figure.caption.2}}
 \backcite {zhao2014automatic}{{3}{3.1.2}{figure.caption.2}}
 \backcite {chatfield2014return}{{3}{3.2.1}{figure.caption.4}}
-\backcite {funahashi1989approximate,maas2013rectifier}{{3}{3.2.1}{figure.caption.4}}
+\backcite {funahashi1989approximate,maas2013rectifier}{{4}{3.2.1}{figure.caption.4}}
 \backcite {nesterov1983method}{{4}{3.2.1}{figure.caption.4}}
 \backcite {kernighan1970efficient}{{4}{3.3}{subsection.3.3}}

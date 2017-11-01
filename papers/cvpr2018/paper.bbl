@@ -171,4 +171,10 @@ T.~Zhao and S.~M. Plaza.
   drosophila medulla.
 \newblock {\em arXiv preprint arXiv:1409.1892}, 2014.
 
+\bibitem{zlateski2015image}
+A.~Zlateski and H.~S. Seung.
+\newblock Image segmentation by size-dependent single linkage clustering of a
+  watershed basin graph.
+\newblock {\em arXiv preprint arXiv:1505.00249}, 2015.
+
 \end{thebibliography}
