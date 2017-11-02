@@ -73,10 +73,3 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance,
         fd.write(struct.pack('i', ncandidates))
         for probability in probabilities:
             fd.write(struct.pack('d', probability))
-
-    # output the probabilities for the network
-    output_filename = 'results/skeleton/{}-{}-{}nm.results'.format(prefix, threshold, maximum_distance)
-    with open(output_filename, 'wb') as fd:
-        fd.write(struct.pack('i', ncandidates))
-        for probability in probabilities:
-            fd.write(struct.pack('d', probability))
