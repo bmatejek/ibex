@@ -53,6 +53,17 @@ class SWCEntry:
         for joint in self.skeleton.joints:
             if joint.parent_sample == self.sample_number: return joint
 
+    def Neighbors(self):
+        neighbors = []
+
+        # return all of the neighbor coordinates next to this entry
+        for joint in self.skeleton.joints:
+            if self.parent_sample == joint.sample_number:
+                neighbors.append(joint)
+            elif joint.parent_sample == self.sample_number:
+                neighbors.append(joint)
+
+        return neighbors
 
 
 class Skeleton:
