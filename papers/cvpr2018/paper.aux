@@ -101,6 +101,8 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Network Architecture}{3}{subsubsection.3.2.1}}
 \@writefile{brf}{\backcite{chatfield2014return}{{3}{3.2.1}{figure.caption.4}}}
 \citation{kernighan1970efficient}
+\bibstyle{ieee}
+\bibdata{paper}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The white outlines show three different possible cubic sizes to input into the neural network. The left example ($800\textrm  {nm}$) provides less local context than the middle example ($1200\textrm  {nm}$). The right example ($1600\textrm  {nm}$) extracts too large of a local region that produces noise as one of the segments leaves the bounding box only to reenter.\relax }}{4}{figure.caption.4}}
 \newlabel{fig:network-radius}{{3}{4}{The white outlines show three different possible cubic sizes to input into the neural network. The left example ($800\textrm {nm}$) provides less local context than the middle example ($1200\textrm {nm}$). The right example ($1600\textrm {nm}$) extracts too large of a local region that produces noise as one of the segments leaves the bounding box only to reenter.\relax }{figure.caption.4}{}}
 \@writefile{brf}{\backcite{funahashi1989approximate,maas2013rectifier}{{4}{3.2.1}{figure.caption.4}}}
@@ -110,12 +112,11 @@
 \@writefile{brf}{\backcite{kernighan1970efficient}{{4}{3.3}{subsection.3.3}}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}\hskip -1em.\nobreakspace  {}Evaluation}{4}{section.4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}\hskip -1em.\nobreakspace  {}Datasets}{4}{subsection.4.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}NeuroProof Pipeline}{4}{subsubsection.4.1.1}}
-\newlabel{sec:neuroproof}{{4.1.1}{4}{NeuroProof Pipeline}{subsubsection.4.1.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}\hskip -1em.\nobreakspace  {}Preprocessing}{4}{subsection.4.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Kasthuri}{4}{subsubsection.4.1.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}FlyEM}{4}{subsubsection.4.1.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Segmentation Pipeline and Baseline}{4}{subsubsection.4.1.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}\hskip -1em.\nobreakspace  {}Skeleton Pruning}{4}{subsection.4.2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}\hskip -1em.\nobreakspace  {}Classifier Training}{4}{subsection.4.3}}
-\bibstyle{ieee}
-\bibdata{paper}
 \bibcite{andres2012globally}{1}
 \bibcite{baran2007automatic}{2}
 \bibcite{bharaj2012automatically}{3}
@@ -125,22 +126,24 @@
 \bibcite{conners1984segmentation}{7}
 \bibcite{funahashi1989approximate}{8}
 \bibcite{haehn2017scalable}{9}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The architecture for the neural networks follows the \textit  {VGG} style of double convolutions followed by a max pooling operation. The number of filters doubles each layer leading to a fully connected layer and a sigmoid activation function.\relax }}{5}{figure.caption.5}}
-\newlabel{fig:architecture}{{4}{5}{The architecture for the neural networks follows the \textit {VGG} style of double convolutions followed by a max pooling operation. The number of filters doubles each layer leading to a fully connected layer and a sigmoid activation function.\relax }{figure.caption.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}\hskip -1em.\nobreakspace  {}Graph Optimization}{5}{subsection.4.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.\nobreakspace  {}Results}{5}{section.5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}\hskip -1em.\nobreakspace  {}Skeleton Pruning}{5}{subsection.5.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Finding Merge Candidates}{5}{subsubsection.5.1.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}Finding Split Candidates}{5}{subsubsection.5.1.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}\hskip -1em.\nobreakspace  {}Neural Network Classification}{5}{subsection.5.2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Merge Network}{5}{subsubsection.5.2.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Split Network}{5}{subsubsection.5.2.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}\hskip -1em.\nobreakspace  {}Graph-based Error Correction}{5}{subsection.5.3}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Conclusions}{5}{section.6}}
 \bibcite{haehn2017guided}{10}
 \bibcite{haehn2014design}{11}
 \bibcite{hildebrand2017whole}{12}
 \bibcite{horvnakova2017analysis}{13}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The architecture for the neural networks follows the \textit  {VGG} style of double convolutions followed by a max pooling operation. The number of filters doubles each layer leading to a fully connected layer and a sigmoid activation function.\relax }}{5}{figure.caption.5}}
+\newlabel{fig:architecture}{{4}{5}{The architecture for the neural networks follows the \textit {VGG} style of double convolutions followed by a max pooling operation. The number of filters doubles each layer leading to a fully connected layer and a sigmoid activation function.\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}\hskip -1em.\nobreakspace  {}Graph-based Strategies}{5}{subsection.4.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.\nobreakspace  {}Results}{5}{section.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}\hskip -1em.\nobreakspace  {}Skeleton Pruning}{5}{subsection.5.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.1}Kasthuri}{5}{subsubsection.5.1.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.1.2}FlyEM}{5}{subsubsection.5.1.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}\hskip -1em.\nobreakspace  {}Classification Performance}{5}{subsection.5.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Kasthuri}{5}{subsubsection.5.2.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}FlyEM}{5}{subsubsection.5.2.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}\hskip -1em.\nobreakspace  {}Graph Based Strategies}{5}{subsection.5.3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.1}Kasthuri}{5}{subsubsection.5.3.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.3.2}FlyEM}{5}{subsubsection.5.3.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Conclusions}{5}{section.6}}
 \bibcite{januszewski2016flood}{14}
 \bibcite{kappes2016higher}{15}
 \bibcite{kasthuri2015saturated}{16}

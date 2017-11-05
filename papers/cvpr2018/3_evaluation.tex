@@ -1,27 +1,64 @@
 \section{Evaluation}
 
+We evaluate our proposed methods on two different connectomics datasets from two different species. 
+
 \subsection{Datasets}
 
-We evaluate our methods on three EM datasets. 
-TODO: Toufiq: add description of the EM datasets (volume size, resolution, type of animal, type of image scan)
+\subsubsection{Kasthuri}
 
-\subsubsection{NeuroProof Pipeline}
-\label{sec:neuroproof}
-Our methods build on top of existing agglomeration strategies. For the purpose of this paper we used the outputs from two established pipelines. 
-TODO: Toufiq description of neuroproof pipeline, description of FlyEM pipeline
+\subsubsection{FlyEM}
 
-\subsection{Preprocessing}
+\subsubsection{Segmentation Pipeline and Baseline}
 
-We perform significant pruning of potential merge candidates by considering only pairs of skeleton endpoints produced by Algorithm \ref{alg:generate-edges}. This strategy greatly reduced the number of false merge candidates that we considered. However, we evaluate the overall effectiveness of this strategy both in reducing trivial split candidates while maintaining a large majority of the candidates which should merge.
+\subsection{Skeleton Pruning}
 
-Our candidate generation strategy doesn't enforce an adjacency constraint which allows us to merge candidates that are not consider under existing frameworks. We examine the success of our pipeline in merging said candidates. 
+HOW DO WE EVALUATE THE PRUNING METHOD
+HOW MANY EXAMPLES DO WE MISS
 
 \subsection{Classifier Training}
 
-DISCUSS PARAMETERS FOR CLASSIFICATION
+HOW DO WE TRAIN THE CLASSIFIER - split the data in half and have training and validation
+DATA AUGMENTATION
+HOW MANY LEARNABLE PARAMETERS
+WHAT NETWORKS DID WE TRY
+HAVE A TABLE WITH PARAMETERS: ITERATIONS, momentum, batch size, learning rate
 
-\subsection{Graph Optimization}
+\subsection{Graph-based Strategies}
 
-We evaluate the improvement of using a graph optimization strategy over a na\"ive approach that performs hierarchical clustering for all segments above a certain threshold.
-Using a heuristic for multicut prevents the creation of cycles. 
-Using a simple agglomeration strategy generates this many cycles. 
+
+
+%We evaluate our method on two different connectomics datasets of different species. 
+
+%\subsection{Datasets}
+
+%\subsubsection{Kasthuri}
+
+%The first dataset is the left part of the mouse cortex volume of Kasthuri et al. (CITE). We divide the dataset into a training and validation half and a testing half. The dataset resolution is $3 \times 3 \times 30 \textrm{nm}^3/\textrm{voxel}$. 
+
+%\subsubsection{FlyEM}
+
+
+
+%We evaluate our methods on three EM datasets. 
+%TODO: Toufiq: add description of the EM datasets (volume size, resolution, type of animal, type of image scan)
+
+%\subsubsection{NeuroProof Pipeline}
+%\label{sec:neuroproof}
+%Our methods build on top of existing agglomeration strategies. For the purpose of this paper we used the outputs from two established pipelines. 
+%TODO: Toufiq description of neuroproof pipeline, description of FlyEM pipeline
+
+%\subsection{Preprocessing}
+
+%We perform significant pruning of potential merge candidates by considering only pairs of skeleton endpoints produced by Algorithm \ref{alg:generate-edges}. This strategy greatly reduced the number of false merge candidates that we considered. However, we evaluate the overall effectiveness of this strategy both in reducing trivial split candidates while maintaining a large majority of the candidates which should merge.
+
+%Our candidate generation strategy doesn't enforce an adjacency constraint which allows us to merge candidates that are not consider under existing frameworks. We examine the success of our pipeline in merging said candidates. 
+
+%\subsection{Classifier Training}
+
+%DISCUSS PARAMETERS FOR CLASSIFICATION
+
+%\subsection{Graph Optimization}
+
+%We evaluate the improvement of using a graph optimization strategy over a na\"ive approach that performs hierarchical clustering for all segments above a certain threshold.
+%Using a heuristic for multicut prevents the creation of cycles. 
+%Using a simple agglomeration strategy generates this many cycles. 
