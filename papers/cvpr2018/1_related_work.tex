@@ -1,5 +1,18 @@
 \section{Related Work}
 
+\begin{figure*}[!ht]
+	\centering
+	\includegraphics[width=0.22\linewidth]{./figures/pipeline/image.png}
+	\hspace{0.025\linewidth}
+	\includegraphics[width=0.22\linewidth]{./figures/pipeline/affinities.png}
+	\hspace{0.025\linewidth}
+	\includegraphics[width=0.22\linewidth]{./figures/pipeline/watershed.png}
+	\hspace{0.025\linewidth}
+	\includegraphics[width=0.22\linewidth]{./figures/pipeline/neuroproof.png}
+	\caption{An overview of the existing methods. On the left is the original EM image data. A neural network (here VD2D3D) predicts the affinities between neighboring voxels. The Zwatershed algorithm clusters these voxels into supervoxels. NeuroProof agglomerates these supervoxels to create larger segments.}
+	\label{fig:pipeline}
+\end{figure*}
+
 \paragraph{Voxel-based methods.} 
 A large amount of connectomics research considers the problem of extracting segmentation information at the voxel level from the raw EM images to produce label volumes.
 In a label volume, every voxels receives a segment label corresponding to a unique neuron.
@@ -35,5 +48,3 @@ Some of the research explores topologically consistent thinning algorithms and p
 In computer graphics, fast medial axis algorithms allow animators to quickly move characters through successive frames~\cite{baran2007automatic,bharaj2012automatically}. 
 In these works, the skeleton acts as the simplest representation of a 3-D volume. 
 The Tree-structure Extraction Algorithm for Accurate and Robust Skeletons (TEASER) has been used by connectomics researchers to parameterize 3-D shapes~\cite{sato2000teasar,zhao2014automatic}. 
-
-
