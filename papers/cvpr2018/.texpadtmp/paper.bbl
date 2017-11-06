@@ -84,6 +84,13 @@ A.~Hor{\v{n}}{\'a}kov{\'a}, J.-H. Lange, and B.~Andres.
 \newblock In {\em International Conference on Machine Learning}, pages
   1539--1548, 2017.
 
+\bibitem{jain2010boundary}
+V.~Jain, B.~Bollmann, M.~Richardson, D.~Berger, M.~Helmst{\"a}dter,
+  K.~Briggman, W.~Denk, J.~Bowden, J.~Mendenhall, W.~Abraham, K.~Harris,
+  N.~Kasthuri, K.~Hayworth, R.~Schalek, J.~Tapia, J.~Lichtman, and S.~Seung.
+\newblock Boundary learning by optimization with topological constraints.
+\newblock In {\em Proc. IEEE CVPR 2010}, pages 2488--2495, 2010.
+
 \bibitem{januszewski2016flood}
 M.~Januszewski, J.~Maitin-Shepard, P.~Li, J.~Kornfeld, W.~Denk, and V.~Jain.
 \newblock Flood-filling networks.
@@ -101,6 +108,13 @@ N.~Kasthuri, K.~J. Hayworth, D.~R. Berger, R.~L. Schalek, J.~A. Conchello,
 \newblock Saturated reconstruction of a volume of neocortex.
 \newblock {\em Cell}, 162(3):648--661, 2015.
 
+\bibitem{kaynig2015large}
+V.~Kaynig, A.~Vazquez-Reina, S.~Knowles-Barley, M.~Roberts, T.~R. Jones,
+  N.~Kasthuri, E.~Miller, J.~Lichtman, and H.~Pfister.
+\newblock Large-scale automatic reconstruction of neuronal processes from
+  electron microscopy images.
+\newblock {\em Medical image analysis}, 22(1):77--88, 2015.
+
 \bibitem{kernighan1970efficient}
 B.~W. Kernighan and S.~Lin.
 \newblock An efficient heuristic procedure for partitioning graphs.
@@ -111,6 +125,12 @@ M.~Keuper, E.~Levinkov, N.~Bonneel, G.~Lavou{\'e}, T.~Brox, and B.~Andres.
 \newblock Efficient decomposition of image and mesh graphs by lifted multicuts.
 \newblock In {\em Proceedings of the IEEE International Conference on Computer
   Vision}, pages 1751--1759, 2015.
+
+\bibitem{rhoananet}
+S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
+  D.~Berger, N.~Kasthuri, J.~W. Lichtman, and H.~Pfister.
+\newblock Rhoananet pipeline: Dense automatic neural annotation, 2016.
+\newblock (available on arXiv:1611.06973 [cs.CV]).
 
 \bibitem{seymour2016rhoananet}
 S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
@@ -195,6 +215,12 @@ S.~Tatiraju and A.~Mehta.
 \newblock Image segmentation using k-means clustering, em and normalized cuts.
 \newblock {\em Department of EECS}, 1:1--7, 2008.
 
+\bibitem{amelio_segmentation}
+A.~V\'azquez-Reina, M.~Gelbart, D.~Huang, J.~Lichtman, E.~Miller, and
+  H.~Pfister.
+\newblock Segmentation fusion for connectomics.
+\newblock In {\em Proc. IEEE ICCV}, pages 177--184, Nov 2011.
+
 \bibitem{zhao2014automatic}
 T.~Zhao and S.~M. Plaza.
 \newblock Automatic neuron type identification by neurite localization in the
@@ -207,7 +233,7 @@ A.~Zlateski and H.~S. Seung.
   watershed basin graph.
 \newblock {\em arXiv preprint arXiv:1505.00249}, 2015.
 
-\bibitem{DBLP:journals/corr/abs-1708-02599}
+\bibitem{error_correction_using_CNN}
 J.~Zung, I.~Tartavull, and H.~S. Seung.
 \newblock An error detection and correction framework for connectomics.
 \newblock {\em CoRR}, abs/1708.02599, 2017.
