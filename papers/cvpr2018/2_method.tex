@@ -9,7 +9,7 @@ Our goal is to identify locations of split errors and merge the corresponding se
 Section~\ref{sec:neuroproof} discusses two pipelines for generating these segmentations.
 
 From the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 
-The nodes correspond to label segments from the segmentation and the edges between segments considered for merging.
+The nodes correspond to label segments from the segmentation with edges between segments considered for merging.
 Ideally, our graph has edges corresponding to all of the segments which were erroneously split with few edges between correctly split segments.
 We generate a skeleton for every segment following the intuition that a skeleton represents a simplified representation of the overall shape of an object. 
 We locate merge candidates and produce corresponding edges based on these skeletons.
@@ -102,12 +102,11 @@ To determine which of these segments should actually merge, we train a 3-D CNN u
 We extract a cubic region of interest around these locations as input to the CNN. 
 These regions of interests will provide the local information for the neural network to predict which neighboring segments belong to the same neuron. 
 
-We transform the extracted cubes for input into the neural network. 
-The network takes three input channels for each voxel in the 3-D volume corresponding to the following mapping. 
-Consider a pair of segments with labels $l_1$ and $l_2$ for every voxel $v$ in the region of interest. 
-The first channel is $0.5$ if $v = l_1$ and $-0.5$ otherwise, the second channel is $0.5$ if $v = l_2$ and $-0.5$ otherwise, and the third channel is $0.5$ if $v = l_1$ or $v = l_2$ and $-0.5$ otherwise. 
-Each 3-channel volume is subsequently downsampled into an array of size $(3, 22, 68, 68)$ using nearest-neighbor interpolation. 
-Our neural network trains on these 4-D arrays to generate probabilities that $l_1$ and $l_2$ should merge.
+The networks receives three input channels for every voxel in the region of interest around segments $l_1$ and $l_2$. 
+The input to all of the channels is in the set $\{-0.5, 0.5\}$. 
+The first channel is $0.5$ only if the corresponding voxel has label $l_1$. 
+The second channel is $0.5$ only if the corresponding voxel has label $l_2$. 
+The third channel is $0.5$ if the corresponding voxel is either $l_1$ or $l_2$. 
 
 Figure~\ref{fig:architecture} provides an overview of our architecture. 
 Our network architecture has three layers of double convolutions followed by a max pooling step following the work of Chatfield et al. that found such a framework improves on single convolution layers~\cite{chatfield2014return}. The first two max pooling layers are anisotropic with pooling only in the $x$ and $y$ dimensions to account for the anisotropic nature of the datasets.
