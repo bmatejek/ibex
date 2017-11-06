@@ -130,13 +130,6 @@ This optimizer has an initial learning rate of $0.01$, momentum of $0.9$, and a 
 	\label{fig:architecture}
 \end{figure*}
 
-
-\subsubsection{Data Augmentation}
-
-We apply some data augmentation to the generated examples to increase the size of the training datasets. 
-We consider all rotations of $90$ degrees along the $xy$-plane in addition to mirrors along the $x$ and $z$ axes. 
-This produces an additional 16 times more training data. 
-
 \subsection{Agglomeration}
 
 After constructing the above graph structure we can apply a graph-based segmentation strategy. 
