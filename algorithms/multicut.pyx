@@ -37,10 +37,7 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
 
     # output the results for multicut
     PrecisionAndRecall(ground_truth, predictions)
-    
-    #import sys
-    #sys.exit()
-    
+
     # create an empty union find data structure
     max_value = np.uint64(np.amax(segmentation) + 1)
     union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]

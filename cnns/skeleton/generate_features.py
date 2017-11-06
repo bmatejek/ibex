@@ -40,7 +40,7 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, in
             negative_candidates = negative_candidates[negative_threshold:]
 
             
-        # get the minimum length of the two candidates - train in pairs
+        # get the maximum length of the two candidates - train in pairs
         npoints = max(len(positive_candidates), len(negative_candidates))
         positive_index = 0
         negative_index = 0
