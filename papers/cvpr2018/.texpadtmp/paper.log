@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  5 NOV 2017 22:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  5 NOV 2017 22:42
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -426,10 +426,7 @@ File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 ) [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./figures/merge_candidate1.png> <./figures/intro-cube.png>]) (./1_related_work.tex
-Underfull \vbox (badness 3323) has occurred while \output is active []
-
-) (./2_method.tex
+ <./figures/merge_candidate1.png> <./figures/intro-cube.png>]) (./1_related_work.tex) (./2_method.tex
 
 LaTeX Warning: Reference `sec:neuroproof' on page 2 undefined on input line 4.
 
@@ -536,7 +533,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  41i,9n,39p,697b,469s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (6 pages, 1095250 bytes).
+Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (6 pages, 1095352 bytes).
 PDF statistics:
  296 PDF objects out of 1000 (max. 8388607)
  262 compressed objects within 3 object streams
