@@ -31,7 +31,9 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Robust Agglomeration of Labeled Neurons using 3D Skeletonization}
+\title{Graph-based Neuron Agglomeration using 3D Skeletons}
+
+%Robust Agglomeration using 3D Skeletonization of Labeled for Connectomics}
 
 \author{Brian Matejek\\
 Harvard University\\
@@ -54,13 +56,10 @@ Cambridge, MA 02138, USA\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Advancements in electron microscopy image acquisition has created massive datasets petabytes in size that are too large for complete manual segmentation. 
-Several previous strategies for automatic segmentation of these datasets rely work at the per-voxel level.
-Oftentimes, agglomeration strategies build on top of this layer to produce neuron reconstructions.
-Despite the success of these algorithms, there is significant room for improvement.
-Here, we propose a novel framework for correcting errors in existing agglomeration strategies. 
-We create a level of abstraction on top of the existing methods by reformulating the segmentations as a graph and applying global graph-based optimization strategies. 
-In the process we provide key insights into the use of machine-learned shape features for fixing errors. 
+Advancements in electron microscopy image acquisition have created massive connectomics datasets which are petabytes in size and make manual segmentation not feasible. 
+Proposed methods for automatic segmentations generate super-pixel approximations of neural membranes followed by agglomeration strategies to create full neuron reconstructions. 
+However, pixel-based segmentation results widely neglect global geometric properties.
+We generate skeletons of membrane labels to approximate neural pathways in 3D. This allows us to efficiently apply graph-based optimization strategies and to train automatic classifiers for shape description against manually labeled ground truth. Our classifiers detect feasible and impossible neural pathways by looking at geometric properties alone, and are able to improve the segmentation labels accordingly. We demonstrate the performance of our classifiers on multiple real-world connectomics datasets with average variation of information improvement of $X\times$. We discuss our findings and provide insights to learning shape features for neuron agglomeration.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT

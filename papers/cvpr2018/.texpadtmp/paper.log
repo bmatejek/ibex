@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  20 OCT 2017 23:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  5 NOV 2017 22:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -198,6 +198,26 @@ Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
 \rotheadsize=\dimen141
 \c@nlinenum=\count112
 \TeXr@lab=\toks21
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count113
+\c@ALG@rem=\count114
+\c@ALG@nested=\count115
+\ALG@tlm=\skip50
+\ALG@thistlm=\skip51
+\c@ALG@Lnr=\count116
+\c@ALG@blocknr=\count117
+\c@ALG@storecount=\count118
+\c@ALG@tmpcounter=\count119
+\ALG@tmplength=\skip52
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2016/05/05 v6.83n Hypertext links for LaTeX
  (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
@@ -247,12 +267,12 @@ Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
 \@linkdim=\dimen142
-\Hy@linkcounter=\count113
-\Hy@pagecounter=\count114
+\Hy@linkcounter=\count120
+\Hy@pagecounter=\count121
  (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2016/05/05 v6.83n Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count115
+\Hy@SavedSpaceFactor=\count122
  (/usr/local/texlive/2016/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
 )
@@ -276,14 +296,14 @@ Package: backref 2012/07/25 v1.38 Bibliographical back referencing
 Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 282.
 ))
-\c@Hy@tempcnt=\count116
+\c@Hy@tempcnt=\count123
  (/usr/local/texlive/2016/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip11
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5044.
 \XeTeXLinkMargin=\dimen143
-\Fld@menulength=\count117
+\Fld@menulength=\count124
 \Field@Width=\dimen144
 \Fld@charsize=\dimen145
 Package hyperref Info: Hyper figures OFF on input line 6298.
@@ -295,36 +315,36 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6323.
 Package hyperref Info: PDF/A mode OFF on input line 6328.
 LaTeX Info: Redefining \ref on input line 6368.
 LaTeX Info: Redefining \pageref on input line 6372.
-\Hy@abspage=\count118
-\c@Item=\count119
-\c@Hfootnote=\count120
+\Hy@abspage=\count125
+\c@Item=\count126
+\c@Hfootnote=\count127
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2016/05/05 v6.83n Hyperref driver for pdfTeX
-\Fld@listcount=\count121
-\c@bookmark@seq@number=\count122
-\Hy@SectionHShift=\skip50
+\Fld@listcount=\count128
+\c@bookmark@seq@number=\count129
+\Hy@SectionHShift=\skip53
 ) (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 29.
-LaTeX Font Info:    ... okay on input line 29.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 29.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 31.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 ) ABD: EveryShipout initializing macros (/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/color.sty
@@ -335,16 +355,16 @@ File: color.cfg 2016/01/02 v1.6 sample color configuration
 Package color Info: Driver file: pdftex.def on input line 144.
 ) (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count123
+\scratchcounter=\count130
 \scratchdimen=\dimen146
 \scratchbox=\box30
-\nofMPsegments=\count124
-\nofMParguments=\count125
+\nofMPsegments=\count131
+\nofMParguments=\count132
 \everyMPshowfont=\toks22
-\MPscratchCnt=\count126
+\MPscratchCnt=\count133
 \MPscratchDim=\dimen147
-\MPnumerator=\count127
-\makeMPintoPDFobject=\count128
+\MPnumerator=\count134
+\makeMPintoPDFobject=\count135
 \everyMPtoPDFconversion=\toks23
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
@@ -362,76 +382,149 @@ Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \AtBeginShipoutBox=\box31
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 29.
+Package hyperref Info: Link coloring ON on input line 31.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
  (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count129
+\c@section@level=\count136
 )
-LaTeX Info: Redefining \ref on input line 29.
-LaTeX Info: Redefining \pageref on input line 29.
-LaTeX Info: Redefining \nameref on input line 29.
+LaTeX Info: Redefining \ref on input line 31.
+LaTeX Info: Redefining \pageref on input line 31.
+LaTeX Info: Redefining \nameref on input line 31.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
-LaTeX Font Info:    Try loading font information for U+msa on input line 52.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
+LaTeX Font Info:    Try loading font information for U+msa on input line 56.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 52.
+LaTeX Font Info:    Try loading font information for U+msb on input line 56.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 54.
- (./0_introduction.tex
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 4.
- (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 4.
-) (./1_related_work.tex) (./2_method.tex) (./3_evaluation.tex) (./4_results.tex) (./5_conclusions.tex) (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.bbl (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.brf)
-\tf@brf=\write3
-\openout3 = `paper.brf'.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
+ (./0_introduction.tex <./figures/merge_candidate1.png, id=8, 1204.5pt x 1204.5pt>
+File: ./figures/merge_candidate1.png Graphic file (type png)
+ <use ./figures/merge_candidate1.png>
+Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 16.
+(pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
+ <./figures/intro-cube.png, id=9, 185.19188pt x 185.19188pt>
+File: ./figures/intro-cube.png Graphic file (type png)
+ <use ./figures/intro-cube.png>
+Package pdftex.def Info: ./figures/intro-cube.png used on input line 18.
+(pdftex.def)             Requested size: 99.59665pt x 99.59802pt.
 
+Underfull \vbox (badness 1803) has occurred while \output is active []
 
-
-LaTeX Warning: Empty `thebibliography' environment on input line 3.
-
-)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 76.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 76.
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 76.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 35.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 ) [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 76.
+ <./figures/merge_candidate1.png> <./figures/intro-cube.png>]) (./1_related_work.tex)
+Underfull \hbox (badness 1303) in paragraph at lines 27--69
+[]\OT1/ptm/m/n/10 The fields of com-puter graph-ics, math-e-mat-ics, and
+ []
+
+(./2_method.tex
+
+LaTeX Warning: Reference `sec:neuroproof' on page 2 undefined on input line 4.
+
+<./figures/skeleton1.png, id=70, 1204.5pt x 1204.5pt>
+File: ./figures/skeleton1.png Graphic file (type png)
+ <use ./figures/skeleton1.png>
+Package pdftex.def Info: ./figures/skeleton1.png used on input line 25.
+(pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
+ <./figures/skeleton2.png, id=71, 1204.5pt x 1204.5pt>
+File: ./figures/skeleton2.png Graphic file (type png)
+ <use ./figures/skeleton2.png>
+Package pdftex.def Info: ./figures/skeleton2.png used on input line 27.
+(pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
+ [2]
+File: ./figures/merge_candidate1.png Graphic file (type png)
+ <use ./figures/merge_candidate1.png>
+Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 58.
+(pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
+ <./figures/merge_candidate2.png, id=114, 1204.5pt x 1204.5pt>
+File: ./figures/merge_candidate2.png Graphic file (type png)
+ <use ./figures/merge_candidate2.png>
+Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 60.
+(pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
+
+Underfull \vbox (badness 1755) has occurred while \output is active []
+
+ <./figures/network_distance_400.png, id=115, 1204.5pt x 1204.5pt>
+File: ./figures/network_distance_400.png Graphic file (type png)
+ <use ./figures/network_distance_400.png>
+Package pdftex.def Info: ./figures/network_distance_400.png used on input line 91.
+(pdftex.def)             Requested size: 149.05838pt x 149.05504pt.
+ <./figures/network_distance_600.png, id=116, 1204.5pt x 1204.5pt>
+File: ./figures/network_distance_600.png Graphic file (type png)
+ <use ./figures/network_distance_600.png>
+Package pdftex.def Info: ./figures/network_distance_600.png used on input line 92.
+(pdftex.def)             Requested size: 149.05838pt x 149.05504pt.
+ <./figures/network_distance_800.png, id=117, 1204.5pt x 1204.5pt>
+File: ./figures/network_distance_800.png Graphic file (type png)
+ <use ./figures/network_distance_800.png>
+Package pdftex.def Info: ./figures/network_distance_800.png used on input line 93.
+(pdftex.def)             Requested size: 149.05838pt x 149.05504pt.
+ [3 <./figures/skeleton1.png> <./figures/skeleton2.png> <./figures/merge_candidate2.png>] <figures/architecture.png, id=136, 1075.01625pt x 411.5375pt>
+File: figures/architecture.png Graphic file (type png)
+ <use figures/architecture.png>
+Package pdftex.def Info: figures/architecture.png used on input line 128.
+(pdftex.def)             Requested size: 472.01192pt x 180.694pt.
+)
+Underfull \vbox (badness 2042) has occurred while \output is active []
+
+ (./3_evaluation.tex [4 <./figures/network_distance_400.png> <./figures/network_distance_600.png> <./figures/network_distance_800.png>]) (./4_results.tex) (./5_conclusions.tex) (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.bbl (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.brf)
+\tf@brf=\write3
+\openout3 = `paper.brf'.
+
+
+Underfull \hbox (badness 2318) in paragraph at lines 73--73
+[]\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
+ []
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 79.
+[5 <./figures/architecture.png>]
+Underfull \hbox (badness 1052) in paragraph at lines 91--91
+[]\OT1/ptm/m/n/9 M. Januszewski, J. Maitin-Shepard, P. Li, J. Ko-rn-feld,
+ []
+
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 83.
+ [6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 83.
  (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 76.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 76.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 83.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 83.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: <no file>.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 76.
+(rerunfilecheck)             Checksum: 4BA243B706D11BA14414109193DD298A;1875.
+
+
+LaTeX Warning: There were undefined references.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 83.
  ) 
 Here is how much of TeX's memory you used:
- 7811 strings out of 493014
- 116880 string characters out of 6133351
- 208875 words of memory out of 5000000
- 11204 multiletter control sequences out of 15000+600000
- 26545 words of font info for 61 fonts, out of 8000000 for 9000
+ 8597 strings out of 493014
+ 130125 string characters out of 6133351
+ 226354 words of memory out of 5000000
+ 11900 multiletter control sequences out of 15000+600000
+ 35216 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,9n,38p,253b,322s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (1 page, 56405 bytes).
+ 36i,9n,39p,697b,471s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (6 pages, 1093675 bytes).
 PDF statistics:
- 54 PDF objects out of 1000 (max. 8388607)
- 44 compressed objects within 1 object stream
- 15 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 279 PDF objects out of 1000 (max. 8388607)
+ 245 compressed objects within 3 object streams
+ 77 named destinations out of 1000 (max. 500000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
