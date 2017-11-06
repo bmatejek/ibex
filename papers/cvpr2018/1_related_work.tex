@@ -1,6 +1,9 @@
 \section{Related Work}
 
-\paragraph{Voxel-based methods.} A large amount of connectomics research considers the problem of extracting segmentation information at the voxel level from the raw EM images. 
+\paragraph{Voxel-based methods.} 
+A large amount of connectomics research considers the problem of extracting segmentation information at the voxel level from the raw EM images to produce label volumes.
+In a label volume, every voxels receives a segment label corresponding to a unique neuron.
+Voxels with the same segment label belong to the same neuron. 
 Such works focus on training 2-D convolutional neural networks to predict membrane probabilities per image slice~\cite{ciresan2012deep,jain2010boundary,amelio_segmentation,rhoananet,kaynig2015large}. 
 More recent strategies augment these neural networks with the $z$-dimension creating full 3-D convolutional networks~\cite{lee2015recursive}.
 Oftentimes these networks produce probabilities for the affinity between voxels rather than probabilities for a voxel belonging to a cell membrane~\cite{ronneberger2015u}. 
@@ -10,16 +13,17 @@ Some of these features encode the distribution of probabilities that voxels alon
 However, there is evidence that machine-learned features outperform hand-designed ones~\cite{bogovic2013learned}.
 An extensive amount of research in computer vision, applied mathematics, and statistics evaluates the loss functions and optimizers for these networks~\cite{chatfield2014return,maas2013rectifier,nesterov1983method}. 
 
-\paragraph{Super-voxel methods.} These approaches generate probabilities that neighboring voxels belong to the same neuron.
-Many algorithms work at the resulting super-voxel level and train random-forest classifiers to produce segmentations of the EM images where every unique neuron in the volume has a unique label~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image} (CITE NEUROPROOF). 
+\paragraph{Super-voxel methods.} 
+These approaches generate probabilities that neighboring voxels belong to the same neuron.
+Many algorithms work at the resulting supervoxel level and train random-forest classifiers to produce segmentations of the EM images where every unique neuron in the volume has a unique label~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image} (CITE NEUROPROOF). 
 Despite the success of these classifiers, they often make mistakes based on the local information leading to errors in the segmentation. 
 Proofreading methods create a ``human-in-the-loop" framework that allows users to find errors and correct them \cite{haehn2017scalable,haehn2017guided,haehn2014design,error_correction_using_CNN}. 
 
 More recently, flood-filling networks merge the process of generating voxel affinities and then producing segmentations by training an end-to-end neural network that outputs segmentations~\cite{januszewski2016flood}. 
 These networks produce impressive segmentation accuracies of over $X\%$.%TODO ADD ACCURACY FOR FLOOD FILLING NETWORKS
-%, they are currently too slow for large scale connectomics reconstructions. 
 
-\paragraph{Graph-based methods.} Many segmentation and clustering algorithms use graph partitioning techniques~\cite{andres2012globally} or normalized cuts for image segmentation~\cite{kappes2016higher,shi2000normalized,tatiraju2008image}. 
+\paragraph{Graph-based methods.} 
+Many segmentation and clustering algorithms use graph partitioning techniques~\cite{andres2012globally} or normalized cuts for image segmentation~\cite{kappes2016higher,shi2000normalized,tatiraju2008image}. 
 The multicut graph partitioning algorithm extracts segments the graph and remove edges such that there are no cycles. 
 This closely resembles the biological constraint that neurons have a topological genus of zero. 
 There are several useful multicut heuristics which provide good approximations with reasonable computational costs~\cite{horvnakova2017analysis,kernighan1970efficient,keuper2015efficient}

@@ -3,7 +3,7 @@
 We evaluate our proposed methods on two different connectomics datasets, one anisotropic and the other isotropic, from two different species. 
 
 \subsection{Datasets}
-
+\label{sec:dataset}
 \subsubsection{Kasthuri}
 The Kasthuri dataset images the neocortex of a mouse brain produced by a scanning electron microscope \cite{kasthuri2015saturated}. 
 This dataset is $338 \times 3618 \times  5342$ voxels in size. 
@@ -19,18 +19,25 @@ The resolution of this dataset is $10 \times 10 \times 10 \mu\textrm{m}^3$ per v
 The image data and the accompanying ground truth is available (CITE). 
 
 \subsubsection{Segmentation Pipeline and Baseline}
-
+\label{sec:neuroproof}
 Our algorithm takes the output of a supervoxel based agglomeration strategy such as NeuroProof or GALA. For our experiments we use the output from NeuroProof (CITE). We generate voxel affinities from the raw image data using the U-Net architecture \cite{ronneberger2015u}. The Zwatershed algorithm (CITE) creates an oversegmentation of the neurons given these voxel affinities. We input the raw image data, the voxel affinities, and the oversegmentation into NeuroProof which performs a hierarchical agglomeration strategy to merge the supervoxels into larger and larger segments. Two neighboring segments receive a merge-likelihood score based on various extracted features such as the distribution of affinities along the segment boundary. A random forest classifier generates probabilities based on these features. (TODO: TOUFIQ ADD HERE)
 
 
 
 \subsection{Skeleton Pruning}
 
-Our method prunes potential merge candidates by considering the skeleton as a simplification of the segment shape. Segment skeletons that have nearby endpoints are merge candidates. The underlying assumption in this model is that the segments break in a particular fashion, primarily perpendicular to the direction of travel (CONFUSING). We perform a series of experiments to evaluate the effectiveness of this idea. First, we examine how many merge candidates are not considered using our method that would have been if we employed the strategy of considering all neighboring segments. These are locations that we cannot possibly correct and therefore we want this number to be as low as possible. The second experiment considers how many locations are not considered that should not be merged. We want this number to be as large as possible since we want to avoid making mistakes by merging these segments. At best, these segments waste time and at worst they lead to incorrect merges. 
-
+Our method prunes potential merge candidates by considering the skeleton as a simplification of the segment shape. Segment skeletons that have nearby endpoints are merge candidates. The underlying assumption in this model is that the segments break in a particular fashion, primarily perpendicular to the direction of travel (CONFUSING). We perform a series of experiments to evaluate the effectiveness of this idea. First, we examine how many merge candidates are not considered using our method that would have been if we employed the strategy of considering all neighboring segments. These are locations that we cannot possibly correct and therefore we want this number to be as low as possible. The second experiment considers how many locations are not considered that should not be merged. We want this number to be as large as possible since we want to avoid making mistakes by merging these segments. At best, these segments waste time and at worst they lead to incorrect merges. %TODO: The results in this paper follow from \$t\_\{low\} = 240\$ and \$t\_\{high\} = 600\$. 
 \subsection{Classifier Training}
 
 We divide both datasets into half to train the classifier. We generate all valid examples for merge consideration based on the skeletonization algorithm. In the training dataset, $80\%$ of the examples are used for training and the remaining examples are used for validation. To start, we consider networks of varying sizes, optimization functions, and loss functions. The supplemental material has additional information concerning the tuning of the network. There are XXX,XXX learnable parameters in our final architecture. The training ran for XX epochs. Table \ref{table:architecture} provides the final network parameters.
+%TODO: why do we use 1200nm
+%TODO: A cubic length of $1200\textrm{nm}$ provides enough local shape context for the network without introducing an excessive amount of noise. 
+%TODO: Figure~\ref{fig:network-radius} shows cubes of lengths $800\textrm{nm}, 1200\textrm{nm},$ and $1600\textrm{nm}$.
+
+%TODO: The filter size of the layers are 16, 32, and 64 with size doubling deeper into the network. 
+%TODO: All convolutions have kernel sizes of $(3, 3, 3)$. 
+%TODO: The output size of the final max pooling layer is $(5, 5, 5)$ with $64$ channels. 
+%TODO: This optimizer has an initial learning rate of $0.01$, momentum of $0.9$, and a decay rate of $5*10^{-8}$. 
 
 \begin{table}[h!]
 	\centering
@@ -50,9 +57,9 @@ We divide both datasets into half to train the classifier. We generate all valid
 \end{table}
 
 \paragraph{Data Augmentation.}
-We apply some data augmentation to the generated examples to increase the size of the training datasets. 
-We consider all rotations of $90$ degrees along the $xy$-plane in addition to mirrors along the $x$ and $z$ axes. 
-This produces an additional 16 times more training data. 
+We apply data augmentation to the generated examples to increase the size of the training datasets. 
+We consider all rotations of $90$ degrees along the $xy$-plane in addition to mirroring along the $x$ and $z$ axes. 
+This produces 16 times more training data. 
 
 \subsection{Graph-based Strategies}
 

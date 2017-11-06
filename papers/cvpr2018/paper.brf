@@ -1,5 +1,6 @@
 \backcite {hildebrand2017whole}{{1}{1}{section.1}}
 \backcite {kasthuri2015saturated}{{1}{1}{section.1}}
+\backcite {seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image}{{1}{1}{section.1}}
 \backcite {lee2015recursive,ronneberger2015u}{{1}{1}{section.1}}
 \backcite {nunez2014graph}{{1}{1}{figure.caption.1}}
 \backcite {bogovic2013learned}{{1}{1}{figure.caption.1}}
@@ -21,10 +22,11 @@
 \backcite {baran2007automatic,bharaj2012automatically}{{2}{2}{section*.5}}
 \backcite {sato2000teasar,zhao2014automatic}{{2}{2}{section*.5}}
 \backcite {sato2000teasar,zhao2014automatic}{{3}{3.1.2}{figure.caption.6}}
-\backcite {chatfield2014return}{{4}{3.2.1}{figure.caption.8}}
-\backcite {funahashi1989approximate,maas2013rectifier}{{4}{3.2.1}{figure.caption.8}}
-\backcite {nesterov1983method}{{4}{3.2.1}{figure.caption.8}}
+\backcite {chatfield2014return}{{4}{3.2.1}{subsubsection.3.2.1}}
+\backcite {funahashi1989approximate}{{4}{3.2.1}{subsubsection.3.2.1}}
+\backcite {maas2013rectifier}{{4}{3.2.1}{subsubsection.3.2.1}}
+\backcite {nesterov1983method}{{4}{3.2.1}{subsubsection.3.2.1}}
 \backcite {kernighan1970efficient}{{4}{3.3}{subsection.3.3}}
 \backcite {kasthuri2015saturated}{{4}{4.1.1}{subsubsection.4.1.1}}
 \backcite {takemura2017connectome}{{4}{4.1.2}{subsubsection.4.1.2}}
-\backcite {ronneberger2015u}{{5}{4.1.3}{subsubsection.4.1.3}}
+\backcite {ronneberger2015u}{{4}{4.1.3}{subsubsection.4.1.3}}

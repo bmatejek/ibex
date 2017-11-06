@@ -1,22 +1,35 @@
 \section{Method}
 
-Our method takes as input an existing oversegmentation of an $EM$ image volume. 
-Section~\ref{sec:neuroproof} discusses two preexisting pipelines for generating these segmentations.
-We evaluate our proposed method on the outputs from both of these pipelines.
+There are two types of errors that can occur in image segmentation problems.
+The first, called a split error, occurs when there are two segments that should have been merged.
+The second, called a merge error, happens when one segment should be split into two.
+Generally, it is much more difficult to correct merge errors than to correct split errors (CITE). 
+Our method takes as input an oversegmentation of an $EM$ image volume where there are many more split errors than merge errors.
+Our goal is to identify locations of split errors and merge the corresponding segments.
+Section~\ref{sec:neuroproof} discusses two pipelines for generating these segmentations.
+
+From the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 
+The nodes correspond to label segments from the segmentation and the edges between segments considered for merging.
+Ideally, our graph has edges corresponding to all of the segments which were erroneously split with few edges between correctly split segments.
+We generate a skeleton for every segment following the intuition that a skeleton represents a simplified representation of the overall shape of an object. 
+We locate merge candidates and produce corresponding edges based on these skeletons.
+A CNN generates the edge weights by learning a merge function given two segments as input. 
+A multicut heuristic generates a partition on the graph where nodes in the same partition are assigned the same output label. 
+Thus there are three major components to our framework: skeletonization for constructing a graph, network training for determining edge weights, and graph-partitioning using a multicut heuristic algorithm. (INSERT FIGURE HERE)
 
 \subsection{Graph Creation}
 
-We need to generate nodes $N$ and edges $E$ to apply a graph-based optimization strategy for segmentation. 
+We generate nodes $N$ and edges $E$ to apply a graph-based optimization strategy for segmentation. 
 In addition, these edges need non-negative weights.
 
 \subsubsection{Node Generation}
 
 The simplest node generation strategy creates one node for every unique segment label in the input volume.
-However, there are often a small number of labels in the volume corresponding to very small regions.
+However, some of the millions of labels in the volume correspond to very small regions. 
+Usually these locations have noisy image data so the voxel-based methods could not provide enough information to generate a larger segment.
 It is difficult to extract useful shape features from these segments because of their small, and often random, shape. 
-These segments are pruned from the graph and do not have corresponding nodes. 
-For the proposed framework, we remove segments with fewer than $20,000$ voxels (ADD PERCENT, current estimate less than 10\%).
-Figure~\ref{fig:skeletonization} shows two typical input segments that receive a corresponding node in the graph. . 
+We prune these nodes from the graph by removing all segments with fewer than $20,000$ voxels. 
+On a typical connectomics dataset this only remove XX$\%$ of segments. 
 
 \subsubsection{Edge Generation}
 
@@ -29,29 +42,28 @@ Figure~\ref{fig:skeletonization} shows two typical input segments that receive a
 	\label{fig:skeletonization}
 \end{figure}
 
-A na\"ive approach to generating edges simply produces an edge between all segments that have a single pair of neighboring voxels.
-Current agglomeration strategies such as NeuroProof or GALA use this criteria when deciding pairs of segments to merge into one neuron.
-However, for us this method will produce too many edges in our graph, many of which are easily prunable. 
-Many of the segments that are erroneously split have a similar structure. 
-Consider Figure~\ref{fig:merge_candidates} which shows two such pairs.
-In both instances the segments around the break follow the same general shape. 
-The segment is tubular in the close vicinity with an abrupt break perpendicular to the elongated direction.
-We present the following algorithm to identify these locations.
+A na\"ive approach to generating edges produces an edge between all adjacent segments.
+Two segments $l_1$ and $l_2$ are considered adjacent if there is a pair of adjacent voxels where one has label $l_1$ and the other has label $l_2$. 
+NeuroProof and GALA consider all pairs of adjacent segments for merging. 
+This method produces too many edges in the graph for us.
+Therefore we present the following algorithm to identify pairs of segments to consider merging. 
 
-We generate a skeleton for every segment following the intuition that a skeleton represents a simplified representation of the overall shape of an object. 
-We use the Tree-structure Extraction Algorithm for Accurate and Robust Skeletons (TEASER)~\cite{sato2000teasar,zhao2014automatic}. 
-These skeletons consist of a sequence of \textit{joints} with edges between successive joints. 
+First, we extract a skeleton from each segment using the TEASER algorithm~\cite{sato2000teasar,zhao2014automatic}.
+Figure~\ref{fig:skeletonization} shows the skeletons in white of two segments from the label volume.
+These skeletons consist of a sequence of \textit{joints}, locations that are a local maximum distance from the segment boundary, with line segments connecting successive joints. 
 We prune the joints that are within $50$ voxels of each other to reduce unnecessary branching.
-For the purposes of this algorithm, joints that have only one connected neighbor are referred to as \textit{endpoints}. 
-Figure~\ref{fig:skeletonization} shows the skeletons in white of two typical segments from the label volume.
+For the purposes of our algorithm, joints that have only one connected neighbor are referred to as \textit{endpoints}. 
+Many of the segments that are erroneously split follow a similar pattern (Figure~\ref{fig:merge_candidates}). 
+In these split instances the skeletons have nearby endpoints.
+
 After skeletonization, we begin to identify segments for merge consideration with the following two-pass heuristic.
-In the first pass, we iterate over all endpoints $e$ belonging to a segment $S$ and create a set of segments $\mathbb{S}_e^\prime$ which includes all labels that have a single voxel within $t_{low}$ nanometers from $e$. 
-This first pass often includes too many candidates that should not merge so we apply an additional pass to prune these sets.
+In the first pass, we iterate over all endpoints $e$ belonging to a segment $S$ and create a set of segments $\mathbb{S}_e^\prime$ that includes all labels that have a single voxel within $t_{low}$ voxels from $e$. 
+Elements of these sets are candidates for merging.
+However the first pass often has too many candidates that should remain split so we apply an additional pass for further pruning.
 In the second pass, we consider all of the segments $\mathbb{S}_e^\prime$ for every endpoint $e$. 
-If a segment $S^\prime \in \mathbb{S}_e^\prime$ has an endpoint within $t_{high}$ nanometers of $e$, the segment $S$ and $S^\prime$ are considered for merging. 
+If a segment $S^\prime \in \mathbb{S}_e^\prime$ has an endpoint within $t_{high}$ voxels of $e$, the segment $S$ and $S^\prime$ are considered for merging. 
 We store the midpoint between the two endpoints as the ``center" of the potential merge.
 Algorithm (ADD REF) provides pseudocode for this edge generation algorithm. 
-The results in this paper follow from $t_{low} = 240$ and $t_{high} = 600$. 
 
 \begin{figure}[t]
 	\centering
@@ -74,9 +86,8 @@ The results in this paper follow from $t_{low} = 240$ and $t_{high} = 600$.
 	\EndFunction
 \end{algorithmic}
 
-Note that the above algorithm does not enforce any segment adjacency constraints.
-Figure (ADD FIGURE) shows two examples that would not be considered in previous research since they are not adjacent.
-Finding and merging these examples is one of the benefits of retreating from per-pixel algorithms. 
+Note that this algorithm does not enforce any segment adjacency constraints.
+Figure (ADD FIGURE) shows two examples that would not be considered in NeuroProof or GALA since these algorithms only consider merging adjacent segments.
 
 \subsection{Edge Probabilities}
 
@@ -86,42 +97,27 @@ The neural network takes as input only data from the input segmentation.
 
 \subsubsection{Network Architecture}
 
-\begin{figure*}[t]
-	\centering
-	\includegraphics[width=0.3\linewidth]{./figures/network_distance_400.png}
-	\includegraphics[width=0.3\linewidth]{./figures/network_distance_600.png}
-	\includegraphics[width=0.3\linewidth]{./figures/network_distance_800.png}	
-	\caption{The white outlines show three different possible cubic sizes to input into the neural network. The left example ($800\textrm{nm}$) provides less local context than the middle example ($1200\textrm{nm}$). The right example ($1600\textrm{nm}$) extracts too large of a local region that produces noise as one of the segments leaves the bounding box only to reenter.}
-	\label{fig:network-radius}
-\end{figure*}
-
-
-The above skeletonization algorithm produces 3-D locations that require further consideration for merging. 
-To determine which of these segments should actually merge, we train a 3-D convolutional neural network. 
-We extract a cubic region with length $1200\textrm{nm}$ centered at these locations. 
-These cubes will provide the local information for the neural network to predict which neighboring segments belong to the same neuron. 
-A cubic length of $1200\textrm{nm}$ provides enough local shape context for the network without introducing an excessive amount of noise. 
-Figure~\ref{fig:network-radius} shows cubes of lengths $800\textrm{nm}, 1200\textrm{nm},$ and $1600\textrm{nm}$.
+Our graph generation algorithm produces 3-D locations that require further consideration for merging. 
+To determine which of these segments should actually merge, we train a 3-D CNN using the oversegmentation and the corresponding manually labeled ground truth data (Section~\ref{sec:dataset}).
+We extract a cubic region of interest around these locations as input to the CNN. 
+These regions of interests will provide the local information for the neural network to predict which neighboring segments belong to the same neuron. 
 
 We transform the extracted cubes for input into the neural network. 
 The network takes three input channels for each voxel in the 3-D volume corresponding to the following mapping. 
-Consider a pair of segments with labels $l_1$ and $l_2$ for every voxel $v$ in the cube of interest. 
+Consider a pair of segments with labels $l_1$ and $l_2$ for every voxel $v$ in the region of interest. 
 The first channel is $0.5$ if $v = l_1$ and $-0.5$ otherwise, the second channel is $0.5$ if $v = l_2$ and $-0.5$ otherwise, and the third channel is $0.5$ if $v = l_1$ or $v = l_2$ and $-0.5$ otherwise. 
 Each 3-channel volume is subsequently downsampled into an array of size $(3, 22, 68, 68)$ using nearest-neighbor interpolation. 
 Our neural network trains on these 4-D arrays to generate probabilities that $l_1$ and $l_2$ should merge.
 
-Our network architecture has three layers of double convolutions followed by a max pooling step \cite{chatfield2014return}. 
-As described above, the input with into the network is $(22, 68, 68)$ with $3$ channels. 
-The filter size of the layers are 16, 32, and 64 with size doubling deeper into the network. 
-The first two max pooling layers are anisotropic with pooling only in $x$ and $y$ to match the anisotropic nature of our EM datasets. 
-All convolutions have kernel sizes of $(3, 3, 3)$. 
-The output size of the final max pooling layer is $(5, 5, 5)$ with $64$ channels. 
-The output is flattened into a 1-D vector with $8000$ entries which enters two fully connected layers with $512$ and $1$ dimensions in the output respectively. 
-All activation functions are LeakyReLU with $\alpha=0.001$ except for the final activation which uses a sigmoid function~\cite{funahashi1989approximate,maas2013rectifier}. 
-There is a dropout of $0.2$ after every pooling layer and the first dense layer. 
-There is a dropout of $0.5$ after the final dense layer. 
-The above method uses stochastic gradient descent with Nesterov's accelerated gradient~\cite{nesterov1983method}. 
-This optimizer has an initial learning rate of $0.01$, momentum of $0.9$, and a decay rate of $5*10^{-8}$. Figure~\ref{fig:architecture} provides an overview of the proposed architecture. 
+Figure~\ref{fig:architecture} provides an overview of our architecture. 
+Our network architecture has three layers of double convolutions followed by a max pooling step following the work of Chatfield et al. that found such a framework improves on single convolution layers~\cite{chatfield2014return}. The first two max pooling layers are anisotropic with pooling only in the $x$ and $y$ dimensions to account for the anisotropic nature of the datasets.
+The output after this final pooling step is flattened into a 1-D vector which is input into two fully connected layers.
+The final layer produces a probability with a sigmoid activation function~\cite{funahashi1989approximate}. 
+All of the other activation functions are LeakyReLU~\cite{maas2013rectifier}. 
+We use a stochastic gradient descent optimizer with Nesterov's accelerated gradient~\cite{nesterov1983method}. 
+There are dropouts of $0.2$ after every pooling layer and the first dense layer, and a dropout of $0.5$ after the final dense layer. 
+This prevents overfitting of the training data.
+
 
 \begin{figure*}[t]
 	\centering
@@ -132,9 +128,11 @@ This optimizer has an initial learning rate of $0.01$, momentum of $0.9$, and a 
 
 \subsection{Agglomeration}
 
-After constructing the above graph structure we can apply a graph-based segmentation strategy. 
+After constructing the graph structure we apply a graph-based segmentation strategy. 
 There are many formulations of graph-based optimization strategies that provide different guarantees on their output. 
 Neurons in the brain should be acyclic, i.e. the output shape should have a genus of zero. 
 Current connectomics agglomeration techniques do not leverage this additional information but rather consider neighboring regions in successive order without regard to loop creation. 
-In our graph formulation we can enforce this topological property by applying a multicut partition onto the graph which generates a forest on the nodes. 
+In our graph formulation we enforce this topological property by applying a multicut partition onto the graph that generates a \textit{forest} on the nodes. 
+A forest is a partitioning of a graph into a set of trees (i.e. no segment has a cycle). 
 There are several heuristics that solve the multicut problem. For our purposes we use the Kernighan-Lin algorithm~\cite{kernighan1970efficient}.
+The running time of this algorithm is $\mathcal{O}(N^3)$, where $N$ is the number of nodes in the graph (DOUBLE CHECK). 
