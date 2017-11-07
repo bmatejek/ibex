@@ -10,7 +10,7 @@
 #include "andres/graph/multicut/greedy-additive.hxx"
 
 
-unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double beta)
+unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double beta, unsigned int heuristic)
 {
     // create the empty graph structure
     andres::graph::Graph<> graph;
@@ -30,9 +30,10 @@ unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsign
     // create empty edge labels and call the kernighan-lin algorithm
     std::vector<char> edge_labels(nedges, 1);
     
-    andres::graph::multicut::kernighanLin(graph, weights, edge_labels, edge_labels);
-    //andres::graph::multicut::greedyAdditiveEdgeContraction(graph, weights, edge_labels);
-
+    if (heuristic == 0) andres::graph::multicut::kernighanLin(graph, weights, edge_labels, edge_labels);
+    else if (heuristic == 1) andres::graph::multicut::greedyAdditiveEdgeContraction(graph, weights, edge_labels);
+    else { fprintf(stderr, "Unrecognized heuristic: %u\n", heuristic); return NULL; }
+    
     // turn vector into char array and return
     unsigned char *collapsed_edges = new unsigned char[nedges];
     for (unsigned long ie = 0; ie < nedges; ++ie) {

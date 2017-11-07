@@ -17,7 +17,7 @@ from PixelPred2Seg import comparestacks
 
 # c++ external definition
 cdef extern from 'cpp-multicut.h':
-    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double beta)
+    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double beta, unsigned int heuristic)
 
 
 
@@ -62,7 +62,7 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
 
 
 
-def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anisotropic):
+def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anisotropic, heuristic):
     # get a forward and reverse mapping
     forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
 
@@ -86,7 +86,7 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
     cdef np.ndarray[double, ndim=1, mode='c'] cpp_edge_weights = np.ascontiguousarray(edge_weights, dtype=ctypes.c_double)
 
     # run multicut algorithm
-    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), beta)
+    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), beta, heuristic)
     cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
     collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
 
