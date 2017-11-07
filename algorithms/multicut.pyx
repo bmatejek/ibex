@@ -65,7 +65,7 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
 
 
 
-def Multicut(segmentation, gold, candidates, edge_weights, beta):
+def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anisotropic):
     # get a forward and reverse mapping
     forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
 
@@ -97,12 +97,12 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta):
     segmentation = CollapseGraph(segmentation, candidates, collapsed_edges, edge_weights)
 
     # evaluate before and after multicut
-    comparestacks.Evaluate(segmentation, gold)
+    comparestacks.Evaluate(segmentation, gold, threshold, anisotropic)
 
 
 
 # function ro run multicut algorithm
-def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta):
+def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta, anisotropic=True):
     # read the candidates
     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
@@ -121,4 +121,4 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_dista
     gold = dataIO.ReadGoldData(prefix)
 
     # run the multicut algorithm
-    Multicut(segmentation, gold, candidates, edge_weights, beta)
+    Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anisotropic)

@@ -9,10 +9,6 @@
 #include "andres/graph/multicut/kernighan-lin.hxx"
 #include "andres/graph/multicut/greedy-additive.hxx"
 
-#include "andres/ilp/gurobi.hxx"
-#include "andres/graph/multicut/ilp.hxx"
-
-
 
 unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double beta)
 {
@@ -34,7 +30,6 @@ unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsign
     // create empty edge labels and call the kernighan-lin algorithm
     std::vector<char> edge_labels(nedges, 1);
     
-    //andres::graph::multicut::ilp<andres::ilp::Gurobi>(graph, weights, edge_labels, edge_labels);
     andres::graph::multicut::kernighanLin(graph, weights, edge_labels, edge_labels);
     //andres::graph::multicut::greedyAdditiveEdgeContraction(graph, weights, edge_labels);
 
