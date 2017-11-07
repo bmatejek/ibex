@@ -45,7 +45,7 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, width):
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters):
+def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance, width):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
