@@ -24,11 +24,6 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, in
         candidates = positive_candidates + negative_candidates
         random.shuffle(candidates)
     else:
-        # "randomly" shuffle the arrays
-        random.seed(0)
-        random.shuffle(positive_candidates)
-        random.shuffle(negative_candidates)
-
         positive_threshold = int(math.floor(0.80 * len(positive_candidates)))
         negative_threshold = int(math.floor(0.80 * len(negative_candidates)))
         
@@ -39,6 +34,9 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, in
             positive_candidates = positive_candidates[positive_threshold:]
             negative_candidates = negative_candidates[negative_threshold:]
 
+        # shuffle the positive and negative candidates
+        random.shuffle(positive_candidates)
+        random.shuffle(negative_candidates)
             
         # get the maximum length of the two candidates - train in pairs
         npoints = max(len(positive_candidates), len(negative_candidates))
