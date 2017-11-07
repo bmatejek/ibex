@@ -99,7 +99,7 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
 
 
 # function ro run multicut algorithm
-def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta, anisotropic=True):
+def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta, anisotropic, heuristic):
     # read the candidates
     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
@@ -118,4 +118,4 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_dista
     gold = dataIO.ReadGoldData(prefix)
 
     # run the multicut algorithm
-    Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anisotropic)
+    Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anisotropic, heuristic)
