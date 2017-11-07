@@ -275,7 +275,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
 
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
                     (rotations * ntraining_candidates / batch_size), epochs=500, verbose=1, class_weight=weights, callbacks=callbacks,\
-                    validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size), initial_epoch=starting_epoch)
+                    validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))
