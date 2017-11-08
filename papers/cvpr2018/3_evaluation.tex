@@ -1,52 +1,81 @@
 \section{Evaluation}
 
-We evaluate our proposed methods on two different connectomics datasets, one anisotropic and the other isotropic, from two different species. 
+We evaluate our schema on two different connectomics datasets, one anisotropic and the other isotropic, from two different species. 
 
 \subsection{Datasets}
 \label{sec:dataset}
-\subsubsection{Kasthuri}
+\paragraph{Kasthuri.}
 The Kasthuri dataset images the neocortex of a mouse brain produced by a scanning electron microscope \cite{kasthuri2015saturated}. 
-This dataset is $338 \times 3618 \times  5342$ voxels in size. 
-The resolution of the dataset is $3 \times 3 \times 30 \textrm{nm}^3$. 
+This dataset is $5342 \times 3618 \times 338$ voxels in size. 
+The resolution of the dataset is $\SI[product-units=single]{3 x 3 x 30}{\nano\meter}^3$ per voxel. 
 We evaluate our methods using the left cylinder of this 3-cylinder dataset. 
+We downsample the dataset in the $x$ and $y$ dimensions to give a final resolution of $\SI[product-units=single]{6 x 6 x 30}{\nano\meter}^3$ per voxel. 
+We divide the dataset into two volumes along the $x$ dimension.
+Thus, each volume is $\SI[product-units=single]{8.0 x 10.9 x 10.1}{\micro\meter}^3$. 
 
-\subsubsection{FlyEM}
-
+\paragraph{FlyEM.}
 The FlyEM dataset comes from the mushroom body of a 5-day old adult male \textit{Drosophila} fly imaged by a focused ion-beam milling scanning electron microscopy.  
 The mushroom body is this species is the major site of associative learning \cite{takemura2017connectome}. 
-The original dataset contains a $40 \mu\textrm{m} \times 50\mu\textrm{m} \times 120\mu\textrm{m}$ volume of which we use two subsections of size $1000 \times 1000 \times 1000$ voxels.  
-The resolution of this dataset is $10 \times 10 \times 10 \mu\textrm{m}^3$ per voxel. 
-The image data and the accompanying ground truth is available (CITE). 
+The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro\meter}^3$ volume of which we use two cubes of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$. 
+The resolution of this dataset is $\SI[product-units=single]{10 x 10 x 10}{\nano\meter}^3$ so each volume has $1000$ voxels in each dimension.
 
-\subsubsection{Segmentation Pipeline and Baseline}
+\paragraph{Segmentation Pipeline and Baseline.}
 \label{sec:neuroproof}
-The segmentation on [Cite Kasthuri Cell2015] dataset was computed by agglomerating 3D supervoxels produced by zwatershed [Cite Zlatesky arXiv2015] from 3D affinity predictions. 
-A recent study by Funke et.al. [Funke arXiv2017] demonstrated superior performance of such method over existing ones on anisotropic data. 
-We learned 3d affinities in x,y,z using MALIS [Cite Turaga, NIPS 2009] loss with a U-net [Ronneberger, MICCAI 2015]. 
+The segmentation on the Kasthuri dataset was computed by agglomerating 3D supervoxels produced by zwatershed from 3D affinity predictions~\cite{zlateski2015image}. 
+A recent study by Funke et.al. demonstrated superior performance of such method over existing ones on anisotropic data \cite{schlegel2017learning}. 
+We learned 3d affinities in x,y,z using MALIS loss with a U-net~\cite{Turaga:2009,ronneberger2015u}. 
 We apply the zwatershed algorithm, with suitable parameters, to compute an 3D over-segmentation of the volume. 
-The resulting 3D over-segmentation is then agglomerated using the technique of [Parag, Plos One 2015] to generate the final segmentation. The VI values at different stopping thresholds of agglomeration correspond to the points on the curve plotted in Figure YYY.
+The resulting 3D over-segmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}. 
+The VI values at different stopping thresholds of agglomeration correspond to the points on the curve plotted in Figure YYY.
 
-We have collected two 1000x1000x1000 voxel (10x10x10 um) volumes from the authors of [Takemura, elife 2017]. 
-Based on the authors' suggestion, we applied the algorithm of [Parag, ICCV 2015] that showed improved performance on this dataset than the pipeline used in [Takemura, elife2017]. 
-The segmentation framework of [Parag, ICCV 2015] learns voxel and supervoxel classifier with an emphasis to minimize under-segmentation error and, at the same time, is capable of producing lower over-segmentation that standard algorithms. 
-This algorithm first computes a multi-channel 3D predictions for membrane, cell interior, mitochondria, etc. 
-The membrane prediction channel is utilized to produce an over-segmented volume by 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
-We used exactly same parameters for the publicly available code for this algorithm and used different agglomerations thresholds to plot the VI error curve.      
+We have collected two $1000 \times 1000 \times 1000$ voxel ($\SI[product-units=single]{10x10x10}{\micro\meter}^3$) volumes from the authors~\cite{takemura2017connectome}. 
+Based on the authors' suggestion, we applied the context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset than the pipeline used in the original publication. 
+This segmentation framework learns voxel and supervoxel classifiers with an emphasis to minimize under-segmentation error.
+At the same time this framework produces lower over-segmentation than standard algorithms. 
+This algorithm first computes multi-channel 3D predictions for membranes, cell interiors, and mitochondria, among other cell features. 
+The membrane prediction channel is utilized to produce an over-segmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
+We used exactly same parameters for the publicly available code for this algorithm and used different agglomerations thresholds to plot the VI error curve.
 
-\subsection{Skeleton Pruning}
+\subsection{Pruning via Skeletonization}
 
-Our method prunes potential merge candidates by considering the skeleton as a simplification of the segment shape. Segment skeletons that have nearby endpoints are merge candidates. The underlying assumption in this model is that the segments break in a particular fashion, primarily perpendicular to the direction of travel (CONFUSING). We perform a series of experiments to evaluate the effectiveness of this idea. First, we examine how many merge candidates are not considered using our method that would have been if we employed the strategy of considering all neighboring segments. These are locations that we cannot possibly correct and therefore we want this number to be as low as possible. The second experiment considers how many locations are not considered that should not be merged. We want this number to be as large as possible since we want to avoid making mistakes by merging these segments. At best, these segments waste time and at worst they lead to incorrect merges. %TODO: The results in this paper follow from \$t\_\{low\} = 240\$ and \$t\_\{high\} = 600\$. 
+We prune potential merge candidates by running Algorithm \ref{alg:skeletonization} on the input dataset. 
+There are two essential parameters to the algorithm: $t_{low}$ and $t_{high}$. 
+Ideally, the merge candidates output by this algorithm will contains all possible positive examples with a very limited number of negative examples. 
+After considering various thresholds, we find that $t_{low} = \SI{240}{\nano\meter}$ and $t_{high} = \SI{600}{\nano\meter}$ produces the best results given this objective function. 
+Note that these thresholds are in nanometers and not voxels. 
+Connectomics datasets often have different sample resolutions and downsampling in $z$. 
+Using nanometers allows us to have uniform units across all of these datasets and calculate the thresholds in voxels at runtime. 
+The thresholds are $t_{low} = (40, 40, 8)$ voxels and $t_{high} = (100, 100, 20)$ voxels for the Kasthuri dataset $t_{low} = (24, 24, 24)$ voxels and $t_{high} = (60, 60, 60)$ voxels for the FlyEM dataset.
+The thresholds are anisotropic or isotropic depending on the corresponding isotropy of the dataset.
+Table \ref{table:skeletonization} shows the overall success of this method of candidate pruning.
+
+\begin{table}
+	\centering
+	\begin{tabular}{c c c c}
+		Dataset & Adjacency Strategy & Applying $t_{low}$ & Applying $t_{high}$ \\ \hline
+		Kasthuri Vol. 1 & & & \\
+		Kasthuri Vol. 2 & & & \\
+		FlyEM Vol. 1 & & & \\
+		FlyEM Vol. 2 & & & 
+	\end{tabular}
+	\caption{The results of the pruning algorithm compared to the previous approach of considering all adjacent segments.}
+	\label{table:skeletonization}
+\end{table}
+
+TODO FINISH TABLE + DO I ADD IN FIGURE TO SHOW CHANGE OVER THRESHOLDS?
+
+
 \subsection{Classifier Training}
 
-We divide both datasets into half to train the classifier. We generate all valid examples for merge consideration based on the skeletonization algorithm. In the training dataset, $80\%$ of the examples are used for training and the remaining examples are used for validation. To start, we consider networks of varying sizes, optimization functions, and loss functions. The supplemental material has additional information concerning the tuning of the network. There are XXX,XXX learnable parameters in our final architecture. The training ran for XX epochs. Table \ref{table:architecture} provides the final network parameters.
-%TODO: why do we use 1200nm
-%TODO: A cubic length of $1200\textrm{nm}$ provides enough local shape context for the network without introducing an excessive amount of noise. 
-%TODO: Figure~\ref{fig:network-radius} shows cubes of lengths $800\textrm{nm}, 1200\textrm{nm},$ and $1600\textrm{nm}$.
-
-%TODO: The filter size of the layers are 16, 32, and 64 with size doubling deeper into the network. 
-%TODO: All convolutions have kernel sizes of $(3, 3, 3)$. 
-%TODO: The output size of the final max pooling layer is $(5, 5, 5)$ with $64$ channels. 
-%TODO: This optimizer has an initial learning rate of $0.01$, momentum of $0.9$, and a decay rate of $5*10^{-8}$. 
+We use the Kasthuri Vol. 1 dataset for training and validation. 
+We train on 80\% of the potential merge candidates for this volume.
+The validation the neural network classifier on the remaining 20\% of candidates. 
+We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. 
+The supplemental material includes information on the experiments that determined these final parameters. 
+Table \ref{table:architecture} provides the parameters in the final network.
+There are 7,294,705 learnable parameters in our final architecture.
+All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. 
+Training concluded after 34 epochs. 
 
 \begin{table}[h!]
 	\centering
@@ -61,9 +90,11 @@ We divide both datasets into half to train the classifier. We generate all valid
 		Kernel Sizes & $3 \times 3 \times 3$ \\
 		Filter Sizes & $16 \to 32 \to 64$ \\ \hline
 	\end{tabular}
-	\caption{The parameters for the trained neural network.}
+	\caption{Parameters for the CNN}
 	\label{table:architecture}
 \end{table}
+
+
 
 \paragraph{Data Augmentation.}
 We apply data augmentation to the generated examples to increase the size of the training datasets. 
@@ -79,44 +110,16 @@ This produces 16 times more training data.
 	\label{fig:multicut}
 \end{figure}
 
-Most current agglomeration strategies in connectomics consider all pairs of neighboring segments. A classifier produces a probability that each pair belongs to the same segment. All segment pairs with a probability above a certain threshold are merged together. Consider the simple example in Figure \ref{fig:multicut}. Under the existing agglomeration schemes this entire graph would become one segment. However multicut eliminates all cycles within the graph creating two unique segments. We compare our results using both the traditional hierarchical agglomeration strategy with the graph-based approach we propose. 
+Applying a top-down globally optimal partitioning function allows us to enforce some domain-specific constraints on the reconstruction.
+In connectomics, we want to enforce the topological restrictions that each partition in the graph has a genus of zero. 
+The greedy-additive heuristic solves the multicut graph partitioning problem by enforcing this constraint.
+Previous agglomeration strategies at the per-region level consider neighboring superpixels in order of merge probability. 
+These superpixels are clustered hierarchically without concern for global constraints.
+We compare the benefits of a top-down partitioning function versus the traditional bottom-up clustering methods.
 
 \subsection{Variation of Information}
 
-We use the variation of information metric to determine the accuracy of our pipeline. The variation of information measures the distance between two segmentations and is similar to mutual information. A lower variation of information score corresponds to a segmentation closer to the ground truth. (TODO: TOUFIQ ADD HERE)
-
-%We evaluate our method on two different connectomics datasets of different species. 
-
-%\subsection{Datasets}
-
-%\subsubsection{Kasthuri}
-
-%The first dataset is the left part of the mouse cortex volume of Kasthuri et al. (CITE). We divide the dataset into a training and validation half and a testing half. The dataset resolution is $3 \times 3 \times 30 \textrm{nm}^3/\textrm{voxel}$. 
-
-%\subsubsection{FlyEM}
-
-
-
-%We evaluate our methods on three EM datasets. 
-%TODO: Toufiq: add description of the EM datasets (volume size, resolution, type of animal, type of image scan)
-
-%\subsubsection{NeuroProof Pipeline}
-%\label{sec:neuroproof}
-%Our methods build on top of existing agglomeration strategies. For the purpose of this paper we used the outputs from two established pipelines. 
-%TODO: Toufiq description of neuroproof pipeline, description of FlyEM pipeline
-
-%\subsection{Preprocessing}
-
-%We perform significant pruning of potential merge candidates by considering only pairs of skeleton endpoints produced by Algorithm \ref{alg:generate-edges}. This strategy greatly reduced the number of false merge candidates that we considered. However, we evaluate the overall effectiveness of this strategy both in reducing trivial split candidates while maintaining a large majority of the candidates which should merge.
-
-%Our candidate generation strategy doesn't enforce an adjacency constraint which allows us to merge candidates that are not consider under existing frameworks. We examine the success of our pipeline in merging said candidates. 
-
-%\subsection{Classifier Training}
-
-%DISCUSS PARAMETERS FOR CLASSIFICATION
-
-%\subsection{Graph Optimization}
-
-%We evaluate the improvement of using a graph optimization strategy over a na\"ive approach that performs hierarchical clustering for all segments above a certain threshold.
-%Using a heuristic for multicut prevents the creation of cycles. 
-%Using a simple agglomeration strategy generates this many cycles. 
+We evaluate the performance of our methods using the split version of the variance of information~\cite{meila2003comparing}. 
+Consider a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$. 
+Over and undersegmentation are quanitified by the conditional entropy $H(GT | SG)$ and $H(SG | GT)$ respectively. 
+Since we are measuring the entropy between two clusterings, better split variation of information scores are closer to the origin.
