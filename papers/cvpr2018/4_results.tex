@@ -22,6 +22,19 @@ Traditional agglomeration strategies consider a large number of negative candida
 
 \subsection{Classification Performance}
 
+\begin{table}
+	\centering
+	\begin{tabular}{c c c c} \hline
+	\textbf{Dataset} & \textbf{Precision} & \textbf{Recall} & \textbf{Accuracy} \\ \hline
+	Kasthuri Training & & & \\
+	Kasthuri Testing & & & \\
+	FlyEM Vol. 1 & & & \\
+	FlyEM Vol. 2 & & & \\ \hline
+	\end{tabular}
+	\caption{Precision and recall for the training and three test datasets.}
+	\label{fig:classification}
+\end{table}
+
 Table \ref{table:classification} shows the precision and recall for all of the datasets. Our methods are more general than traditional connectomics examples allowing us to train the network on an anisotropic dataset and get impressive results on an isotropic dataset. Our initial network does not take in any image data, only the segment shapes, so we merely extract the $1200 \textrm{nm}^3$ region from any dataset and rescale as input into the neural network. For each of the tables, the top left square gives the number of segments which should merge that we predict merge. The bottom right square gives the number of segments which should not merge that we predict should not merge. The bottom left quadrant indicates the amount of false positives, candidates which we predict merge which do not. The top right quadrant gives the amount of false negatives where we predict split although the candidates should merge. Figure \ref{fig:network-results} shows the receiver operating characteristic (ROC) curve for all four datasets. 
 
 \begin{figure}

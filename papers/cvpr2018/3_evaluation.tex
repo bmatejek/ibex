@@ -20,9 +20,18 @@ The image data and the accompanying ground truth is available (CITE).
 
 \subsubsection{Segmentation Pipeline and Baseline}
 \label{sec:neuroproof}
-Our algorithm takes the output of a supervoxel based agglomeration strategy such as NeuroProof or GALA. For our experiments we use the output from NeuroProof (CITE). We generate voxel affinities from the raw image data using the U-Net architecture \cite{ronneberger2015u}. The Zwatershed algorithm (CITE) creates an oversegmentation of the neurons given these voxel affinities. We input the raw image data, the voxel affinities, and the oversegmentation into NeuroProof which performs a hierarchical agglomeration strategy to merge the supervoxels into larger and larger segments. Two neighboring segments receive a merge-likelihood score based on various extracted features such as the distribution of affinities along the segment boundary. A random forest classifier generates probabilities based on these features. (TODO: TOUFIQ ADD HERE)
+The segmentation on [Cite Kasthuri Cell2015] dataset was computed by agglomerating 3D supervoxels produced by zwatershed [Cite Zlatesky arXiv2015] from 3D affinity predictions. 
+A recent study by Funke et.al. [Funke arXiv2017] demonstrated superior performance of such method over existing ones on anisotropic data. 
+We learned 3d affinities in x,y,z using MALIS [Cite Turaga, NIPS 2009] loss with a U-net [Ronneberger, MICCAI 2015]. 
+We apply the zwatershed algorithm, with suitable parameters, to compute an 3D over-segmentation of the volume. 
+The resulting 3D over-segmentation is then agglomerated using the technique of [Parag, Plos One 2015] to generate the final segmentation. The VI values at different stopping thresholds of agglomeration correspond to the points on the curve plotted in Figure YYY.
 
-
+We have collected two 1000x1000x1000 voxel (10x10x10 um) volumes from the authors of [Takemura, elife 2017]. 
+Based on the authors' suggestion, we applied the algorithm of [Parag, ICCV 2015] that showed improved performance on this dataset than the pipeline used in [Takemura, elife2017]. 
+The segmentation framework of [Parag, ICCV 2015] learns voxel and supervoxel classifier with an emphasis to minimize under-segmentation error and, at the same time, is capable of producing lower over-segmentation that standard algorithms. 
+This algorithm first computes a multi-channel 3D predictions for membrane, cell interior, mitochondria, etc. 
+The membrane prediction channel is utilized to produce an over-segmented volume by 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
+We used exactly same parameters for the publicly available code for this algorithm and used different agglomerations thresholds to plot the VI error curve.      
 
 \subsection{Skeleton Pruning}
 
