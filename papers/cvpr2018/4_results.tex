@@ -1,21 +1,40 @@
 \section{Results}
 
-\subsection{Skeleton Pruning}
+\subsection{Pruning via Skeletonization}
 
-\paragraph{Finding Positive Examples.}
-
-As a baseline, we consider all pairs of segments that have neighboring voxels and see what percent of these segments are considered for merging. In the L. Cylinder dataset, there are XXX neighboring segments which have at least adjacent voxels. Our method which uses skeletons to prune the considered candidates finds XXX of these segments, or XX\% percent. On the FlyEM dataset, there are XXX adjacent segments with XXX found (XX\% percent). Figure \ref{fig:skeleton-results} shows some of the missed examples. The most common errors are the dendrite spines where the larger segment did not have an endpoint near the split. However, our algorithm does not require segments to be adjacent to merge. This offers a great benefit compared to traditional methods. In our datasets XXX and XXX segments are candidates for merging despite not having adjacent voxels. Figure \ref{fig:skeleton-results} gives one such pair which is merged given the results of our algorithm. 
-
-\paragraph{Pruning Negative Examples.}
-
-Traditional agglomeration strategies consider a large number of negative candidates that we hope to prune. The original approach of considering adjacent supervoxels has XX,XXX and XX,XXX candidates which do not belong to the same neuron. With our pruning algorithm, this reduces to X,XXX and X,XXX, a factor of over XX times. This allows a more reasonable training environment with greater balance between the positive and negative merge examples. 
-
-\begin{figure}[t]
+\begin{table}
 	\centering
-	\includegraphics[width=0.42\linewidth]{./figures/merge_candidate1.png}
-	\hspace{0.085\linewidth}
-	\includegraphics[width=0.42\linewidth]{./figures/merge_candidate2.png}
-	\caption{Two erroneously split segments that should merge together. Most segments that we want to merge have the same general structure.}
+	\small
+	\begin{tabular}{c c c} \hline
+		\textbf{Dataset} & \textbf{Baseline} & \textbf{After Pruning} \\ \hline
+		Kasthuri Vol. 1 & 763 / 21242 (3.47\%) & 753 / 3459 (17.88\%) \\
+		Kasthuri Vol. 2 & 1010 / 26073 (3.73\%) & 904 / 4327 (17.28\%) \\
+		FlyEM Vol. 1 & 269 / 14875 (1.78\%) & 262 / 946 (21.69\%) \\
+		FlyEM Vol. 2 & 270 / 16808 (1.58\%) & 285 / 768 (27.07\%)\\ \hline
+	\end{tabular}
+	\caption{The results of our pruning heuristic compared to the current baseline.}
+	\label{table:skeletonization}
+\end{table}
+
+Table \ref{table:skeletonization} shows the results of pruning using the skeletonization heuristic.
+The baseline algorithm considers all adjacent regions for merging. 
+Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations.
+This edge pruning is essential for the graph partitioning algorithms which have a computational complexity dependence on the number of edges (CHECK). 
+Our pruning heuristic removes at least $6\times$ the number of edges between correctly split segments on all datasets, achieving a maximum removal ratio of $20\times$. 
+Equally important is the number of split errors that remain after pruning.
+These are the locations that we want to merge to create a more accurate reconstruction.
+For every dataset, the number of positive candidates remains relatively even. 
+However, since our heuristic does not enforce an adjacency constraint of two regions when constructing edges in the graph, the difference does not indicate the number of examples excluded by pruning. 
+In fact, our method finds a number of examples which are non-adjacent.
+Figure \ref{fig:skeleton-results} shows two example segments which are split errors.
+The top example our algorithm missed but the segments are adjacent. 
+The bottom example our algorithm found despite the fact that they are not adjacent.
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[width=0.85\linewidth]{./figures/merge_candidate1.png}
+	\includegraphics[width=0.85\linewidth]{./figures/merge_candidate2.png}
+	\caption{Example merge candidates.}
 	\label{fig:skeleton-results}
 \end{figure}
 

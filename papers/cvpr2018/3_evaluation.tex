@@ -49,22 +49,6 @@ The thresholds are $t_{low} = (40, 40, 8)$ voxels and $t_{high} = (100, 100, 20)
 The thresholds are anisotropic or isotropic depending on the corresponding isotropy of the dataset.
 Table \ref{table:skeletonization} shows the overall success of this method of candidate pruning.
 
-\begin{table}
-	\centering
-	\begin{tabular}{c c c c}
-		Dataset & Adjacency Strategy & Applying $t_{low}$ & Applying $t_{high}$ \\ \hline
-		Kasthuri Vol. 1 & & & \\
-		Kasthuri Vol. 2 & & & \\
-		FlyEM Vol. 1 & & & \\
-		FlyEM Vol. 2 & & & 
-	\end{tabular}
-	\caption{The results of the pruning algorithm compared to the previous approach of considering all adjacent segments.}
-	\label{table:skeletonization}
-\end{table}
-
-TODO FINISH TABLE + DO I ADD IN FIGURE TO SHOW CHANGE OVER THRESHOLDS?
-
-
 \subsection{Classifier Training}
 
 We use the Kasthuri Vol. 1 dataset for training and validation. 

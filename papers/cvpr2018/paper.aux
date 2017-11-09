@@ -127,6 +127,8 @@
 \newlabel{sec:dataset}{{4.1}{4}{\hskip -1em.~Datasets}{subsection.4.1}{}}
 \@writefile{toc}{\contentsline {paragraph}{Kasthuri.}{4}{section*.10}}
 \@writefile{brf}{\backcite{kasthuri2015saturated}{{4}{4.1}{section*.10}}}
+\@writefile{toc}{\contentsline {paragraph}{FlyEM.}{4}{section*.11}}
+\@writefile{brf}{\backcite{takemura2017connectome}{{4}{4.1}{section*.11}}}
 \citation{zlateski2015image}
 \citation{schlegel2017learning}
 \citation{Turaga:2009}
@@ -137,8 +139,6 @@
 \citation{glorot2010understanding}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The architecture for the neural networks follows the \textit  {VGG} style of double convolutions followed by a max pooling operation. The number of filters doubles each layer leading to a fully connected layer and a sigmoid activation function.\relax }}{5}{figure.caption.9}}
 \newlabel{fig:architecture}{{5}{5}{The architecture for the neural networks follows the \textit {VGG} style of double convolutions followed by a max pooling operation. The number of filters doubles each layer leading to a fully connected layer and a sigmoid activation function.\relax }{figure.caption.9}{}}
-\@writefile{toc}{\contentsline {paragraph}{FlyEM.}{5}{section*.11}}
-\@writefile{brf}{\backcite{takemura2017connectome}{{5}{4.1}{section*.11}}}
 \newlabel{sec:neuroproof}{{4.1}{5}{Segmentation Pipeline and Baseline}{section*.12}{}}
 \@writefile{toc}{\contentsline {paragraph}{Segmentation Pipeline and Baseline.}{5}{section*.12}}
 \@writefile{brf}{\backcite{zlateski2015image}{{5}{4.1}{section*.12}}}
@@ -148,43 +148,41 @@
 \@writefile{brf}{\backcite{takemura2017connectome}{{5}{4.1}{section*.12}}}
 \@writefile{brf}{\backcite{10.1371/journal.pone.0125825}{{5}{4.1}{section*.12}}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}\hskip -1em.\nobreakspace  {}Pruning via Skeletonization}{5}{subsection.4.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}\hskip -1em.\nobreakspace  {}Classifier Training}{5}{subsection.4.3}}
 \citation{meila2003comparing}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces The results of the pruning algorithm compared to the previous approach of considering all adjacent segments.\relax }}{6}{table.caption.13}}
-\newlabel{table:skeletonization}{{1}{6}{The results of the pruning algorithm compared to the previous approach of considering all adjacent segments.\relax }{table.caption.13}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}\hskip -1em.\nobreakspace  {}Classifier Training}{6}{subsection.4.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces An example of the benefits of using multicut over simpler agglomeration schemes. If we input this example into a na\"ive agglomeration strategy that collapses all edges with a threshold greater than 0.5, this entire segment will merge together despite the fact that nodes 2 and 4 and nodes 3 and 5 have low affinities.\relax }}{6}{figure.caption.15}}
+\newlabel{fig:multicut}{{6}{6}{An example of the benefits of using multicut over simpler agglomeration schemes. If we input this example into a na\"ive agglomeration strategy that collapses all edges with a threshold greater than 0.5, this entire segment will merge together despite the fact that nodes 2 and 4 and nodes 3 and 5 have low affinities.\relax }{figure.caption.15}{}}
 \@writefile{brf}{\backcite{glorot2010understanding}{{6}{4.3}{subsection.4.3}}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Parameters for the CNN\relax }}{6}{table.caption.14}}
-\newlabel{table:architecture}{{2}{6}{Parameters for the CNN\relax }{table.caption.14}{}}
-\@writefile{toc}{\contentsline {paragraph}{Data Augmentation.}{6}{section*.15}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Parameters for the CNN\relax }}{6}{table.caption.13}}
+\newlabel{table:architecture}{{1}{6}{Parameters for the CNN\relax }{table.caption.13}{}}
+\@writefile{toc}{\contentsline {paragraph}{Data Augmentation.}{6}{section*.14}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}\hskip -1em.\nobreakspace  {}Graph-based Strategies}{6}{subsection.4.4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces An example of the benefits of using multicut over simpler agglomeration schemes. If we input this example into a na\"ive agglomeration strategy that collapses all edges with a threshold greater than 0.5, this entire segment will merge together despite the fact that nodes 2 and 4 and nodes 3 and 5 have low affinities.\relax }}{6}{figure.caption.16}}
-\newlabel{fig:multicut}{{6}{6}{An example of the benefits of using multicut over simpler agglomeration schemes. If we input this example into a na\"ive agglomeration strategy that collapses all edges with a threshold greater than 0.5, this entire segment will merge together despite the fact that nodes 2 and 4 and nodes 3 and 5 have low affinities.\relax }{figure.caption.16}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The results of our pruning heuristic compared to the current baseline.\relax }}{6}{table.caption.16}}
+\newlabel{table:skeletonization}{{2}{6}{The results of our pruning heuristic compared to the current baseline.\relax }{table.caption.16}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5}\hskip -1em.\nobreakspace  {}Variation of Information}{6}{subsection.4.5}}
 \@writefile{brf}{\backcite{meila2003comparing}{{6}{4.5}{subsection.4.5}}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.\nobreakspace  {}Results}{6}{section.5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}\hskip -1em.\nobreakspace  {}Skeleton Pruning}{6}{subsection.5.1}}
-\@writefile{toc}{\contentsline {paragraph}{Finding Positive Examples.}{6}{section*.17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}\hskip -1em.\nobreakspace  {}Pruning via Skeletonization}{6}{subsection.5.1}}
 \bibstyle{ieee}
 \bibdata{paper}
 \bibcite{andres2012globally}{1}
 \bibcite{baran2007automatic}{2}
 \bibcite{bharaj2012automatically}{3}
 \bibcite{bogovic2013learned}{4}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Two erroneously split segments that should merge together. Most segments that we want to merge have the same general structure.\relax }}{7}{figure.caption.19}}
-\newlabel{fig:skeleton-results}{{7}{7}{Two erroneously split segments that should merge together. Most segments that we want to merge have the same general structure.\relax }{figure.caption.19}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Precision and recall for the training and three test datasets.\relax }}{7}{table.caption.20}}
-\newlabel{fig:classification}{{3}{7}{Precision and recall for the training and three test datasets.\relax }{table.caption.20}{}}
-\@writefile{toc}{\contentsline {paragraph}{Pruning Negative Examples.}{7}{section*.18}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}\hskip -1em.\nobreakspace  {}Classification Performance}{7}{subsection.5.2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces The receiver operating characteristic (ROC) curve for all four datasets.\relax }}{7}{figure.caption.21}}
-\newlabel{fig:network-results}{{8}{7}{The receiver operating characteristic (ROC) curve for all four datasets.\relax }{figure.caption.21}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}\hskip -1em.\nobreakspace  {}Graph Based Strategies}{7}{subsection.5.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}\hskip -1em.\nobreakspace  {}Variation of Information Improvements}{7}{subsection.5.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Conclusions}{7}{section.6}}
 \bibcite{chatfield2014return}{5}
 \bibcite{ciresan2012deep}{6}
 \bibcite{conners1984segmentation}{7}
 \bibcite{funahashi1989approximate}{8}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Example merge candidates.\relax }}{7}{figure.caption.17}}
+\newlabel{fig:skeleton-results}{{7}{7}{Example merge candidates.\relax }{figure.caption.17}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Precision and recall for the training and three test datasets.\relax }}{7}{table.caption.18}}
+\newlabel{fig:classification}{{3}{7}{Precision and recall for the training and three test datasets.\relax }{table.caption.18}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}\hskip -1em.\nobreakspace  {}Classification Performance}{7}{subsection.5.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}\hskip -1em.\nobreakspace  {}Graph Based Strategies}{7}{subsection.5.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces The receiver operating characteristic (ROC) curve for all four datasets.\relax }}{7}{figure.caption.19}}
+\newlabel{fig:network-results}{{8}{7}{The receiver operating characteristic (ROC) curve for all four datasets.\relax }{figure.caption.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}\hskip -1em.\nobreakspace  {}Variation of Information Improvements}{7}{subsection.5.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Conclusions}{7}{section.6}}
 \bibcite{glorot2010understanding}{9}
 \bibcite{haehn2017scalable}{10}
 \bibcite{haehn2017guided}{11}
@@ -199,12 +197,12 @@
 \bibcite{kernighan1970efficient}{20}
 \bibcite{keuper2015efficient}{21}
 \bibcite{seymour2016rhoananet}{22}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces The improvement on variation of information from the baseline NeuroProof segmentation (green). Results closer to the origin are better.\relax }}{8}{figure.caption.22}}
-\newlabel{fig:variation-of-information}{{9}{8}{The improvement on variation of information from the baseline NeuroProof segmentation (green). Results closer to the origin are better.\relax }{figure.caption.22}{}}
 \bibcite{rhoananet}{23}
 \bibcite{lee2015recursive}{24}
 \bibcite{maas2013rectifier}{25}
 \bibcite{meila2003comparing}{26}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces The improvement on variation of information from the baseline NeuroProof segmentation (green). Results closer to the origin are better.\relax }}{8}{figure.caption.20}}
+\newlabel{fig:variation-of-information}{{9}{8}{The improvement on variation of information from the baseline NeuroProof segmentation (green). Results closer to the origin are better.\relax }{figure.caption.20}{}}
 \bibcite{nesterov1983method}{27}
 \bibcite{nunez2014graph}{28}
 \bibcite{osada2002shape}{29}
