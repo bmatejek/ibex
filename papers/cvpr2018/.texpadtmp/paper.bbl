@@ -51,6 +51,13 @@ K.-I. Funahashi.
   networks.
 \newblock {\em Neural networks}, 2(3):183--192, 1989.
 
+\bibitem{glorot2010understanding}
+X.~Glorot and Y.~Bengio.
+\newblock Understanding the difficulty of training deep feedforward neural
+  networks.
+\newblock In {\em Proceedings of the Thirteenth International Conference on
+  Artificial Intelligence and Statistics}, pages 249--256, 2010.
+
 \bibitem{haehn2017scalable}
 D.~Haehn, J.~Hoffer, B.~Matejek, A.~Suissa-Peleg, A.~K. Al-Awami, L.~Kamentsky,
   F.~Gonda, E.~Meng, W.~Zhang, R.~Schalek, et~al.
@@ -126,17 +133,17 @@ M.~Keuper, E.~Levinkov, N.~Bonneel, G.~Lavou{\'e}, T.~Brox, and B.~Andres.
 \newblock In {\em Proceedings of the IEEE International Conference on Computer
   Vision}, pages 1751--1759, 2015.
 
-\bibitem{rhoananet}
-S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
-  D.~Berger, N.~Kasthuri, J.~W. Lichtman, and H.~Pfister.
-\newblock Rhoananet pipeline: Dense automatic neural annotation, 2016.
-\newblock (available on arXiv:1611.06973 [cs.CV]).
-
 \bibitem{seymour2016rhoananet}
 S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
   D.~Berger, N.~Kasthuri, J.~W. Lichtman, and H.~Pfister.
 \newblock Rhoananet pipeline: Dense automatic neural annotation.
 \newblock {\em arXiv preprint arXiv:1611.06973}, 2016.
+
+\bibitem{rhoananet}
+S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
+  D.~Berger, N.~Kasthuri, J.~W. Lichtman, and H.~Pfister.
+\newblock Rhoananet pipeline: Dense automatic neural annotation, 2016.
+\newblock (available on arXiv:1611.06973 [cs.CV]).
 
 \bibitem{lee2015recursive}
 K.~Lee, A.~Zlateski, V.~Ashwin, and H.~S. Seung.
@@ -149,6 +156,11 @@ K.~Lee, A.~Zlateski, V.~Ashwin, and H.~S. Seung.
 A.~L. Maas, A.~Y. Hannun, and A.~Y. Ng.
 \newblock Rectifier nonlinearities improve neural network acoustic models.
 \newblock In {\em Proc. ICML}, volume~30, 2013.
+
+\bibitem{meila2003comparing}
+M.~Meila.
+\newblock Comparing clusterings by the variation of information.
+\newblock In {\em Colt}, volume~3, pages 173--187. Springer, 2003.
 
 \bibitem{nesterov1983method}
 Y.~Nesterov.
@@ -179,6 +191,12 @@ K.~Pal{\'a}gyi, E.~Balogh, A.~Kuba, C.~Halmai, B.~Erd{\H{o}}helyi, E.~Sorantin,
 \newblock In {\em Biennial International Conference on Information Processing
   in Medical Imaging}, pages 409--415. Springer, 2001.
 
+\bibitem{10.1371/journal.pone.0125825}
+T.~Parag, A.~Chakraborty, S.~Plaza, and L.~Scheffer.
+\newblock A context-aware delayed agglomeration framework for electron
+  microscopy segmentation.
+\newblock {\em PLOS ONE}, 10(5):1--19, 05 2015.
+
 \bibitem{parag2017anisotropic}
 T.~Parag, F.~Tschopp, W.~Grisaitis, S.~C. Turaga, X.~Zhang, B.~Matejek,
   L.~Kamentsky, J.~W. Lichtman, and H.~Pfister.
@@ -204,16 +222,33 @@ M.~Sato, I.~Bitter, M.~A. Bender, A.~E. Kaufman, and M.~Nakajima.
 \newblock In {\em Computer Graphics and Applications, 2000. Proceedings. The
   Eighth Pacific Conference on}, pages 281--449. IEEE, 2000.
 
+\bibitem{schlegel2017learning}
+P.~Schlegel, M.~Costa, and G.~S. Jefferis.
+\newblock Learning from connectomics on the fly.
+\newblock {\em Current Opinion in Insect Science}, 2017.
+
 \bibitem{shi2000normalized}
 J.~Shi and J.~Malik.
 \newblock Normalized cuts and image segmentation.
 \newblock {\em IEEE Transactions on pattern analysis and machine intelligence},
   22(8):888--905, 2000.
 
+\bibitem{takemura2017connectome}
+S.-y. Takemura, Y.~Aso, T.~Hige, A.~Wong, Z.~Lu, C.~S. Xu, P.~K. Rivlin,
+  H.~Hess, T.~Zhao, T.~Parag, et~al.
+\newblock A connectome of a learning and memory center in the adult drosophila
+  brain.
+\newblock {\em Elife}, 6, 2017.
+
 \bibitem{tatiraju2008image}
 S.~Tatiraju and A.~Mehta.
 \newblock Image segmentation using k-means clustering, em and normalized cuts.
 \newblock {\em Department of EECS}, 1:1--7, 2008.
+
+\bibitem{Turaga:2009}
+S.~Turaga, K.~Briggman, M.~Helmstaedter, W.~Denk, and S.~Seung.
+\newblock {Maximin affinity learning of image segmentation}.
+\newblock In {\em Advances in Neural Information Processing Systems 22}. 2009.
 
 \bibitem{amelio_segmentation}
 A.~V\'azquez-Reina, M.~Gelbart, D.~Huang, J.~Lichtman, E.~Miller, and

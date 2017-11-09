@@ -3,7 +3,11 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux
 The style file: ../ieee.bst
 Database file #1: ../paper.bib
-Repeated entry---line 299 of file ../paper.bib
+Repeated entry---line 241 of file ../paper.bib
+ : @article {takemura2017connectome
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 363 of file ../paper.bib
  : @article{kernighan1970efficient
  :                                ,
 I'm skipping whatever remains of this entry
@@ -13,45 +17,46 @@ Warning--can't use both volume and number fields in haehn2017scalable
 Warning--can't use both volume and number fields in maas2013rectifier
 Warning--empty booktitle in nesterov1983method
 Warning--empty year in nesterov1983method
-You've used 39 entries,
+Warning--empty publisher in Turaga:2009
+You've used 45 entries,
             2120 wiz_defined-function locations,
-            723 strings with 12689 characters,
-and the built_in function-call counts, 17422 in all, are:
-= -- 1645
-> -- 1124
-< -- 19
-+ -- 448
-- -- 404
-* -- 1340
-:= -- 2861
-add.period$ -- 125
-call.type$ -- 39
-change.case$ -- 316
+            756 strings with 13921 characters,
+and the built_in function-call counts, 19849 in all, are:
+= -- 1875
+> -- 1271
+< -- 22
++ -- 508
+- -- 456
+* -- 1516
+:= -- 3261
+add.period$ -- 145
+call.type$ -- 45
+change.case$ -- 359
 chr.to.int$ -- 0
-cite$ -- 45
-duplicate$ -- 598
-empty$ -- 1138
-format.name$ -- 404
-if$ -- 3606
+cite$ -- 52
+duplicate$ -- 690
+empty$ -- 1306
+format.name$ -- 456
+if$ -- 4115
 int.to.chr$ -- 0
-int.to.str$ -- 39
-missing$ -- 38
-newline$ -- 197
-num.names$ -- 78
-pop$ -- 346
+int.to.str$ -- 45
+missing$ -- 44
+newline$ -- 227
+num.names$ -- 90
+pop$ -- 395
 preamble$ -- 1
-purify$ -- 277
+purify$ -- 314
 quote$ -- 0
-skip$ -- 458
+skip$ -- 526
 stack$ -- 0
-substring$ -- 891
-swap$ -- 196
-text.length$ -- 19
+substring$ -- 999
+swap$ -- 223
+text.length$ -- 22
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 156
-warning$ -- 6
-while$ -- 137
-width$ -- 41
-write$ -- 430
-(There was 1 error message)
+type$ -- 180
+warning$ -- 7
+while$ -- 156
+width$ -- 47
+write$ -- 496
+(There were 2 error messages)
