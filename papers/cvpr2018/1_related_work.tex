@@ -1,17 +1,18 @@
 \section{Related Work}
 
-A significant amount of research in computer vision focuses segmentation of images \cite{zaitoun2015survey}. 
-Here, we review some of the most successful methods that have been applied to large-scale EM images.
+A significant amount of research in computer vision focuses on the segmentation of images \cite{zaitoun2015survey}. 
+Here, we review some of the most successful methods that have been applied to large-scale EM images. Figure \ref{fig:pipeline} shows the results of a typical segmentation pipeline on these images. 
 
 \paragraph{Pixel-based methods.} 
 
 A large amount of connectomics research considers the problem of extracting segmentation information at the voxel level from the raw EM images to produce label volumes.
-Some early techniques apply computationally expensive graph partitioning techniques with a single node per voxel  \cite{andres2012globally}, however these methods do not scale to terabyte datasets.
+Some early techniques apply computationally expensive graph partitioning algorithms with a single node per voxel~\cite{andres2012globally}, however these methods do not scale to terabyte datasets.
 Since then, several methods train 2-D CNNs to predict membrane probabilities per image slice~\cite{ciresan2012deep,jain2010boundary,kaynig2015large,rhoananet,amelio_segmentation}. 
 More recent strategies augment these neural networks with the $z$-dimension creating full 3-D CNNs~\cite{lee2015recursive,ronneberger2015u}.
-Oftentimes these networks produce probabilities for the affinity between voxels, i.e., the probability that adjacent voxels belong to the same neuron.
+Oftentimes these networks produce probabilities for the affinity between two voxels (i.e., the probability that adjacent voxels belong to the same neuron).
+The MALIS cost function is specifically designed for generating affinities that produce good segmentations~\cite{briggman2009maximin}. 
 More recently, flood-filling networks produce segmentations by training an end-to-end neural network that takes EM images to label volumes~\cite{januszewski2016flood}.
-These networks produce very impressive accuracies but are much too slow to scale to larger datasets.
+These flood-filling networks produce very impressive accuracies but at too high a computational cost.
 
 
 \paragraph{Region-based methods.} 
@@ -19,17 +20,16 @@ These networks produce very impressive accuracies but are much too slow to scale
 Several of these pixel-based approaches generate probabilities that neighboring voxels belong to the same neuron.
 Many algorithms build on top of these methods and train random-forest classifiers to produce segmentations of the EM images~\cite{seymour2016rhoananet,nunez2014graph,10.1371/journal.pone.0125825,parag2017anisotropic,zlateski2015image}. 
 Despite the success of these classifiers, they often make mistakes based on the local information leading to errors in the segmentation. 
-Additionally, many recent advancements in segmentation use artificial neural networks given the evidence that machine-learned features outperform hand-designed ones~\cite{bogovic2013learned}.
+Lately, many recent advancements in segmentation use artificial neural networks since machine-learned features outperform hand-designed ones~\cite{bogovic2013learned}.
 A significant amount of research focuses on the training and optimization of these deep neural networks~\cite{chatfield2014return,maas2013rectifier,nesterov1983method}. 
 
 
 \paragraph{Segment-based methods.} 
 
-Some limited research builds on top of the region-based methods to correct errors in the segmentation \cite{rolnick2017morphological,error_correction_using_CNN}.
-Similarly, proofreading methods create a ``human-in-the-loop" framework that allows users to find errors and correct them \cite{haehn2017scalable,haehn2017guided,haehn2014design}. 
-Many segmentation and clustering algorithms use graph partitioning techniques~\cite{andres2012globally} or normalized cuts for image segmentation~\cite{kappes2016higher,shi2000normalized,tatiraju2008image}. 
-The multicut graph partitioning algorithm produces a set of segments where no segment contains a cycles.
-This closely resembles the biological constraint that neurons have a topological genus of zero. 
-Unfortunately the graph partitioning formulation is NP-Hard~\cite{demaine2006correlation}.
-However, there are several useful multicut heuristics which provide good approximations with reasonable computational costs~\cite{horvnakova2017analysis,kernighan1970efficient,keuper2015efficient}.
+Some limited research builds on top of the region-based methods to correct errors in the segmentation \cite{rolnick2017morphological,error_correction_using_CNN,haehn2017guided}. 
+However, to our knowledge, we are the first to extract a graph representation from these region-based methods. 
+Many segmentation and clustering algorithms use graph partitioning techniques~\cite{andres2012globally} or normalized cuts for traditional image segmentation~\cite{kappes2016higher,shi2000normalized,tatiraju2008image}. 
+We can enforce domain-specific constraints using graph-based paritioning algorithms.  
+Unfortunately graph partitioning is an NP-Hard problem~\cite{demaine2006correlation}.
+However, there are several useful multicut heuristics which provide good approximations with reasonable computational costs~\cite{horvnakova2017analysis,keuper2015efficient}.
 

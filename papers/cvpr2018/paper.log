@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.11.5)  10 NOV 2017 01:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.11.5)  10 NOV 2017 03:21
 entering extended mode
 **./paper.tex
 (paper.tex
@@ -221,26 +221,42 @@ Package: array 2016/10/06 v2.4d Tabular extension package (FMi)
 \c@nlinenum=\count112
 \TeXr@lab=\toks21
 )
+(C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithms\algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\float\float.sty"
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count113
+\float@exts=\toks22
+\float@box=\box30
+\@float@everytoks=\toks23
+\@floatcapt=\box31
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\ifthen.sty"
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks24
+\c@algorithm=\count114
+)
 (C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithmicx\algpseudocode
 .sty
 Package: algpseudocode 
- ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ifthen.sty"
-Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
-)
+
 (C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithmicx\algorithmicx.
 sty
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
 
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
-\c@ALG@line=\count113
-\c@ALG@rem=\count114
-\c@ALG@nested=\count115
+\c@ALG@line=\count115
+\c@ALG@rem=\count116
+\c@ALG@nested=\count117
 \ALG@tlm=\skip50
 \ALG@thistlm=\skip51
-\c@ALG@Lnr=\count116
-\c@ALG@blocknr=\count117
-\c@ALG@storecount=\count118
-\c@ALG@tmpcounter=\count119
+\c@ALG@Lnr=\count118
+\c@ALG@blocknr=\count119
+\c@ALG@storecount=\count120
+\c@ALG@tmpcounter=\count121
 \ALG@tmplength=\skip52
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
@@ -250,18 +266,18 @@ Package: expl3 2017/09/18 L3 programming layer (loader)
 
 (C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\latex\l3kernel\expl3-code.tex
 Package: expl3 2017/09/18 L3 programming layer (code)
-\c_max_int=\count120
-\l_tmpa_int=\count121
-\l_tmpb_int=\count122
-\g_tmpa_int=\count123
-\g_tmpb_int=\count124
-\g__intarray_font_int=\count125
-\g__prg_map_int=\count126
-\c_log_iow=\count127
-\l_iow_line_count_int=\count128
-\l__iow_line_target_int=\count129
-\l__iow_one_indent_int=\count130
-\l__iow_indent_int=\count131
+\c_max_int=\count122
+\l_tmpa_int=\count123
+\l_tmpb_int=\count124
+\g_tmpa_int=\count125
+\g_tmpb_int=\count126
+\g__intarray_font_int=\count127
+\g__prg_map_int=\count128
+\c_log_iow=\count129
+\l_iow_line_count_int=\count130
+\l__iow_line_target_int=\count131
+\l__iow_one_indent_int=\count132
+\l__iow_indent_int=\count133
 \c_zero_dim=\dimen142
 \c_max_dim=\dimen143
 \l_tmpa_dim=\dimen144
@@ -280,82 +296,82 @@ Package: expl3 2017/09/18 L3 programming layer (code)
 \l_tmpb_muskip=\muskip14
 \g_tmpa_muskip=\muskip15
 \g_tmpb_muskip=\muskip16
-\l_keys_choice_int=\count132
-\c__fp_leading_shift_int=\count133
-\c__fp_middle_shift_int=\count134
-\c__fp_trailing_shift_int=\count135
-\c__fp_big_leading_shift_int=\count136
-\c__fp_big_middle_shift_int=\count137
-\c__fp_big_trailing_shift_int=\count138
-\c__fp_Bigg_leading_shift_int=\count139
-\c__fp_Bigg_middle_shift_int=\count140
-\c__fp_Bigg_trailing_shift_int=\count141
-\c__fp_rand_size_int=\count142
-\c__fp_rand_four_int=\count143
-\c__fp_rand_eight_int=\count144
-\l__sort_length_int=\count145
-\l__sort_min_int=\count146
-\l__sort_top_int=\count147
-\l__sort_max_int=\count148
-\l__sort_true_max_int=\count149
-\l__sort_block_int=\count150
-\l__sort_begin_int=\count151
-\l__sort_end_int=\count152
-\l__sort_A_int=\count153
-\l__sort_B_int=\count154
-\l__sort_C_int=\count155
-\l__tl_build_start_index_int=\count156
-\l__tl_build_index_int=\count157
-\l__tl_analysis_normal_int=\count158
-\l__tl_analysis_index_int=\count159
-\l__tl_analysis_nesting_int=\count160
-\l__tl_analysis_type_int=\count161
-\l__regex_internal_a_int=\count162
-\l__regex_internal_b_int=\count163
-\l__regex_internal_c_int=\count164
-\l__regex_balance_int=\count165
-\l__regex_group_level_int=\count166
-\l__regex_mode_int=\count167
-\c__regex_cs_in_class_mode_int=\count168
-\c__regex_cs_mode_int=\count169
-\l__regex_catcodes_int=\count170
-\l__regex_default_catcodes_int=\count171
-\c__regex_catcode_D_int=\count172
-\c__regex_catcode_S_int=\count173
-\c__regex_catcode_L_int=\count174
-\c__regex_catcode_O_int=\count175
-\c__regex_catcode_A_int=\count176
-\c__regex_all_catcodes_int=\count177
-\l__regex_show_lines_int=\count178
-\l__regex_min_state_int=\count179
-\l__regex_max_state_int=\count180
-\l__regex_left_state_int=\count181
-\l__regex_right_state_int=\count182
-\l__regex_capturing_group_int=\count183
-\l__regex_min_pos_int=\count184
-\l__regex_max_pos_int=\count185
-\l__regex_curr_pos_int=\count186
-\l__regex_start_pos_int=\count187
-\l__regex_success_pos_int=\count188
-\l__regex_curr_char_int=\count189
-\l__regex_curr_catcode_int=\count190
-\l__regex_last_char_int=\count191
-\l__regex_case_changed_char_int=\count192
-\l__regex_curr_state_int=\count193
-\l__regex_step_int=\count194
-\l__regex_min_active_int=\count195
-\l__regex_max_active_int=\count196
-\l__regex_replacement_csnames_int=\count197
-\l__regex_match_count_int=\count198
-\l__regex_min_submatch_int=\count199
-\l__regex_submatch_int=\count266
-\l__regex_zeroth_submatch_int=\count267
-\g__debug_trace_regex_int=\count268
-\c_empty_box=\box30
-\l_tmpa_box=\box31
-\l_tmpb_box=\box32
-\g_tmpa_box=\box33
-\g_tmpb_box=\box34
+\l_keys_choice_int=\count134
+\c__fp_leading_shift_int=\count135
+\c__fp_middle_shift_int=\count136
+\c__fp_trailing_shift_int=\count137
+\c__fp_big_leading_shift_int=\count138
+\c__fp_big_middle_shift_int=\count139
+\c__fp_big_trailing_shift_int=\count140
+\c__fp_Bigg_leading_shift_int=\count141
+\c__fp_Bigg_middle_shift_int=\count142
+\c__fp_Bigg_trailing_shift_int=\count143
+\c__fp_rand_size_int=\count144
+\c__fp_rand_four_int=\count145
+\c__fp_rand_eight_int=\count146
+\l__sort_length_int=\count147
+\l__sort_min_int=\count148
+\l__sort_top_int=\count149
+\l__sort_max_int=\count150
+\l__sort_true_max_int=\count151
+\l__sort_block_int=\count152
+\l__sort_begin_int=\count153
+\l__sort_end_int=\count154
+\l__sort_A_int=\count155
+\l__sort_B_int=\count156
+\l__sort_C_int=\count157
+\l__tl_build_start_index_int=\count158
+\l__tl_build_index_int=\count159
+\l__tl_analysis_normal_int=\count160
+\l__tl_analysis_index_int=\count161
+\l__tl_analysis_nesting_int=\count162
+\l__tl_analysis_type_int=\count163
+\l__regex_internal_a_int=\count164
+\l__regex_internal_b_int=\count165
+\l__regex_internal_c_int=\count166
+\l__regex_balance_int=\count167
+\l__regex_group_level_int=\count168
+\l__regex_mode_int=\count169
+\c__regex_cs_in_class_mode_int=\count170
+\c__regex_cs_mode_int=\count171
+\l__regex_catcodes_int=\count172
+\l__regex_default_catcodes_int=\count173
+\c__regex_catcode_D_int=\count174
+\c__regex_catcode_S_int=\count175
+\c__regex_catcode_L_int=\count176
+\c__regex_catcode_O_int=\count177
+\c__regex_catcode_A_int=\count178
+\c__regex_all_catcodes_int=\count179
+\l__regex_show_lines_int=\count180
+\l__regex_min_state_int=\count181
+\l__regex_max_state_int=\count182
+\l__regex_left_state_int=\count183
+\l__regex_right_state_int=\count184
+\l__regex_capturing_group_int=\count185
+\l__regex_min_pos_int=\count186
+\l__regex_max_pos_int=\count187
+\l__regex_curr_pos_int=\count188
+\l__regex_start_pos_int=\count189
+\l__regex_success_pos_int=\count190
+\l__regex_curr_char_int=\count191
+\l__regex_curr_catcode_int=\count192
+\l__regex_last_char_int=\count193
+\l__regex_case_changed_char_int=\count194
+\l__regex_curr_state_int=\count195
+\l__regex_step_int=\count196
+\l__regex_min_active_int=\count197
+\l__regex_max_active_int=\count198
+\l__regex_replacement_csnames_int=\count199
+\l__regex_match_count_int=\count266
+\l__regex_min_submatch_int=\count267
+\l__regex_submatch_int=\count268
+\l__regex_zeroth_submatch_int=\count269
+\g__debug_trace_regex_int=\count270
+\c_empty_box=\box32
+\l_tmpa_box=\box33
+\l_tmpb_box=\box34
+\g_tmpa_box=\box35
+\g_tmpb_box=\box36
 \l__box_top_dim=\dimen148
 \l__box_bottom_dim=\dimen149
 \l__box_left_dim=\dimen150
@@ -364,8 +380,8 @@ Package: expl3 2017/09/18 L3 programming layer (code)
 \l__box_bottom_new_dim=\dimen153
 \l__box_left_new_dim=\dimen154
 \l__box_right_new_dim=\dimen155
-\l__box_internal_box=\box35
-\l__coffin_internal_box=\box36
+\l__box_internal_box=\box37
+\l__coffin_internal_box=\box38
 \l__coffin_internal_dim=\dimen156
 \l__coffin_offset_x_dim=\dimen157
 \l__coffin_offset_y_dim=\dimen158
@@ -373,14 +389,14 @@ Package: expl3 2017/09/18 L3 programming layer (code)
 \l__coffin_y_dim=\dimen160
 \l__coffin_x_prime_dim=\dimen161
 \l__coffin_y_prime_dim=\dimen162
-\c_empty_coffin=\box37
-\l__coffin_aligned_coffin=\box38
-\l__coffin_aligned_internal_coffin=\box39
-\l_tmpa_coffin=\box40
-\l_tmpb_coffin=\box41
-\l__coffin_display_coffin=\box42
-\l__coffin_display_coord_coffin=\box43
-\l__coffin_display_pole_coffin=\box44
+\c_empty_coffin=\box39
+\l__coffin_aligned_coffin=\box40
+\l__coffin_aligned_internal_coffin=\box41
+\l_tmpa_coffin=\box42
+\l_tmpb_coffin=\box43
+\l__coffin_display_coffin=\box44
+\l__coffin_display_coord_coffin=\box45
+\l__coffin_display_pole_coffin=\box46
 \l__coffin_display_offset_dim=\dimen163
 \l__coffin_display_x_dim=\dimen164
 \l__coffin_display_y_dim=\dimen165
@@ -394,17 +410,17 @@ Package: expl3 2017/09/18 L3 programming layer (code)
 )
 (C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\latex\l3kernel\l3pdfmode.def
 File: l3pdfmode.def 2017/03/18 v L3 Experimental driver: PDF mode
-\l__driver_color_stack_int=\count269
-\l__driver_tmp_box=\box45
+\l__driver_color_stack_int=\count271
+\l__driver_tmp_box=\box47
 ))
 (C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\latex\l3packages\xparse\xparse.s
 ty
 Package: xparse 2017/09/18 L3 Experimental document command parser
-\l__xparse_current_arg_int=\count270
-\g__xparse_grabber_int=\count271
-\l__xparse_m_args_int=\count272
-\l__xparse_mandatory_args_int=\count273
-\l__xparse_v_nesting_int=\count274
+\l__xparse_current_arg_int=\count272
+\g__xparse_grabber_int=\count273
+\l__xparse_m_args_int=\count274
+\l__xparse_mandatory_args_int=\count275
+\l__xparse_v_nesting_int=\count276
 )
 Package: siunitx 2017/08/02 v2.7j A comprehensive (SI) units package
 
@@ -412,29 +428,29 @@ Package: siunitx 2017/08/02 v2.7j A comprehensive (SI) units package
 2e.sty
 Package: l3keys2e 2017/09/18 LaTeX2e option processing using LaTeX3 keys
 )
-\l__siunitx_tmp_box=\box46
+\l__siunitx_tmp_box=\box48
 \l__siunitx_tmp_dim=\dimen173
-\l__siunitx_tmp_int=\count275
-\l__siunitx_number_mantissa_length_int=\count276
-\l__siunitx_number_uncert_length_int=\count277
-\l__siunitx_round_int=\count278
-\l__siunitx_process_decimal_int=\count279
-\l__siunitx_process_uncertainty_int=\count280
-\l__siunitx_process_fixed_int=\count281
-\l__siunitx_process_integer_min_int=\count282
-\l__siunitx_process_precision_int=\count283
-\l__siunitx_group_min_int=\count284
-\l__siunitx_angle_marker_box=\box47
-\l__siunitx_angle_unit_box=\box48
+\l__siunitx_tmp_int=\count277
+\l__siunitx_number_mantissa_length_int=\count278
+\l__siunitx_number_uncert_length_int=\count279
+\l__siunitx_round_int=\count280
+\l__siunitx_process_decimal_int=\count281
+\l__siunitx_process_uncertainty_int=\count282
+\l__siunitx_process_fixed_int=\count283
+\l__siunitx_process_integer_min_int=\count284
+\l__siunitx_process_precision_int=\count285
+\l__siunitx_group_min_int=\count286
+\l__siunitx_angle_marker_box=\box49
+\l__siunitx_angle_unit_box=\box50
 \l__siunitx_angle_marker_dim=\dimen174
 \l__siunitx_angle_unit_dim=\dimen175
-\l__siunitx_unit_int=\count285
-\l__siunitx_unit_denominator_int=\count286
-\l__siunitx_unit_numerator_int=\count287
-\l__siunitx_unit_prefix_int=\count288
-\l__siunitx_unit_prefix_base_int=\count289
-\l__siunitx_unit_prefix_gram_int=\count290
-\l__siunitx_number_product_int=\count291
+\l__siunitx_unit_int=\count287
+\l__siunitx_unit_denominator_int=\count288
+\l__siunitx_unit_numerator_int=\count289
+\l__siunitx_unit_prefix_int=\count290
+\l__siunitx_unit_prefix_base_int=\count291
+\l__siunitx_unit_prefix_gram_int=\count292
+\l__siunitx_number_product_int=\count293
 \c__siunitx_one_fill_skip=\skip59
 \l__siunitx_table_unit_align_skip=\skip60
 \l__siunitx_table_exponent_dim=\dimen176
@@ -446,10 +462,10 @@ Package: l3keys2e 2017/09/18 LaTeX2e option processing using LaTeX3 keys
 \l__siunitx_table_fill_pre_dim=\dimen182
 \l__siunitx_table_fill_post_dim=\dimen183
 \l__siunitx_table_fill_mid_dim=\dimen184
-\l__siunitx_table_pre_box=\box49
-\l__siunitx_table_post_box=\box50
-\l__siunitx_table_mantissa_box=\box51
-\l__siunitx_table_result_box=\box52
+\l__siunitx_table_pre_box=\box51
+\l__siunitx_table_post_box=\box52
+\l__siunitx_table_mantissa_box=\box53
+\l__siunitx_table_result_box=\box54
 \l__siunitx_table_number_align_skip=\skip61
 \l__siunitx_table_text_align_skip=\skip62
 .................................................
@@ -575,14 +591,6 @@ Package: translator 2010/06/12 ver 1.10
 
 (C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\latex\beamer\translator\translat
 or-language-mappings.tex)))
-("C:\Program Files\MiKTeX 2.9\tex\latex\float\float.sty"
-Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count292
-\float@exts=\toks22
-\float@box=\box53
-\@float@everytoks=\toks23
-\@floatcapt=\box54
-)
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hyperref.sty"
 Package: hyperref 2017/03/14 v6.85a Hypertext links for LaTeX
 
@@ -640,13 +648,13 @@ Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
 \@linkdim=\dimen185
-\Hy@linkcounter=\count293
-\Hy@pagecounter=\count294
+\Hy@linkcounter=\count294
+\Hy@pagecounter=\count295
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\pd1enc.def"
 File: pd1enc.def 2017/03/14 v6.85a Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count295
+\Hy@SavedSpaceFactor=\count296
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\hyperref.cfg"
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -673,7 +681,7 @@ Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 ))
-\c@Hy@tempcnt=\count296
+\c@Hy@tempcnt=\count297
 
 (C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\latex\url\url.sty
 \Urlmuskip=\muskip17
@@ -681,7 +689,7 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5104.
 \XeTeXLinkMargin=\dimen186
-\Fld@menulength=\count297
+\Fld@menulength=\count298
 \Field@Width=\dimen187
 \Fld@charsize=\dimen188
 Package hyperref Info: Hyper figures OFF on input line 6358.
@@ -693,17 +701,17 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6383.
 Package hyperref Info: PDF/A mode OFF on input line 6388.
 LaTeX Info: Redefining \ref on input line 6428.
 LaTeX Info: Redefining \pageref on input line 6432.
-\Hy@abspage=\count298
-\c@Item=\count299
-\c@Hfootnote=\count300
+\Hy@abspage=\count299
+\c@Item=\count300
+\c@Hfootnote=\count301
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hpdftex.def"
 File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
-\Fld@listcount=\count301
-\c@bookmark@seq@number=\count302
+\Fld@listcount=\count302
+\c@bookmark@seq@number=\count303
 \Hy@SectionHShift=\skip63
 ) (paper.aux)
 \openout1 = `paper.aux'.
@@ -738,17 +746,17 @@ Package color Info: Driver file: pdftex.def on input line 147.
 )
 (C:\Users\brian\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count303
+\scratchcounter=\count304
 \scratchdimen=\dimen189
 \scratchbox=\box55
-\nofMPsegments=\count304
-\nofMParguments=\count305
-\everyMPshowfont=\toks24
-\MPscratchCnt=\count306
+\nofMPsegments=\count305
+\nofMParguments=\count306
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count307
 \MPscratchDim=\dimen190
-\MPnumerator=\count307
-\makeMPintoPDFobject=\count308
-\everyMPtoPDFconversion=\toks25
+\MPnumerator=\count308
+\makeMPintoPDFobject=\count309
+\everyMPtoPDFconversion=\toks26
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -784,12 +792,12 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count309
+\c@section@level=\count310
 )
 LaTeX Info: Redefining \ref on input line 34.
 LaTeX Info: Redefining \pageref on input line 34.
 LaTeX Info: Redefining \nameref on input line 34.
-\c__siunitx_mathsf_int=\count310
+\c__siunitx_mathsf_int=\count311
 LaTeX Font Info:    Try loading font information for U+msa on input line 34.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
@@ -800,7 +808,7 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 34.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-\c__siunitx_mathtt_int=\count311
+\c__siunitx_mathtt_int=\count312
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 59.
 
@@ -895,59 +903,52 @@ File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 
  <./figures/schema/teaser-image.png (PNG copy)> <./figures/schema/teaser-segmen
 tation.png (PNG copy)> <./figures/schema/pre-multicut.png> <./figures/schema/mu
-lticut-graph.png> <./figures/schema/post-multicut.png>]) (1_related_work.tex
-Underfull \vbox (badness 7168) has occurred while \output is active []
-
- [2 <./figures/pipeline/image.png> <./figures/pipeline/affinities.png> <./figur
-es/pipeline/watershed.png> <./figures/pipeline/neuroproof.png>]) (2_method.tex
-<./figures/skeleton1.png, id=107, 903.375pt x 322.95656pt>
+lticut-graph.png> <./figures/schema/post-multicut.png>]) (1_related_work.tex [2
+ <./figures/pipeline/image.png> <./figures/pipeline/affinities.png> <./figures/
+pipeline/watershed.png> <./figures/pipeline/neuroproof.png>]) (2_method.tex
+<./figures/skeleton1.png, id=102, 903.375pt x 322.95656pt>
 File: ./figures/skeleton1.png Graphic file (type png)
 
 <use ./figures/skeleton1.png>
 Package pdftex.def Info: ./figures/skeleton1.png used on input line 6.
 (pdftex.def)             Requested size: 218.16463pt x 77.99408pt.
 
-<./figures/skeleton2.png, id=108, 903.375pt x 431.36156pt>
+<./figures/skeleton2.png, id=103, 903.375pt x 431.36156pt>
 File: ./figures/skeleton2.png Graphic file (type png)
 
 <use ./figures/skeleton2.png>
 Package pdftex.def Info: ./figures/skeleton2.png used on input line 7.
 (pdftex.def)             Requested size: 218.16463pt x 104.17392pt.
  [3 <./figures/skeleton1.png> <./figures/skeleton2.png>] <./figures/split_error
-1.png, id=140, 903.375pt x 252.19218pt>
+1.png, id=136, 903.375pt x 252.19218pt>
 File: ./figures/split_error1.png Graphic file (type png)
 
 <use ./figures/split_error1.png>
-Package pdftex.def Info: ./figures/split_error1.png used on input line 72.
+Package pdftex.def Info: ./figures/split_error1.png used on input line 69.
 (pdftex.def)             Requested size: 218.16463pt x 60.90446pt.
 
-<./figures/split_error2.png, id=141, 903.375pt x 236.38312pt>
+<./figures/split_error2.png, id=137, 903.375pt x 236.38312pt>
 File: ./figures/split_error2.png Graphic file (type png)
 
 <use ./figures/split_error2.png>
-Package pdftex.def Info: ./figures/split_error2.png used on input line 73.
+Package pdftex.def Info: ./figures/split_error2.png used on input line 70.
 (pdftex.def)             Requested size: 218.16463pt x 57.08658pt.
 
-<figures/architecture.png, id=148, 911.405pt x 389.455pt>
+<figures/architecture.png, id=145, 911.405pt x 389.455pt>
 File: figures/architecture.png Graphic file (type png)
 
 <use figures/architecture.png>
-Package pdftex.def Info: figures/architecture.png used on input line 124.
+Package pdftex.def Info: figures/architecture.png used on input line 106.
 (pdftex.def)             Requested size: 472.01192pt x 201.69768pt.
 ) (3_evaluation.tex
 LaTeX Font Info:    Try loading font information for TS1+ptm on input line 14.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ts1ptm.fd"
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-Underfull \vbox (badness 1122) has occurred while \output is active []
+) [4 <./figures/split_error1.png> <./figures/split_error2.png>]
+Underfull \vbox (badness 5050) has occurred while \output is active []
 
- [4 <./figures/split_error1.png> <./figures/split_error2.png>]
-
-LaTeX Warning: Reference `alg:skeletonization' on page 5 undefined on input lin
-e 41.
-
-[5 <./figures/architecture.png>]) (4_results.tex
+ [5 <./figures/architecture.png>]) (4_results.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 9.
 
@@ -955,108 +956,101 @@ Overfull \hbox (7.47417pt too wide) in paragraph at lines 8--15
  [][] 
  []
 
-<./figures/merge_candidate1.png, id=189, 1248.665pt x 355.3275pt>
+<./figures/merge_candidate1.png, id=196, 1248.665pt x 355.3275pt>
 File: ./figures/merge_candidate1.png Graphic file (type png)
 
 <use ./figures/merge_candidate1.png>
 Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 35.
 (pdftex.def)             Requested size: 201.56699pt x 57.35779pt.
 
-<./figures/merge_candidate2.png, id=190, 1159.33125pt x 217.81375pt>
+<./figures/merge_candidate2.png, id=197, 1159.33125pt x 217.81375pt>
 File: ./figures/merge_candidate2.png Graphic file (type png)
 
 <use ./figures/merge_candidate2.png>
 Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 36.
 (pdftex.def)             Requested size: 201.56699pt x 37.8687pt.
 
-Underfull \vbox (badness 1348) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [6]
-<./figures/roc-microns-300-test.png, id=208, 462.528pt x 346.896pt>
+ [6 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png>]
+<./figures/roc-microns-300-test.png, id=212, 462.528pt x 346.896pt>
 File: ./figures/roc-microns-300-test.png Graphic file (type png)
 
 <use ./figures/roc-microns-300-test.png>
 Package pdftex.def Info: ./figures/roc-microns-300-test.png used on input line 
-63.
+62.
 (pdftex.def)             Requested size: 213.4209pt x 160.06636pt.
 
-<./figures/variation_of_information-train.png, id=210, 462.528pt x 346.896pt>
+<./figures/variation_of_information-train.png, id=215, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-train.png Graphic file (type png)
 
 <use ./figures/variation_of_information-train.png>
 Package pdftex.def Info: ./figures/variation_of_information-train.png used on i
-nput line 78.
+nput line 104.
 (pdftex.def)             Requested size: 208.67871pt x 156.50932pt.
 
-<./figures/variation_of_information-test.png, id=211, 462.528pt x 346.896pt>
+<./figures/variation_of_information-test.png, id=216, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-test.png Graphic file (type png)
 
 <use ./figures/variation_of_information-test.png>
 Package pdftex.def Info: ./figures/variation_of_information-test.png used on in
-put line 80.
+put line 106.
 (pdftex.def)             Requested size: 208.67871pt x 156.50932pt.
 ) (5_conclusions.tex)
 (paper.bbl (paper.brf)
 \tf@brf=\write3
 \openout3 = `paper.brf'.
 
- [7 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png> <./figure
-s/roc-microns-300-test.png>]
-Underfull \hbox (badness 2318) in paragraph at lines 66--66
+ [7 <./figures/roc-microns-300-test.png>]
+Underfull \hbox (badness 2318) in paragraph at lines 72--72
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
 
 
-Underfull \hbox (badness 6725) in paragraph at lines 86--86
+Underfull \hbox (badness 6725) in paragraph at lines 92--92
 []\OT1/ptm/m/n/9 V. Jain, B. Boll-mann, M. Richard-son, D. Berger,
  []
 
 
-Underfull \hbox (badness 2088) in paragraph at lines 86--86
+Underfull \hbox (badness 2088) in paragraph at lines 92--92
 \OT1/ptm/m/n/9 M. Helmst[]adter, K. Brig-gman, W. Denk, J. Bow-den,
  []
 
 
-Underfull \hbox (badness 1052) in paragraph at lines 91--91
+Underfull \hbox (badness 1052) in paragraph at lines 97--97
 []\OT1/ptm/m/n/9 M. Januszewski, J. Maitin-Shepard, P. Li, J. Ko-rn-feld,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 110--110
+Underfull \hbox (badness 10000) in paragraph at lines 116--116
 []\OT1/ptm/m/n/9 V. Kaynig, A. Vazquez-Reina, S. Knowles-Barley,
  []
 
 
-Underfull \hbox (badness 4366) in paragraph at lines 110--110
+Underfull \hbox (badness 4366) in paragraph at lines 116--116
 \OT1/ptm/m/n/9 neu-ronal pro-cesses from elec-tron mi-croscopy im-ages.
  []
 
 [8 <./figures/variation_of_information-train.png> <./figures/variation_of_infor
 mation-test.png>])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 108.
- [9
-
-]
+ [9]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 108.
  (paper.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 108.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 108.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: D6B6BA1F269FCCF98549577DBA7AA7A6;2501.
-
-
-LaTeX Warning: There were undefined references.
-
+(rerunfilecheck)             Checksum: 1F706F23359DB8ED6779B1834C98E42C;2464.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 108.
  ) 
 Here is how much of TeX's memory you used:
- 19094 strings out of 493323
- 366332 string characters out of 3139066
- 417754 words of memory out of 3000000
- 22311 multiletter control sequences out of 15000+200000
- 567698 words of font info for 103 fonts, out of 3000000 for 9000
+ 19119 strings out of 493323
+ 366866 string characters out of 3139066
+ 416265 words of memory out of 3000000
+ 22332 multiletter control sequences out of 15000+200000
+ 565974 words of font info for 101 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,39p,10376b,860s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,10n,39p,10376b,862s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/Mi
 KTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9
 /fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
@@ -1069,9 +1063,9 @@ fb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program
 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/u
 rw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.
 pfb>
-Output written on paper.pdf (9 pages, 3452185 bytes).
+Output written on paper.pdf (9 pages, 3451060 bytes).
 PDF statistics:
- 353 PDF objects out of 1000 (max. 8388607)
- 91 named destinations out of 1000 (max. 500000)
+ 359 PDF objects out of 1000 (max. 8388607)
+ 93 named destinations out of 1000 (max. 500000)
  96 words of extra memory for PDF output out of 10000 (max. 10000000)
 

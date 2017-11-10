@@ -19,7 +19,7 @@
 Table \ref{table:skeletonization} shows the results of pruning using the skeletonization heuristic.
 The baseline algorithm considers all adjacent regions for merging. 
 Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations.
-This edge pruning is essential for the graph partitioning algorithms which have a computational complexity dependence on the number of edges. 
+This edge pruning is essential for the graph partitioning algorithm which has a computational complexity dependence on the number of edges. 
 Our pruning heuristic removes at least $6\times$ the number of edges between correctly split segments on all datasets, achieving a maximum removal ratio of $20\times$. 
 Equally important is the number of split errors that remain after pruning.
 These are the locations that we want to merge to create a more accurate reconstruction.
@@ -55,23 +55,49 @@ The bottom example our algorithm found despite the fact that they are not adjace
 \end{table}
 
 Table \ref{table:classification} shows the precision and recall for all of the datasets. 
-Our methods are more general than traditional connectomics examples allowing us to train the network on an anisotropic dataset and get impressive results on an isotropic dataset. 
-Our initial network does not take in any image data, only the segment shapes, so we merely extract the $1200 \textrm{nm}^3$ region from any dataset and rescale as input into the neural network. 
+Since, our method does not rely on the image data, we can train the network on an anisotropic dataset and get impressive results on an isotropic dataset. 
 Figure \ref{fig:network-results} shows the receiver operating characteristic (ROC) curve for all four datasets. 
 
 \begin{figure}
 	\includegraphics[width=0.9\linewidth]{./figures/roc-microns-300-test.png}
-	\caption{The receiver operating characteristic (ROC) curve for all four datasets.}
+	\caption{(NOT CORRECT) The receiver operating characteristic (ROC) curve for all four datasets.}
 	\label{fig:network-results}
 \end{figure}
 
+TODO - ADD QUALITATIVE RESULTS
+
 \subsection{Graph Based Strategies}
+
+TODO - QUANTIFY IMPROVEMENT BY MULTICUT - READERS CAN SKIP SECTION FOR NOW
 
 Using a graph-based optimization strategy prevents XX segments from merging compared to the simple hierarchical agglomeration strategy with an optimal threshold cut off. Since correcting merge errors is significantly more difficult than correcting split errors, it is desirable to limit the number of false merges. The graph-based strategies significantly improve this error type. 
 
 \subsection{Variation of Information Improvements}
 
-The final metric for comparing two connectomics segmentations is computing the variation of information with respect to an expert-labeled ground truth dataset. Figure \ref{fig:variation-of-information} shows the results on the datasets compared to the baseline (green) and an oracle (blue). 
+We compute the variation of information for our segmentations against the expert-labeled ground truth datasets. 
+The input segmentation to our network serves as a baseline. 
+We evaluate NeuroProof (our input) at several different thresholds to create a variation of information curve. 
+Similarly, we run the greedy-additive heuristic with varying parameters that increase the probability needed for merging nodes. 
+Figure \ref{fig:variation-of-information} shows the results on the datasets compared to the baseline (green) and an oracle (blue). 
+The oracles sees the entire constructed graph from our algorithm and correctly partitions the graph based on the ground truth. 
+Our methods decreases the split variation of information by a factor of XX\% and only increases the merge variation of information by a factor of XX\% on the test datasets. 
+Table \ref{table:variation-of-information} provides a quantitative overview for the changes in variation of information.
+
+TODO - ADD QUALITATIVE RESULTS
+
+\begin{table}
+	\centering
+	\begin{tabular}{c c c} \hline
+		\textbf{Dataset} & \textbf{VI Split} & \textbf{VI Merge} \\ \hline
+		Kasthuri Training &  & \\
+		Kasthuri Testing & & \\
+		FlyEM Vol. 1 & & \\
+		FlyEM Vol. 2 & & \\ \hline
+	\end{tabular}
+	\caption{Variation of Information Change}
+	\label{table:variation-of-information}
+\end{table}
+
 
 \begin{figure*}[t!]
 	\centering

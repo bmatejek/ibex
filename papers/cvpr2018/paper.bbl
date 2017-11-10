@@ -13,6 +13,12 @@ J.~A. Bogovic, G.~B. Huang, and V.~Jain.
   agglomeration.
 \newblock {\em arXiv preprint arXiv:1312.6159}, 2013.
 
+\bibitem{briggman2009maximin}
+K.~Briggman, W.~Denk, S.~Seung, M.~N. Helmstaedter, and S.~C. Turaga.
+\newblock Maximin affinity learning of image segmentation.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  1865--1873, 2009.
+
 \bibitem{chatfield2014return}
 K.~Chatfield, K.~Simonyan, A.~Vedaldi, and A.~Zisserman.
 \newblock Return of the devil in the details: Delving deep into convolutional
