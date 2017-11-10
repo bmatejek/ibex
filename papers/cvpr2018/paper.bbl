@@ -7,18 +7,6 @@ B.~Andres, T.~Kroeger, K.~L. Briggman, W.~Denk, N.~Korogod, G.~Knott,
 \newblock In {\em European Conference on Computer Vision}, pages 778--791.
   Springer, 2012.
 
-\bibitem{baran2007automatic}
-I.~Baran and J.~Popovi{\'c}.
-\newblock Automatic rigging and animation of 3d characters.
-\newblock In {\em ACM Transactions on Graphics (TOG)}, volume~26, page~72. ACM,
-  2007.
-
-\bibitem{bharaj2012automatically}
-G.~Bharaj, T.~Thorm{\"a}hlen, H.-P. Seidel, and C.~Theobalt.
-\newblock Automatically rigging multi-component characters.
-\newblock In {\em Computer Graphics Forum}, volume~31, pages 755--764. Wiley
-  Online Library, 2012.
-
 \bibitem{bogovic2013learned}
 J.~A. Bogovic, G.~B. Huang, and V.~Jain.
 \newblock Learned versus hand-designed feature representations for 3d
@@ -38,12 +26,10 @@ D.~Ciresan, A.~Giusti, L.~M. Gambardella, and J.~Schmidhuber.
 \newblock In {\em Advances in neural information processing systems}, pages
   2843--2851, 2012.
 
-\bibitem{conners1984segmentation}
-R.~W. Conners, M.~M. Trivedi, and C.~A. Harlow.
-\newblock Segmentation of a high-resolution urban scene using texture
-  operators.
-\newblock {\em Computer Vision, Graphics, and Image Processing},
-  25(3):273--310, 1984.
+\bibitem{demaine2006correlation}
+E.~D. Demaine, D.~Emanuel, A.~Fiat, and N.~Immorlica.
+\newblock Correlation clustering in general weighted graphs.
+\newblock {\em Theoretical Computer Science}, 361(2-3):172--187, 2006.
 
 \bibitem{funahashi1989approximate}
 K.-I. Funahashi.
@@ -173,24 +159,6 @@ J.~Nunez-Iglesias, R.~Kennedy, S.~M. Plaza, A.~Chakraborty, and W.~T. Katz.
   to segment 2d and 3d neuroimages.
 \newblock {\em Frontiers in neuroinformatics}, 8, 2014.
 
-\bibitem{osada2002shape}
-R.~Osada, T.~Funkhouser, B.~Chazelle, and D.~Dobkin.
-\newblock Shape distributions.
-\newblock {\em ACM Transactions on Graphics (TOG)}, 21(4):807--832, 2002.
-
-\bibitem{palagyi20003d}
-K.~Pal{\'a}gyi.
-\newblock A 3d 3-subiteration thinning algorithm for medial surfaces.
-\newblock In {\em International Conference on Discrete Geometry for Computer
-  Imagery}, pages 406--418. Springer, 2000.
-
-\bibitem{palagyi2001sequential}
-K.~Pal{\'a}gyi, E.~Balogh, A.~Kuba, C.~Halmai, B.~Erd{\H{o}}helyi, E.~Sorantin,
-  and K.~Hausegger.
-\newblock A sequential 3d thinning algorithm and its medical applications.
-\newblock In {\em Biennial International Conference on Information Processing
-  in Medical Imaging}, pages 409--415. Springer, 2001.
-
 \bibitem{10.1371/journal.pone.0125825}
 T.~Parag, A.~Chakraborty, S.~Plaza, and L.~Scheffer.
 \newblock A context-aware delayed agglomeration framework for electron
@@ -204,10 +172,11 @@ T.~Parag, F.~Tschopp, W.~Grisaitis, S.~C. Turaga, X.~Zhang, B.~Matejek,
   agglomeration.
 \newblock {\em arXiv preprint arXiv:1707.08935}, 2017.
 
-\bibitem{ren2003learning}
-X.~Ren and J.~Malik.
-\newblock Learning a classification model for segmentation.
-\newblock In {\em null}, page~10. IEEE, 2003.
+\bibitem{rolnick2017morphological}
+D.~Rolnick, Y.~Meirovitch, T.~Parag, H.~Pfister, V.~Jain, J.~W. Lichtman, E.~S.
+  Boyden, and N.~Shavit.
+\newblock Morphological error detection in 3d segmentations.
+\newblock {\em arXiv preprint arXiv:1705.10882}, 2017.
 
 \bibitem{ronneberger2015u}
 O.~Ronneberger, P.~Fischer, and T.~Brox.
@@ -255,6 +224,11 @@ A.~V\'azquez-Reina, M.~Gelbart, D.~Huang, J.~Lichtman, E.~Miller, and
   H.~Pfister.
 \newblock Segmentation fusion for connectomics.
 \newblock In {\em Proc. IEEE ICCV}, pages 177--184, Nov 2011.
+
+\bibitem{zaitoun2015survey}
+N.~M. Zaitoun and M.~J. Aqel.
+\newblock Survey on image segmentation techniques.
+\newblock {\em Procedia Computer Science}, 65:797--806, 2015.
 
 \bibitem{zhao2014automatic}
 T.~Zhao and S.~M. Plaza.

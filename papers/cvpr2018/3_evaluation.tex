@@ -87,13 +87,6 @@ This produces 16 times more training data.
 
 \subsection{Graph-based Strategies}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.8\linewidth]{./figures/multicut.png}
-	\caption{An example of the benefits of using multicut over simpler agglomeration schemes. If we input this example into a na\"ive agglomeration strategy that collapses all edges with a threshold greater than 0.5, this entire segment will merge together despite the fact that nodes 2 and 4 and nodes 3 and 5 have low affinities.}
-	\label{fig:multicut}
-\end{figure}
-
 Applying a top-down globally optimal partitioning function allows us to enforce some domain-specific constraints on the reconstruction.
 In connectomics, we want to enforce the topological restrictions that each partition in the graph has a genus of zero. 
 The greedy-additive heuristic solves the multicut graph partitioning problem by enforcing this constraint.

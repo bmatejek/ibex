@@ -13,6 +13,7 @@
 \usepackage{algpseudocode}
 \usepackage{algorithmicx}
 \usepackage{siunitx}
+\usepackage{float}
 
 
 
@@ -58,30 +59,29 @@ Cambridge, MA 02138, USA\\
 
 \begin{figure}[t]\footnotesize
 	\vspace{-2.04in}
-	\newcommand{\FigureWidth}{0.23\textwidth}
-	\newcommand{\FigureShift}{\hspace{-0.42cm}}
-	\newcommand{\figureShift}{\hspace{-0.3cm}}
 	\begin{minipage}{\textwidth}
-		\begin{center}
-			\begin{tabular}{cccc}
-				\FigureShift \includegraphics[width=\FigureWidth]{figures/schema/teaser-image.png} \includegraphics[width=\FigureWidth]{figures/schema/teaser-segmentation.png} &
-				\FigureShift \includegraphics[width=\FigureWidth]{figures/schema/pre-multicut.png} &
-				\FigureShift \includegraphics[width=\FigureWidth]{figures/schema/multicut-graph.png}&
-				\FigureShift \includegraphics[width=\FigureWidth]{figures/schema/post-multicut.png}\\
-				\figureShift (a) Input & \FigureShift (b)  Our results & \FigureShift(c) Dark channel of (a) & \FigureShift (d) Dark channel of (b)\\
-			\end{tabular}
-		\end{center}
-		\vspace{-3mm}
-		\caption{Deblurring result on a challenging low-light image. The blur process makes the dark channel of the blurred image less sparse~(c). Enforcing sparsity on the dark channel of the recovered image favors clean images over blurred ones.}
+		\begin{minipage}{0.125\textheight}
+			\includegraphics[width=\linewidth]{figures/schema/teaser-image.png}
+			\includegraphics[width=\linewidth]{figures/schema/teaser-segmentation.png}
+		\end{minipage}
+		\begin{minipage}{0.24\textwidth}
+			\includegraphics[width=\linewidth]{figures/schema/pre-multicut.png}
+		\end{minipage}
+		\begin{minipage}{0.34\textwidth}
+			\includegraphics[width=\linewidth]{figures/schema/multicut-graph.png}
+		\end{minipage}
+		\begin{minipage}{0.24\textwidth}
+			\includegraphics[width=\linewidth]{figures/schema/post-multicut.png}
+		\end{minipage}
+		\caption{We take as input the results of a region-based agglomeration algorithm. We extract a graph from this segmentation and apply a top-down partitioning algorithm to improve accuracy.}
 		\label{fig:teaser}
-		%
 	\end{minipage}
 \end{figure}
 
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Advancements in electron microscopy image acquisition have created massive connectomics datasets which are petabytes in size and make manual segmentation not feasible. 
+Advancements in electron microscopy image acquisition have created massive connectomics datasets which are petabytes in size and make manual segmentation infeasible. 
 Proposed methods for automatic segmentations generate super-pixel approximations of neural membranes followed by agglomeration strategies to create full neuron reconstructions. 
 However, pixel-based segmentation results widely neglect global geometric properties.
 We generate skeletons of membrane labels to approximate neural pathways in 3D. This allows us to efficiently apply graph-based optimization strategies and to train automatic classifiers for shape description against manually labeled ground truth. Our classifiers detect feasible and impossible neural pathways by looking at geometric properties alone, and are able to improve the segmentation labels accordingly. We demonstrate the performance of our classifiers on multiple real-world connectomics datasets with average variation of information improvement of $X\times$. We discuss our findings and provide insights to learning shape features for neuron agglomeration.

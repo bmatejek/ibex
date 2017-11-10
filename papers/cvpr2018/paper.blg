@@ -1,16 +1,14 @@
 This is BibTeX, Version 0.99dThe top-level auxiliary file: paper.aux
 The style file: ieee.bst
 Database file #1: paper.bib
-Repeated entry---line 241 of file paper.bib
+Repeated entry---line 266 of file paper.bib
  : @article {takemura2017connectome
  :                                 ,
 I'm skipping whatever remains of this entry
-Repeated entry---line 363 of file paper.bib
+Repeated entry---line 388 of file paper.bib
  : @article{kernighan1970efficient
  :                                ,
 I'm skipping whatever remains of this entry
-Warning--can't use both volume and number fields in baran2007automatic
-Warning--can't use both volume and number fields in bharaj2012automatically
 Warning--can't use both volume and number fields in haehn2017scalable
 Warning--can't use both volume and number fields in maas2013rectifier
 Warning--empty booktitle in nesterov1983method

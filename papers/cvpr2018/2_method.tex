@@ -1,5 +1,14 @@
 \section{Method}
 
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.92\linewidth]{./figures/skeleton1.png}
+	\includegraphics[width=0.92\linewidth]{./figures/skeleton2.png}
+	\caption{Skeletons using the TEASER algorithm.}
+	\label{fig:skeletonization}
+\end{figure}
+
 There are two types of errors that can occur in image segmentation problems.
 The first, called a split error, occurs when there are two segments that should have been merged.
 The second, called a merge error, happens when one segment should be split into two.
@@ -15,7 +24,7 @@ We generate a skeleton for every segment following the intuition that a skeleton
 We locate merge candidates and produce corresponding edges based on these skeletons.
 A CNN generates the edge weights by learning a merge function given two segments as input. 
 A multicut heuristic generates a partition on the graph where nodes in the same partition are assigned the same output label. 
-Thus there are three major components to our framework: skeletonization for constructing a graph, network training for determining edge weights, and graph-partitioning using a multicut heuristic algorithm. (INSERT FIGURE HERE)
+Thus there are three major components to our framework: skeletonization for constructing a graph, network training for determining edge weights, and graph-partitioning using a multicut heuristic algorithm.
 
 \subsection{Graph Creation}
 
@@ -33,14 +42,7 @@ On a typical connectomics dataset this only remove XX$\%$ of segments.
 
 \subsubsection{Edge Generation}
 
-\begin{figure}[t!]
-	\centering
-	\includegraphics[width=0.42\linewidth]{./figures/skeleton1.png}
-	\hspace{0.085\linewidth}
-	\includegraphics[width=0.42\linewidth]{./figures/skeleton2.png}
-	\caption{Two example outputs of the TEASER skeletonization algorithm.}
-	\label{fig:skeletonization}
-\end{figure}
+
 
 A na\"ive approach to generating edges produces an edge between all adjacent segments.
 Two segments $l_1$ and $l_2$ are considered adjacent if there is a pair of adjacent voxels where one has label $l_1$ and the other has label $l_2$. 
@@ -67,9 +69,8 @@ Algorithm (ADD REF) provides pseudocode for this edge generation algorithm.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.42\linewidth]{./figures/split_error1.png}
-	\hspace{0.085\linewidth}
-	\includegraphics[width=0.42\linewidth]{./figures/split_error2.png}
+	\includegraphics[width=0.92\linewidth]{./figures/split_error1.png}
+	\includegraphics[width=0.92\linewidth]{./figures/split_error2.png}
 	\caption{Two erroneously split segments that should merge together. Most segments that we want to merge have the same general structure.}
 	\label{fig:merge_candidates}
 \end{figure}
@@ -133,5 +134,4 @@ Neurons in the brain should be acyclic, i.e. the output shape should have a genu
 Current connectomics agglomeration techniques do not leverage this additional information but rather consider neighboring regions in successive order without regard to loop creation. 
 In our graph formulation we enforce this topological property by applying a multicut partition onto the graph that generates a \textit{forest} on the nodes. 
 A forest is a partitioning of a graph into a set of trees (i.e. no segment has a cycle). 
-There are several heuristics that solve the multicut problem. For our purposes we use the Kernighan-Lin algorithm~\cite{kernighan1970efficient}.
-The running time of this algorithm is $\mathcal{O}(N^3)$, where $N$ is the number of nodes in the graph (DOUBLE CHECK). 
+There are several heuristics that solve the multicut problem. For our purposes we use the greedy-additive algorithm~\cite{keuper2015efficient}.
