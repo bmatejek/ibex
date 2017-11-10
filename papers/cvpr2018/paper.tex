@@ -15,6 +15,7 @@
 \usepackage{siunitx}
 
 
+
 % Include other packages here, before hyperref.
 
 % If you comment hyperref and then uncomment it, you should delete
@@ -54,6 +55,29 @@ Cambridge, MA 02138, USA\\
 
 \maketitle
 %\thispagestyle{empty}
+
+\begin{figure}[t]\footnotesize
+	\vspace{-2.04in}
+	\newcommand{\FigureWidth}{0.23\textwidth}
+	\newcommand{\FigureShift}{\hspace{-0.42cm}}
+	\newcommand{\figureShift}{\hspace{-0.3cm}}
+	\begin{minipage}{\textwidth}
+		\begin{center}
+			\begin{tabular}{cccc}
+				\FigureShift \includegraphics[width=\FigureWidth]{figures/schema/teaser-image.png} \includegraphics[width=\FigureWidth]{figures/schema/teaser-segmentation.png} &
+				\FigureShift \includegraphics[width=\FigureWidth]{figures/schema/pre-multicut.png} &
+				\FigureShift \includegraphics[width=\FigureWidth]{figures/schema/multicut-graph.png}&
+				\FigureShift \includegraphics[width=\FigureWidth]{figures/schema/post-multicut.png}\\
+				\figureShift (a) Input & \FigureShift (b)  Our results & \FigureShift(c) Dark channel of (a) & \FigureShift (d) Dark channel of (b)\\
+			\end{tabular}
+		\end{center}
+		\vspace{-3mm}
+		\caption{Deblurring result on a challenging low-light image. The blur process makes the dark channel of the blurred image less sparse~(c). Enforcing sparsity on the dark channel of the recovered image favors clean images over blurred ones.}
+		\label{fig:teaser}
+		%
+	\end{minipage}
+\end{figure}
+
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}

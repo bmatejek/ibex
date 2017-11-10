@@ -2,8 +2,8 @@
 \backcite {kasthuri2015saturated}{{1}{1}{section.1}}
 \backcite {seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image}{{1}{1}{section.1}}
 \backcite {lee2015recursive,ronneberger2015u}{{1}{1}{section.1}}
-\backcite {nunez2014graph}{{1}{1}{figure.caption.1}}
-\backcite {bogovic2013learned}{{1}{1}{figure.caption.1}}
+\backcite {nunez2014graph}{{1}{1}{section.1}}
+\backcite {bogovic2013learned}{{2}{1}{section.1}}
 \backcite {ciresan2012deep,jain2010boundary,amelio_segmentation,rhoananet,kaynig2015large}{{2}{2}{section*.3}}
 \backcite {lee2015recursive}{{2}{2}{section*.3}}
 \backcite {ronneberger2015u}{{2}{2}{section*.3}}
@@ -27,8 +27,8 @@
 \backcite {maas2013rectifier}{{4}{3.2.1}{subsubsection.3.2.1}}
 \backcite {nesterov1983method}{{4}{3.2.1}{subsubsection.3.2.1}}
 \backcite {kernighan1970efficient}{{4}{3.3}{subsection.3.3}}
-\backcite {kasthuri2015saturated}{{4}{4.1}{section*.10}}
-\backcite {takemura2017connectome}{{4}{4.1}{section*.11}}
+\backcite {kasthuri2015saturated}{{5}{4.1}{section*.10}}
+\backcite {takemura2017connectome}{{5}{4.1}{section*.11}}
 \backcite {zlateski2015image}{{5}{4.1}{section*.12}}
 \backcite {schlegel2017learning}{{5}{4.1}{section*.12}}
 \backcite {Turaga:2009,ronneberger2015u}{{5}{4.1}{section*.12}}

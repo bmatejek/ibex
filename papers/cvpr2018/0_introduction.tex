@@ -12,14 +12,6 @@ All of these algorithms extract neuronal processes through the 3-D volumes using
 Oftentimes, convolutional neural networks (CNNs) predict membrane probabilities or affinities between voxels and apply simple thresholds to agglomerate the voxels into clusters~\cite{lee2015recursive,ronneberger2015u}.
 These \textit{per-voxel} algorithms produce excellent results but currently fall short of complete reconstructions with error rates of approximately $X\%$. %TODO ADD ERROR RATES 
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.42\linewidth]{./figures/merge_candidate1.png}
-	\hspace{0.085\linewidth}
-	\includegraphics[width=0.42\linewidth]{./figures/intro-cube.png}
-	\caption{We use 3D skeletons to combine neuron labels to full reconstructions. (TODO: Add schematic figure showing the difference between voxel-based / super-voxel based / graph-based algorithms with connections and hierarchy)} %TODO: SCHEMATIC FIGURE
-\end{figure}
-
 Researches currently address the failures of the per-voxel algorithms by training random-forest classifiers to agglomerate an oversegmentation of voxels~\cite{nunez2014graph} (CITE NEUROPROOF). 
 These classifiers take the output of the per-voxel algorithms as input and generate high-level statistics such as affinity distributions between pixel regions. 
 Presently, these methods use hand-designed features despite the evidence that machine-learned features perform better~\cite{bogovic2013learned}. 
