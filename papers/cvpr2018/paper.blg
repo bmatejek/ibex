@@ -1,17 +1,52 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: paper.aux
+This is BibTeX, Version 0.99d (TeX Live 2013)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: paper.aux
 The style file: ieee.bst
 Database file #1: paper.bib
-Repeated entry---line 266 of file paper.bib
- : @article {takemura2017connectome
- :                                 ,
-I'm skipping whatever remains of this entry
-Repeated entry---line 388 of file paper.bib
- : @article{kernighan1970efficient
- :                                ,
-I'm skipping whatever remains of this entry
 Warning--can't use both volume and number fields in haehn2017scalable
 Warning--can't use both volume and number fields in maas2013rectifier
 Warning--empty booktitle in nesterov1983method
 Warning--empty year in nesterov1983method
 Warning--empty publisher in Turaga:2009
-(There were 2 error messages)
+You've used 40 entries,
+            2120 wiz_defined-function locations,
+            722 strings with 12995 characters,
+and the built_in function-call counts, 18038 in all, are:
+= -- 1678
+> -- 1222
+< -- 16
++ -- 486
+- -- 442
+* -- 1415
+:= -- 3000
+add.period$ -- 125
+call.type$ -- 40
+change.case$ -- 338
+chr.to.int$ -- 0
+cite$ -- 45
+duplicate$ -- 601
+empty$ -- 1140
+format.name$ -- 442
+if$ -- 3688
+int.to.chr$ -- 0
+int.to.str$ -- 40
+missing$ -- 40
+newline$ -- 202
+num.names$ -- 80
+pop$ -- 361
+preamble$ -- 1
+purify$ -- 298
+quote$ -- 0
+skip$ -- 460
+stack$ -- 0
+substring$ -- 900
+swap$ -- 184
+text.length$ -- 16
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 160
+warning$ -- 5
+while$ -- 137
+width$ -- 42
+write$ -- 434
+(There were 5 warnings)

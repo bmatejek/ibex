@@ -114,11 +114,6 @@ V.~Kaynig, A.~Vazquez-Reina, S.~Knowles-Barley, M.~Roberts, T.~R. Jones,
   electron microscopy images.
 \newblock {\em Medical image analysis}, 22(1):77--88, 2015.
 
-\bibitem{kernighan1970efficient}
-B.~W. Kernighan and S.~Lin.
-\newblock An efficient heuristic procedure for partitioning graphs.
-\newblock {\em The Bell system technical journal}, 49(2):291--307, 1970.
-
 \bibitem{keuper2015efficient}
 M.~Keuper, E.~Levinkov, N.~Bonneel, G.~Lavou{\'e}, T.~Brox, and B.~Andres.
 \newblock Efficient decomposition of image and mesh graphs by lifted multicuts.
@@ -130,12 +125,6 @@ S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
   D.~Berger, N.~Kasthuri, J.~W. Lichtman, and H.~Pfister.
 \newblock Rhoananet pipeline: Dense automatic neural annotation.
 \newblock {\em arXiv preprint arXiv:1611.06973}, 2016.
-
-\bibitem{rhoananet}
-S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
-  D.~Berger, N.~Kasthuri, J.~W. Lichtman, and H.~Pfister.
-\newblock Rhoananet pipeline: Dense automatic neural annotation, 2016.
-\newblock (available on arXiv:1611.06973 [cs.CV]).
 
 \bibitem{lee2015recursive}
 K.~Lee, A.~Zlateski, V.~Ashwin, and H.~S. Seung.
@@ -209,11 +198,12 @@ J.~Shi and J.~Malik.
   22(8):888--905, 2000.
 
 \bibitem{takemura2017connectome}
-S.-y. Takemura, Y.~Aso, T.~Hige, A.~Wong, Z.~Lu, C.~S. Xu, P.~K. Rivlin,
-  H.~Hess, T.~Zhao, T.~Parag, et~al.
+S.-y. Takemura, Y.~Aso, T.~Hige, A.~M. Wong, Z.~Lu, C.~S. Xu, P.~K. Rivlin,
+  H.~F. Hess, T.~Zhao, T.~Parag, S.~Berg, G.~Huang, W.~T. Katz, D.~J. Olbris,
+  S.~M. Plaza, L.~A. Umayam, R.~Aniceto, L.-A. Chang, S.~Lauchie, and et~al.
 \newblock A connectome of a learning and memory center in the adult drosophila
   brain.
-\newblock {\em Elife}, 6, 2017.
+\newblock {\em eLife}, 6:e26975, 2017 Jul 18 2017.
 
 \bibitem{tatiraju2008image}
 S.~Tatiraju and A.~Mehta.

@@ -7,12 +7,12 @@ Here, we review some of the most successful methods that have been applied to la
 
 A large amount of connectomics research considers the problem of extracting segmentation information at the voxel level from the raw EM images to produce label volumes.
 Some early techniques apply computationally expensive graph partitioning algorithms with a single node per voxel~\cite{andres2012globally}, however these methods do not scale to terabyte datasets.
-Since then, several methods train 2-D CNNs to predict membrane probabilities per image slice~\cite{ciresan2012deep,jain2010boundary,kaynig2015large,rhoananet,amelio_segmentation}. 
+Since then, several methods train 2-D CNNs to predict membrane probabilities per image slice~\cite{ciresan2012deep,jain2010boundary,kaynig2015large,seymour2016rhoananet,amelio_segmentation}. 
 More recent strategies augment these neural networks with the $z$-dimension creating full 3-D CNNs~\cite{lee2015recursive,ronneberger2015u}.
 Oftentimes these networks produce probabilities for the affinity between two voxels (i.e., the probability that adjacent voxels belong to the same neuron).
 The MALIS cost function is specifically designed for generating affinities that produce good segmentations~\cite{briggman2009maximin}. 
 More recently, flood-filling networks produce segmentations by training an end-to-end neural network that takes EM images to label volumes~\cite{januszewski2016flood}.
-These flood-filling networks produce very impressive accuracies but at too high a computational cost.
+These flood-filling networks produce very impressive accuracies but at a high computational cost.
 
 
 \paragraph{Region-based methods.} 
