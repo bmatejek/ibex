@@ -9,34 +9,32 @@
 	\label{fig:skeletonization}
 \end{figure}
 
-There are two types of errors that can occur in image segmentation problems.
-The first, called a split error, occurs when there are two segments that should have been merged.
-The second, called a merge error, happens when one segment should be split into two.
-Generally, it is much more difficult to correct merge errors than to correct split errors (CITE). 
-Our method takes as input an oversegmentation of an $EM$ image volume where there are many more split errors than merge errors.
-Our goal is to identify locations of split errors and merge the corresponding segments.
-Section~\ref{sec:neuroproof} discusses two pipelines for generating these segmentations.
+There are two types of possible errors in image segmentation problems.
+A \textit{split error} occurs when there are two segments which should be one. 
+A \textit{merge error} happens when one segment should not have been merged. 
+Generally, it is much more difficult to correct merge errors than to correct split errors. 
+Therefore, we take an oversegmentation of the $EM$ image volume as input so that most of the errors are split errors. 
+We identify these split error locations and merge the offending segments.
+Section~\ref{sec:neuroproof} discusses two pipelines for generating the oversegmentations. 
 
 From the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 
-The nodes correspond to label segments from the segmentation with edges between segments considered for merging.
+The nodes correspond to unique labels from the segmentation.
+There is an edge between all nodes which we consider for merging. 
 Ideally, our graph has edges corresponding to all of the segments which were erroneously split with few edges between correctly split segments.
-We generate a skeleton for every segment following the intuition that a skeleton represents a simplified representation of the overall shape of an object. 
-We locate merge candidates and produce corresponding edges based on these skeletons.
-A CNN generates the edge weights by learning a merge function given two segments as input. 
-A multicut heuristic generates a partition on the graph where nodes in the same partition are assigned the same output label. 
-Thus there are three major components to our framework: skeletonization for constructing a graph, network training for determining edge weights, and graph-partitioning using a multicut heuristic algorithm.
+We consider an object's skeleton as a simplified representation of its shape.
+We use these skeletons to identify merge candidates and add an edge to the graph.
+A CNN produces a probability that two candidates should merge, and we assign the corresponding edge this probability as a weight. 
+A multicut heuristic partitions the graph to produce an output segmentation.
+Thus there are three major components to our framework: skeletonization for constructing a graph, network training for determining edge weights, and graph-partitioning using a multicut heuristic.
 
 \subsection{Graph Creation}
 \label{sec:skeletonization}
-We generate nodes $N$ and edges $E$ to apply a graph-based optimization strategy for segmentation. 
-In addition, these edges receive non-negative weights.
-
 \subsubsection{Node Generation}
 
 The simplest node generation strategy creates one node for every unique segment label in the input volume.
-However, some of the millions of labels in the volume correspond to very small volumes. 
-Usually these locations have noisy image data so the pixel-based methods could not provide enough information to generate a larger segment.
-It is difficult to extract useful shape features from these segments because of their small, and often random, shape. 
+However, some of the millions of labels correspond to very small volumes. 
+Usually these locations have noisy image data so the pixel-based methods cannot provide enough information to generate a larger segment.
+It is difficult to extract useful shape features from these segments because of their small, and often random, appearance. 
 We prune these nodes from the graph by removing all segments with fewer than $20,000$ voxels. 
 This removes XX\% of segments on a typical connectomics dataset. 
 
@@ -56,10 +54,9 @@ For the purposes of our algorithm, joints that have only one connected neighbor 
 Many of the segments that are erroneously split follow a similar pattern (Figure~\ref{fig:merge_candidates}). 
 In these split instances the two skeletons have nearby endpoints.
 
-After skeletonization, we begin to identify segments for merge consideration with the following two-pass heuristic.
+We identify segments for merge consideration with the following two-pass heuristic.
 In the first pass, we iterate over all endpoints $e$ belonging to a segment $S$ and create a set of segments $\mathbb{S}_e^\prime$ that includes all labels that have a single voxel within $t_{low}$ voxels from $e$. 
-Elements of these sets are candidates for merging.
-However the first pass often has too many candidates that should remain split so we apply an additional pass for further pruning.
+Oftentimes this first pass produces too many candidates.
 In the second pass, we consider all of the segments $\mathbb{S}_e^\prime$ for every endpoint $e$. 
 If a segment $S^\prime \in \mathbb{S}_e^\prime$ has an endpoint within $t_{high}$ voxels of $e$, the segment $S$ and $S^\prime$ are considered for merging. 
 We store the midpoint between the two endpoints as the ``center" of the potential merge.
@@ -73,13 +70,7 @@ We store the midpoint between the two endpoints as the ``center" of the potentia
 \end{figure}
 
 
-\subsection{Edge Probabilities}
-
-The previous section outlines how to generate edges between nodes in our graph structure. 
-Here we introduce a neural network architecture for generating probabilities that two nodes sharing an edge belong to the same neuron. 
-The neural network takes as input only data from the input segmentation. 
-
-\subsubsection{Network Architecture}
+\subsection{Edge Weights}
 
 Our graph generation algorithm produces 3-D locations that require further consideration for merging. 
 To determine which of these segments should actually merge, we train a 3-D CNN using the oversegmentation and the corresponding manually labeled ground truth data (Section~\ref{sec:dataset}).
@@ -93,11 +84,12 @@ The second channel is $0.5$ only if the corresponding voxel has label $l_2$.
 The third channel is $0.5$ if the corresponding voxel is either $l_1$ or $l_2$. 
 
 Figure~\ref{fig:architecture} provides an overview of our architecture. 
-Our network architecture has three layers of double convolutions followed by a max pooling step following the work of Chatfield et al. that found this technique improves on single convolution layers~\cite{chatfield2014return}. The first max pooling layer is anisotropic with pooling only in the $x$ and $y$ dimensions.
-The output after this final pooling step is flattened into a 1-D vector which is input into two fully connected layers.
+The network architecture has three layers of double convolutions followed by a max pooling step based on the work of Chatfield et al. that found this technique improves on single convolution layers~\cite{chatfield2014return}. 
+The first max pooling layer is anisotropic with pooling only in the $x$ and $y$ dimensions.
+The filters after the final pooling step are flattened into a 1-D vector which is input into two fully connected layers.
 The final layer produces a probability with a sigmoid activation function~\cite{funahashi1989approximate}. 
 All of the other activation functions are LeakyReLU~\cite{maas2013rectifier}. 
-We use a stochastic gradient descent optimizer with Nesterov's accelerated gradient~\cite{nesterov1983method}. 
+We use the stochastic gradient descent optimizer with Nesterov's accelerated gradient~\cite{nesterov1983method}. 
 There are dropouts of $0.2$ after every pooling layer and the first dense layer, and a dropout of $0.5$ after the final dense layer to prevent overfitting. 
 We discuss all other network parameters in Section~\ref{sec:network-parameters}.
 
