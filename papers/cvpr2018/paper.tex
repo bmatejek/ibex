@@ -29,12 +29,14 @@
 \def\cvprPaperID{0446} % *** Enter the CVPR Paper ID here
 \def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
 
+\newcommand{\hp}[1]{\textcolor{red}{HP: #1}}
+
 % Pages are numbered in submission mode, and unnumbered in camera-ready
 \ifcvprfinal\pagestyle{empty}\fi
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Top-down Segment-based Neuron Reconstruction}
+\title{Top-Down Graph-Based Neuron Reconstruction}
 
 %Robust Agglomeration using 3D Skeletonization of Labeled for Connectomics}
 
@@ -58,22 +60,22 @@ Cambridge, MA 02138, USA\\
 %\thispagestyle{empty}
 
 \begin{figure}[t]\footnotesize
-	\vspace{-2.04in}
+	\vspace{-2.3in}
 	\begin{minipage}{\textwidth}
-		\begin{minipage}{0.125\textheight}
-			\includegraphics[width=\linewidth]{figures/schema/teaser-image.png}
-			\includegraphics[width=\linewidth]{figures/schema/teaser-segmentation.png}
+		\begin{minipage}{0.2\textwidth}
+			 \includegraphics[width=\linewidth]{figures/schema/teaser-image.png}
+			(a)\includegraphics[width=\linewidth]{figures/schema/teaser-segmentation.png}
 		\end{minipage}
-		\begin{minipage}{0.24\textwidth}
-			\includegraphics[width=\linewidth]{figures/schema/pre-multicut.png}
+		\begin{minipage}{0.2\textwidth}
+			(b)\includegraphics[width=\linewidth]{figures/schema/pre-multicut.png}
 		\end{minipage}
-		\begin{minipage}{0.34\textwidth}
-			\includegraphics[width=\linewidth]{figures/schema/multicut-graph.png}
+		\begin{minipage}{0.3\textwidth}
+			(c)\includegraphics[width=\linewidth]{figures/schema/multicut-graph.png}
 		\end{minipage}
-		\begin{minipage}{0.24\textwidth}
-			\includegraphics[width=\linewidth]{figures/schema/post-multicut.png}
+		\begin{minipage}{0.2\textwidth}
+			(d)\includegraphics[width=\linewidth]{figures/schema/post-multicut.png}
 		\end{minipage}
-		\caption{To reconstruct neurons, we take as input the results of a region-based agglomeration algorithm. We extract a graph from this segmentation and apply a partitioning algorithm with local and global features to improve accuracy.}
+		\caption{Outline of our approach. (a) Raw EM image data (top) and results of pixel-based segmentation and agglomeration algorithms (bottom). (b) Extracted 3D skeleton from the segmentation. (c) Simplified 3D graph with error probabilities from trained classifier (schematic). (d) Result of graph partitioning algorithm with local and global geometric features (schematic). (d) Improved 3D reconstruction.}
 		\label{fig:teaser}
 	\end{minipage}
 \end{figure}
@@ -81,10 +83,7 @@ Cambridge, MA 02138, USA\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Advancements in electron microscopy image acquisition have created massive connectomics datasets which are petabytes in size and make manual segmentation infeasible. 
-Proposed methods for automatic segmentations generate super-pixel approximations of neural membranes followed by agglomeration strategies to create full neuron reconstructions. 
-However, pixel-based segmentation results widely neglect global geometric properties.
-We generate skeletons of membrane labels to approximate neural pathways in 3D. This allows us to efficiently apply graph-based optimization strategies and to train automatic classifiers for shape description against manually labeled ground truth. Our classifiers detect feasible and impossible neural pathways by looking at geometric properties alone, and are able to improve the segmentation labels accordingly. We demonstrate the performance of our classifiers on multiple real-world connectomics datasets with average variation of information improvement of $X\times$. We discuss our findings and provide insights to learning shape features for neuron agglomeration.
+Advancements in electron microscopy image acquisition have created massive connectomics datasets in the terabyte range that make manual reconstruction of neuronal structures infeasible. Current state-of-the-art automatic methods segment neural membranes at the pixel level followed by agglomeration methods to create full neuron reconstructions. However, these approaches widely neglect global geometric properties that are inherent in the graph structure of neural wiring diagrams. Instead, we follow bottom-up pixel-based reconstruction by a top-down graph-based method to more accurately approximate neural pathways. Using the membrane labels of the pixel-based segmentation we first generate skeletons in 3D. Using this 3D graph we train automatic classifiers for shape description to detect impossible neural pathways by looking at geometric properties. We then apply efficient graph-based optimization strategies to improve the segmentation labels. We demonstrate the performance of our approach on multiple real-world connectomics datasets with average variation of information improvement of $X\times$. The paper provides insights into learning shape features for top-down graph-based neuron reconstruction.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT

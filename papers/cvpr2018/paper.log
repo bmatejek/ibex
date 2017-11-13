@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  13 NOV 2017 13:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  13 NOV 2017 18:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -705,21 +705,21 @@ File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
 (./paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 34.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 36.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -776,7 +776,7 @@ File: siunitx-abbreviations.cfg 2017/07/23 v2.7i siunitx: Abbreviated units
 )
 \AtBeginShipoutBox=\box56
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 34.
+Package hyperref Info: Link coloring ON on input line 36.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 
@@ -785,97 +785,122 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count309
 )
-LaTeX Info: Redefining \ref on input line 34.
-LaTeX Info: Redefining \pageref on input line 34.
-LaTeX Info: Redefining \nameref on input line 34.
+LaTeX Info: Redefining \ref on input line 36.
+LaTeX Info: Redefining \pageref on input line 36.
+LaTeX Info: Redefining \nameref on input line 36.
 \c__siunitx_mathsf_int=\count310
-LaTeX Font Info:    Try loading font information for U+msa on input line 34.
+LaTeX Font Info:    Try loading font information for U+msa on input line 36.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 34.
+LaTeX Font Info:    Try loading font information for U+msb on input line 36.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 \c__siunitx_mathtt_int=\count311
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 59.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 61.
 <figures/schema/teaser-image.png, id=4, 1340.00626pt x 725.71124pt>
 File: figures/schema/teaser-image.png Graphic file (type png)
 <use figures/schema/teaser-image.png>
-Package pdftex.def Info: figures/schema/teaser-image.png  used on input line 64
-. on input line 64.
-Package pdftex.def Info: Requested size: 80.17453pt x 43.41898pt on input line 
-64.
+Package pdftex.def Info: figures/schema/teaser-image.png  used on input line 66
+. on input line 66.
+Package pdftex.def Info: Requested size: 99.36972pt x 53.80588pt on input line 
+66.
 <figures/schema/teaser-segmentation.png, id=5, 1340.00626pt x 725.71124pt>
 File: figures/schema/teaser-segmentation.png Graphic file (type png)
 <use figures/schema/teaser-segmentation.png>
 Package pdftex.def Info: figures/schema/teaser-segmentation.png  used on input 
-line 65. on input line 65.
-Package pdftex.def Info: Requested size: 80.17453pt x 43.41898pt on input line 
-65.
+line 67. on input line 67.
+Package pdftex.def Info: Requested size: 99.36972pt x 53.80588pt on input line 
+67.
+
+Overfull \hbox (8.8799pt too wide) in paragraph at lines 66--68
+\OT1/ptm/m/n/8 (a)[] 
+ []
+
 <figures/schema/pre-multicut.png, id=6, 999.735pt x 732.7375pt>
 File: figures/schema/pre-multicut.png Graphic file (type png)
 <use figures/schema/pre-multicut.png>
-Package pdftex.def Info: figures/schema/pre-multicut.png  used on input line 68
-. on input line 68.
-Package pdftex.def Info: Requested size: 119.24821pt x 87.39922pt on input line
- 68.
+Package pdftex.def Info: figures/schema/pre-multicut.png  used on input line 70
+. on input line 70.
+Package pdftex.def Info: Requested size: 99.36972pt x 72.83081pt on input line 
+70.
+
+Overfull \hbox (9.32794pt too wide) in paragraph at lines 70--71
+[]\OT1/ptm/m/n/8 (b)[] 
+ []
+
 <figures/schema/multicut-graph.png, id=7, 823.075pt x 368.37625pt>
 File: figures/schema/multicut-graph.png Graphic file (type png)
 <use figures/schema/multicut-graph.png>
 Package pdftex.def Info: figures/schema/multicut-graph.png  used on input line 
-71. on input line 71.
-Package pdftex.def Info: Requested size: 168.92929pt x 75.60193pt on input line
- 71.
+73. on input line 73.
+Package pdftex.def Info: Requested size: 149.05838pt x 66.70956pt on input line
+ 73.
+
+Overfull \hbox (8.8799pt too wide) in paragraph at lines 73--74
+[]\OT1/ptm/m/n/8 (c)[] 
+ []
+
 <figures/schema/post-multicut.png, id=9, 999.735pt x 732.7375pt>
 File: figures/schema/post-multicut.png Graphic file (type png)
 <use figures/schema/post-multicut.png>
 Package pdftex.def Info: figures/schema/post-multicut.png  used on input line 7
-4. on input line 74.
-Package pdftex.def Info: Requested size: 119.24821pt x 87.39922pt on input line
- 74.
+6. on input line 76.
+Package pdftex.def Info: Requested size: 99.36972pt x 72.83081pt on input line 
+76.
 
-Overfull \hbox (259.7203pt too wide) in paragraph at lines 62--79
+Overfull \hbox (9.32794pt too wide) in paragraph at lines 76--77
+[]\OT1/ptm/m/n/8 (d)[] 
+ []
+
+
+Overfull \hbox (259.7203pt too wide) in paragraph at lines 64--81
 []$[]$ 
  []
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 83.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 85.
 (./0_introduction.tex
-<./figures/pipeline/image.png, id=14, 1027.84pt x 1027.84pt>
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+<./figures/pipeline/image.png, id=20, 1027.84pt x 1027.84pt>
 File: ./figures/pipeline/image.png Graphic file (type png)
 <use ./figures/pipeline/image.png>
-Package pdftex.def Info: ./figures/pipeline/image.png  used on input line 17. o
-n input line 17.
-Package pdftex.def Info: Requested size: 109.30898pt x 109.29869pt on input lin
-e 17.
-<./figures/pipeline/affinities.png, id=15, 1027.84pt x 1027.84pt>
+Package pdftex.def Info: ./figures/pipeline/image.png  used on input line 9. on
+ input line 9.
+Package pdftex.def Info: Requested size: 89.43048pt x 89.42763pt on input line 
+9.
+<./figures/pipeline/affinities.png, id=21, 1027.84pt x 1027.84pt>
 File: ./figures/pipeline/affinities.png Graphic file (type png)
 <use ./figures/pipeline/affinities.png>
 Package pdftex.def Info: ./figures/pipeline/affinities.png  used on input line 
-19. on input line 19.
-Package pdftex.def Info: Requested size: 109.30898pt x 109.29869pt on input lin
-e 19.
-<./figures/pipeline/watershed.png, id=16, 1027.84pt x 1027.84pt>
+11. on input line 11.
+Package pdftex.def Info: Requested size: 89.43048pt x 89.42763pt on input line 
+11.
+<./figures/pipeline/watershed.png, id=22, 1027.84pt x 1027.84pt>
 File: ./figures/pipeline/watershed.png Graphic file (type png)
 <use ./figures/pipeline/watershed.png>
-Package pdftex.def Info: ./figures/pipeline/watershed.png  used on input line 2
-1. on input line 21.
-Package pdftex.def Info: Requested size: 109.30898pt x 109.29869pt on input lin
-e 21.
-<./figures/pipeline/neuroproof.png, id=17, 1027.84pt x 1027.84pt>
+Package pdftex.def Info: ./figures/pipeline/watershed.png  used on input line 1
+3. on input line 13.
+Package pdftex.def Info: Requested size: 89.43048pt x 89.42763pt on input line 
+13.
+<./figures/pipeline/neuroproof.png, id=23, 1027.84pt x 1027.84pt>
 File: ./figures/pipeline/neuroproof.png Graphic file (type png)
 <use ./figures/pipeline/neuroproof.png>
 Package pdftex.def Info: ./figures/pipeline/neuroproof.png  used on input line 
-23. on input line 23.
-Package pdftex.def Info: Requested size: 109.30898pt x 109.29869pt on input lin
-e 23.
+15. on input line 15.
+Package pdftex.def Info: Requested size: 89.43048pt x 89.42763pt on input line 
+15.
+
+Underfull \vbox (badness 2644) has occurred while \output is active []
+
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 37.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 33.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
@@ -884,55 +909,59 @@ File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 
  <./figures/schema/teaser-image.png (PNG copy)> <./figures/schema/teaser-segmen
 tation.png (PNG copy)> <./figures/schema/pre-multicut.png> <./figures/schema/mu
-lticut-graph.png> <./figures/schema/post-multicut.png>]) (./1_related_work.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [2 <./figures/pipeline/image.png> <./figures/pipeline/affinities.png> <./figur
-es/pipeline/watershed.png> <./figures/pipeline/neuroproof.png>]) (./2_method.te
-x
-<./figures/skeleton1.png, id=103, 903.375pt x 322.95656pt>
+lticut-graph.png> <./figures/schema/post-multicut.png>]) (./1_related_work.tex)
+ (./2_method.tex
+<./figures/skeleton1.png, id=80, 903.375pt x 322.95656pt>
 File: ./figures/skeleton1.png Graphic file (type png)
 <use ./figures/skeleton1.png>
-Package pdftex.def Info: ./figures/skeleton1.png  used on input line 6. on inpu
-t line 6.
+Package pdftex.def Info: ./figures/skeleton1.png  used on input line 5. on inpu
+t line 5.
 Package pdftex.def Info: Requested size: 218.16463pt x 77.99408pt on input line
- 6.
-<./figures/skeleton2.png, id=104, 903.375pt x 431.36156pt>
+ 5.
+<./figures/skeleton2.png, id=81, 903.375pt x 431.36156pt>
 File: ./figures/skeleton2.png Graphic file (type png)
 <use ./figures/skeleton2.png>
-Package pdftex.def Info: ./figures/skeleton2.png  used on input line 7. on inpu
-t line 7.
+Package pdftex.def Info: ./figures/skeleton2.png  used on input line 6. on inpu
+t line 6.
 Package pdftex.def Info: Requested size: 218.16463pt x 104.17392pt on input lin
-e 7.
- [3 <./figures/skeleton1.png> <./figures/skeleton2.png>]
-<./figures/split_error1.png, id=142, 903.375pt x 252.19218pt>
+e 6.
+
+[2 <./figures/pipeline/image.png> <./figures/pipeline/affinities.png> <./figure
+s/pipeline/watershed.png> <./figures/pipeline/neuroproof.png>]
+<./figures/split_error1.png, id=112, 903.375pt x 252.19218pt>
 File: ./figures/split_error1.png Graphic file (type png)
 <use ./figures/split_error1.png>
-Package pdftex.def Info: ./figures/split_error1.png  used on input line 66. on 
-input line 66.
+Package pdftex.def Info: ./figures/split_error1.png  used on input line 56. on 
+input line 56.
 Package pdftex.def Info: Requested size: 218.16463pt x 60.90446pt on input line
- 66.
-<./figures/split_error2.png, id=143, 903.375pt x 236.38312pt>
+ 56.
+<./figures/split_error2.png, id=113, 903.375pt x 236.38312pt>
 File: ./figures/split_error2.png Graphic file (type png)
 <use ./figures/split_error2.png>
-Package pdftex.def Info: ./figures/split_error2.png  used on input line 67. on 
-input line 67.
+Package pdftex.def Info: ./figures/split_error2.png  used on input line 57. on 
+input line 57.
 Package pdftex.def Info: Requested size: 218.16463pt x 57.08658pt on input line
- 67.
-<figures/architecture.png, id=151, 911.405pt x 389.455pt>
+ 57.
+
+Underfull \vbox (badness 1360) has occurred while \output is active []
+
+ [3 <./figures/skeleton1.png> <./figures/skeleton2.png>]
+<figures/architecture.png, id=141, 911.405pt x 389.455pt>
 File: figures/architecture.png Graphic file (type png)
 <use figures/architecture.png>
-Package pdftex.def Info: figures/architecture.png  used on input line 98. on in
-put line 98.
+Package pdftex.def Info: figures/architecture.png  used on input line 93. on in
+put line 93.
 Package pdftex.def Info: Requested size: 472.01192pt x 201.69768pt on input lin
-e 98.
+e 93.
 ) (./3_evaluation.tex
 LaTeX Font Info:    Try loading font information for TS1+ptm on input line 12.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [4 <./figures/split_error1.png> <./figures/split_error2.png>] [5 <./figures/a
-rchitecture.png>]) (./4_results.tex
+) [4 <./figures/split_error1.png> <./figures/split_error2.png>]
+Underfull \vbox (badness 4013) has occurred while \output is active []
+
+ [5 <./figures/architecture.png>]) (./4_results.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 9.
 
@@ -940,44 +969,44 @@ Overfull \hbox (7.47417pt too wide) in paragraph at lines 8--15
  [][] 
  []
 
-<./figures/merge_candidate1.png, id=201, 1248.665pt x 355.3275pt>
+<./figures/merge_candidate1.png, id=195, 1248.665pt x 355.3275pt>
 File: ./figures/merge_candidate1.png Graphic file (type png)
 <use ./figures/merge_candidate1.png>
 Package pdftex.def Info: ./figures/merge_candidate1.png  used on input line 35.
  on input line 35.
 Package pdftex.def Info: Requested size: 201.56699pt x 57.35779pt on input line
  35.
-<./figures/merge_candidate2.png, id=202, 1159.33125pt x 217.81375pt>
+<./figures/merge_candidate2.png, id=196, 1159.33125pt x 217.81375pt>
 File: ./figures/merge_candidate2.png Graphic file (type png)
 <use ./figures/merge_candidate2.png>
 Package pdftex.def Info: ./figures/merge_candidate2.png  used on input line 36.
  on input line 36.
 Package pdftex.def Info: Requested size: 201.56699pt x 37.8687pt on input line 
 36.
-<./figures/roc-microns-300-test.png, id=205, 462.528pt x 346.896pt>
+<./figures/roc-microns-300-test.png, id=199, 462.528pt x 346.896pt>
 File: ./figures/roc-microns-300-test.png Graphic file (type png)
 <use ./figures/roc-microns-300-test.png>
 Package pdftex.def Info: ./figures/roc-microns-300-test.png  used on input line
  62. on input line 62.
 Package pdftex.def Info: Requested size: 213.4209pt x 160.06636pt on input line
  62.
-[6 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png>]
-<./figures/variation_of_information-train.png, id=222, 462.528pt x 346.896pt>
+[6 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png> <./figures
+/roc-microns-300-test.png>]
+<./figures/variation_of_information-train.png, id=215, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-train.png Graphic file (type png)
 <use ./figures/variation_of_information-train.png>
 Package pdftex.def Info: ./figures/variation_of_information-train.png  used on 
 input line 104. on input line 104.
 Package pdftex.def Info: Requested size: 208.67871pt x 156.50932pt on input lin
 e 104.
-<./figures/variation_of_information-test.png, id=223, 462.528pt x 346.896pt>
+<./figures/variation_of_information-test.png, id=216, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-test.png Graphic file (type png)
 <use ./figures/variation_of_information-test.png>
 Package pdftex.def Info: ./figures/variation_of_information-test.png  used on i
 nput line 106. on input line 106.
 Package pdftex.def Info: Requested size: 208.67871pt x 156.50932pt on input lin
 e 106.
-)
-(./5_conclusions.tex) (./paper.bbl (./paper.brf)
+) (./5_conclusions.tex) (./paper.bbl (./paper.brf)
 \tf@brf=\write3
 \openout3 = `paper.brf'.
 
@@ -986,7 +1015,7 @@ Underfull \hbox (badness 2318) in paragraph at lines 72--72
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
 
-[7 <./figures/roc-microns-300-test.png>]
+[7]
 Underfull \hbox (badness 6725) in paragraph at lines 92--92
 []\OT1/ptm/m/n/9 V. Jain, B. Boll-mann, M. Richard-son, D. Berger,
  []
@@ -1013,24 +1042,24 @@ Underfull \hbox (badness 4366) in paragraph at lines 116--116
 
 [8 <./figures/variation_of_information-train.png> <./figures/variation_of_infor
 mation-test.png>])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 108.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 107.
  [9
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 108.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 107.
  (./paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 108.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 108.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 107.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 107.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: 6691AEFAEDA8A695012BA9298C16E905;2490.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 108.
+(rerunfilecheck)             Checksum: 755B095A17FE472AC363C2268B80FF98;2176.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 107.
  ) 
 Here is how much of TeX's memory you used:
  19047 strings out of 492990
- 366096 string characters out of 6132622
- 414455 words of memory out of 5000000
- 22287 multiletter control sequences out of 15000+600000
- 565974 words of font info for 101 fonts, out of 8000000 for 9000
+ 366090 string characters out of 6132622
+ 413618 words of memory out of 5000000
+ 22288 multiletter control sequences out of 15000+600000
+ 567052 words of font info for 102 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  36i,10n,39p,10374b,862s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
@@ -1046,10 +1075,10 @@ xmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2017/texmf-dis
 t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on paper.pdf (9 pages, 3409505 bytes).
+Output written on paper.pdf (9 pages, 3408052 bytes).
 PDF statistics:
- 363 PDF objects out of 1000 (max. 8388607)
- 308 compressed objects within 4 object streams
- 90 named destinations out of 1000 (max. 500000)
+ 349 PDF objects out of 1000 (max. 8388607)
+ 295 compressed objects within 3 object streams
+ 88 named destinations out of 1000 (max. 500000)
  96 words of extra memory for PDF output out of 10000 (max. 10000000)
 
