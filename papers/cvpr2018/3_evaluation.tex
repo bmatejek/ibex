@@ -25,8 +25,8 @@ For the FlyEM data we collected two $1000 \times 1000 \times 1000$ voxel ($\SI[p
 \label{sec:variation-of-information}
 
 We evaluate the performance of the different methods using the split version of variance of information~\cite{meila2003comparing} (VI-s). Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$.
-Over and under-segmentation are quantified by the conditional entropy $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropy between two clusterings, better VI-s scores are closer to the origin.
-In Fig.~\ref{fig:variation-of-information}, we compute VI-s scores for the input over-segmentation result at different stopping thresholds of agglomeration.
+Over and under-segmentation are quantified by the conditional entropy $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropy between two clusterings, better VI scores are closer to the origin.
+In Fig.~\ref{fig:variation-of-information}, we compute VI scores for the input over-segmentation at different stopping thresholds of agglomeration.
 
 \subsection{Graph Creation Parameters}
 

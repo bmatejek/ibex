@@ -45,7 +45,7 @@ In the first pass, we iterate over all endpoints $e$ belonging to a segment $S$ 
 \end{figure}
 
 \subsection{Edge Weights Assignment}
-We aim to assign non-negative edge weights $w_e$, where adjacent nodes (endpoints $e$ in $\mathbb{S}_c$) connected with a big edge weight has higher chance to be merged to the same segment.
+We assign non-negative edge weights $w_e$ to each edge where the weight corresponds to the probability two nodes belong to the same neuron.
 Instead of using handcrafted features to compute the similarity between adjacent nodes, we train a 3D CNN classifier to learn from the manually labeled oversegmentation input volume (Sec.~\ref{sec:dataset}).
 %Our  edge weights  correspond to probabilities that two endpoints $e$ in $\mathbb{S}_c$ belong to the same neuron and should be merged. \hp{check} 
 
