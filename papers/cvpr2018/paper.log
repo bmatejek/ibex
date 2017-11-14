@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.7)  14 NOV 2017 02:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.11.5)  14 NOV 2017 11:44
 entering extended mode
 **./paper.tex
 (paper.tex
@@ -917,48 +917,49 @@ lticut-graph.png> <./figures/schema/post-multicut.png>]) (1_related_work.tex) (
 File: ./figures/skeleton1.png Graphic file (type png)
 
 <use ./figures/skeleton1.png>
-Package pdftex.def Info: ./figures/skeleton1.png used on input line 5.
+Package pdftex.def Info: ./figures/skeleton1.png used on input line 6.
 (pdftex.def)             Requested size: 218.16463pt x 77.99408pt.
 
 <./figures/skeleton2.png, id=82, 903.375pt x 431.36156pt>
 File: ./figures/skeleton2.png Graphic file (type png)
 
 <use ./figures/skeleton2.png>
-Package pdftex.def Info: ./figures/skeleton2.png used on input line 6.
+Package pdftex.def Info: ./figures/skeleton2.png used on input line 7.
 (pdftex.def)             Requested size: 218.16463pt x 104.17392pt.
  [2 <./figures/pipeline/image.png> <./figures/pipeline/affinities.png> <./figur
 es/pipeline/watershed.png> <./figures/pipeline/neuroproof.png>] <./figures/spli
-t_error1.png, id=116, 903.375pt x 252.19218pt>
+t_error1.png, id=117, 903.375pt x 252.19218pt>
 File: ./figures/split_error1.png Graphic file (type png)
 
 <use ./figures/split_error1.png>
-Package pdftex.def Info: ./figures/split_error1.png used on input line 59.
+Package pdftex.def Info: ./figures/split_error1.png used on input line 39.
 (pdftex.def)             Requested size: 218.16463pt x 60.90446pt.
 
-<./figures/split_error2.png, id=117, 903.375pt x 236.38312pt>
+<./figures/split_error2.png, id=118, 903.375pt x 236.38312pt>
 File: ./figures/split_error2.png Graphic file (type png)
 
 <use ./figures/split_error2.png>
-Package pdftex.def Info: ./figures/split_error2.png used on input line 60.
+Package pdftex.def Info: ./figures/split_error2.png used on input line 40.
 (pdftex.def)             Requested size: 218.16463pt x 57.08658pt.
-
-Underfull \vbox (badness 3536) has occurred while \output is active []
-
- [3 <./figures/skeleton1.png> <./figures/skeleton2.png>]
-<figures/architecture.png, id=145, 911.405pt x 389.455pt>
+ [3 <./figures/skeleton1.png> <./figures/skeleton2.png>] <figures/architecture.
+png, id=147, 911.405pt x 389.455pt>
 File: figures/architecture.png Graphic file (type png)
 
 <use figures/architecture.png>
-Package pdftex.def Info: figures/architecture.png used on input line 96.
+Package pdftex.def Info: figures/architecture.png used on input line 61.
 (pdftex.def)             Requested size: 472.01192pt x 201.69768pt.
 ) (3_evaluation.tex
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 12.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 10.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ts1ptm.fd"
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [4 <./figures/split_error1.png> <./figures/split_error2.png>] [5 <./figures/a
-rchitecture.png>])
-(4_results.tex
+)
+Underfull \hbox (badness 1253) in paragraph at lines 10--11
+\OT1/ptm/m/n/10 tron mi-cro-scope im-ages of the neo-cor-tex of a mouse
+ []
+
+[4 <./figures/split_error1.png> <./figures/split_error2.png>] [5 <./figures/arc
+hitecture.png>]) (4_results.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 9.
 
@@ -966,29 +967,33 @@ Overfull \hbox (7.47417pt too wide) in paragraph at lines 8--15
  [][] 
  []
 
-<./figures/merge_candidate1.png, id=198, 1248.665pt x 355.3275pt>
+<./figures/merge_candidate1.png, id=199, 1248.665pt x 355.3275pt>
 File: ./figures/merge_candidate1.png Graphic file (type png)
 
 <use ./figures/merge_candidate1.png>
 Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 35.
 (pdftex.def)             Requested size: 201.56699pt x 57.35779pt.
 
-<./figures/merge_candidate2.png, id=199, 1159.33125pt x 217.81375pt>
+<./figures/merge_candidate2.png, id=200, 1159.33125pt x 217.81375pt>
 File: ./figures/merge_candidate2.png Graphic file (type png)
 
 <use ./figures/merge_candidate2.png>
 Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 36.
 (pdftex.def)             Requested size: 201.56699pt x 37.8687pt.
 
-<./figures/roc-microns-300-test.png, id=202, 462.528pt x 346.896pt>
+Underfull \vbox (badness 5847) has occurred while \output is active []
+
+
+<./figures/roc-microns-300-test.png, id=203, 462.528pt x 346.896pt>
 File: ./figures/roc-microns-300-test.png Graphic file (type png)
 
 <use ./figures/roc-microns-300-test.png>
 Package pdftex.def Info: ./figures/roc-microns-300-test.png used on input line 
 62.
 (pdftex.def)             Requested size: 213.4209pt x 160.06636pt.
- [6 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png>]
-<./figures/variation_of_information-train.png, id=219, 462.528pt x 346.896pt>
+ [6 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png> <./figure
+s/roc-microns-300-test.png>]
+<./figures/variation_of_information-train.png, id=218, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-train.png Graphic file (type png)
 
 <use ./figures/variation_of_information-train.png>
@@ -996,7 +1001,7 @@ Package pdftex.def Info: ./figures/variation_of_information-train.png used on i
 nput line 104.
 (pdftex.def)             Requested size: 208.67871pt x 156.50932pt.
 
-<./figures/variation_of_information-test.png, id=220, 462.528pt x 346.896pt>
+<./figures/variation_of_information-test.png, id=219, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-test.png Graphic file (type png)
 
 <use ./figures/variation_of_information-test.png>
@@ -1013,7 +1018,7 @@ Underfull \hbox (badness 2318) in paragraph at lines 66--66
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
 
-[7 <./figures/roc-microns-300-test.png>]
+
 Underfull \hbox (badness 6725) in paragraph at lines 86--86
 []\OT1/ptm/m/n/9 V. Jain, B. Boll-mann, M. Richard-son, D. Berger,
  []
@@ -1028,7 +1033,7 @@ Underfull \hbox (badness 1052) in paragraph at lines 91--91
 []\OT1/ptm/m/n/9 M. Januszewski, J. Maitin-Shepard, P. Li, J. Ko-rn-feld,
  []
 
-
+[7]
 Underfull \hbox (badness 10000) in paragraph at lines 110--110
 []\OT1/ptm/m/n/9 V. Kaynig, A. Vazquez-Reina, S. Knowles-Barley,
  []
@@ -1049,17 +1054,17 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 132.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 132.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 132.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: EBDC0DE41FCBFC76E644CCC85C1D27F0;2373.
+(rerunfilecheck)             Checksum: 234B0081F3CC0AEEE074CF4883F88364;2491.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 132.
  ) 
 Here is how much of TeX's memory you used:
- 19113 strings out of 493323
- 366787 string characters out of 3139067
- 417444 words of memory out of 3000000
- 22329 multiletter control sequences out of 15000+200000
+ 19111 strings out of 493323
+ 366775 string characters out of 3139066
+ 417591 words of memory out of 3000000
+ 22328 multiletter control sequences out of 15000+200000
  567052 words of font info for 102 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,39p,10376b,860s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,10n,39p,10376b,862s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/Mi
 KTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9
 /fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
@@ -1072,9 +1077,9 @@ fb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program
 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/u
 rw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.
 pfb>
-Output written on paper.pdf (9 pages, 3448554 bytes).
+Output written on paper.pdf (9 pages, 3449437 bytes).
 PDF statistics:
- 351 PDF objects out of 1000 (max. 8388607)
- 89 named destinations out of 1000 (max. 500000)
+ 350 PDF objects out of 1000 (max. 8388607)
+ 88 named destinations out of 1000 (max. 500000)
  96 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -7,7 +7,7 @@ A significant amount of research in computer vision focuses on the segmentation 
 
 A large amount of connectomics research considers the problem of extracting segmentation information at the pixel (i.e., voxel) level from the raw EM images. Some early techniques apply computationally expensive graph partitioning algorithms with a single node per pixel~\cite{andres2012globally}. However these methods do not scale to terabyte datasets. More recent methods train classifiers to predict membrane probabilities per image slice either using 2D~\cite{ciresan2012deep,jain2010boundary,kaynig2015large,seymour2016rhoananet,amelio_segmentation} or 3D CNNs~\cite{lee2015recursive,ronneberger2015u,turaga2010convolutional}.
 
-Oftentimes these networks produce probabilities for the affinity between two voxels (i.e., the probability that adjacent voxels belong to the same neuron). The MALIS cost function is specifically designed for generating affinities that produce good segmentations~\cite{briggman2009maximin}. \hp{add seung ref} More recently, flood-filling networks produce segmentations by training an end-to-end neural network that goes from EM images directly to label volumes~\cite{januszewski2016flood}. These flood-filling networks produce impressive accuracies but at a high computational cost.
+Oftentimes these networks produce probabilities for the affinity between two voxels (i.e., the probability that adjacent voxels belong to the same neuron). The MALIS cost function is specifically designed for generating affinities that produce good segmentations~\cite{briggman2009maximin}. More recently, flood-filling networks produce segmentations by training an end-to-end neural network that goes from EM images directly to label volumes~\cite{januszewski2016flood}. These flood-filling networks produce impressive accuracies but at a high computational cost.
 
 %\paragraph{Region-based methods.}
 
@@ -16,7 +16,7 @@ Oftentimes these networks produce probabilities for the affinity between two vox
 
 
 Several pixel-based approaches generate probabilities that neighboring pixels belong to the same neuron.
-Often a watershed algorithm will cluster pixels into small super-pixels~\cite{zlateski2015image}. 
+Often a watershed algorithm will cluster pixels into small super-pixels~\cite{zlateski2015image}.
 Many methods build on top of these strategies and train random-forest classifiers to produce region-based (i.e., super-pixel) segmentations~\cite{seymour2016rhoananet,nunez2014graph,10.1371/journal.pone.0125825,parag2017anisotropic,zlateski2015image}.
 
 %\paragraph{Segment-based methods.}
