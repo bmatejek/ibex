@@ -111,27 +111,7 @@ def FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distan
                 neighbor_label = segmentation[iz,iy,ix]
                 candidates.add(neighbor_label)
 
-@jit(nopython=True)
-def Baseline(segmentation, baseline_candidates):
-    # find all candidates that have adjacent voxels
-    zres, yres, xres = segmentation.shape
 
-    for iz in range(zres):
-        for iy in range(yres):
-            for ix in range(xres):
-                if not segmentation[iz,iy,ix]: continue
-                label = segmentation[iz,iy,ix]
-
-                # get the 6-connected neighbors to this segment
-                if iz and segmentation[iz-1,iy,ix]:
-                    baseline_candidates.add((label, segmentation[iz-1,iy,ix]))
-                    baseline_candidates.add((segmentation[iz-1,iy,ix], label))
-                if iy and segmentation[iz,iy-1,ix]:
-                    baseline_candidates.add((label, segmentation[iz,iy-1,ix]))
-                    baseline_candidates.add((segmentation[iz,iy-1,ix], label))
-                if ix and segmentation[iz,iy,ix-1]:
-                    baseline_candidates.add((label, segmentation[iz,iy,ix-1]))
-                    baseline_candidates.add((segmentation[iz,iy,ix-1], label))
 
 # generate features for this prefix
 def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endpoint_distance, training_data):
@@ -147,35 +127,6 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     # remove small connceted components
     segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold).astype(np.int64)
     max_label = np.amax(segmentation) + 1
-
-    # get the set of baseline candidates
-    baseline_candidates = set()
-    baseline_candidates.add((np.int64(0), np.int64(0)))
-
-    Baseline(segmentation, baseline_candidates)
-
-    baseline_positive = []
-    baseline_negative = []
-
-    for candidate in baseline_candidates:
-        label_one = candidate[0]
-        label_two = candidate[1]
-
-        if not label_one or not label_two: continue
-
-        # only consider (label_one, label_two) where label_two is larger
-        if (label_two <= label_one): continue
-        if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: continue
-
-        ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
-
-        if ground_truth: baseline_positive.append(SkeletonCandidate((label_one, label_two), (0, 0, 0), ground_truth))
-        else: baseline_negative.append(SkeletonCandidate((label_one, label_two), (0, 0, 0), ground_truth))
-
-    print 'Baseline:'
-    print '  Positive Candidates: {}'.format(len(baseline_positive))
-    print '  Negative Candidates: {}'.format(len(baseline_negative))
-    print '  Ratio: {}'.format(100 * float(len(baseline_positive)) / (len(baseline_positive) + len(baseline_negative)))
 
     # get the grid size and the world resolution
     grid_size = segmentation.shape
@@ -207,37 +158,6 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
             if not candidate: continue
             endpoint_candidates[ie].add(candidate)
 
-
-    threshold_low_candidates = set()
-    # go through all the endpoint candidates
-    for ie, endpoint in enumerate(endpoints):
-        label = endpoint.label
-        for neighbor_label in endpoint_candidates[ie]:
-            threshold_low_candidates.add((label, neighbor_label))
-            threshold_low_candidates.add((neighbor_label, label))
-
-    threshold_low_positive = []
-    threshold_low_negative = []
-
-    for candidate in threshold_low_candidates:
-        label_one = candidate[0]
-        label_two = candidate[1]
-
-        if not label_one or not label_two: continue
-
-        # only consider (label_one, label_two) where label two is higher
-        if (label_two <= label_one): continue
-        if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: continue
-
-        ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
-
-        if ground_truth: threshold_low_positive.append(SkeletonCandidate((label_one, label_two), (0, 0, 0), ground_truth))
-        else: threshold_low_negative.append(SkeletonCandidate((label_one, label_two), (0, 0, 0), ground_truth))
-
-    print 'Threshold Low:'
-    print '  Positive Candidates: {}'.format(len(threshold_low_positive))
-    print '  Negative Candidates: {}'.format(len(threshold_low_negative))
-    print '  Ratio: {}'.format(100 * float(len(threshold_low_positive)) / (len(threshold_low_positive) + len(threshold_low_negative)))
 
     ##################################
     #### BEGIN PRUNING CANDIDATES ####
@@ -280,11 +200,11 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         midpoint = (endpoint_one.GridPoint() + endpoint_two.GridPoint()) / 2
 
         # make sure the bounding box fits
-        # valid_location = True
-        # for dim in range(NDIMS):
-        #     if midpoint[dim]-network_radii[dim] < 0: valid_location = False
-        #     if midpoint[dim]+network_radii[dim] > grid_size[dim]: valid_location = False
-        # if not valid_location: continue
+        valid_location = True
+        for dim in range(NDIMS):
+            if midpoint[dim]-network_radii[dim] < 0: valid_location = False
+            if midpoint[dim]+network_radii[dim] > grid_size[dim]: valid_location = False
+        if not valid_location: continue
 
         # get the distance between the endpoints
         deltas = endpoint_one.WorldPoint(world_res) - endpoint_two.WorldPoint(world_res)
@@ -302,12 +222,25 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     negative_candidates = []
     undetermined_candidates = []
 
+    index = 0
     for label_one in range(0, max_label):
         for label_two in range(label_one + 1, max_label):
             if smallest_distances[label_one,label_two] > endpoint_distance: continue
+            location = midpoints[label_one,label_two,:]
+            small_segmentation = segmentation[location[IB_Z]-network_radii[IB_Z]:location[IB_Z]+network_radii[IB_Z],location[IB_Y]-network_radii[IB_Y]:location[IB_Y]+network_radii[IB_Y],location[IB_X]-network_radii[IB_X]:location[IB_X]+network_radii[IB_X]]
+            small_gold = gold[location[IB_Z]-network_radii[IB_Z]:location[IB_Z]+network_radii[IB_Z],location[IB_Y]-network_radii[IB_Y]:location[IB_Y]+network_radii[IB_Y],location[IB_X]-network_radii[IB_X]:location[IB_X]+network_radii[IB_X]]
+            
+            small_seg2gold_mapping = seg2gold.Mapping(small_segmentation, small_gold)
+            if label_one < np.amax(small_segmentation) and label_two <= np.amax(small_segmentation): small_ground_truth = small_seg2gold_mapping[label_one] == small_seg2gold_mapping[label_two]
+            else: small_ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+            
             ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
-            candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], ground_truth)
+            candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], small_ground_truth)
 
+            if ground_truth != small_ground_truth: 
+                print 'Here {}'.format(index)
+                index += 1
+            
             if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: undetermined_candidates.append(candidate)
             elif ground_truth: positive_candidates.append(candidate)
             else: negative_candidates.append(candidate)
@@ -315,67 +248,14 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     # # save the files
     # train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     # validation_filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    # forward_filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    forward_filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     # undetermined_filename = 'features/skeleton/{}-{}-{}nm-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-
+    print forward_filename
     # if training_data:
     #     SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
     #     SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
     # SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
     # SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
-
-    print 'Threshold High:'
-    print '  Positive Candidates: {}'.format(len(positive_candidates))
-    print '  Negative Candidates: {}'.format(len(negative_candidates))
-    # print '  Undetermined Candidates: {}'.format(len(undetermined_candidates))
-    print '  Ratio: {}'.format(100 * len(positive_candidates) / float(len(positive_candidates) + len(negative_candidates)))
-
-    misses = []
-    catches = []
-
-    # get the list of all candidates the baseline found that we did not
-    for their_candidate in baseline_positive:
-        their_labels = their_candidate.labels
-
-        found = False
-        for our_candidate in positive_candidates:
-            our_labels = our_candidate.labels
-
-            if our_labels[0] == their_labels[0] and our_labels[1] == their_labels[1]:
-                found = True
-                break
-
-        if not found:
-            misses.append(their_labels)
-
-    for our_candidate in positive_candidates:
-        our_labels = our_candidate.labels
-
-        found = False
-        for their_candidate in baseline_positive:
-            their_labels = their_candidate.labels
-
-            if our_labels[0] == their_labels[0] and our_labels[1] == their_labels[1]:
-                found = True
-                break
-
-        if not found:
-            catches.append(our_labels)
-
-    print 'Number Missed: {}'.format(len(misses))
-    print 'Number Caught: {}'.format(len(catches))
-    print '\n'
-
-    with open('cvpr/{}-skeleton-misses.txt'.format(prefix), 'wb') as fd:
-        fd.write(struct.pack('i', len(misses)))
-
-        for miss in misses:
-            fd.write(struct.pack('ii', miss[0], miss[1]))
-    with open('cvpr/{}-skeleton-catches.txt'.format(prefix), 'wb') as fd:
-        fd.write(struct.pack('i', len(catches)))
-
-        for catch in catches:
-            fd.write(struct.pack('ii', catch[0], catch[1]))
 
 #    # perform some tests to see how well this method can do
 #    max_value = np.uint64(np.amax(segmentation) + 1)

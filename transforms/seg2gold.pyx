@@ -12,7 +12,7 @@ def Mapping(segmentation, gold, low_threshold=0.10, high_threshold=0.80):
     cdef np.ndarray[int, ndim=3, mode='c'] cpp_gold
     cpp_gold = np.ascontiguousarray(gold, dtype=ctypes.c_int32)
 
-    max_segmentation = np.amax(segmentation)
+    max_segmentation = np.amax(segmentation) + 1
 
     cdef long *mapping = CppMapping(&(cpp_segmentation[0,0,0]), &(cpp_gold[0,0,0]), segmentation.size, low_threshold, high_threshold)
 

@@ -2,6 +2,8 @@ import os
 import h5py
 import numpy as np
 from ibex.data_structures import meta_data, swc
+from ibex.utilities.constants import *
+
 
 def GetWorldBBox(prefix):
     # return the bounding box for this segment
@@ -31,6 +33,11 @@ def ReadH5File(filename, dataset=None):
     # return the data
     return data
 
+
+
+def IsIsotropic(prefix):
+    resolution = Resolution(prefix)
+    return (resolution[IB_Z] == resolution[IB_Y]) and (resolution[IB_Z] == resolution[IB_X])
 
 
 def WriteH5File(data, filename, dataset):

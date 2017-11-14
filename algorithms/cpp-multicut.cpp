@@ -23,8 +23,9 @@ unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsign
     for (unsigned long ie = 0; ie < nedges; ++ie) {
         graph.insertEdge(vertex_ones[ie], vertex_twos[ie]);
 
-        // a low beta value encouranges not merging
-        weights[ie] = log(edge_weights[ie] / (1.0 - edge_weights[ie])) + log((1 - beta) / beta);
+        // a low beta value encouranges not merging - note the edge_weights are probability of merging
+        // compared to the original greedy-additive algorithm which was probablity of boundary
+        weights[ie] = log(edge_weights[ie] / (1.0 - edge_weights[ie])) + log((1.0 - beta) / beta);
     }
 
     // create empty edge labels and call the kernighan-lin algorithm

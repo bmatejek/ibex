@@ -7,7 +7,7 @@ cimport numpy as np
 import ctypes
 
 import ibex.cnns.skeleton.util
-from ibex.transforms import seg2seg
+from ibex.transforms import seg2seg, seg2gold
 from ibex.utilities import dataIO
 from ibex.data_structures import unionfind
 from ibex.evaluation.classification import *
@@ -22,7 +22,7 @@ cdef extern from 'cpp-multicut.h':
 
 
 # collapse the edges from multicut
-def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
+def CollapseGraph(segmentation, gold, candidates, collapsed_edges, probabilities):
     # read the candidates
     ncandidates = len(candidates)
 
@@ -32,8 +32,6 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
     for iv in range(ncandidates):
         ground_truth[iv] = candidates[iv].ground_truth
         predictions[iv] = 1 - collapsed_edges[iv]
-        #if predictions[iv] and not ground_truth[iv]:
-        #    print '{} {} {}'.format(iv, candidates[iv].labels, probabilities[iv])
 
     # output the results for multicut
     PrecisionAndRecall(ground_truth, predictions)
@@ -52,9 +50,36 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
         unionfind.Union(union_find[label_one], union_find[label_two])
 
     # create a mapping for the labels
-    mapping = np.zeros(max_value, dtype=np.uint64)
+    mapping = np.zeros(max_value, dtype=np.int64)
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
+
+    # find the largest number that were connected
+    max_label = np.amax(mapping) + 1
+    nunions = np.zeros(max_label, dtype=np.int64)
+
+    for iv in range(max_value):
+        nunions[mapping[iv]] += 1
+
+    # go through all unions and see if they are correct
+    seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
+    correct = np.ones(max_label, dtype=np.bool)
+    for iv in range(max_value):
+        # if this candidate iv has a different ground truth to the sample it maps to (ignore missing ground truth)
+        if seg2gold_mapping[mapping[iv]] != seg2gold_mapping[iv] and seg2gold_mapping[iv]:
+            correct[mapping[iv]] = False
+
+    # output results
+    with open('cvpr/microns-300-test-skeleton-multicut.txt', 'w') as fd:
+        # write the number of labels
+        fd.write('{}\n'.format(max_label))
+
+        # go through each label
+        for iv in range(max_label):
+            fd.write('{},{}\n'.format(nunions[iv], int(correct[iv])))
+            for ix in range(max_value):
+                if mapping[ix] == iv:
+                    fd.write('{}\n'.format(ix))
 
     segmentation = seg2seg.MapLabels(segmentation, mapping)
 
@@ -91,15 +116,15 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
     collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
 
     # collapse the edges returned from multicut
-    segmentation = CollapseGraph(segmentation, candidates, collapsed_edges, edge_weights)
+    segmentation = CollapseGraph(segmentation, gold, candidates, collapsed_edges, edge_weights)
 
     # evaluate before and after multicut
-    comparestacks.Evaluate(segmentation, gold, threshold, anisotropic)
+    #comparestacks.Evaluate(segmentation, gold, threshold, anisotropic)
 
 
 
 # function ro run multicut algorithm
-def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta, anisotropic, heuristic):
+def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta, heuristic):
     # read the candidates
     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
@@ -118,4 +143,4 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_dista
     gold = dataIO.ReadGoldData(prefix)
 
     # run the multicut algorithm
-    Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anisotropic, heuristic)
+    Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, not dataIO.IsIsotropic(prefix), heuristic)
