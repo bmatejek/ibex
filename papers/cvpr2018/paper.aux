@@ -26,9 +26,9 @@
 \citation{zlateski2015image}
 \citation{lee2015recursive}
 \citation{ronneberger2015u}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Outline of our approach. (a) Raw EM image data (top) and results of pixel-based segmentation and agglomeration algorithms (bottom). (b) Extracted 3D skeleton from the segmentation. (c) Simplified 3D graph with error probabilities from trained classifier (schematic). (d) Result of graph partitioning algorithm with local and global geometric features (schematic). (d) Improved 3D reconstruction.\relax }}{1}{figure.caption.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Outline of our approach. (a) Raw EM image data (top) and results of pixel-based segmentation and agglomeration algorithms (bottom). (b) Extracted 3D skeleton from the segmentation. (c) Simplified 3D graph with error probabilities from trained classifier (schematic). (d) Result of graph partitioning algorithm with local and global geometric features (schematic). (e) Improved 3D reconstruction.\relax }}{1}{figure.caption.1}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:teaser}{{1}{1}{Outline of our approach. (a) Raw EM image data (top) and results of pixel-based segmentation and agglomeration algorithms (bottom). (b) Extracted 3D skeleton from the segmentation. (c) Simplified 3D graph with error probabilities from trained classifier (schematic). (d) Result of graph partitioning algorithm with local and global geometric features (schematic). (d) Improved 3D reconstruction.\relax }{figure.caption.1}{}}
+\newlabel{fig:teaser}{{1}{1}{Outline of our approach. (a) Raw EM image data (top) and results of pixel-based segmentation and agglomeration algorithms (bottom). (b) Extracted 3D skeleton from the segmentation. (c) Simplified 3D graph with error probabilities from trained classifier (schematic). (d) Result of graph partitioning algorithm with local and global geometric features (schematic). (e) Improved 3D reconstruction.\relax }{figure.caption.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {1}\hskip -1em.\nobreakspace  {}Introduction}{1}{section.1}}
 \@writefile{brf}{\backcite{kasthuri2015saturated,haehn2017scalable}{{1}{1}{section.1}}}
 \@writefile{brf}{\backcite{hildebrand2017whole}{{1}{1}{section.1}}}
@@ -43,8 +43,10 @@
 \citation{amelio_segmentation}
 \citation{lee2015recursive}
 \citation{ronneberger2015u}
+\citation{turaga2010convolutional}
 \citation{briggman2009maximin}
 \citation{januszewski2016flood}
+\citation{zlateski2015image}
 \citation{seymour2016rhoananet}
 \citation{nunez2014graph}
 \citation{10.1371/journal.pone.0125825}
@@ -60,22 +62,26 @@
 \citation{demaine2006correlation}
 \citation{horvnakova2017analysis}
 \citation{keuper2015efficient}
+\citation{parag2015properties}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces An overview of a pixel-based connectomics segmentation pipeline. (a) Original EM image data (b) Output of a CNN predicting voxel affinities (c) Clustering of the affinities using a watershed algorithm (d) Agglomeration of the super-voxels into larger segments.\relax }}{2}{figure.caption.2}}
 \newlabel{fig:pipeline}{{2}{2}{An overview of a pixel-based connectomics segmentation pipeline. (a) Original EM image data (b) Output of a CNN predicting voxel affinities (c) Clustering of the affinities using a watershed algorithm (d) Agglomeration of the super-voxels into larger segments.\relax }{figure.caption.2}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}\hskip -1em.\nobreakspace  {}Related Work}{2}{section.2}}
 \@writefile{brf}{\backcite{zaitoun2015survey}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{andres2012globally}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{ciresan2012deep,jain2010boundary,kaynig2015large,seymour2016rhoananet,amelio_segmentation}{{2}{2}{section.2}}}
-\@writefile{brf}{\backcite{lee2015recursive,ronneberger2015u}{{2}{2}{section.2}}}
+\@writefile{brf}{\backcite{lee2015recursive,ronneberger2015u,turaga2010convolutional}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{briggman2009maximin}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{januszewski2016flood}{{2}{2}{section.2}}}
+\@writefile{brf}{\backcite{zlateski2015image}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{seymour2016rhoananet,nunez2014graph,10.1371/journal.pone.0125825,parag2017anisotropic,zlateski2015image}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{rolnick2017morphological,error_correction_using_CNN,haehn2017guided}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{andres2012globally}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{kappes2016higher,shi2000normalized,tatiraju2008image}{{2}{2}{section.2}}}
 \@writefile{brf}{\backcite{demaine2006correlation}{{2}{2}{section.2}}}
-\@writefile{brf}{\backcite{horvnakova2017analysis,keuper2015efficient}{{2}{2}{section.2}}}
+\@writefile{brf}{\backcite{horvnakova2017analysis}{{2}{2}{section.2}}}
+\@writefile{brf}{\backcite{keuper2015efficient}{{2}{2}{section.2}}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}\hskip -1em.\nobreakspace  {}Method}{2}{section.3}}
+\@writefile{brf}{\backcite{parag2015properties}{{2}{3}{figure.caption.3}}}
 \citation{sato2000teasar}
 \citation{zhao2014automatic}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Skeletons using the TEASER algorithm.\relax }}{3}{figure.caption.3}}
@@ -153,35 +159,35 @@
 \bibstyle{ieee}
 \bibdata{paper}
 \bibcite{andres2012globally}{1}
-\bibcite{bogovic2013learned}{2}
-\bibcite{briggman2009maximin}{3}
-\bibcite{chatfield2014return}{4}
-\bibcite{ciresan2012deep}{5}
-\bibcite{demaine2006correlation}{6}
-\bibcite{funahashi1989approximate}{7}
-\bibcite{glorot2010understanding}{8}
-\bibcite{haehn2017scalable}{9}
-\bibcite{haehn2017guided}{10}
-\bibcite{haehn2014design}{11}
-\bibcite{hildebrand2017whole}{12}
+\bibcite{briggman2009maximin}{2}
+\bibcite{chatfield2014return}{3}
+\bibcite{ciresan2012deep}{4}
+\bibcite{demaine2006correlation}{5}
+\bibcite{funahashi1989approximate}{6}
+\bibcite{glorot2010understanding}{7}
+\bibcite{haehn2017scalable}{8}
+\bibcite{haehn2017guided}{9}
+\bibcite{haehn2014design}{10}
+\bibcite{hildebrand2017whole}{11}
+\bibcite{horvnakova2017analysis}{12}
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Variation of Information Change\relax }}{7}{table.caption.15}}
 \newlabel{table:variation-of-information}{{4}{7}{Variation of Information Change\relax }{table.caption.15}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}\hskip -1em.\nobreakspace  {}Graph Based Strategies}{7}{subsection.5.3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}\hskip -1em.\nobreakspace  {}Variation of Information Improvements}{7}{subsection.5.4}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Conclusions}{7}{section.6}}
-\bibcite{horvnakova2017analysis}{13}
-\bibcite{jain2010boundary}{14}
-\bibcite{januszewski2016flood}{15}
-\bibcite{kappes2016higher}{16}
-\bibcite{kasthuri2015saturated}{17}
-\bibcite{kaynig2015large}{18}
-\bibcite{keuper2015efficient}{19}
-\bibcite{seymour2016rhoananet}{20}
-\bibcite{lee2015recursive}{21}
-\bibcite{maas2013rectifier}{22}
-\bibcite{meila2003comparing}{23}
-\bibcite{nesterov1983method}{24}
-\bibcite{nunez2014graph}{25}
+\bibcite{jain2010boundary}{13}
+\bibcite{januszewski2016flood}{14}
+\bibcite{kappes2016higher}{15}
+\bibcite{kasthuri2015saturated}{16}
+\bibcite{kaynig2015large}{17}
+\bibcite{keuper2015efficient}{18}
+\bibcite{seymour2016rhoananet}{19}
+\bibcite{lee2015recursive}{20}
+\bibcite{maas2013rectifier}{21}
+\bibcite{meila2003comparing}{22}
+\bibcite{nesterov1983method}{23}
+\bibcite{nunez2014graph}{24}
+\bibcite{parag2015properties}{25}
 \bibcite{10.1371/journal.pone.0125825}{26}
 \bibcite{parag2017anisotropic}{27}
 \bibcite{rolnick2017morphological}{28}
@@ -194,8 +200,9 @@
 \bibcite{takemura2017connectome}{33}
 \bibcite{tatiraju2008image}{34}
 \bibcite{Turaga:2009}{35}
-\bibcite{amelio_segmentation}{36}
-\bibcite{zaitoun2015survey}{37}
-\bibcite{zhao2014automatic}{38}
-\bibcite{zlateski2015image}{39}
-\bibcite{error_correction_using_CNN}{40}
+\bibcite{turaga2010convolutional}{36}
+\bibcite{amelio_segmentation}{37}
+\bibcite{zaitoun2015survey}{38}
+\bibcite{zhao2014automatic}{39}
+\bibcite{zlateski2015image}{40}
+\bibcite{error_correction_using_CNN}{41}
