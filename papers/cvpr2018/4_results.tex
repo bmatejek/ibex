@@ -1,4 +1,52 @@
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[width=0.23\linewidth]{./figures/variation_of_information-microns-train-600.png}
+	\includegraphics[width=0.23\linewidth]{./figures/variation_of_information-microns-test-600.png}
+	\includegraphics[width=0.23\linewidth]{./figures/variation_of_information-FlyEM-train-600.png}
+	\includegraphics[width=0.23\linewidth]{./figures/variation_of_information-FlyEM-test-600.png}
+	\caption{Our improvement (reD) on variation of information from the baseline NeuroProof segmentation (green). The blue dot represents an oracle which correctly partitions the graph.}
+	\label{fig:variation-of-information}
+\end{figure*}
+
 \section{Results}
+
+\subsection{Variation of Information Improvement}
+
+We compute the variation of information for our segmentations against the expert-labeled ground truth datasets. 
+The input segmentation to our network serves as a baseline. 
+We evaluate NeuroProof (our input) at several different thresholds to create a variation of information curve. 
+Figure \ref{fig:variation-of-information} shows the results on the datasets compared to the baseline (green) and an oracle (blue). 
+The oracles sees the graph from our algorithm and correctly partitions the graph based on the ground truth. 
+%TODO{Our methods decreases the split variation of information by a factor of XX\% and only increases the merge variation of information by a factor of XX\% on the test datasets.}
+Figure \ref{fig:positive-results} shows some successful merges on the Kasthuri Vol. 2. 
+Several of these successful examples combine multiple consecutive segments. 
+The third example shows the correction of an oversegmented dendrite. 
+Figure \ref{fig:negative-results} shows some errors made. 
+In two of these examples the algorithm correctly predicted several merges but made just one error.
+In the third example, an error in the initial segmentation propagated in our pipeline. 
+In the next three subsections we show how each step in the pipeline contributes to this final result.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-correct1.png}
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-correct2.png}
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-correct3.png}
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-correct4.png}
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-correct5.png}
+	\caption{Some correctly predicted results from our framework.}
+	\label{fig:positive-results}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-incorrect1.png}
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-incorrect2.png}
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-incorrect3.png}
+	\includegraphics[width=0.85\linewidth]{./figures/multicut-incorrect4.png}
+	\caption{Mistakes made by the proposed framework.}
+	\label{fig:negative-results}
+\end{figure}
+
 
 \subsection{Pruning via Skeletonization}
 
@@ -30,7 +78,7 @@ Figure \ref{fig:skeleton-results} shows two example segments which are split err
 The top example our algorithm missed but the segments are adjacent. 
 The bottom example our algorithm found despite the fact that they are not adjacent.
 
-\begin{figure}[t!]
+\begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.85\linewidth]{./figures/merge_candidate1.png}
 	\includegraphics[width=0.85\linewidth]{./figures/merge_candidate2.png}
@@ -41,69 +89,40 @@ The bottom example our algorithm found despite the fact that they are not adjace
 
 \subsection{Classification Performance}
 
-\begin{table}
+Table \ref{table:classification} shows the precision and recall for all of the datasets. 
+Since, our method does not rely on the image data, we can train the network on an anisotropic dataset and get impressive results on an isotropic dataset. 
+
+\begin{table}[h]
 	\centering
 	\begin{tabular}{c c c c} \hline
-	\textbf{Dataset} & \textbf{Precision} & \textbf{Recall} & \textbf{Accuracy} \\ \hline
-	Kasthuri Training & 0.919 & 0.936 & 0.974 \\
-	Kasthuri Testing & 0.737 & 0.717 & 0.907 \\
-	FlyEM Vol. 1 & 0.796 & 0.478 & 0.862 \\ 
-	FlyEM Vol. 2 & 0.762 & 0.422 & 0.810 \\ \hline
+		\textbf{Dataset} & \textbf{Precision} & \textbf{Recall} & \textbf{Accuracy} \\ \hline
+		Kasthuri Training & 0.919 & 0.936 & 0.974 \\
+		Kasthuri Testing & 0.737 & 0.717 & 0.907 \\
+		FlyEM Vol. 1 & 0.796 & 0.478 & 0.862 \\ 
+		FlyEM Vol. 2 & 0.762 & 0.422 & 0.810 \\ \hline
 	\end{tabular}
 	\caption{Precision and recall for the training and three test datasets.}
 	\label{table:classification}
 \end{table}
 
-Table \ref{table:classification} shows the precision and recall for all of the datasets. 
-Since, our method does not rely on the image data, we can train the network on an anisotropic dataset and get impressive results on an isotropic dataset. 
-Figure \ref{fig:network-results} shows the receiver operating characteristic (ROC) curve for all four datasets. 
-
-\begin{figure}
-	\includegraphics[width=0.9\linewidth]{./figures/roc-microns-300-test.png}
-	\caption{(NOT CORRECT) The receiver operating characteristic (ROC) curve for all four datasets.}
-	\label{fig:network-results}
-\end{figure}
-
-TODO - ADD QUALITATIVE RESULTS
-
 \subsection{Graph Based Strategies}
 
-TODO - QUANTIFY IMPROVEMENT BY MULTICUT - READERS CAN SKIP SECTION FOR NOW
+Applying a graph-based optimization strategy increases the accuracy over the CNN alone. 
+In our test datasets, we note an increase in precision on all datasets. 
+For our segmentation problems we prefer a higher precision since it is more difficult to correct merge-errors. 
+Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all three datasets in relation to the CNN.
 
-Using a graph-based optimization strategy prevents XX segments from merging compared to the simple hierarchical agglomeration strategy with an optimal threshold cut off. Since correcting merge errors is significantly more difficult than correcting split errors, it is desirable to limit the number of false merges. The graph-based strategies significantly improve this error type. 
-
-\subsection{Variation of Information Improvements}
-
-We compute the variation of information for our segmentations against the expert-labeled ground truth datasets. 
-The input segmentation to our network serves as a baseline. 
-We evaluate NeuroProof (our input) at several different thresholds to create a variation of information curve. 
-Similarly, we run the greedy-additive heuristic with varying parameters that increase the probability needed for merging nodes. 
-Figure \ref{fig:variation-of-information} shows the results on the datasets compared to the baseline (green) and an oracle (blue). 
-The oracles sees the entire constructed graph from our algorithm and correctly partitions the graph based on the ground truth. 
-Our methods decreases the split variation of information by a factor of XX\% and only increases the merge variation of information by a factor of XX\% on the test datasets. 
-Table \ref{table:variation-of-information} provides a quantitative overview for the changes in variation of information.
-
-TODO - ADD QUALITATIVE RESULTS
-
-\begin{table}
+\begin{table}[h]
 	\centering
-	\begin{tabular}{c c c} \hline
-		\textbf{Dataset} & \textbf{VI Split} & \textbf{VI Merge} \\ \hline
-		Kasthuri Training &  & \\
-		Kasthuri Testing & & \\
-		FlyEM Vol. 1 & & \\
-		FlyEM Vol. 2 & & \\ \hline
+	\begin{tabular}{c c c c} \hline
+		\textbf{Dataset} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} \\ \hline
+		Kasthuri Training & +3.60\% & -0.01\% & +0.60\% \\
+		Kasthuri Testing & +7.59\% & -1.77\% & +1.38\% \\
+		FlyEM Vol. 1 & +2.68\% & +0.76\% & +0.66\% \\ 
+		FlyEM Vol. 2 & +2.22\% & -1.05\% & +0.29\% \\ \hline
 	\end{tabular}
-	\caption{Variation of Information Change}
-	\label{table:variation-of-information}
+	\caption{Precision and recall for the training and three test datasets.}
+	\label{table:multicut}
 \end{table}
 
 
-\begin{figure*}[t!]
-	\centering
-	\includegraphics[width=0.42\linewidth]{./figures/variation_of_information-train.png}
-	\hspace{0.085\linewidth}
-	\includegraphics[width=0.42\linewidth]{./figures/variation_of_information-test.png}
-	\caption{The improvement on variation of information from the baseline NeuroProof segmentation (green). Results closer to the origin are better.}
-	\label{fig:variation-of-information}
-\end{figure*}

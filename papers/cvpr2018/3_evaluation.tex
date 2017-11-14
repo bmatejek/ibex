@@ -12,7 +12,7 @@ We use the following two datasets for training and experimental evaluation.
 The Kasthuri dataset consists of scanning electron microscope images of the neocortex of a mouse brain~\cite{kasthuri2015saturated}. This dataset is $5342 \times 3618 \times 338$ voxels in size. The resolution of the dataset is $\SI[product-units=single]{3 x 3 x 30}{\nano\meter}^3$ per voxel. We evaluate our methods using the left cylinder of this 3-cylinder dataset. We downsample the dataset in the $x$ and $y$ dimensions to give a final resolution of $\SI[product-units=single]{6 x 6 x 30}{\nano\meter}^3$ per voxel. We divide the dataset into two volumes along the $x$ dimension where each volume is $\SI[product-units=single]{8.0 x 10.9 x 10.1}{\micro\meter}^3$.
 
 \noindent\textbf{FlyEM.}
-The FlyEM dataset comes from the mushroom body of a 5-day old adult male Drosophila fly imaged by a focused ion-beam milling scanning electron microscopy. \hp{add ref} The mushroom body in this species is the major site of associative learning~\cite{takemura2017connectome}. The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro\meter}^3$ volume of which we use two cubes of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$. The resolution of this dataset is $\SI[product-units=single]{10 x 10 x 10}{\nano\meter}^3$ or $1000$ voxels in each dimension in each of the two volumes.
+The FlyEM dataset comes from the mushroom body of a 5-day old adult male Drosophila fly imaged by a focused ion-beam milling scanning electron microscopy~\cite{takemura2017connectome}. The mushroom body in this species is the major site of associative learning. The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro\meter}^3$ volume of which we use two cubes of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$. The resolution of this dataset is $\SI[product-units=single]{10 x 10 x 10}{\nano\meter}^3$ or $1000$ voxels in each dimension in each of the two volumes.
 
 \subsection{Pixel-Based Segmentation Pipelines}
 \label{sec:neuroproof}
@@ -39,7 +39,7 @@ In our implementation we use nanometers for these thresholds and not voxels. Con
 \subsection{Classifier Training}
 \label{sec:network-parameters}
 
-We use the first cylinder of the Kasthuri dataset \hp{check} for training and validation. We train on 80\% of the potential merge candidates for this volume.
+We use the left cylinder of the Kasthuri dataset for training and validation. We train on 80\% of the potential merge candidates for this volume.
 We validate the CNN classifier on the remaining 20\% of candidates. We apply data augmentation to the generated examples to increase the size of the training datasets. We consider all rotations of $90$ degrees along the $xy$-plane in addition to mirroring along the $x$ and $z$ axes. This produces 16 times more training data.
 
 We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. The supplemental material includes information on the experiments that determined these final parameters. Table~\ref{table:architecture} provides the parameters of the final network. There are 7,294,705 learnable parameters in our final architecture. All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. Training concluded after 34 epochs.

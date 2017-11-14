@@ -17,8 +17,8 @@
 \backcite {horvnakova2017analysis}{{2}{2}{section.2}}
 \backcite {keuper2015efficient}{{2}{2}{section.2}}
 \backcite {parag2015properties}{{3}{3}{figure.caption.3}}
-\backcite {}{{3}{3.1.2}{subsubsection.3.1.2}}
-\backcite {}{{3}{3.1.2}{subsubsection.3.1.2}}
+\backcite {10.1371/journal.pone.0125825}{{3}{3.1.2}{subsubsection.3.1.2}}
+\backcite {nunez2014graph}{{3}{3.1.2}{subsubsection.3.1.2}}
 \backcite {sato2000teasar,zhao2014automatic}{{3}{3.1.2}{subsubsection.3.1.2}}
 \backcite {chatfield2014return}{{4}{3.2.2}{subsubsection.3.2.2}}
 \backcite {funahashi1989approximate}{{4}{3.2.2}{subsubsection.3.2.2}}
@@ -28,8 +28,8 @@
 \backcite {kasthuri2015saturated}{{4}{4.1}{subsection.4.1}}
 \backcite {takemura2017connectome}{{4}{4.1}{subsection.4.1}}
 \backcite {zlateski2015image}{{4}{4.2}{subsection.4.2}}
-\backcite {schlegel2017learning}{{4}{4.2}{subsection.4.2}}
-\backcite {Turaga:2009,ronneberger2015u}{{4}{4.2}{subsection.4.2}}
+\backcite {schlegel2017learning}{{5}{4.2}{subsection.4.2}}
+\backcite {Turaga:2009,ronneberger2015u}{{5}{4.2}{subsection.4.2}}
 \backcite {10.1371/journal.pone.0125825}{{5}{4.2}{subsection.4.2}}
 \backcite {takemura2017connectome}{{5}{4.2}{subsection.4.2}}
 \backcite {10.1371/journal.pone.0125825}{{5}{4.2}{subsection.4.2}}
