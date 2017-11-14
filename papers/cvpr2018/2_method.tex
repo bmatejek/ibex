@@ -106,4 +106,4 @@ Neurons in the brain should be acyclic (i.e. the output shape should have a genu
 We enforce this constraint by finding a multicut partition of the graph that generates a \textit{forest} on the nodes.
 A forest is a partitioning of a graph into a set of trees (i.e. no segment has a cycle).
 There are several heuristics that solve the multicut problem (which is NP-Hard).
-We use the greedy-additive algorithm~\cite{keuper2015efficient}.
+We use method presented by Keuper et al. that produces a feasible solution by greedy additive edge contraction~\cite{keuper2015efficient}.

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.7)  14 NOV 2017 02:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.7)  14 NOV 2017 02:34
 entering extended mode
 **./paper.tex
 (paper.tex
@@ -956,10 +956,9 @@ LaTeX Font Info:    Try loading font information for TS1+ptm on input line 12.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ts1ptm.fd"
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [4 <./figures/split_error1.png> <./figures/split_error2.png>]
-Underfull \vbox (badness 4013) has occurred while \output is active []
-
- [5 <./figures/architecture.png>]) (4_results.tex
+) [4 <./figures/split_error1.png> <./figures/split_error2.png>] [5 <./figures/a
+rchitecture.png>])
+(4_results.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 9.
 
@@ -988,9 +987,8 @@ File: ./figures/roc-microns-300-test.png Graphic file (type png)
 Package pdftex.def Info: ./figures/roc-microns-300-test.png used on input line 
 62.
 (pdftex.def)             Requested size: 213.4209pt x 160.06636pt.
- [6 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png> <./figure
-s/roc-microns-300-test.png>]
-<./figures/variation_of_information-train.png, id=218, 462.528pt x 346.896pt>
+ [6 <./figures/merge_candidate1.png> <./figures/merge_candidate2.png>]
+<./figures/variation_of_information-train.png, id=219, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-train.png Graphic file (type png)
 
 <use ./figures/variation_of_information-train.png>
@@ -998,7 +996,7 @@ Package pdftex.def Info: ./figures/variation_of_information-train.png used on i
 nput line 104.
 (pdftex.def)             Requested size: 208.67871pt x 156.50932pt.
 
-<./figures/variation_of_information-test.png, id=219, 462.528pt x 346.896pt>
+<./figures/variation_of_information-test.png, id=220, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-test.png Graphic file (type png)
 
 <use ./figures/variation_of_information-test.png>
@@ -1015,7 +1013,7 @@ Underfull \hbox (badness 2318) in paragraph at lines 66--66
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
 
-[7]
+[7 <./figures/roc-microns-300-test.png>]
 Underfull \hbox (badness 6725) in paragraph at lines 86--86
 []\OT1/ptm/m/n/9 V. Jain, B. Boll-mann, M. Richard-son, D. Berger,
  []
@@ -1074,7 +1072,7 @@ fb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program
 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/u
 rw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.
 pfb>
-Output written on paper.pdf (9 pages, 3448368 bytes).
+Output written on paper.pdf (9 pages, 3448554 bytes).
 PDF statistics:
  351 PDF objects out of 1000 (max. 8388607)
  89 named destinations out of 1000 (max. 500000)
