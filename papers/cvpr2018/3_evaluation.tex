@@ -1,15 +1,17 @@
 % !TEX root =  paper.tex
 \section{Evaluation}
+In this section, we describe the dataset, evaluation metric ...
+\donglai{current organization is a bit unnatural.. too much details/overhead for the experiment setup, which can be put in the supplementary}
 
 \subsection{Datasets}
 \label{sec:dataset}
 
 We use the following two datasets for training and experimental evaluation.
 
-\paragraph{\bf Kasthuri.}
+\noindent\textbf{Kasthuri.}
 The Kasthuri dataset consists of scanning electron microscope images of the neocortex of a mouse brain~\cite{kasthuri2015saturated}. This dataset is $5342 \times 3618 \times 338$ voxels in size. The resolution of the dataset is $\SI[product-units=single]{3 x 3 x 30}{\nano\meter}^3$ per voxel. We evaluate our methods using the left cylinder of this 3-cylinder dataset. We downsample the dataset in the $x$ and $y$ dimensions to give a final resolution of $\SI[product-units=single]{6 x 6 x 30}{\nano\meter}^3$ per voxel. We divide the dataset into two volumes along the $x$ dimension where each volume is $\SI[product-units=single]{8.0 x 10.9 x 10.1}{\micro\meter}^3$.
 
-\paragraph{\bf FlyEM.}
+\noindent\textbf{FlyEM.}
 The FlyEM dataset comes from the mushroom body of a 5-day old adult male Drosophila fly imaged by a focused ion-beam milling scanning electron microscopy. \hp{add ref} The mushroom body in this species is the major site of associative learning~\cite{takemura2017connectome}. The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro\meter}^3$ volume of which we use two cubes of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$. The resolution of this dataset is $\SI[product-units=single]{10 x 10 x 10}{\nano\meter}^3$ or $1000$ voxels in each dimension in each of the two volumes.
 
 \subsection{Pixel-Based Segmentation Pipelines}
@@ -22,8 +24,9 @@ For the FlyEM data we collected two $1000 \times 1000 \times 1000$ voxel ($\SI[p
 \subsection{Error Metric}
 \label{sec:variation-of-information}
 
-We evaluate the performance of the different methods using the split version of variance of information~\cite{meila2003comparing}. Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$.
-Over and under-segmentation are quantified by the conditional entropy $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropy between two clusterings, better split variation of information scores are closer to the origin. The variation of information values of the original segmentation approaches at different stopping thresholds of agglomeration for both algorithms are shown in Fig.~\ref{fig:variation-of-information}. \hp{check}
+We evaluate the performance of the different methods using the split version of variance of information~\cite{meila2003comparing} (VI-s). Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$.
+Over and under-segmentation are quantified by the conditional entropy $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropy between two clusterings, better VI-s scores are closer to the origin.
+In Fig.~\ref{fig:variation-of-information}, we compute VI-s scores for the input over-segmentation result at different stopping thresholds of agglomeration.
 
 \subsection{Graph Creation Parameters}
 
@@ -31,7 +34,7 @@ There are two essential parameters to the edge generation algorithm described in
 
 In our implementation we use nanometers for these thresholds and not voxels. Connectomics datasets often have lower sample resolutions in $z$. Using nanometers allows us to have uniform units across all of these datasets and calculate the thresholds in voxels at runtime. For example, the thresholds in voxels are $t_{low} = (40, 40, 8)$ and $t_{high} = (100, 100, 20)$ for the anisotropic Kasthuri dataset and $t_{low} = (24, 24, 24)$ and $t_{high} = (60, 60, 60)$ for the isotropic FlyEM dataset.
 
-Table \ref{table:skeletonization} shows the overall success of our graph creation method with candidate pruning. \hp{not clear what this table is showing--explain. put this in the experiment section where you discuss the results}
+%Table \ref{table:skeletonization} shows the overall success of our graph creation method with candidate pruning. \hp{not clear what this table is showing--explain. put this in the experiment section where you discuss the results}
 
 \subsection{Classifier Training}
 \label{sec:network-parameters}
