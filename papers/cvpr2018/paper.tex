@@ -64,18 +64,43 @@ Cambridge, MA 02138, USA\\
 	\begin{minipage}{\textwidth}
 		\begin{minipage}{0.2\textwidth}
 			 \includegraphics[width=\linewidth]{figures/schema/teaser-image.png}
-			(a)\includegraphics[width=\linewidth]{figures/schema/teaser-segmentation.png}
+			\includegraphics[width=\linewidth]{figures/schema/teaser-segmentation.png}
 		\end{minipage}
 		\begin{minipage}{0.2\textwidth}
-			(b)\includegraphics[width=\linewidth]{figures/schema/pre-multicut.png}
+			\includegraphics[width=\linewidth]{figures/schema/pre-multicut.png}
 		\end{minipage}
 		\begin{minipage}{0.3\textwidth}
-			(c)\includegraphics[width=\linewidth]{figures/schema/multicut-graph.png}
+			\includegraphics[width=\linewidth]{figures/schema/multicut-graph.png}
 		\end{minipage}
 		\begin{minipage}{0.2\textwidth}
-			(d)\includegraphics[width=\linewidth]{figures/schema/post-multicut.png}
+			\includegraphics[width=\linewidth]{figures/schema/post-multicut.png}
 		\end{minipage}
-		\caption{Outline of our approach. (a) Raw EM image data (top) and results of pixel-based segmentation and agglomeration algorithms (bottom). (b) Extracted 3D skeleton from the segmentation. (c) Simplified 3D graph with error probabilities from trained classifier (schematic). (d) Result of graph partitioning algorithm with local and global geometric features (schematic). (d) Improved 3D reconstruction.}
+		\begin{minipage}{0.221\textwidth}
+			\begin{center}
+				(a)
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.221\textwidth}
+			\begin{center}
+				(b)
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.160\textwidth}
+			\begin{center}
+				(c)
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.160\textwidth}
+			\begin{center}
+				(d)
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.221\textwidth}
+			\begin{center}
+				(e)
+			\end{center}
+		\end{minipage}
+		\caption{Outline of our approach. (a) Raw EM image data (top) and results of pixel-based segmentation and agglomeration algorithms (bottom). (b) Extracted 3D skeleton from the segmentation. (c) Simplified 3D graph with error probabilities from trained classifier (schematic). (d) Result of graph partitioning algorithm with local and global geometric features (schematic). (e) Improved 3D reconstruction.}
 		\label{fig:teaser}
 	\end{minipage}
 \end{figure}
@@ -86,7 +111,7 @@ Cambridge, MA 02138, USA\\
 Advancements in electron microscopy image acquisition have created massive connectomics datasets in the terabyte range that make manual reconstruction of neuronal structures infeasible. Current state-of-the-art automatic methods segment neural membranes at the pixel level followed by agglomeration methods to create full neuron reconstructions. However, these approaches widely neglect global geometric properties that are inherent in the graph structure of neural wiring diagrams. Instead, we follow bottom-up pixel-based reconstruction by a top-down graph-based method to more accurately approximate neural pathways. Using the membrane labels of the pixel-based segmentation we first generate skeletons in 3D. Using this 3D graph we train automatic classifiers for shape description to detect impossible neural pathways by looking at geometric properties. We then apply efficient graph-based optimization strategies to improve the segmentation labels. We demonstrate the performance of our approach on multiple real-world connectomics datasets with average variation of information improvement of $X\times$. The paper provides insights into learning shape features for top-down graph-based neuron reconstruction.
 \end{abstract}
 
-%%%%%%%%% BODY TEXT
+%%%%%%%%	% BODY TEXT
 \input{0_introduction}
 
 \input{1_related_work}

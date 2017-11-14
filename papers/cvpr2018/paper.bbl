@@ -7,12 +7,6 @@ B.~Andres, T.~Kroeger, K.~L. Briggman, W.~Denk, N.~Korogod, G.~Knott,
 \newblock In {\em European Conference on Computer Vision}, pages 778--791.
   Springer, 2012.
 
-\bibitem{bogovic2013learned}
-J.~A. Bogovic, G.~B. Huang, and V.~Jain.
-\newblock Learned versus hand-designed feature representations for 3d
-  agglomeration.
-\newblock {\em arXiv preprint arXiv:1312.6159}, 2013.
-
 \bibitem{briggman2009maximin}
 K.~Briggman, W.~Denk, S.~Seung, M.~N. Helmstaedter, and S.~C. Turaga.
 \newblock Maximin affinity learning of image segmentation.
@@ -154,6 +148,12 @@ J.~Nunez-Iglesias, R.~Kennedy, S.~M. Plaza, A.~Chakraborty, and W.~T. Katz.
   to segment 2d and 3d neuroimages.
 \newblock {\em Frontiers in neuroinformatics}, 8, 2014.
 
+\bibitem{parag2015properties}
+T.~Parag.
+\newblock What properties are desirable from an electron microscopy
+  segmentation algorithm.
+\newblock {\em arXiv preprint arXiv:1503.05430}, 2015.
+
 \bibitem{10.1371/journal.pone.0125825}
 T.~Parag, A.~Chakraborty, S.~Plaza, and L.~Scheffer.
 \newblock A context-aware delayed agglomeration framework for electron
@@ -214,6 +214,13 @@ S.~Tatiraju and A.~Mehta.
 S.~Turaga, K.~Briggman, M.~Helmstaedter, W.~Denk, and S.~Seung.
 \newblock {Maximin affinity learning of image segmentation}.
 \newblock In {\em Advances in Neural Information Processing Systems 22}. 2009.
+
+\bibitem{turaga2010convolutional}
+S.~C. Turaga, J.~F. Murray, V.~Jain, F.~Roth, M.~Helmstaedter, K.~Briggman,
+  W.~Denk, and H.~S. Seung.
+\newblock Convolutional networks can learn to generate affinity graphs for
+  image segmentation.
+\newblock {\em Neural computation}, 22(2):511--538, 2010.
 
 \bibitem{amelio_segmentation}
 A.~V\'azquez-Reina, M.~Gelbart, D.~Huang, J.~Lichtman, E.~Miller, and
