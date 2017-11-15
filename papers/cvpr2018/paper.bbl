@@ -56,14 +56,6 @@ D.~Haehn, V.~Kaynig, J.~Tompkin, J.~W. Lichtman, and H.~Pfister.
 \newblock Guided proofreading of automatic segmentations for connectomics.
 \newblock {\em arXiv preprint arXiv:1704.00848}, 2017.
 
-\bibitem{haehn_dojo_2014}
-D.~Haehn, S.~Knowles-Barley, M.~Roberts, J.~Beyer, N.~Kasthuri, J.~Lichtman,
-  and H.~Pfister.
-\newblock Design and evaluation of interactive proofreading tools for
-  connectomics.
-\newblock {\em IEEE Transactions on Visualization and Computer Graphics (Proc.
-  IEEE SciVis 2014)}, 20(12):2466--2475, 2014.
-
 \bibitem{haehn2014design}
 D.~Haehn, S.~Knowles-Barley, M.~Roberts, J.~Beyer, N.~Kasthuri, J.~W. Lichtman,
   and H.~Pfister.
@@ -163,10 +155,10 @@ Y.~Nesterov.
   rate o (1/k2).
 
 \bibitem{nunez2014graph}
-J.~Nunez-Iglesias, R.~Kennedy, S.~M. Plaza, A.~Chakraborty, and W.~T. Katz.
-\newblock Graph-based active learning of agglomeration (gala): a python library
-  to segment 2d and 3d neuroimages.
-\newblock {\em Frontiers in neuroinformatics}, 8, 2014.
+J.~Nunez-Iglesias, R.~Kennedy, T.~Parag, J.~Shi, and D.~B. Chklovskii.
+\newblock Machine learning of hierarchical clustering to segment 2d and 3d
+  images.
+\newblock {\em PloS one}, 8(8):e71715, 2013.
 
 \bibitem{parag2015properties}
 T.~Parag.

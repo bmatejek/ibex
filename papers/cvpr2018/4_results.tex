@@ -20,7 +20,7 @@ Given a ground truth labeling $GT$ and our automatically reconstructed segmentat
 
 \subsection{Variation of Information Results}
 
-In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-based reconstructions of the Kasthuri and FlyEM data (Sec.~\ref{sec:neuroproof}) for varying thresholds of agglomeration (green). We use one of these segmentations (green circle) as out input dataset with an agglomeration threshold of 0.3 for all datasets. The results from our method are shown in red for varying X \hp{add} parameters. We show comparisons to an oracle (blue) that correctly partitions the graph from our method based on ground truth.
+In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-based reconstructions of the Kasthuri and FlyEM data (Sec.~\ref{sec:neuroproof}) for varying thresholds of agglomeration (green). We use one of these segmentations (green circle) as out input dataset with an agglomeration threshold of 0.3 for all datasets. The results from our method are shown in red for varying the $\beta$ parameter. We show comparisons to an oracle (blue) that correctly partitions the graph from our method based on ground truth.
 
 Our algorithm improves the accuracy of the reconstruction for every dataset, reducing the VI split score on average by \FIX{X\%} and only increasing the VI merge score by \FIX{X\%}.
 Scores closer to the origin are better for this metric, and in every instance our results are below the green curve.
@@ -77,13 +77,21 @@ We now analyze how each major component of our method contributes to this final 
 
 Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. This edge pruning is essential for the graph partitioning algorithm, which has a computational complexity dependence on the number of edges. The baseline algorithm considers all adjacent regions for merging. Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., 753 compared to 763). Our pruning heuristic removes at least $6\times$ the number of edges on all datasets, achieving a maximum removal rate of $20\times$.
 
-Equally important is the number of split errors that remain after pruning. These are the locations that we want to merge to create a more accurate reconstructions. For every dataset, the number of true split errors remains constant before and after pruning. \hp{not sure what you mean}
-However, since our heuristic does not enforce an adjacency constraint of two regions when constructing edges in the graph, the difference does not indicate the number of examples excluded by pruning. Fig.~\ref{fig:skeleton-results} shows an example segment with a split error (green segment) that our algorithm missed. Of the successful examples in Fig.~\ref{fig:positive-results}, the second and fourth groupings contain pairs of non-adjacent segments that were merged by our method. \hp{this paragraph needs more work to make it clearer}
+We generate edges in our graph by using information from the skeletons. 
+In particular, we do not enforce the constraint that edges in our graph correspond to adjacent segments.
+Although neurons are continuous, the EM images often have noisy spots which cause a break in the input segmentation.
+We still want to reconstruct these neurons despite the fact that the initial segmentation is non-continuous. 
+The second and fourth examples in Fig.~\ref{fig:positive-results} show correctly reconstructed neurons where two of the segments are non-adjacent. 
+This is a large benefit over enforcing segment adjacency. 
+
+There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons. 
+Fig.~\ref{fig:skeleton-results} shows such an example segment that our algorithm missed. 
+The endpoints of both segments are circled.
+In this example the small segment is carved from the larger segment in a location where there are no skeleton endpoints.
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.85\linewidth]{./figures/merge_candidate1.png}
-	\includegraphics[width=0.85\linewidth]{./figures/merge_candidate2.png}
 	\caption{Example merge candidates.}
 	\label{fig:skeleton-results}
 \end{figure}
@@ -114,7 +122,7 @@ The graph optimization strategy using multicut increases our accuracy over using
 Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all four datasets compared to the CNN.
 The precision increases on each dataset, although the recall decreases on all but one of the datasets.
 Since it is more difficult to correct merge errors than split errors, it is often desirable to sacrifice recall for precision.
-Over the three testing datasets, applying a graph-based partitioning strategy reduced the number of merge errors by \FIX{X}, \FIX{Y}, and \FIX{Z}, respectively. \hp{would be good to show the actual precision / recall numbers, too (at least in supplemental). maybe swap the ROC figure with a precision /recall figure?}
+Over the three testing datasets, applying a graph-based partitioning strategy reduced the number of merge errors by \FIX{X}, \FIX{Y}, and \FIX{Z}, respectively. 
 
 \begin{table}[h]
 	\centering
