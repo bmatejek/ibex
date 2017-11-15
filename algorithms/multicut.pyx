@@ -54,33 +54,6 @@ def CollapseGraph(segmentation, gold, candidates, collapsed_edges, probabilities
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
 
-    # find the largest number that were connected
-    max_label = np.amax(mapping) + 1
-    nunions = np.zeros(max_label, dtype=np.int64)
-
-    for iv in range(max_value):
-        nunions[mapping[iv]] += 1
-
-    # go through all unions and see if they are correct
-    seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
-    correct = np.ones(max_label, dtype=np.bool)
-    for iv in range(max_value):
-        # if this candidate iv has a different ground truth to the sample it maps to (ignore missing ground truth)
-        if seg2gold_mapping[mapping[iv]] != seg2gold_mapping[iv] and seg2gold_mapping[iv]:
-            correct[mapping[iv]] = False
-
-    # output results
-    with open('cvpr/microns-300-test-skeleton-multicut.txt', 'w') as fd:
-        # write the number of labels
-        fd.write('{}\n'.format(max_label))
-
-        # go through each label
-        for iv in range(max_label):
-            fd.write('{},{}\n'.format(nunions[iv], int(correct[iv])))
-            for ix in range(max_value):
-                if mapping[ix] == iv:
-                    fd.write('{}\n'.format(ix))
-
     segmentation = seg2seg.MapLabels(segmentation, mapping)
 
     return segmentation
@@ -119,7 +92,7 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
     segmentation = CollapseGraph(segmentation, gold, candidates, collapsed_edges, edge_weights)
 
     # evaluate before and after multicut
-    #comparestacks.Evaluate(segmentation, gold, threshold, anisotropic)
+    comparestacks.Evaluate(segmentation, gold, threshold, anisotropic)
 
 
 
