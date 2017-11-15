@@ -1,7 +1,7 @@
-\backcite {kasthuri2015saturated,haehn2017scalable}{{1}{1}{figure.caption.1}}
+\backcite {haehn2017scalable,kasthuri2015saturated}{{1}{1}{figure.caption.1}}
 \backcite {hildebrand2017whole}{{1}{1}{figure.caption.1}}
 \backcite {haehn2014design}{{1}{1}{figure.caption.1}}
-\backcite {seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,lee2015recursive,ronneberger2015u}{{1}{1}{figure.caption.1}}
+\backcite {seymour2016rhoananet,lee2015recursive,nunez2014graph,parag2017anisotropic,ronneberger2015u,zlateski2015image}{{1}{1}{figure.caption.1}}
 \backcite {zaitoun2015survey}{{2}{2}{section.2}}
 \backcite {andres2012globally}{{2}{2}{section*.3}}
 \backcite {ciresan2012deep,jain2010boundary,kaynig2015large,seymour2016rhoananet,amelio_segmentation}{{2}{2}{section*.3}}
@@ -31,7 +31,8 @@
 \backcite {schlegel2017learning}{{4}{4.2}{subsection.4.2}}
 \backcite {Turaga:2009,ronneberger2015u}{{4}{4.2}{subsection.4.2}}
 \backcite {10.1371/journal.pone.0125825}{{4}{4.2}{subsection.4.2}}
-\backcite {takemura2017connectome}{{5}{4.2}{subsection.4.2}}
+\backcite {takemura2017connectome}{{4}{4.2}{subsection.4.2}}
 \backcite {10.1371/journal.pone.0125825}{{5}{4.2}{subsection.4.2}}
 \backcite {glorot2010understanding}{{5}{4.4}{subsection.4.4}}
-\backcite {meila2003comparing}{{5}{5.2}{subsection.5.2}}
+\backcite {meila2003comparing}{{6}{5.1}{subsection.5.1}}
+\backcite {plaza2014annotating}{{6}{5.2}{subsection.5.2}}
