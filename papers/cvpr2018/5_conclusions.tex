@@ -2,4 +2,14 @@
 \section{Conclusions}
 
 We present a novel method for reconstructing neuronal processes in connectomics datasets. We extend existing pixel-based reconstruction strategies using a morphological 3D skeleton graph and show significant accuracy improvement on two datasets from two different species. Our approach enables enforcing domain-constraints on the resulting segmentation. We believe this approach extends beyond connectomics to other domains with different constraints.
-\hp{add more future work}
+
+There is significant room for additional research following this topic. 
+Finding the multicut partition of the graph provides some nice constraints on our reconstruction. 
+However, we can further improve the results by tweaking the partitioning cost functions to more closely match the underlying biology.
+For example, we can take the outputs of synaptic detectors to enforce that a given segment only has post- or pre-synaptic connections. 
+
+Additionally, there is a lot of possible information we can extract from the skeletonization of the segments. 
+Currently we use the skeletons to identify potential locations that should merge.
+In the future, we can also find locations that are improperly merged in the input segmentation. 
+Figure \ref{fig:negative-results} shows an error made by our algorithm that follows from a merge-error in the input. 
+By training a CNN on the skeletons themselves, we can also receive information about whether a sequence of segments belong to the same neuron, rather than comparing pairs alone. 
