@@ -2,7 +2,6 @@
 \backcite {hildebrand2017whole}{{1}{1}{figure.caption.1}}
 \backcite {haehn2014design}{{1}{1}{figure.caption.1}}
 \backcite {seymour2016rhoananet,lee2015recursive,nunez2014graph,parag2017anisotropic,ronneberger2015u,zlateski2015image}{{1}{1}{figure.caption.1}}
-\backcite {zaitoun2015survey}{{2}{2}{section.2}}
 \backcite {andres2012globally}{{2}{2}{section*.3}}
 \backcite {ciresan2012deep,jain2010boundary,kaynig2015large,seymour2016rhoananet,amelio_segmentation}{{2}{2}{section*.3}}
 \backcite {lee2015recursive,ronneberger2015u,turaga2010convolutional}{{2}{2}{section*.3}}
@@ -10,10 +9,11 @@
 \backcite {januszewski2016flood}{{2}{2}{section*.3}}
 \backcite {zlateski2015image}{{2}{2}{section*.4}}
 \backcite {seymour2016rhoananet,nunez2014graph,10.1371/journal.pone.0125825,parag2017anisotropic,zlateski2015image}{{2}{2}{section*.4}}
-\backcite {rolnick2017morphological,error_correction_using_CNN,haehn2017guided}{{2}{2}{section*.5}}
+\backcite {raveler,mojo2,haehn_dojo_2014,haehn2017guided}{{2}{2}{section*.5}}
+\backcite {rolnick2017morphological,error_correction_using_CNN}{{2}{2}{section*.5}}
 \backcite {andres2012globally}{{2}{2}{section*.5}}
-\backcite {kappes2016higher,shi2000normalized,tatiraju2008image}{{3}{2}{section*.5}}
-\backcite {demaine2006correlation}{{3}{2}{section*.5}}
+\backcite {kappes2016higher,shi2000normalized,tatiraju2008image}{{2}{2}{section*.5}}
+\backcite {demaine2006correlation}{{2}{2}{section*.5}}
 \backcite {horvnakova2017analysis}{{3}{2}{section*.5}}
 \backcite {keuper2015efficient}{{3}{2}{section*.5}}
 \backcite {parag2015properties}{{3}{3}{figure.caption.6}}

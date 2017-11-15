@@ -56,6 +56,14 @@ D.~Haehn, V.~Kaynig, J.~Tompkin, J.~W. Lichtman, and H.~Pfister.
 \newblock Guided proofreading of automatic segmentations for connectomics.
 \newblock {\em arXiv preprint arXiv:1704.00848}, 2017.
 
+\bibitem{haehn_dojo_2014}
+D.~Haehn, S.~Knowles-Barley, M.~Roberts, J.~Beyer, N.~Kasthuri, J.~Lichtman,
+  and H.~Pfister.
+\newblock Design and evaluation of interactive proofreading tools for
+  connectomics.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics (Proc.
+  IEEE SciVis 2014)}, 20(12):2466--2475, 2014.
+
 \bibitem{haehn2014design}
 D.~Haehn, S.~Knowles-Barley, M.~Roberts, J.~Beyer, N.~Kasthuri, J.~W. Lichtman,
   and H.~Pfister.
@@ -83,6 +91,12 @@ V.~Jain, B.~Bollmann, M.~Richardson, D.~Berger, M.~Helmst{\"a}dter,
   N.~Kasthuri, K.~Hayworth, R.~Schalek, J.~Tapia, J.~Lichtman, and S.~Seung.
 \newblock Boundary learning by optimization with topological constraints.
 \newblock In {\em Proc. IEEE CVPR 2010}, pages 2488--2495, 2010.
+
+\bibitem{raveler}
+{Janelia Farm}.
+\newblock Raveler.
+\newblock \url{https://openwiki.janelia.org/wiki/display/flyem/Raveler}, 2014.
+\newblock Accessed on 11/01/2016.
 
 \bibitem{januszewski2016flood}
 M.~Januszewski, J.~Maitin-Shepard, P.~Li, J.~Kornfeld, W.~Denk, and V.~Jain.
@@ -119,6 +133,12 @@ S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
   D.~Berger, N.~Kasthuri, J.~W. Lichtman, and H.~Pfister.
 \newblock Rhoananet pipeline: Dense automatic neural annotation.
 \newblock {\em arXiv preprint arXiv:1611.06973}, 2016.
+
+\bibitem{mojo2}
+S.~Knowles-Barley, M.~Roberts, N.~Kasthuri, D.~Lee, H.~Pfister, and J.~W.
+  Lichtman.
+\newblock Mojo 2.0: Connectome annotation tool.
+\newblock {\em Frontiers in Neuroinformatics}, (60), 2013.
 
 \bibitem{lee2015recursive}
 K.~Lee, A.~Zlateski, V.~Ashwin, and H.~S. Seung.
@@ -233,11 +253,6 @@ A.~V\'azquez-Reina, M.~Gelbart, D.~Huang, J.~Lichtman, E.~Miller, and
   H.~Pfister.
 \newblock Segmentation fusion for connectomics.
 \newblock In {\em Proc. IEEE ICCV}, pages 177--184, Nov 2011.
-
-\bibitem{zaitoun2015survey}
-N.~M. Zaitoun and M.~J. Aqel.
-\newblock Survey on image segmentation techniques.
-\newblock {\em Procedia Computer Science}, 65:797--806, 2015.
 
 \bibitem{zhao2014automatic}
 T.~Zhao and S.~M. Plaza.
