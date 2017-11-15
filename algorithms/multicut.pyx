@@ -92,8 +92,8 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta):
     segmentation = CollapseGraph(segmentation, candidates, collapsed_edges)
 
     # evaluate before and after multicut
-    print partition_comparison.variation_of_information(segmentation.ravel().astype(np.int64), gold.ravel().astype(np.int64))
-    #comparestacks.Evaluate(segmentation, gold, filtersize=20000, anisotropic=False)
+    #print partition_comparison.variation_of_information(segmentation.ravel().astype(np.int64), gold.ravel().astype(np.int64))
+    comparestacks.Evaluate(segmentation, gold, filtersize=20000, anisotropic=False)
 
 
 
