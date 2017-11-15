@@ -3,60 +3,50 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux
 The style file: ../ieee.bst
 Database file #1: ../paper.bib
-Repeated entry---line 241 of file ../paper.bib
- : @article {takemura2017connectome
- :                                 ,
-I'm skipping whatever remains of this entry
-Repeated entry---line 363 of file ../paper.bib
- : @article{kernighan1970efficient
- :                                ,
-I'm skipping whatever remains of this entry
-Warning--can't use both volume and number fields in baran2007automatic
-Warning--can't use both volume and number fields in bharaj2012automatically
 Warning--can't use both volume and number fields in haehn2017scalable
 Warning--can't use both volume and number fields in maas2013rectifier
 Warning--empty booktitle in nesterov1983method
 Warning--empty year in nesterov1983method
 Warning--empty publisher in Turaga:2009
-You've used 45 entries,
+You've used 41 entries,
             2120 wiz_defined-function locations,
-            756 strings with 13921 characters,
-and the built_in function-call counts, 19849 in all, are:
-= -- 1875
-> -- 1271
-< -- 22
-+ -- 508
-- -- 456
-* -- 1516
-:= -- 3261
-add.period$ -- 145
-call.type$ -- 45
-change.case$ -- 359
+            729 strings with 13379 characters,
+and the built_in function-call counts, 18490 in all, are:
+= -- 1720
+> -- 1254
+< -- 16
++ -- 499
+- -- 454
+* -- 1457
+:= -- 3079
+add.period$ -- 128
+call.type$ -- 41
+change.case$ -- 347
 chr.to.int$ -- 0
-cite$ -- 52
-duplicate$ -- 690
-empty$ -- 1306
-format.name$ -- 456
-if$ -- 4115
+cite$ -- 46
+duplicate$ -- 612
+empty$ -- 1167
+format.name$ -- 454
+if$ -- 3774
 int.to.chr$ -- 0
-int.to.str$ -- 45
-missing$ -- 44
-newline$ -- 227
-num.names$ -- 90
-pop$ -- 395
+int.to.str$ -- 41
+missing$ -- 41
+newline$ -- 207
+num.names$ -- 82
+pop$ -- 368
 preamble$ -- 1
-purify$ -- 314
+purify$ -- 306
 quote$ -- 0
-skip$ -- 526
+skip$ -- 467
 stack$ -- 0
-substring$ -- 999
-swap$ -- 223
-text.length$ -- 22
+substring$ -- 930
+swap$ -- 185
+text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 180
-warning$ -- 7
-while$ -- 156
-width$ -- 47
-write$ -- 496
-(There were 2 error messages)
+type$ -- 164
+warning$ -- 5
+while$ -- 141
+width$ -- 43
+write$ -- 445
+(There were 5 warnings)

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  8 NOV 2017 20:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  14 NOV 2017 22:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -50,6 +50,44 @@ CVPR 8.5 x 11-Inch Proceedings Style `cvpr.sty'.
 \cv@tot=\count89
 \cv@tmpc@=\count90
 \cv@tmpc=\count91
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2016/02/04 v1.7-139 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 67.
+\captionmargin=\dimen106
+\captionmargin@=\dimen107
+\captionwidth=\dimen108
+\caption@tempdima=\dimen109
+\caption@indent=\dimen110
+\caption@parindent=\dimen111
+\caption@hangindent=\dimen112
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
+)
+
+Package caption Warning: Unsupported document class (or package) detected,
+(caption)                usage of the caption package is not recommended.
+See the caption package documentation for explanation.
+
+Package caption Info: \@makecaption = \long macro:#1#2-> \setbox \@tempboxa \hbox {\small \noindent #1.~#2} \setlength {\@ctmp }{\hsize } \addtolength {\@ctmp }{-\@figindent }\addtolength {\@ctmp }{-\@figindent } \ifdim \wd \@tempboxa >\@ctmp {\small #1.~#2\par } \else \hbox to\hsize {\hfil \box \@tempboxa \hfil } \fi .
+\c@ContinuedFloat=\count92
+)
+\c@KVtest=\count93
+\sf@farskip=\skip45
+\sf@captopadj=\dimen113
+\sf@capskip=\skip46
+\sf@nearskip=\skip47
+\c@subfigure=\count94
+\c@subfigure@save=\count95
+\c@lofdepth=\count96
+\c@subtable=\count97
+\c@subtable@save=\count98
+\c@lotdepth=\count99
+\sf@top=\skip48
+\sf@bottom=\skip49
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/times.sty
 Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/epsfig.sty
@@ -71,16 +109,16 @@ Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
 ) (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 )
-\Gread@gobject=\count92
+\Gread@gobject=\count100
 ))
-\Gin@req@height=\dimen106
-\Gin@req@width=\dimen107
+\Gin@req@height=\dimen114
+\Gin@req@width=\dimen115
 )
-\epsfxsize=\dimen108
-\epsfysize=\dimen109
+\epsfxsize=\dimen116
+\epsfysize=\dimen117
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2016/03/10 v2.15b AMS math features
-\@mathmargin=\skip45
+\@mathmargin=\skip50
 
 For additional information on amsmath, use the `?' option.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsmath/amstext.sty
@@ -88,47 +126,47 @@ Package: amstext 2000/06/29 v2.01 AMS text
  (/usr/local/texlive/2016/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks15
-\ex@=\dimen110
+\ex@=\dimen118
 )) (/usr/local/texlive/2016/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen111
+\pmbraise@=\dimen119
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2016/03/08 v2.02 operator names
 )
-\inf@bad=\count93
+\inf@bad=\count101
 LaTeX Info: Redefining \frac on input line 199.
-\uproot@=\count94
-\leftroot@=\count95
+\uproot@=\count102
+\leftroot@=\count103
 LaTeX Info: Redefining \overline on input line 297.
-\classnum@=\count96
-\DOTSCASE@=\count97
+\classnum@=\count104
+\DOTSCASE@=\count105
 LaTeX Info: Redefining \ldots on input line 394.
 LaTeX Info: Redefining \dots on input line 397.
 LaTeX Info: Redefining \cdots on input line 518.
 \Mathstrutbox@=\box28
 \strutbox@=\box29
-\big@size=\dimen112
+\big@size=\dimen120
 LaTeX Font Info:    Redeclaring font encoding OML on input line 634.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 635.
-\macc@depth=\count98
-\c@MaxMatrixCols=\count99
+\macc@depth=\count106
+\c@MaxMatrixCols=\count107
 \dotsspace@=\muskip10
-\c@parentequation=\count100
-\dspbrk@lvl=\count101
+\c@parentequation=\count108
+\dspbrk@lvl=\count109
 \tag@help=\toks16
-\row@=\count102
-\column@=\count103
-\maxfields@=\count104
+\row@=\count110
+\column@=\count111
+\maxfields@=\count112
 \andhelp@=\toks17
-\eqnshift@=\dimen113
-\alignsep@=\dimen114
-\tagshift@=\dimen115
-\tagwidth@=\dimen116
-\totwidth@=\dimen117
-\lineht@=\dimen118
+\eqnshift@=\dimen121
+\alignsep@=\dimen122
+\tagshift@=\dimen123
+\tagwidth@=\dimen124
+\totwidth@=\dimen125
+\lineht@=\dimen126
 \@envbody=\toks18
-\multlinegap=\skip46
-\multlinetaggap=\skip47
+\multlinegap=\skip51
+\multlinetaggap=\skip52
 \mathdisplay@stack=\toks19
 LaTeX Info: Redefining \[ on input line 2739.
 LaTeX Info: Redefining \] on input line 2740.
@@ -140,82 +178,68 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (/usr/local/texlive/2016/texmf-dist/tex/latex/caption/caption.sty
-Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
- (/usr/local/texlive/2016/texmf-dist/tex/latex/caption/caption3.sty
-Package: caption3 2016/02/04 v1.7-139 caption3 kernel (AR)
-Package caption3 Info: TeX engine: e-TeX on input line 67.
-\captionmargin=\dimen119
-\captionmargin@=\dimen120
-\captionwidth=\dimen121
-\caption@tempdima=\dimen122
-\caption@indent=\dimen123
-\caption@parindent=\dimen124
-\caption@hangindent=\dimen125
-Package caption Info: Unknown document class (or package),
-(caption)             standard defaults will be used.
-)
-
-Package caption Warning: Unsupported document class (or package) detected,
-(caption)                usage of the caption package is not recommended.
-See the caption package documentation for explanation.
-
-Package caption Info: \@makecaption = \long macro:#1#2-> \setbox \@tempboxa \hbox {\small \noindent #1.~#2} \setlength {\@ctmp }{\hsize } \addtolength {\@ctmp }{-\@figindent }\addtolength {\@ctmp }{-\@figindent } \ifdim \wd \@tempboxa >\@ctmp {\small #1.~#2\par } \else \hbox to\hsize {\hfil \box \@tempboxa \hfil } \fi .
-\c@ContinuedFloat=\count105
-) (/usr/local/texlive/2016/texmf-dist/tex/latex/caption/subcaption.sty
-Package: subcaption 2016/02/20 v1.1-142 Sub-captions (AR)
-\c@subfigure=\count106
-\c@subtable=\count107
-) (/usr/local/texlive/2016/texmf-dist/tex/latex/booktabs/booktabs.sty
+)) (/usr/local/texlive/2016/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2016/04/27 v1.618033 publication quality tables
-\heavyrulewidth=\dimen126
-\lightrulewidth=\dimen127
-\cmidrulewidth=\dimen128
-\belowrulesep=\dimen129
-\belowbottomsep=\dimen130
-\aboverulesep=\dimen131
-\abovetopsep=\dimen132
-\cmidrulesep=\dimen133
-\cmidrulekern=\dimen134
-\defaultaddspace=\dimen135
-\@cmidla=\count108
-\@cmidlb=\count109
-\@aboverulesep=\dimen136
-\@belowrulesep=\dimen137
-\@thisruleclass=\count110
-\@lastruleclass=\count111
-\@thisrulewidth=\dimen138
+\heavyrulewidth=\dimen127
+\lightrulewidth=\dimen128
+\cmidrulewidth=\dimen129
+\belowrulesep=\dimen130
+\belowbottomsep=\dimen131
+\aboverulesep=\dimen132
+\abovetopsep=\dimen133
+\cmidrulesep=\dimen134
+\cmidrulekern=\dimen135
+\defaultaddspace=\dimen136
+\@cmidla=\count113
+\@cmidlb=\count114
+\@aboverulesep=\dimen137
+\@belowrulesep=\dimen138
+\@thisruleclass=\count115
+\@lastruleclass=\count116
+\@thisrulewidth=\dimen139
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/makecell/makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
  (/usr/local/texlive/2016/texmf-dist/tex/latex/tools/array.sty
 Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
-\col@sep=\dimen139
-\extrarowheight=\dimen140
+\col@sep=\dimen140
+\extrarowheight=\dimen141
 \NC@list=\toks20
-\extratabsurround=\skip48
-\backup@length=\skip49
+\extratabsurround=\skip53
+\backup@length=\skip54
 )
-\rotheadsize=\dimen141
-\c@nlinenum=\count112
+\rotheadsize=\dimen142
+\c@nlinenum=\count117
 \TeXr@lab=\toks21
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating environment
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count118
+\float@exts=\toks22
+\float@box=\box30
+\@float@everytoks=\toks23
+\@floatcapt=\box31
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks24
+\c@algorithm=\count119
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
 Package: algpseudocode 
- (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ifthen.sty
-Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
-) (/usr/local/texlive/2016/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
 
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
-\c@ALG@line=\count113
-\c@ALG@rem=\count114
-\c@ALG@nested=\count115
-\ALG@tlm=\skip50
-\ALG@thistlm=\skip51
-\c@ALG@Lnr=\count116
-\c@ALG@blocknr=\count117
-\c@ALG@storecount=\count118
-\c@ALG@tmpcounter=\count119
-\ALG@tmplength=\skip52
+\c@ALG@line=\count120
+\c@ALG@rem=\count121
+\c@ALG@nested=\count122
+\ALG@tlm=\skip55
+\ALG@thistlm=\skip56
+\c@ALG@Lnr=\count123
+\c@ALG@blocknr=\count124
+\c@ALG@storecount=\count125
+\c@ALG@tmpcounter=\count126
+\ALG@tmplength=\skip57
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/siunitx/siunitx.sty (/usr/local/texlive/2016/texmf-dist/tex/latex/l3kernel/expl3.sty
@@ -230,37 +254,37 @@ L3 Module: l3tl 2016/03/26 v6465 L3 Token lists
 L3 Module: l3str 2016/03/24 v6441 L3 Strings
 L3 Module: l3seq 2015/08/05 v5777 L3 Sequences and stacks
 L3 Module: l3int 2016/03/24 v6441 L3 Integers
-\c_max_int=\count120
-\l_tmpa_int=\count121
-\l_tmpb_int=\count122
-\g_tmpa_int=\count123
-\g_tmpb_int=\count124
+\c_max_int=\count127
+\l_tmpa_int=\count128
+\l_tmpb_int=\count129
+\g_tmpa_int=\count130
+\g_tmpb_int=\count131
 L3 Module: l3quark 2015/08/17 v5855 L3 Quarks
 L3 Module: l3prg 2015/11/01 v6216 L3 Control structures
-\g__prg_map_int=\count125
+\g__prg_map_int=\count132
 L3 Module: l3clist 2015/09/02 v5901 L3 Comma separated lists
 L3 Module: l3token 2016/04/03 v6470 L3 Experimental token manipulation
 L3 Module: l3prop 2016/01/05 v6366 L3 Property lists
 L3 Module: l3msg 2016/03/26 v6464 L3 Messages
 L3 Module: l3file 2016/03/25 v6458 L3 File and I/O operations
-\l_iow_line_count_int=\count126
-\l__iow_target_count_int=\count127
-\l__iow_current_line_int=\count128
-\l__iow_current_word_int=\count129
-\l__iow_current_indentation_int=\count130
+\l_iow_line_count_int=\count133
+\l__iow_target_count_int=\count134
+\l__iow_current_line_int=\count135
+\l__iow_current_word_int=\count136
+\l__iow_current_indentation_int=\count137
 L3 Module: l3skip 2016/01/05 v6366 L3 Dimensions and skips
-\c_zero_dim=\dimen142
-\c_max_dim=\dimen143
-\l_tmpa_dim=\dimen144
-\l_tmpb_dim=\dimen145
-\g_tmpa_dim=\dimen146
-\g_tmpb_dim=\dimen147
-\c_zero_skip=\skip53
-\c_max_skip=\skip54
-\l_tmpa_skip=\skip55
-\l_tmpb_skip=\skip56
-\g_tmpa_skip=\skip57
-\g_tmpb_skip=\skip58
+\c_zero_dim=\dimen143
+\c_max_dim=\dimen144
+\l_tmpa_dim=\dimen145
+\l_tmpb_dim=\dimen146
+\g_tmpa_dim=\dimen147
+\g_tmpb_dim=\dimen148
+\c_zero_skip=\skip58
+\c_max_skip=\skip59
+\l_tmpa_skip=\skip60
+\l_tmpb_skip=\skip61
+\g_tmpa_skip=\skip62
+\g_tmpb_skip=\skip63
 \c_zero_muskip=\muskip11
 \c_max_muskip=\muskip12
 \l_tmpa_muskip=\muskip13
@@ -268,120 +292,120 @@ L3 Module: l3skip 2016/01/05 v6366 L3 Dimensions and skips
 \g_tmpa_muskip=\muskip15
 \g_tmpb_muskip=\muskip16
 L3 Module: l3keys 2015/11/17 v6284 L3 Key-value interfaces
-\g__keyval_level_int=\count131
-\l_keys_choice_int=\count132
+\g__keyval_level_int=\count138
+\l_keys_choice_int=\count139
 L3 Module: l3fp 2016/03/26 v6465 L3 Floating points
-\c__fp_leading_shift_int=\count133
-\c__fp_middle_shift_int=\count134
-\c__fp_trailing_shift_int=\count135
-\c__fp_big_leading_shift_int=\count136
-\c__fp_big_middle_shift_int=\count137
-\c__fp_big_trailing_shift_int=\count138
-\c__fp_Bigg_leading_shift_int=\count139
-\c__fp_Bigg_middle_shift_int=\count140
-\c__fp_Bigg_trailing_shift_int=\count141
+\c__fp_leading_shift_int=\count140
+\c__fp_middle_shift_int=\count141
+\c__fp_trailing_shift_int=\count142
+\c__fp_big_leading_shift_int=\count143
+\c__fp_big_middle_shift_int=\count144
+\c__fp_big_trailing_shift_int=\count145
+\c__fp_Bigg_leading_shift_int=\count146
+\c__fp_Bigg_middle_shift_int=\count147
+\c__fp_Bigg_trailing_shift_int=\count148
 L3 Module: l3box 2015/08/09 v5822 L3 Experimental boxes
-\c_empty_box=\box30
-\l_tmpa_box=\box31
-\l_tmpb_box=\box32
-\g_tmpa_box=\box33
-\g_tmpb_box=\box34
+\c_empty_box=\box32
+\l_tmpa_box=\box33
+\l_tmpb_box=\box34
+\g_tmpa_box=\box35
+\g_tmpb_box=\box36
 L3 Module: l3coffins 2016/05/17 v6508 L3 Coffin code layer
-\l__coffin_internal_box=\box35
-\l__coffin_internal_dim=\dimen148
-\l__coffin_offset_x_dim=\dimen149
-\l__coffin_offset_y_dim=\dimen150
-\l__coffin_x_dim=\dimen151
-\l__coffin_y_dim=\dimen152
-\l__coffin_x_prime_dim=\dimen153
-\l__coffin_y_prime_dim=\dimen154
-\c_empty_coffin=\box36
-\l__coffin_aligned_coffin=\box37
-\l__coffin_aligned_internal_coffin=\box38
-\l_tmpa_coffin=\box39
-\l_tmpb_coffin=\box40
-\l__coffin_display_coffin=\box41
-\l__coffin_display_coord_coffin=\box42
-\l__coffin_display_pole_coffin=\box43
-\l__coffin_display_offset_dim=\dimen155
-\l__coffin_display_x_dim=\dimen156
-\l__coffin_display_y_dim=\dimen157
+\l__coffin_internal_box=\box37
+\l__coffin_internal_dim=\dimen149
+\l__coffin_offset_x_dim=\dimen150
+\l__coffin_offset_y_dim=\dimen151
+\l__coffin_x_dim=\dimen152
+\l__coffin_y_dim=\dimen153
+\l__coffin_x_prime_dim=\dimen154
+\l__coffin_y_prime_dim=\dimen155
+\c_empty_coffin=\box38
+\l__coffin_aligned_coffin=\box39
+\l__coffin_aligned_internal_coffin=\box40
+\l_tmpa_coffin=\box41
+\l_tmpb_coffin=\box42
+\l__coffin_display_coffin=\box43
+\l__coffin_display_coord_coffin=\box44
+\l__coffin_display_pole_coffin=\box45
+\l__coffin_display_offset_dim=\dimen156
+\l__coffin_display_x_dim=\dimen157
+\l__coffin_display_y_dim=\dimen158
 L3 Module: l3color 2014/08/23 v5354 L3 Experimental color support
 L3 Module: l3sys 2015/09/25 v6087 L3 Experimental system/runtime functions
 L3 Module: l3candidates 2016/05/13 v6484 L3 Experimental additions to l3kernel
-\l__box_top_dim=\dimen158
-\l__box_bottom_dim=\dimen159
-\l__box_left_dim=\dimen160
-\l__box_right_dim=\dimen161
-\l__box_top_new_dim=\dimen162
-\l__box_bottom_new_dim=\dimen163
-\l__box_left_new_dim=\dimen164
-\l__box_right_new_dim=\dimen165
-\l__box_internal_box=\box44
-\l__coffin_bounding_shift_dim=\dimen166
-\l__coffin_left_corner_dim=\dimen167
-\l__coffin_right_corner_dim=\dimen168
-\l__coffin_bottom_corner_dim=\dimen169
-\l__coffin_top_corner_dim=\dimen170
-\l__coffin_scaled_total_height_dim=\dimen171
-\l__coffin_scaled_width_dim=\dimen172
+\l__box_top_dim=\dimen159
+\l__box_bottom_dim=\dimen160
+\l__box_left_dim=\dimen161
+\l__box_right_dim=\dimen162
+\l__box_top_new_dim=\dimen163
+\l__box_bottom_new_dim=\dimen164
+\l__box_left_new_dim=\dimen165
+\l__box_right_new_dim=\dimen166
+\l__box_internal_box=\box46
+\l__coffin_bounding_shift_dim=\dimen167
+\l__coffin_left_corner_dim=\dimen168
+\l__coffin_right_corner_dim=\dimen169
+\l__coffin_bottom_corner_dim=\dimen170
+\l__coffin_top_corner_dim=\dimen171
+\l__coffin_scaled_total_height_dim=\dimen172
+\l__coffin_scaled_width_dim=\dimen173
 L3 Module: l3luatex 2016/03/26 v6465 L3 Experimental LuaTeX-specific functions
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/l3kernel/l3pdfmode.def
 File: l3pdfmode.def 2016/03/26 v6465 L3 Experimental driver: PDF mode
-\l__driver_color_stack_int=\count142
-\l__driver_tmp_box=\box45
+\l__driver_color_stack_int=\count149
+\l__driver_tmp_box=\box47
 )) (/usr/local/texlive/2016/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
 Package: xparse 2016/05/18 v6512 L3 Experimental document command parser
-\l__xparse_current_arg_int=\count143
-\l__xparse_m_args_int=\count144
-\l__xparse_mandatory_args_int=\count145
-\l__xparse_processor_int=\count146
-\l__xparse_v_nesting_int=\count147
+\l__xparse_current_arg_int=\count150
+\l__xparse_m_args_int=\count151
+\l__xparse_mandatory_args_int=\count152
+\l__xparse_processor_int=\count153
+\l__xparse_v_nesting_int=\count154
 )
 Package: siunitx 2016/03/01 v2.6q A comprehensive (SI) units package
  (/usr/local/texlive/2016/texmf-dist/tex/latex/l3packages/l3keys2e/l3keys2e.sty
 Package: l3keys2e 2016/05/18 v6512 LaTeX2e option processing using LaTeX3 keys
 )
-\l__siunitx_tmp_box=\box46
-\l__siunitx_tmp_dim=\dimen173
-\l__siunitx_tmp_int=\count148
-\l__siunitx_number_mantissa_length_int=\count149
-\l__siunitx_number_uncert_length_int=\count150
-\l__siunitx_round_int=\count151
-\l__siunitx_process_decimal_int=\count152
-\l__siunitx_process_uncertainty_int=\count153
-\l__siunitx_process_fixed_int=\count154
-\l__siunitx_process_integer_min_int=\count155
-\l__siunitx_process_precision_int=\count156
-\l__siunitx_group_min_int=\count157
-\l__siunitx_angle_marker_box=\box47
-\l__siunitx_angle_unit_box=\box48
-\l__siunitx_angle_marker_dim=\dimen174
-\l__siunitx_angle_unit_dim=\dimen175
-\l__siunitx_unit_int=\count158
-\l__siunitx_unit_denominator_int=\count159
-\l__siunitx_unit_numerator_int=\count160
-\l__siunitx_unit_prefix_int=\count161
-\l__siunitx_unit_prefix_base_int=\count162
-\l__siunitx_unit_prefix_gram_int=\count163
-\l__siunitx_number_product_int=\count164
-\c__siunitx_one_fill_skip=\skip59
-\l__siunitx_table_unit_align_skip=\skip60
-\l__siunitx_table_exponent_dim=\dimen176
-\l__siunitx_table_integer_dim=\dimen177
-\l__siunitx_table_mantissa_dim=\dimen178
-\l__siunitx_table_marker_dim=\dimen179
-\l__siunitx_table_result_dim=\dimen180
-\l__siunitx_table_uncert_dim=\dimen181
-\l__siunitx_table_fill_pre_dim=\dimen182
-\l__siunitx_table_fill_post_dim=\dimen183
-\l__siunitx_table_fill_mid_dim=\dimen184
-\l__siunitx_table_pre_box=\box49
-\l__siunitx_table_post_box=\box50
-\l__siunitx_table_mantissa_box=\box51
-\l__siunitx_table_result_box=\box52
-\l__siunitx_table_number_align_skip=\skip61
-\l__siunitx_table_text_align_skip=\skip62
+\l__siunitx_tmp_box=\box48
+\l__siunitx_tmp_dim=\dimen174
+\l__siunitx_tmp_int=\count155
+\l__siunitx_number_mantissa_length_int=\count156
+\l__siunitx_number_uncert_length_int=\count157
+\l__siunitx_round_int=\count158
+\l__siunitx_process_decimal_int=\count159
+\l__siunitx_process_uncertainty_int=\count160
+\l__siunitx_process_fixed_int=\count161
+\l__siunitx_process_integer_min_int=\count162
+\l__siunitx_process_precision_int=\count163
+\l__siunitx_group_min_int=\count164
+\l__siunitx_angle_marker_box=\box49
+\l__siunitx_angle_unit_box=\box50
+\l__siunitx_angle_marker_dim=\dimen175
+\l__siunitx_angle_unit_dim=\dimen176
+\l__siunitx_unit_int=\count165
+\l__siunitx_unit_denominator_int=\count166
+\l__siunitx_unit_numerator_int=\count167
+\l__siunitx_unit_prefix_int=\count168
+\l__siunitx_unit_prefix_base_int=\count169
+\l__siunitx_unit_prefix_gram_int=\count170
+\l__siunitx_number_product_int=\count171
+\c__siunitx_one_fill_skip=\skip64
+\l__siunitx_table_unit_align_skip=\skip65
+\l__siunitx_table_exponent_dim=\dimen177
+\l__siunitx_table_integer_dim=\dimen178
+\l__siunitx_table_mantissa_dim=\dimen179
+\l__siunitx_table_marker_dim=\dimen180
+\l__siunitx_table_result_dim=\dimen181
+\l__siunitx_table_uncert_dim=\dimen182
+\l__siunitx_table_fill_pre_dim=\dimen183
+\l__siunitx_table_fill_post_dim=\dimen184
+\l__siunitx_table_fill_mid_dim=\dimen185
+\l__siunitx_table_pre_box=\box51
+\l__siunitx_table_post_box=\box52
+\l__siunitx_table_mantissa_box=\box53
+\l__siunitx_table_result_box=\box54
+\l__siunitx_table_number_align_skip=\skip66
+\l__siunitx_table_text_align_skip=\skip67
 .................................................
 . LaTeX info: "xparse/define-command"
 . 
@@ -550,13 +574,13 @@ Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
-\@linkdim=\dimen185
-\Hy@linkcounter=\count165
-\Hy@pagecounter=\count166
+\@linkdim=\dimen186
+\Hy@linkcounter=\count172
+\Hy@pagecounter=\count173
  (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2016/05/05 v6.83n Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count167
+\Hy@SavedSpaceFactor=\count174
  (/usr/local/texlive/2016/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
 )
@@ -580,16 +604,16 @@ Package: backref 2012/07/25 v1.38 Bibliographical back referencing
 Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 282.
 ))
-\c@Hy@tempcnt=\count168
+\c@Hy@tempcnt=\count175
  (/usr/local/texlive/2016/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5044.
-\XeTeXLinkMargin=\dimen186
-\Fld@menulength=\count169
-\Field@Width=\dimen187
-\Fld@charsize=\dimen188
+\XeTeXLinkMargin=\dimen187
+\Fld@menulength=\count176
+\Field@Width=\dimen188
+\Fld@charsize=\dimen189
 Package hyperref Info: Hyper figures OFF on input line 6298.
 Package hyperref Info: Link nesting OFF on input line 6303.
 Package hyperref Info: Hyper index ON on input line 6306.
@@ -599,36 +623,36 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6323.
 Package hyperref Info: PDF/A mode OFF on input line 6328.
 LaTeX Info: Redefining \ref on input line 6368.
 LaTeX Info: Redefining \pageref on input line 6372.
-\Hy@abspage=\count170
-\c@Item=\count171
-\c@Hfootnote=\count172
+\Hy@abspage=\count177
+\c@Item=\count178
+\c@Hfootnote=\count179
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2016/05/05 v6.83n Hyperref driver for pdfTeX
-\Fld@listcount=\count173
-\c@bookmark@seq@number=\count174
-\Hy@SectionHShift=\skip63
+\Fld@listcount=\count180
+\c@bookmark@seq@number=\count181
+\Hy@SectionHShift=\skip68
 ) (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 32.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 40.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 ) ABD: EveryShipout initializing macros (/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/color.sty
@@ -637,19 +661,25 @@ Package: color 2016/05/09 v1.1c Standard LaTeX Color (DPC)
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package color Info: Driver file: pdftex.def on input line 144.
-) (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: subfig package v1.3 is loaded.
+Package caption Info: float package is loaded.
+Package caption Info: hyperref package is loaded.
+Package caption Info: End \AtBeginDocument code.
+ (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count175
-\scratchdimen=\dimen189
-\scratchbox=\box53
-\nofMPsegments=\count176
-\nofMParguments=\count177
-\everyMPshowfont=\toks22
-\MPscratchCnt=\count178
-\MPscratchDim=\dimen190
-\MPnumerator=\count179
-\makeMPintoPDFobject=\count180
-\everyMPtoPDFconversion=\toks23
+\scratchcounter=\count182
+\scratchdimen=\dimen190
+\scratchbox=\box55
+\nofMPsegments=\count183
+\nofMParguments=\count184
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count185
+\MPscratchDim=\dimen191
+\MPnumerator=\count186
+\makeMPintoPDFobject=\count187
+\everyMPtoPDFconversion=\toks26
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
  (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/grfext.sty
@@ -660,217 +690,285 @@ Package grfext Info: Graphics extension search list:
 (grfext)             \AppendGraphicsExtensions on input line 456.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
-))
-Package caption Info: Begin \AtBeginDocument code.
-Package caption Info: hyperref package is loaded.
-Package caption Info: End \AtBeginDocument code.
- (/usr/local/texlive/2016/texmf-dist/tex/latex/beamer/translator/dicts/translator-basic-dictionary/translator-basic-dictionary-English.dict
+)) (/usr/local/texlive/2016/texmf-dist/tex/latex/beamer/translator/dicts/translator-basic-dictionary/translator-basic-dictionary-English.dict
 Dictionary: translator-basic-dictionary, Language: English 
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/siunitx/siunitx-abbreviations.cfg
 File: siunitx-abbreviations.cfg 2016/03/01 v2.6q siunitx: Abbreviated units
 )
-\AtBeginShipoutBox=\box54
+\AtBeginShipoutBox=\box56
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 32.
+Package hyperref Info: Link coloring ON on input line 40.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
  (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count181
+\c@section@level=\count188
 )
-LaTeX Info: Redefining \ref on input line 32.
-LaTeX Info: Redefining \pageref on input line 32.
-LaTeX Info: Redefining \nameref on input line 32.
-\c__siunitx_mathsf_int=\count182
-LaTeX Font Info:    Try loading font information for U+msa on input line 32.
+LaTeX Info: Redefining \ref on input line 40.
+LaTeX Info: Redefining \pageref on input line 40.
+LaTeX Info: Redefining \nameref on input line 40.
+\c__siunitx_mathsf_int=\count189
+LaTeX Font Info:    Try loading font information for U+msa on input line 40.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 32.
+LaTeX Font Info:    Try loading font information for U+msb on input line 40.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-\c__siunitx_mathtt_int=\count183
+\c__siunitx_mathtt_int=\count190
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 66.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 59.
- (./0_introduction.tex <./figures/merge_candidate1.png, id=12, 1248.665pt x 355.3275pt>
-File: ./figures/merge_candidate1.png Graphic file (type png)
- <use ./figures/merge_candidate1.png>
-Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 17.
-(pdftex.def)             Requested size: 99.59665pt x 28.34003pt.
- <./figures/intro-cube.png, id=13, 185.19188pt x 185.19188pt>
-File: ./figures/intro-cube.png Graphic file (type png)
- <use ./figures/intro-cube.png>
-Package pdftex.def Info: ./figures/intro-cube.png used on input line 19.
-(pdftex.def)             Requested size: 99.59665pt x 99.59802pt.
-
-Underfull \vbox (badness 1803) has occurred while \output is active []
-
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 68.
+ (./0_introduction.tex <figures/schema/pre-multicut-with-arrows.pdf, id=4, 1027.84pt x 770.88pt>
+File: figures/schema/pre-multicut-with-arrows.pdf Graphic file (type pdf)
+ <use figures/schema/pre-multicut-with-arrows.pdf>
+Package pdftex.def Info: figures/schema/pre-multicut-with-arrows.pdf used on input line 7.
+(pdftex.def)             Requested size: 111.45418pt x 83.5855pt.
+ <figures/schema/post-multicut.png, id=5, 428.50087pt x 325.215pt>
+File: figures/schema/post-multicut.png Graphic file (type png)
+ <use figures/schema/post-multicut.png>
+Package pdftex.def Info: figures/schema/post-multicut.png used on input line 10.
+(pdftex.def)             Requested size: 111.45418pt x 84.58864pt.
+ <./figures/pipeline/image.png, id=17, 1027.84pt x 1027.84pt>
+File: ./figures/pipeline/image.png Graphic file (type png)
+ <use ./figures/pipeline/image.png>
+Package pdftex.def Info: ./figures/pipeline/image.png used on input line 23.
+(pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
+ <./figures/pipeline/affinities.png, id=18, 1027.84pt x 1027.84pt>
+File: ./figures/pipeline/affinities.png Graphic file (type png)
+ <use ./figures/pipeline/affinities.png>
+Package pdftex.def Info: ./figures/pipeline/affinities.png used on input line 26.
+(pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
+ <./figures/pipeline/watershed.png, id=19, 1027.84pt x 1027.84pt>
+File: ./figures/pipeline/watershed.png Graphic file (type png)
+ <use ./figures/pipeline/watershed.png>
+Package pdftex.def Info: ./figures/pipeline/watershed.png used on input line 29.
+(pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
+ <./figures/pipeline/neuroproof.png, id=20, 1027.84pt x 1027.84pt>
+File: ./figures/pipeline/neuroproof.png Graphic file (type png)
+ <use ./figures/pipeline/neuroproof.png>
+Package pdftex.def Info: ./figures/pipeline/neuroproof.png used on input line 32.
+(pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
+)
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 36.
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 36.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 81.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 81.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 ) [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./figures/merge_candidate1.png> <./figures/intro-cube.png>]) (./1_related_work.tex <./figures/pipeline/image.png, id=42, 1027.84pt x 1027.84pt>
-File: ./figures/pipeline/image.png Graphic file (type png)
- <use ./figures/pipeline/image.png>
-Package pdftex.def Info: ./figures/pipeline/image.png used on input line 5.
-(pdftex.def)             Requested size: 109.30898pt x 109.29869pt.
- <./figures/pipeline/affinities.png, id=43, 1027.84pt x 1027.84pt>
-File: ./figures/pipeline/affinities.png Graphic file (type png)
- <use ./figures/pipeline/affinities.png>
-Package pdftex.def Info: ./figures/pipeline/affinities.png used on input line 7.
-(pdftex.def)             Requested size: 109.30898pt x 109.29869pt.
- <./figures/pipeline/watershed.png, id=44, 1027.84pt x 1027.84pt>
-File: ./figures/pipeline/watershed.png Graphic file (type png)
- <use ./figures/pipeline/watershed.png>
-Package pdftex.def Info: ./figures/pipeline/watershed.png used on input line 9.
-(pdftex.def)             Requested size: 109.30898pt x 109.29869pt.
- <./figures/pipeline/neuroproof.png, id=45, 1027.84pt x 1027.84pt>
-File: ./figures/pipeline/neuroproof.png Graphic file (type png)
- <use ./figures/pipeline/neuroproof.png>
-Package pdftex.def Info: ./figures/pipeline/neuroproof.png used on input line 11.
-(pdftex.def)             Requested size: 109.30898pt x 109.29869pt.
-) (./2_method.tex [2] <./figures/skeleton1.png, id=125, 1204.5pt x 1204.5pt>
+ <./figures/schema/pre-multicut-with-arrows.pdf> <./figures/schema/post-multicut.png>] (./1_related_work.tex) (./2_method.tex <./figures/skeleton1.png, id=93, 903.375pt x 322.95656pt>
 File: ./figures/skeleton1.png Graphic file (type png)
  <use ./figures/skeleton1.png>
-Package pdftex.def Info: ./figures/skeleton1.png used on input line 38.
-(pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
- <./figures/skeleton2.png, id=126, 1204.5pt x 1204.5pt>
+Package pdftex.def Info: ./figures/skeleton1.png used on input line 6.
+(pdftex.def)             Requested size: 218.16463pt x 77.99408pt.
+ <./figures/skeleton2.png, id=94, 903.375pt x 431.36156pt>
 File: ./figures/skeleton2.png Graphic file (type png)
  <use ./figures/skeleton2.png>
-Package pdftex.def Info: ./figures/skeleton2.png used on input line 40.
-(pdftex.def)             Requested size: 99.59665pt x 99.5967pt.
-File: ./figures/merge_candidate1.png Graphic file (type png)
- <use ./figures/merge_candidate1.png>
-Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 70.
-(pdftex.def)             Requested size: 99.59665pt x 28.34003pt.
- <./figures/merge_candidate2.png, id=131, 1159.33125pt x 217.81375pt>
-File: ./figures/merge_candidate2.png Graphic file (type png)
- <use ./figures/merge_candidate2.png>
-Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 72.
-(pdftex.def)             Requested size: 99.59665pt x 18.71167pt.
- [3 <./figures/pipeline/image.png> <./figures/pipeline/affinities.png> <./figures/pipeline/watershed.png> <./figures/pipeline/neuroproof.png> <./figures/skeleton1.png> <./figures/skeleton2.png>] <figures/architecture.png, id=151, 1075.01625pt x 411.5375pt>
+Package pdftex.def Info: ./figures/skeleton2.png used on input line 7.
+(pdftex.def)             Requested size: 218.16463pt x 104.17392pt.
+ [2 <./figures/pipeline/image.png> <./figures/pipeline/affinities.png> <./figures/pipeline/watershed.png> <./figures/pipeline/neuroproof.png>] <./figures/split_error1.png, id=137, 578.16pt x 153.87488pt>
+File: ./figures/split_error1.png Graphic file (type png)
+
+<use ./figures/split_error1.png>
+Package pdftex.def Info: ./figures/split_error1.png used on input line 41.
+(pdftex.def)             Requested size: 218.16463pt x 58.06216pt.
+ <./figures/split_error2.png, id=138, 578.16pt x 102.98476pt>
+File: ./figures/split_error2.png Graphic file (type png)
+ <use ./figures/split_error2.png>
+Package pdftex.def Info: ./figures/split_error2.png used on input line 42.
+(pdftex.def)             Requested size: 218.16463pt x 38.8596pt.
+ [3 <./figures/skeleton1.png> <./figures/skeleton2.png>] <figures/architecture.png, id=167, 911.405pt x 389.455pt>
 File: figures/architecture.png Graphic file (type png)
  <use figures/architecture.png>
-Package pdftex.def Info: figures/architecture.png used on input line 123.
-(pdftex.def)             Requested size: 472.01192pt x 180.694pt.
+Package pdftex.def Info: figures/architecture.png used on input line 64.
+(pdftex.def)             Requested size: 472.01192pt x 201.69768pt.
 ) (./3_evaluation.tex
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 14.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 13.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [4 <./figures/merge_candidate2.png>]
+)
+Underfull \hbox (badness 1184) in paragraph at lines 12--14
+\OT1/ptm/b/n/10 Kasthuri. \OT1/ptm/m/n/10 The Kasthuri dataset con-sists of scan-ning
+ []
 
-LaTeX Warning: Reference `alg:skeletonization' on page 5 undefined on input line 41.
 
-[5 <./figures/architecture.png>] <./figures/multicut.png, id=192, 396.48125pt x 357.335pt>
-File: ./figures/multicut.png Graphic file (type png)
- <use ./figures/multicut.png>
-Package pdftex.def Info: ./figures/multicut.png used on input line 92.
-(pdftex.def)             Requested size: 189.70947pt x 170.97905pt.
-) (./4_results.tex
+Underfull \hbox (badness 1478) in paragraph at lines 15--17
+\OT1/ptm/m/n/10 by a fo-cused ion-beam milling scan-ning elec-tron mi-
+ []
+
+[4 <./figures/split_error1.png> <./figures/split_error2.png>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+) (./4_results.tex <./figures/variation_of_information-microns-train-600.png, id=201, 462.528pt x 346.896pt>
+File: ./figures/variation_of_information-microns-train-600.png Graphic file (type png)
+ <use ./figures/variation_of_information-microns-train-600.png>
+Package pdftex.def Info: ./figures/variation_of_information-microns-train-600.png used on input line 5.
+(pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
+ <./figures/variation_of_information-microns-test-600.png, id=202, 462.528pt x 346.896pt>
+File: ./figures/variation_of_information-microns-test-600.png Graphic file (type png)
+ <use ./figures/variation_of_information-microns-test-600.png>
+Package pdftex.def Info: ./figures/variation_of_information-microns-test-600.png used on input line 6.
+(pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
+ <./figures/variation_of_information-FlyEM-train-600.png, id=203, 462.528pt x 346.896pt>
+File: ./figures/variation_of_information-FlyEM-train-600.png Graphic file (type png)
+ <use ./figures/variation_of_information-FlyEM-train-600.png>
+Package pdftex.def Info: ./figures/variation_of_information-FlyEM-train-600.png used on input line 7.
+(pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
+ <./figures/variation_of_information-FlyEM-test-600.png, id=204, 462.528pt x 346.896pt>
+File: ./figures/variation_of_information-FlyEM-test-600.png Graphic file (type png)
+ <use ./figures/variation_of_information-FlyEM-test-600.png>
+Package pdftex.def Info: ./figures/variation_of_information-FlyEM-test-600.png used on input line 8.
+(pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5 <./figures/architecture.png>]
+Underfull \vbox (badness 1009) has occurred while \output is active []
+
+
+Underfull \hbox (badness 1215) in paragraph at lines 23--24
+[]\OT1/ptm/m/n/10 In Fig. [][]6[][], we show VI scores for the in-put over-
+ []
+
+<./figures/multicut-correct1.png, id=217, 578.16pt x 114.72862pt>
+File: ./figures/multicut-correct1.png Graphic file (type png)
+ <use ./figures/multicut-correct1.png>
+Package pdftex.def Info: ./figures/multicut-correct1.png used on input line 34.
+(pdftex.def)             Requested size: 201.56699pt x 39.99805pt.
+ <./figures/multicut-correct2.png, id=218, 578.16pt x 306.84637pt>
+File: ./figures/multicut-correct2.png Graphic file (type png)
+ <use ./figures/multicut-correct2.png>
+Package pdftex.def Info: ./figures/multicut-correct2.png used on input line 35.
+(pdftex.def)             Requested size: 201.56699pt x 106.97644pt.
+ <./figures/multicut-correct3.png, id=219, 578.16pt x 210.48637pt>
+File: ./figures/multicut-correct3.png Graphic file (type png)
+ <use ./figures/multicut-correct3.png>
+Package pdftex.def Info: ./figures/multicut-correct3.png used on input line 36.
+(pdftex.def)             Requested size: 201.56699pt x 73.38226pt.
+ <./figures/multicut-correct4.png, id=220, 578.16pt x 75.8835pt>
+File: ./figures/multicut-correct4.png Graphic file (type png)
+ <use ./figures/multicut-correct4.png>
+Package pdftex.def Info: ./figures/multicut-correct4.png used on input line 37.
+(pdftex.def)             Requested size: 201.56699pt x 26.4554pt.
+ <./figures/multicut-correct5.png, id=221, 578.16pt x 118.64325pt>
+File: ./figures/multicut-correct5.png Graphic file (type png)
+ <use ./figures/multicut-correct5.png>
+Package pdftex.def Info: ./figures/multicut-correct5.png used on input line 38.
+(pdftex.def)             Requested size: 201.56699pt x 41.36281pt.
+ <./figures/multicut-incorrect1.png, id=222, 578.16pt x 129.48375pt>
+File: ./figures/multicut-incorrect1.png Graphic file (type png)
+ <use ./figures/multicut-incorrect1.png>
+Package pdftex.def Info: ./figures/multicut-incorrect1.png used on input line 45.
+(pdftex.def)             Requested size: 201.56699pt x 45.14217pt.
+ <./figures/multicut-incorrect2.png, id=223, 549.85425pt x 173.448pt>
+File: ./figures/multicut-incorrect2.png Graphic file (type png)
+ <use ./figures/multicut-incorrect2.png>
+Package pdftex.def Info: ./figures/multicut-incorrect2.png used on input line 46.
+(pdftex.def)             Requested size: 201.56699pt x 63.58191pt.
+ <./figures/multicut-incorrect3.png, id=224, 540.21825pt x 224.037pt>
+File: ./figures/multicut-incorrect3.png Graphic file (type png)
+ <use ./figures/multicut-incorrect3.png>
+Package pdftex.def Info: ./figures/multicut-incorrect3.png used on input line 47.
+(pdftex.def)             Requested size: 201.56699pt x 83.59319pt.
+ <./figures/multicut-incorrect4.png, id=225, 549.252pt x 177.0615pt>
+File: ./figures/multicut-incorrect4.png Graphic file (type png)
+ <use ./figures/multicut-incorrect4.png>
+Package pdftex.def Info: ./figures/multicut-incorrect4.png used on input line 48.
+(pdftex.def)             Requested size: 201.56699pt x 64.97676pt.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 9.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 60.
 
-Overfull \hbox (7.47417pt too wide) in paragraph at lines 8--15
+Overfull \hbox (7.47417pt too wide) in paragraph at lines 59--66
  [][] 
  []
 
+[6 <./figures/variation_of_information-microns-train-600.png> <./figures/variation_of_information-microns-test-600.png> <./figures/variation_of_information-FlyEM-train-600.png> <./figures/variation_of_information-FlyEM-test-600.png>]
+
+LaTeX Warning: Text page 7 contains only floats.
+
+<./figures/merge_candidate1.png, id=244, 556.78012pt x 178.56712pt>
 File: ./figures/merge_candidate1.png Graphic file (type png)
-<use ./figures/merge_candidate1.png>
-Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 35.
-(pdftex.def)             Requested size: 201.56699pt x 57.35779pt.
+ <use ./figures/merge_candidate1.png>
+Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 77.
+(pdftex.def)             Requested size: 201.56699pt x 64.6465pt.
+ <./figures/merge_candidate2.png, id=245, 558.28575pt x 138.21637pt>
 File: ./figures/merge_candidate2.png Graphic file (type png)
  <use ./figures/merge_candidate2.png>
-Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 36.
-(pdftex.def)             Requested size: 201.56699pt x 37.8687pt.
- [6 <./figures/multicut.png>]
+Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 78.
+(pdftex.def)             Requested size: 201.56699pt x 49.90126pt.
 
-LaTeX Warning: Reference `table:classification' on page 7 undefined on input line 57.
 
-<./figures/roc-microns-300-test.png, id=211, 462.528pt x 346.896pt>
-File: ./figures/roc-microns-300-test.png Graphic file (type png)
- <use ./figures/roc-microns-300-test.png>
-Package pdftex.def Info: ./figures/roc-microns-300-test.png used on input line 60.
-(pdftex.def)             Requested size: 213.4209pt x 160.06636pt.
- <./figures/variation_of_information-train.png, id=213, 462.528pt x 346.896pt>
-File: ./figures/variation_of_information-train.png Graphic file (type png)
- <use ./figures/variation_of_information-train.png>
-Package pdftex.def Info: ./figures/variation_of_information-train.png used on input line 75.
-(pdftex.def)             Requested size: 208.67871pt x 156.50932pt.
- <./figures/variation_of_information-test.png, id=214, 462.528pt x 346.896pt>
-File: ./figures/variation_of_information-test.png Graphic file (type png)
- <use ./figures/variation_of_information-test.png>
-Package pdftex.def Info: ./figures/variation_of_information-test.png used on input line 77.
-(pdftex.def)             Requested size: 208.67871pt x 156.50932pt.
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[7 <./figures/multicut-correct1.png> <./figures/multicut-correct2.png> <./figures/multicut-correct3.png> <./figures/multicut-correct4.png> <./figures/multicut-correct5.png> <./figures/multicut-incorrect1.png> <./figures/multicut-incorrect2.png> <./figures/multicut-incorrect3.png> <./figures/multicut-incorrect4.png> <./figures/merge_candidate1.png> <./figures/merge_candidate2.png>]
+Overfull \hbox (20.85216pt too wide) in paragraph at lines 107--114
+ [][] 
+ []
+
 ) (./5_conclusions.tex) (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.bbl (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.brf)
 \tf@brf=\write3
 \openout3 = `paper.brf'.
 
- [7 <./figures/roc-microns-300-test.png>]
-Underfull \hbox (badness 2318) in paragraph at lines 80--80
+
+Underfull \hbox (badness 2318) in paragraph at lines 66--66
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
 
 
-Underfull \hbox (badness 6725) in paragraph at lines 100--100
+Underfull \hbox (badness 6725) in paragraph at lines 86--86
 []\OT1/ptm/m/n/9 V. Jain, B. Boll-mann, M. Richard-son, D. Berger,
  []
 
 
-Underfull \hbox (badness 2088) in paragraph at lines 100--100
+Underfull \hbox (badness 2088) in paragraph at lines 86--86
 \OT1/ptm/m/n/9 M. Helmst[]adter, K. Brig-gman, W. Denk, J. Bow-den,
  []
 
 
-Underfull \hbox (badness 1052) in paragraph at lines 105--105
+Underfull \hbox (badness 1052) in paragraph at lines 91--91
 []\OT1/ptm/m/n/9 M. Januszewski, J. Maitin-Shepard, P. Li, J. Ko-rn-feld,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 124--124
+Underfull \hbox (badness 10000) in paragraph at lines 110--110
 []\OT1/ptm/m/n/9 V. Kaynig, A. Vazquez-Reina, S. Knowles-Barley,
  []
 
 
-Underfull \hbox (badness 4366) in paragraph at lines 124--124
+Underfull \hbox (badness 4366) in paragraph at lines 110--110
 \OT1/ptm/m/n/9 neu-ronal pro-cesses from elec-tron mi-croscopy im-ages.
  []
 
-[8 <./figures/variation_of_information-train.png> <./figures/variation_of_information-test.png>])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 84.
+[8])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 97.
  [9]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 84.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 97.
  (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 84.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 84.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 97.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 97.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: 42D2B317065CACB667E793760B077E5A;2641.
-
-
-LaTeX Warning: There were undefined references.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 84.
+(rerunfilecheck)             Checksum: 548F18C2A5A72F99F6FE78007F759096;2504.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 97.
  ) 
 Here is how much of TeX's memory you used:
- 18067 strings out of 493014
- 344946 string characters out of 6133351
- 381265 words of memory out of 5000000
- 21290 multiletter control sequences out of 15000+600000
- 40559 words of font info for 94 fonts, out of 8000000 for 9000
+ 18287 strings out of 493014
+ 349881 string characters out of 6133351
+ 386699 words of memory out of 5000000
+ 21488 multiletter control sequences out of 15000+600000
+ 40420 words of font info for 94 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,42p,10356b,862s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,10n,49p,10374b,857s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (9 pages, 3307443 bytes).
+Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (9 pages, 6518352 bytes).
 PDF statistics:
- 365 PDF objects out of 1000 (max. 8388607)
- 318 compressed objects within 4 object streams
- 97 named destinations out of 1000 (max. 500000)
- 71 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 399 PDF objects out of 1000 (max. 8388607)
+ 322 compressed objects within 4 object streams
+ 96 named destinations out of 1000 (max. 500000)
+ 131 words of extra memory for PDF output out of 10000 (max. 10000000)
 
