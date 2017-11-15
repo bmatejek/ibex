@@ -1,7 +1,8 @@
 % !TEX root =  paper.tex
 \section{Related Work}
 
-We review some of the most successful segmentation methods that have been applied to large-scale EM images in connectomics. Fig.~\ref{fig:pipeline} shows the results of a typical connectomics segmentation pipeline.
+We review some of the most successful segmentation methods that have been applied to large-scale EM images in connectomics.
+%Fig.~\ref{fig:pipeline} shows the results of a typical connectomics segmentation pipeline.
 
 \paragraph{Pixel-based methods.}
 A large amount of connectomics research considers the problem of extracting segmentation information at the pixel (i.e., voxel) level from the raw EM images. Some early techniques apply computationally expensive graph partitioning algorithms with a single node per pixel~\cite{andres2012globally}. However, these methods do not scale to terabyte datasets. More recent methods train classifiers to predict membrane probabilities per image slice either using 2D~\cite{ciresan2012deep,jain2010boundary,kaynig2015large,seymour2016rhoananet,amelio_segmentation} or 3D CNNs~\cite{lee2015recursive,ronneberger2015u,turaga2010convolutional}.
