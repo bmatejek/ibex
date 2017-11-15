@@ -57,6 +57,10 @@ We now analyze how each major component of our method contributes to this final 
 
 \subsection{Graph Pruning Results}
 
+
+
+Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. This edge pruning is essential for the graph partitioning algorithm, which has a computational complexity dependence on the number of edges. The baseline algorithm considers all adjacent regions for merging. Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., 753 compared to 763). Our pruning heuristic removes at least $6\times$ the number of edges on all datasets, achieving a maximum removal rate of $20\times$.
+
 \begin{table}
 	\centering
 	\small
@@ -66,16 +70,14 @@ We now analyze how each major component of our method contributes to this final 
 		Kasthuri Vol. 2 & 1,010 / 26,073 & 904 / 4,327 \\
 		FlyEM Vol. 1 & 269 / 14,875 & 262 / 946 \\
 		FlyEM Vol. 2 & 270 / 16,808 & 285 / 768 \\ \hline
-%		Kasthuri Vol. 1 & 763 / 21242 (3.47\%) & 753 / 3459 (17.88\%) \\
-%		Kasthuri Vol. 2 & 1010 / 26073 (3.73\%) & 904 / 4327 (17.28\%) \\
-%		FlyEM Vol. 1 & 269 / 14875 (1.78\%) & 262 / 946 (21.69\%) \\
-%		FlyEM Vol. 2 & 270 / 16808 (1.58\%) & 285 / 768 (27.07\%)\\ \hline
+		%		Kasthuri Vol. 1 & 763 / 21242 (3.47\%) & 753 / 3459 (17.88\%) \\
+		%		Kasthuri Vol. 2 & 1010 / 26073 (3.73\%) & 904 / 4327 (17.28\%) \\
+		%		FlyEM Vol. 1 & 269 / 14875 (1.78\%) & 262 / 946 (21.69\%) \\
+		%		FlyEM Vol. 2 & 270 / 16808 (1.58\%) & 285 / 768 (27.07\%)\\ \hline
 	\end{tabular}
 	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 763) compared to total number of edges in the graph (e.g., 21,242) for each case.}
 	\label{table:skeletonization}
 \end{table}
-
-Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. This edge pruning is essential for the graph partitioning algorithm, which has a computational complexity dependence on the number of edges. The baseline algorithm considers all adjacent regions for merging. Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., 753 compared to 763). Our pruning heuristic removes at least $6\times$ the number of edges on all datasets, achieving a maximum removal rate of $20\times$.
 
 We generate edges in our graph by using information from the skeletons. 
 In particular, we do not enforce the constraint that edges in our graph correspond to adjacent segments.
