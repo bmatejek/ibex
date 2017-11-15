@@ -41,8 +41,10 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Graph-Based Neural Reconstruction from Morphological Skeletons}
-
+\title{Graph-Based Neural Reconstruction \\ from Skeletonized 3D Networks}
+% Neural Reconstruction Using Skeletonized 3D Networks
+% Neural Reconstruction with Top-Down Enhancements from Skeletonized 3D Networks
+% Graph-Based Neural Reconstruction from Morphological Skeletons
 %Robust Agglomeration using 3D Skeletonization of Labeled for Connectomics}
 
 %\author{Brian Matejek\\
@@ -67,13 +69,16 @@
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Advancements in electron microscopy image acquisition have created massive connectomics datasets in the terabyte range that make manual reconstruction of neuronal structures infeasible. 
-Current state-of-the-art automatic methods segment neural membranes at the pixel level followed by agglomeration methods to create full neuron reconstructions. 
+Advancements in electron microscopy image acquisition have created massive connectomics datasets in the terabyte range that make manual reconstruction of neuronal structures infeasible.
+Current state-of-the-art automatic methods segment neural membranes at the pixel level followed by agglomeration methods to create full neuron reconstructions.
 However, these approaches widely neglect global geometric properties that are inherent in the graph structure of neural wiring diagrams.
-In this work, we follow bottom-up pixel-based reconstruction by a top-down graph-based method to more accurately approximate neural pathways. 
-Using the membrane labels of the pixel-based segmentation we first generate skeletons in 3D.
-Using this 3D graph we train automatic classifiers for shape description to detect impossible neural pathways by looking at geometric properties.
-We then apply efficient graph-based optimization strategies to improve the segmentation labels. We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average variation of information improvement of \FIX{$X\times$}. 
+In this work, we follow bottom-up pixel-based reconstruction by a top-down graph-based method to more accurately approximate neural pathways.
+We first generate skeletons in 3D from the membrane labels of the pixel-based segmentation.
+We then simplify this skeletonized 3D network into a 3D graph with nodes corresponding to labels from the segmentation and edges identifying potential locations of segmentation errors.
+We use a CNN classifier trained on ground truth data to generate edge weights on the 3D graph corresponding to error probabilities.
+We then apply a multicut algorithm to generate a partition on the graph that improves the final segmentation.
+Because the 3D graph is small and encodes top-down information our method is efficient and globally improves the neural reconstruction.
+We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average variation of information improvement of \FIX{$X\times$}.
 %The paper provides insights into learning shape features for top-down graph-based neuron reconstruction.
 \end{abstract}
 %%%%%%%%	% BODY TEXT

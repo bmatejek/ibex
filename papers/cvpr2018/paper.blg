@@ -1,4 +1,6 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: paper.aux
+This is BibTeX, Version 0.99d (TeX Live 2017)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: paper.aux
 The style file: ieee.bst
 Database file #1: paper.bib
 Warning--can't use both volume and number fields in haehn2017scalable
@@ -6,4 +8,45 @@ Warning--can't use both volume and number fields in maas2013rectifier
 Warning--empty booktitle in nesterov1983method
 Warning--empty year in nesterov1983method
 Warning--empty publisher in Turaga:2009
+You've used 42 entries,
+            2120 wiz_defined-function locations,
+            732 strings with 13476 characters,
+and the built_in function-call counts, 18854 in all, are:
+= -- 1751
+> -- 1287
+< -- 16
++ -- 512
+- -- 466
+* -- 1486
+:= -- 3148
+add.period$ -- 131
+call.type$ -- 42
+change.case$ -- 356
+chr.to.int$ -- 0
+cite$ -- 47
+duplicate$ -- 622
+empty$ -- 1184
+format.name$ -- 466
+if$ -- 3842
+int.to.chr$ -- 0
+int.to.str$ -- 42
+missing$ -- 42
+newline$ -- 212
+num.names$ -- 84
+pop$ -- 377
+preamble$ -- 1
+purify$ -- 314
+quote$ -- 0
+skip$ -- 474
+stack$ -- 0
+substring$ -- 935
+swap$ -- 186
+text.length$ -- 16
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 168
+warning$ -- 5
+while$ -- 143
+width$ -- 44
+write$ -- 455
 (There were 5 warnings)
