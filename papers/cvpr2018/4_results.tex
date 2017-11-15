@@ -1,10 +1,12 @@
+% !TEX root =  paper.tex
+
 \begin{figure*}[t!]
 	\centering
-	\includegraphics[width=0.23\linewidth]{./figures/variation_of_information-microns-train-600.png}
-	\includegraphics[width=0.23\linewidth]{./figures/variation_of_information-microns-test-600.png}
-	\includegraphics[width=0.23\linewidth]{./figures/variation_of_information-FlyEM-train-600.png}
-	\includegraphics[width=0.23\linewidth]{./figures/variation_of_information-FlyEM-test-600.png}
-	\caption{Our improvement (reD) on variation of information from the baseline NeuroProof segmentation (green). The blue dot represents an oracle which correctly partitions the graph.}
+	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-microns-train-600.png}
+	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-microns-test-600.png}
+	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-FlyEM-train-600.png}
+	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-FlyEM-test-600.png}
+	\caption{VI scores of our method (red) compared to the baseline segmentation (green) and an oracle (blue) that optimally partitions the graph based on ground truth.}
 	\label{fig:variation-of-information}
 \end{figure*}
 
@@ -12,19 +14,20 @@
 
 \subsection{Variation of Information Improvement}
 
-We compute the variation of information for our segmentations against the expert-labeled ground truth datasets. 
-The input segmentation to our network serves as a baseline. 
-We evaluate NeuroProof (our input) at several different thresholds to create a variation of information curve. 
-Figure \ref{fig:variation-of-information} shows the results on the datasets compared to the baseline (green) and an oracle (blue). 
-The oracles sees the graph from our algorithm and correctly partitions the graph based on the ground truth. 
+\subsection{Error Metric}
+\label{sec:variation-of-information}
+
+We evaluate the performance of the different methods using the split version of variance of information~\cite{meila2003comparing} (VI-s). Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$.
+Over and under-segmentation are quantified by the conditional entropy $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropy between two clusterings, better VI scores are closer to the origin.
+
+In Fig.~\ref{fig:variation-of-information}, we show VI scores for the input over-segmentation of the Kasthuri data \hp{check} at different thresholds of agglomeration (green) compared to our method (red). We also show the comparison to an oracle (blue) that correctly partitions the graph from our algorithm based on ground truth. \hp{add discussion of the results}
+
+%The oracles sees the graph from our algorithm and correctly partitions the graph based on the ground truth.
 %TODO{Our methods decreases the split variation of information by a factor of XX\% and only increases the merge variation of information by a factor of XX\% on the test datasets.}
-Figure \ref{fig:positive-results} shows some successful merges on the Kasthuri Vol. 2. 
-Several of these successful examples combine multiple consecutive segments. 
-The third example shows the correction of an oversegmented dendrite. 
-Figure \ref{fig:negative-results} shows some errors made. 
-In two of these examples the algorithm correctly predicted several merges but made just one error.
-In the third example, an error in the initial segmentation propagated in our pipeline. 
-In the next three subsections we show how each step in the pipeline contributes to this final result.
+
+Fig.~\ref{fig:positive-results} shows successful merges on the Kasthuri Vol. 2. Several of these successful examples combine multiple consecutive segments. The third example in the figure shows the correction of an over-segmented dendrite.
+Fig.~\ref{fig:negative-results} shows some failure cases. In two of these examples the algorithm correctly predicted several merges and made one error.
+In the third example a catastrophic merge error \hp{check} in the initial segmentation propagated to the output. We now analyze how each major component of our method contributes to the final result.
 
 \begin{figure}[t]
 	\centering
@@ -33,7 +36,7 @@ In the next three subsections we show how each step in the pipeline contributes 
 	\includegraphics[width=0.85\linewidth]{./figures/multicut-correct3.png}
 	\includegraphics[width=0.85\linewidth]{./figures/multicut-correct4.png}
 	\includegraphics[width=0.85\linewidth]{./figures/multicut-correct5.png}
-	\caption{Some correctly predicted results from our framework.}
+	\caption{Correctly segmented neurons from our method.}
 	\label{fig:positive-results}
 \end{figure}
 
@@ -43,12 +46,12 @@ In the next three subsections we show how each step in the pipeline contributes 
 	\includegraphics[width=0.85\linewidth]{./figures/multicut-incorrect2.png}
 	\includegraphics[width=0.85\linewidth]{./figures/multicut-incorrect3.png}
 	\includegraphics[width=0.85\linewidth]{./figures/multicut-incorrect4.png}
-	\caption{Mistakes made by the proposed framework.}
+	\caption{Errors made by our method.}
 	\label{fig:negative-results}
 \end{figure}
 
 
-\subsection{Pruning via Skeletonization}
+\subsection{Graph Creation}
 
 \begin{table}
 	\centering
@@ -60,23 +63,14 @@ In the next three subsections we show how each step in the pipeline contributes 
 		FlyEM Vol. 1 & 269 / 14875 (1.78\%) & 262 / 946 (21.69\%) \\
 		FlyEM Vol. 2 & 270 / 16808 (1.58\%) & 285 / 768 (27.07\%)\\ \hline
 	\end{tabular}
-	\caption{The results of our pruning heuristic compared to the current baseline.}
+	\caption{The results of our skeleton graph pruning heuristic compared to the baseline segmentation.}
 	\label{table:skeletonization}
 \end{table}
 
-Table \ref{table:skeletonization} shows the results of pruning using the skeletonization heuristic.
-The baseline algorithm considers all adjacent regions for merging. 
-Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations.
-This edge pruning is essential for the graph partitioning algorithm which has a computational complexity dependence on the number of edges. 
-Our pruning heuristic removes at least $6\times$ the number of edges between correctly split segments on all datasets, achieving a maximum removal ratio of $20\times$. 
-Equally important is the number of split errors that remain after pruning.
-These are the locations that we want to merge to create a more accurate reconstruction.
-For every dataset, the number of positive candidates remains relatively even. 
-However, since our heuristic does not enforce an adjacency constraint of two regions when constructing edges in the graph, the difference does not indicate the number of examples excluded by pruning. 
-In fact, our method finds a number of examples which are non-adjacent.
-Figure \ref{fig:skeleton-results} shows two example segments which are split errors.
-The top example our algorithm missed but the segments are adjacent. 
-The bottom example our algorithm found despite the fact that they are not adjacent.
+Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the heuristic discussed in Sec.~\ref{sec:skeletonization}. The baseline algorithm considers all adjacent regions for merging. Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations. This edge pruning is essential for the graph partitioning algorithm, which has a computational complexity dependence on the number of edges. Our pruning heuristic removes at least $6\times$ the number of edges between correctly split segments on all datasets, achieving a maximum removal ratio of $20\times$.
+
+Equally important is the number of split errors that remain after pruning. These are the locations that we want to merge to create a more accurate reconstruction. For every dataset, the number of positive candidates \hp{what is a positive candidate?} remains relatively equal. \hp{equal to what?}
+However, since our heuristic does not enforce an adjacency constraint of two regions when constructing edges in the graph, the difference does not indicate the number of examples excluded by pruning. In fact, our method finds a number of examples that are non-adjacent. Figure \ref{fig:skeleton-results} shows two example segments with split errors, one that our algorithm missed (top) and one that it identified (bottom), despite the fact that the split segments are not adjacent.
 
 \begin{figure}[h!]
 	\centering
@@ -89,8 +83,7 @@ The bottom example our algorithm found despite the fact that they are not adjace
 
 \subsection{Classification Performance}
 
-Table \ref{table:classification} shows the precision and recall for all of the datasets. 
-Since, our method does not rely on the image data, we can train the network on an anisotropic dataset and get impressive results on an isotropic dataset. 
+Table \ref{table:classification} shows the precision and recall rates for all of the datasets. We can train the CNN on anisotropic data and get good results on isotropic data. \hp{add more discussion}
 
 \begin{table}[h]
 	\centering
@@ -98,19 +91,16 @@ Since, our method does not rely on the image data, we can train the network on a
 		\textbf{Dataset} & \textbf{Precision} & \textbf{Recall} & \textbf{Accuracy} \\ \hline
 		Kasthuri Training & 0.919 & 0.936 & 0.974 \\
 		Kasthuri Testing & 0.737 & 0.717 & 0.907 \\
-		FlyEM Vol. 1 & 0.796 & 0.478 & 0.862 \\ 
+		FlyEM Vol. 1 & 0.796 & 0.478 & 0.862 \\
 		FlyEM Vol. 2 & 0.762 & 0.422 & 0.810 \\ \hline
 	\end{tabular}
-	\caption{Precision and recall for the training and three test datasets.}
+	\caption{Precision and recall rates for the training and three test datasets.}
 	\label{table:classification}
 \end{table}
 
 \subsection{Graph Based Strategies}
 
-Applying a graph-based optimization strategy increases the accuracy over the CNN alone. 
-In our test datasets, we note an increase in precision on all datasets. 
-For our segmentation problems we prefer a higher precision since it is more difficult to correct merge-errors. 
-Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all three datasets in relation to the CNN.
+Applying a graph-based optimization strategy increases the accuracy over the CNN alone. In our test scores, we note an increase in precision on all datasets. For our segmentation problems we prefer a higher precision since it is more difficult to correct merge-errors. Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all three datasets in relation to the CNN without graph-based optimization. \hp{add more discussion}
 
 \begin{table}[h]
 	\centering
@@ -118,11 +108,9 @@ Table \ref{table:multicut} shows the changes in precision, recall, and accuracy 
 		\textbf{Dataset} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} \\ \hline
 		Kasthuri Training & +3.60\% & -0.01\% & +0.60\% \\
 		Kasthuri Testing & +7.59\% & -1.77\% & +1.38\% \\
-		FlyEM Vol. 1 & +2.68\% & +0.76\% & +0.66\% \\ 
+		FlyEM Vol. 1 & +2.68\% & +0.76\% & +0.66\% \\
 		FlyEM Vol. 2 & +2.22\% & -1.05\% & +0.29\% \\ \hline
 	\end{tabular}
 	\caption{Precision and recall for the training and three test datasets.}
 	\label{table:multicut}
 \end{table}
-
-
