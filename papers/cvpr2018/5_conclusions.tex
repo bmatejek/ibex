@@ -1,14 +1,6 @@
 % !TEX root =  paper.tex
 \section{Conclusions}
 
-We present a novel method for reconstructing neuronal processes in connectomics datasets. 
-We extend existing region-based reconstruction strategies using a morphological 3D skeleton graph and show significant accuracy improvement on two datasets from two different species. 
-Our approach enables enforcing domain-constraints on the resulting segmentation. 
-We believe this approach extends beyond connectomics to other domains with different constraints.
+We present a novel method for improved neuronal reconstruction in connectomics that extends existing pixel-based reconstruction strategies using skeletonized 3D networks. We show significant accuracy improvements on datasets from two different species. The main benefits of our approach are that it enforces domain-specific constraints at the global graph level while incorporating pixel-based classification information.
 
-There is significant room for additional research related to this topic.
-We can still extract a lot more information from the skeletons of each segment.
-Currently these skeletons identify potential merge locations.
-However, these representations can be used to identify improperly merged segments.
-Additionally, we can further improve our results by tweaking the partitioning cost functions to more closely match the underlying biology.
-One such extension might take the outputs of a synaptic detector to enforce the constraint that a given segment only has post- or pre-synaptic connections. 
+There is significant room for additional research and improvements. We can augment the graph with additional information from the image data, such as synaptic locations, cell morphology, locations of mitochondria, etc. This would allow us to enforce additional biological constraints during graph partitioning. For example, we could then enforce the constraint that a given segment only has post- or pre-synaptic connections. An augmented graph would also be helpful for splitting improperly merged segments by adding additional terms to the partitioning cost function. Finally, we believe that the benefits of top-down enhancements from graph optimization can extend beyond connectomics to other domains, such as medical image segmentation.
