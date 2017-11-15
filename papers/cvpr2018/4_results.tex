@@ -10,34 +10,34 @@
 	\label{fig:variation-of-information}
 \end{figure*}
 
-\section{Results}
+%\section{Results}
 
 \subsection{Error Metric}
 \label{sec:variation-of-information}
 
-We evaluate the performance of the different methods using the split version of variance of information (VI)~\cite{meila2003comparing}. 
+We evaluate the performance of the different methods using the split version of variance of information (VI)~\cite{meila2003comparing}.
 Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over and undersegmentation are quantified by the conditional entropy $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropy between two clusterings, better VI scores are closer to the origin.
 
-\subsection{Variation of Information Improvement}
+\subsection{Variation of Information Results}
 
-In Fig.~\ref{fig:variation-of-information}, we show the VI results of NeuroProof on the Kasthuri and FlyEM data at varying thresholds of agglomeration (green). 
-The green circle represents the variation of information for our input segmentation (a threshold of 0.3 for all datasets). 
-Our results are in red.  
-We show the comparison to an oracle (blue) that correctly partitions the graph from our algorithm based on ground truth. 
+In Fig.~\ref{fig:variation-of-information}, we show the VI results of NeuroProof on the Kasthuri and FlyEM data at varying thresholds of agglomeration (green).
+The green circle represents the variation of information for our input segmentation with a threshold of 0.3 for all datasets.
+Our results are in red.
+We show the comparison to an oracle (blue) that correctly partitions the graph from our algorithm based on ground truth.
 
-Our algorithm improves the accuracy of the input segmentation on every dataset, reducing the VI split score on average by \FIX{X\%} and only increasing the VI merge score by \FIX{X\%}. 
-Scores closer to the origin are better for this metric, and in every instance we are below the green curve. 
+Our algorithm improves the accuracy of the input segmentation on every dataset, reducing the VI split score on average by \FIX{X\%} and only increasing the VI merge score by \FIX{X\%}.
+Scores closer to the origin are better for this metric, and in every instance we are below the green curve.
 We see significant improvements on the Kasthuri datasets (VI split reduction of \FIX{X\%} and \FIX{X\%} on the training and testing datasets respectively) and slightly more modest improvements on the FlyEM datasets (reduction of \FIX{X\%} and \FIX{X\%}).
-However, our baseline, NeuroProof performs much better on the FlyEM datasets reducing the potential improvement. 
+However, our baseline, NeuroProof performs much better on the FlyEM datasets reducing the potential improvement.
 Isotropic datasets are easier to segment using state-of-the-art region-based methods than anisotropic ones~\cite{plaza2014annotating}.
-Thus there is less room for improvement on these datasets. 
+Thus there is less room for improvement on these datasets.
 
-Fig.~\ref{fig:positive-results} shows successful merges on the Kasthuri Vol. 2 dataset. 
-Several of these examples combine multiple consecutive segments that span the volume. 
+Fig.~\ref{fig:positive-results} shows successful merges on the Kasthuri Vol. 2 dataset.
+Several of these examples combine multiple consecutive segments that span the volume.
 In the third example we correct the oversegmentation of a dendrite.
-Fig.~\ref{fig:negative-results} shows some failure cases. 
+Fig.~\ref{fig:negative-results} shows some failure cases.
 In two of these examples the algorithm correctly predicted several merges but made one error.
-In the third example a merge error in the initial segmentation propagated to our output. 
+In the third example a merge error in the initial segmentation propagated to our output.
 We now analyze how each major component of our method contributes to this final result.
 
 \begin{figure}[t]
@@ -95,32 +95,32 @@ Of the successful examples in Figure \ref{fig:positive-results}, the second and 
 
 \subsection{Classification Performance}
 
-Figure \ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve for all of the datasets. 
+Figure \ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve for all of the datasets.
 We train our CNN using one of the Kasthuri volumes and test using the other three datasets.
-Since our CNN only takes as input a region of the label volume we can train on an anisotropic dataset and infer on an isotropic one. 
+Since our CNN only takes as input a region of the label volume we can train on an anisotropic dataset and infer on an isotropic one.
 This provides a major benefit given the time-intensive task of manually generating ground truth data at various resolutions.
 
 As evidenced by the ROC curve, the test results on the Kasthuri data are better than the results for FlyEM.
-We believe this is in part because of the differences in the datasets (i.e., isotropy and $xy$ resolution). 
+We believe this is in part because of the differences in the datasets (i.e., isotropy and $xy$ resolution).
 To test this hypothesis, we also evaluate the performance of the FlyEM datasets when the network trains on FlyEM Vol. 1 and infers on FlyEM Vol. 2.\footnote{Since the FlyEM datasets have significantly fewer examples, we initialize the network with the weights from the Kasthuri training and have an initial learning rate of $10^{-4}$.}
-The dotted lines in the figure represent these tests. 
+The dotted lines in the figure represent these tests.
 There is a slight performance increase for FlyEM Vol. 2.
-However, the FlyEM datasets have reasonable results when the network is trained by the Kasthuri data, and the results outside of this section follow from that setup.  
+However, the FlyEM datasets have reasonable results when the network is trained by the Kasthuri data, and the results outside of this section follow from that setup.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.95\linewidth]{./figures/receiver-operating-characteristic.jpg}
 	\caption{The receiver operating characteristic for all four datasets.}
 	\label{fig:receiver-operating-characteristic}
-\end{figure}	
-	
+\end{figure}
+
 \subsection{Graph Based Strategies}
 
-The graph-based optimization strategy increases our correction accuracy over using just the CNN. 
-In particular, the precision increases on each dataset, although the recall decreases on all but one of the datasets. 
-Since it is more difficult to correct merge errors than split errors, it is often desirable to sacrifice recall for precision. 
-Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all four datasets compared to the CNN. 
-Over the three testing datasets, applying a graph-based partitioning strategy reduced the number of merge errors by \FIX{X}, \FIX{Y}, and \FIX{Z}. 
+The graph-based optimization strategy increases our correction accuracy over using just the CNN.
+In particular, the precision increases on each dataset, although the recall decreases on all but one of the datasets.
+Since it is more difficult to correct merge errors than split errors, it is often desirable to sacrifice recall for precision.
+Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all four datasets compared to the CNN.
+Over the three testing datasets, applying a graph-based partitioning strategy reduced the number of merge errors by \FIX{X}, \FIX{Y}, and \FIX{Z}.
 
 \begin{table}[h]
 	\centering
