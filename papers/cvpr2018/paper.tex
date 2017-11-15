@@ -32,6 +32,7 @@
 \def\cvprPaperID{0446} % *** Enter the CVPR Paper ID here
 \def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
 %
+\newcommand{\FIX}[1]{\textcolor{red}{#1}}
 \newcommand{\hp}[1]{\textcolor{red}{HP: #1}}
 \newcommand{\donglai}[1]{\textcolor{blue}{[Donglai: #1]}}
 
@@ -72,7 +73,7 @@ However, these approaches widely neglect global geometric properties that are in
 In this work, we follow bottom-up pixel-based reconstruction by a top-down graph-based method to more accurately approximate neural pathways. 
 Using the membrane labels of the pixel-based segmentation we first generate skeletons in 3D.
 Using this 3D graph we train automatic classifiers for shape description to detect impossible neural pathways by looking at geometric properties.
-We then apply efficient graph-based optimization strategies to improve the segmentation labels. We demonstrate the performance of our approach on multiple real-world connectomics datasets with average variation of information improvement of $X\times$. 
+We then apply efficient graph-based optimization strategies to improve the segmentation labels. We demonstrate the performance of our approach on multiple real-world connectomics datasets with average variation of information improvement of \FIX{$X\times$}. 
 %The paper provides insights into learning shape features for top-down graph-based neuron reconstruction.
 \end{abstract}
 %%%%%%%%	% BODY TEXT

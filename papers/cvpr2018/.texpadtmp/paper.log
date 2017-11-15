@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  14 NOV 2017 22:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  14 NOV 2017 22:15
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -638,21 +638,21 @@ File: hpdftex.def 2016/05/05 v6.83n Hyperref driver for pdfTeX
 ) (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 40.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 41.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 ) ABD: EveryShipout initializing macros (/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/color.sty
@@ -697,7 +697,7 @@ File: siunitx-abbreviations.cfg 2016/03/01 v2.6q siunitx: Abbreviated units
 )
 \AtBeginShipoutBox=\box56
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 40.
+Package hyperref Info: Link coloring ON on input line 41.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
  (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
@@ -705,23 +705,23 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count188
 )
-LaTeX Info: Redefining \ref on input line 40.
-LaTeX Info: Redefining \pageref on input line 40.
-LaTeX Info: Redefining \nameref on input line 40.
+LaTeX Info: Redefining \ref on input line 41.
+LaTeX Info: Redefining \pageref on input line 41.
+LaTeX Info: Redefining \nameref on input line 41.
 \c__siunitx_mathsf_int=\count189
-LaTeX Font Info:    Try loading font information for U+msa on input line 40.
+LaTeX Font Info:    Try loading font information for U+msa on input line 41.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 40.
+LaTeX Font Info:    Try loading font information for U+msb on input line 41.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 \c__siunitx_mathtt_int=\count190
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 66.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 67.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 68.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 69.
  (./0_introduction.tex <figures/schema/pre-multicut-with-arrows.pdf, id=4, 1027.84pt x 770.88pt>
 File: figures/schema/pre-multicut-with-arrows.pdf Graphic file (type pdf)
  <use figures/schema/pre-multicut-with-arrows.pdf>
@@ -754,8 +754,8 @@ Package pdftex.def Info: ./figures/pipeline/neuroproof.png used on input line 32
 (pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 81.
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 81.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 82.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 82.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 ) [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
@@ -775,29 +775,29 @@ Package pdftex.def Info: ./figures/skeleton2.png used on input line 7.
 File: ./figures/split_error1.png Graphic file (type png)
 
 <use ./figures/split_error1.png>
-Package pdftex.def Info: ./figures/split_error1.png used on input line 41.
+Package pdftex.def Info: ./figures/split_error1.png used on input line 43.
 (pdftex.def)             Requested size: 218.16463pt x 58.06216pt.
  <./figures/split_error2.png, id=138, 578.16pt x 102.98476pt>
 File: ./figures/split_error2.png Graphic file (type png)
  <use ./figures/split_error2.png>
-Package pdftex.def Info: ./figures/split_error2.png used on input line 42.
+Package pdftex.def Info: ./figures/split_error2.png used on input line 44.
 (pdftex.def)             Requested size: 218.16463pt x 38.8596pt.
- [3 <./figures/skeleton1.png> <./figures/skeleton2.png>] <figures/architecture.png, id=167, 911.405pt x 389.455pt>
+ [3 <./figures/skeleton1.png> <./figures/skeleton2.png>] <figures/architecture.png, id=166, 911.405pt x 389.455pt>
 File: figures/architecture.png Graphic file (type png)
  <use figures/architecture.png>
-Package pdftex.def Info: figures/architecture.png used on input line 64.
+Package pdftex.def Info: figures/architecture.png used on input line 66.
 (pdftex.def)             Requested size: 472.01192pt x 201.69768pt.
 ) (./3_evaluation.tex
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 13.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 12.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Underfull \hbox (badness 1184) in paragraph at lines 12--14
-\OT1/ptm/b/n/10 Kasthuri. \OT1/ptm/m/n/10 The Kasthuri dataset con-sists of scan-ning
+Underfull \hbox (badness 1253) in paragraph at lines 12--13
+\OT1/ptm/m/n/10 tron mi-cro-scope im-ages of the neo-cor-tex of a mouse
  []
 
 
-Underfull \hbox (badness 1478) in paragraph at lines 15--17
+Underfull \hbox (badness 1478) in paragraph at lines 14--15
 \OT1/ptm/m/n/10 by a fo-cused ion-beam milling scan-ning elec-tron mi-
  []
 
@@ -805,22 +805,22 @@ Underfull \hbox (badness 1478) in paragraph at lines 15--17
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-) (./4_results.tex <./figures/variation_of_information-microns-train-600.png, id=201, 462.528pt x 346.896pt>
+) (./4_results.tex <./figures/variation_of_information-microns-train-600.png, id=202, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-microns-train-600.png Graphic file (type png)
  <use ./figures/variation_of_information-microns-train-600.png>
 Package pdftex.def Info: ./figures/variation_of_information-microns-train-600.png used on input line 5.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
- <./figures/variation_of_information-microns-test-600.png, id=202, 462.528pt x 346.896pt>
+ <./figures/variation_of_information-microns-test-600.png, id=203, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-microns-test-600.png Graphic file (type png)
  <use ./figures/variation_of_information-microns-test-600.png>
 Package pdftex.def Info: ./figures/variation_of_information-microns-test-600.png used on input line 6.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
- <./figures/variation_of_information-FlyEM-train-600.png, id=203, 462.528pt x 346.896pt>
+ <./figures/variation_of_information-FlyEM-train-600.png, id=204, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-FlyEM-train-600.png Graphic file (type png)
  <use ./figures/variation_of_information-FlyEM-train-600.png>
 Package pdftex.def Info: ./figures/variation_of_information-FlyEM-train-600.png used on input line 7.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
- <./figures/variation_of_information-FlyEM-test-600.png, id=204, 462.528pt x 346.896pt>
+ <./figures/variation_of_information-FlyEM-test-600.png, id=205, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-FlyEM-test-600.png Graphic file (type png)
  <use ./figures/variation_of_information-FlyEM-test-600.png>
 Package pdftex.def Info: ./figures/variation_of_information-FlyEM-test-600.png used on input line 8.
@@ -836,47 +836,47 @@ Underfull \hbox (badness 1215) in paragraph at lines 23--24
 []\OT1/ptm/m/n/10 In Fig. [][]6[][], we show VI scores for the in-put over-
  []
 
-<./figures/multicut-correct1.png, id=217, 578.16pt x 114.72862pt>
+<./figures/multicut-correct1.png, id=218, 578.16pt x 114.72862pt>
 File: ./figures/multicut-correct1.png Graphic file (type png)
  <use ./figures/multicut-correct1.png>
 Package pdftex.def Info: ./figures/multicut-correct1.png used on input line 34.
 (pdftex.def)             Requested size: 201.56699pt x 39.99805pt.
- <./figures/multicut-correct2.png, id=218, 578.16pt x 306.84637pt>
+ <./figures/multicut-correct2.png, id=219, 578.16pt x 306.84637pt>
 File: ./figures/multicut-correct2.png Graphic file (type png)
  <use ./figures/multicut-correct2.png>
 Package pdftex.def Info: ./figures/multicut-correct2.png used on input line 35.
 (pdftex.def)             Requested size: 201.56699pt x 106.97644pt.
- <./figures/multicut-correct3.png, id=219, 578.16pt x 210.48637pt>
+ <./figures/multicut-correct3.png, id=220, 578.16pt x 210.48637pt>
 File: ./figures/multicut-correct3.png Graphic file (type png)
  <use ./figures/multicut-correct3.png>
 Package pdftex.def Info: ./figures/multicut-correct3.png used on input line 36.
 (pdftex.def)             Requested size: 201.56699pt x 73.38226pt.
- <./figures/multicut-correct4.png, id=220, 578.16pt x 75.8835pt>
+ <./figures/multicut-correct4.png, id=221, 578.16pt x 75.8835pt>
 File: ./figures/multicut-correct4.png Graphic file (type png)
  <use ./figures/multicut-correct4.png>
 Package pdftex.def Info: ./figures/multicut-correct4.png used on input line 37.
 (pdftex.def)             Requested size: 201.56699pt x 26.4554pt.
- <./figures/multicut-correct5.png, id=221, 578.16pt x 118.64325pt>
+ <./figures/multicut-correct5.png, id=222, 578.16pt x 118.64325pt>
 File: ./figures/multicut-correct5.png Graphic file (type png)
  <use ./figures/multicut-correct5.png>
 Package pdftex.def Info: ./figures/multicut-correct5.png used on input line 38.
 (pdftex.def)             Requested size: 201.56699pt x 41.36281pt.
- <./figures/multicut-incorrect1.png, id=222, 578.16pt x 129.48375pt>
+ <./figures/multicut-incorrect1.png, id=223, 578.16pt x 129.48375pt>
 File: ./figures/multicut-incorrect1.png Graphic file (type png)
  <use ./figures/multicut-incorrect1.png>
 Package pdftex.def Info: ./figures/multicut-incorrect1.png used on input line 45.
 (pdftex.def)             Requested size: 201.56699pt x 45.14217pt.
- <./figures/multicut-incorrect2.png, id=223, 549.85425pt x 173.448pt>
+ <./figures/multicut-incorrect2.png, id=224, 549.85425pt x 173.448pt>
 File: ./figures/multicut-incorrect2.png Graphic file (type png)
  <use ./figures/multicut-incorrect2.png>
 Package pdftex.def Info: ./figures/multicut-incorrect2.png used on input line 46.
 (pdftex.def)             Requested size: 201.56699pt x 63.58191pt.
- <./figures/multicut-incorrect3.png, id=224, 540.21825pt x 224.037pt>
+ <./figures/multicut-incorrect3.png, id=225, 540.21825pt x 224.037pt>
 File: ./figures/multicut-incorrect3.png Graphic file (type png)
  <use ./figures/multicut-incorrect3.png>
 Package pdftex.def Info: ./figures/multicut-incorrect3.png used on input line 47.
 (pdftex.def)             Requested size: 201.56699pt x 83.59319pt.
- <./figures/multicut-incorrect4.png, id=225, 549.252pt x 177.0615pt>
+ <./figures/multicut-incorrect4.png, id=226, 549.252pt x 177.0615pt>
 File: ./figures/multicut-incorrect4.png Graphic file (type png)
  <use ./figures/multicut-incorrect4.png>
 Package pdftex.def Info: ./figures/multicut-incorrect4.png used on input line 48.
@@ -892,12 +892,12 @@ Overfull \hbox (7.47417pt too wide) in paragraph at lines 59--66
 
 LaTeX Warning: Text page 7 contains only floats.
 
-<./figures/merge_candidate1.png, id=244, 556.78012pt x 178.56712pt>
+<./figures/merge_candidate1.png, id=245, 556.78012pt x 178.56712pt>
 File: ./figures/merge_candidate1.png Graphic file (type png)
  <use ./figures/merge_candidate1.png>
 Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 77.
 (pdftex.def)             Requested size: 201.56699pt x 64.6465pt.
- <./figures/merge_candidate2.png, id=245, 558.28575pt x 138.21637pt>
+ <./figures/merge_candidate2.png, id=246, 558.28575pt x 138.21637pt>
 File: ./figures/merge_candidate2.png Graphic file (type png)
  <use ./figures/merge_candidate2.png>
 Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 78.
@@ -946,29 +946,29 @@ Underfull \hbox (badness 4366) in paragraph at lines 110--110
  []
 
 [8])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 97.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 98.
  [9]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 97.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
  (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 97.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 97.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
 (rerunfilecheck)             Checksum: 548F18C2A5A72F99F6FE78007F759096;2504.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 97.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 98.
  ) 
 Here is how much of TeX's memory you used:
- 18287 strings out of 493014
- 349881 string characters out of 6133351
- 386699 words of memory out of 5000000
- 21488 multiletter control sequences out of 15000+600000
+ 18289 strings out of 493014
+ 349882 string characters out of 6133351
+ 386713 words of memory out of 5000000
+ 21489 multiletter control sequences out of 15000+600000
  40420 words of font info for 94 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  44i,10n,49p,10374b,857s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (9 pages, 6518352 bytes).
+Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (9 pages, 6518328 bytes).
 PDF statistics:
- 399 PDF objects out of 1000 (max. 8388607)
- 322 compressed objects within 4 object streams
- 96 named destinations out of 1000 (max. 500000)
+ 401 PDF objects out of 1000 (max. 8388607)
+ 324 compressed objects within 4 object streams
+ 97 named destinations out of 1000 (max. 500000)
  131 words of extra memory for PDF output out of 10000 (max. 10000000)
 
