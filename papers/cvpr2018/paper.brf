@@ -25,8 +25,8 @@
 \backcite {maas2013rectifier}{{4}{3.3.2}{subsubsection.3.3.2}}
 \backcite {nesterov1983method}{{4}{3.3.2}{subsubsection.3.3.2}}
 \backcite {keuper2015efficient}{{4}{3.4}{subsection.3.4}}
-\backcite {kasthuri2015saturated}{{4}{4.1}{section*.8}}
-\backcite {takemura2017connectome}{{4}{4.1}{section*.9}}
+\backcite {kasthuri2015saturated}{{4}{4.1}{section*.7}}
+\backcite {takemura2017connectome}{{4}{4.1}{section*.8}}
 \backcite {zlateski2015image}{{4}{4.2}{subsection.4.2}}
 \backcite {schlegel2017learning}{{4}{4.2}{subsection.4.2}}
 \backcite {Turaga:2009,ronneberger2015u}{{4}{4.2}{subsection.4.2}}
@@ -34,5 +34,5 @@
 \backcite {takemura2017connectome}{{4}{4.2}{subsection.4.2}}
 \backcite {10.1371/journal.pone.0125825}{{4}{4.2}{subsection.4.2}}
 \backcite {glorot2010understanding}{{5}{4.4}{subsection.4.4}}
-\backcite {meila2003comparing}{{6}{5.1}{subsection.5.1}}
-\backcite {plaza2014annotating}{{6}{5.2}{subsection.5.2}}
+\backcite {meila2003comparing}{{5}{5.1}{subsection.5.1}}
+\backcite {plaza2014annotating}{{5}{5.2}{subsection.5.2}}
