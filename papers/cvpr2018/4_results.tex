@@ -15,8 +15,8 @@
 \subsection{Error Metric}
 \label{sec:variation-of-information}
 
-We evaluate the performance of the different methods using variation of information (VI)~\cite{meila2003comparing}.
-Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over and undersegmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropies between two clusterings, lower VI scores are better.
+We evaluate the performance of the different methods using the split variation of information (VI)~\cite{meila2003comparing}.
+Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over- and under-segmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropies between two clusterings, lower VI scores are better.
 
 \subsection{Variation of Information Results}
 
@@ -94,14 +94,14 @@ In this example the small segment is carved from the larger segment in a locatio
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.85\linewidth]{./figures/merge_candidate1.png}
-	\caption{A false negative example of our method due graph pruning. The distance between the endpoints (circled) of the two segments is too far to be flagged as a merge candidate.}
+	\caption{A false negative example of our method due to graph pruning. The distance between the endpoints (circled) of the two segments is too far to be flagged as a merge candidate.}
 	\label{fig:skeleton-results}
 \end{figure}
 
 
 \subsection{CNN Classification Results}
 
-Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all datasets.
+Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.
 %We train our CNN using one of the Kasthuri volumes and test using the other three datasets.
 Since our CNN only takes as input a region of the label volume we can train on  anisotropic data and test on isotropic data.
 This provides a major benefit given the time-intensive task of manually generating ground truth for each dataset at various resolutions.
@@ -124,7 +124,7 @@ The graph optimization strategy using multicut increases our accuracy over using
 Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all four datasets compared to the CNN.
 The precision increases on each dataset, although the recall decreases on all but one of the datasets.
 Since it is more difficult to correct merge errors than split errors, it is often desirable to sacrifice recall for precision.
-Over the three testing datasets, applying a graph-based partitioning strategy reduced the number of merge errors by \FIX{X}, \FIX{Y}, and \FIX{Z}, respectively. 
+Over the three testing datasets, applying a graph-based partitioning strategy reduced the number of merge errors by 36.1\%, 12.2\%, and 13.6\%, respectively. 
 
 \begin{table}[h]
 	\centering
