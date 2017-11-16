@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  14 NOV 2017 22:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  15 NOV 2017 22:32
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -719,9 +719,9 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 \c__siunitx_mathtt_int=\count190
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 67.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 69.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 71.
  (./0_introduction.tex <figures/schema/pre-multicut-with-arrows.pdf, id=4, 1027.84pt x 770.88pt>
 File: figures/schema/pre-multicut-with-arrows.pdf Graphic file (type pdf)
  <use figures/schema/pre-multicut-with-arrows.pdf>
@@ -732,182 +732,166 @@ File: figures/schema/post-multicut.png Graphic file (type png)
  <use figures/schema/post-multicut.png>
 Package pdftex.def Info: figures/schema/post-multicut.png used on input line 10.
 (pdftex.def)             Requested size: 111.45418pt x 84.58864pt.
- <./figures/pipeline/image.png, id=17, 1027.84pt x 1027.84pt>
-File: ./figures/pipeline/image.png Graphic file (type png)
- <use ./figures/pipeline/image.png>
-Package pdftex.def Info: ./figures/pipeline/image.png used on input line 23.
-(pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
- <./figures/pipeline/affinities.png, id=18, 1027.84pt x 1027.84pt>
-File: ./figures/pipeline/affinities.png Graphic file (type png)
- <use ./figures/pipeline/affinities.png>
-Package pdftex.def Info: ./figures/pipeline/affinities.png used on input line 26.
-(pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
- <./figures/pipeline/watershed.png, id=19, 1027.84pt x 1027.84pt>
-File: ./figures/pipeline/watershed.png Graphic file (type png)
- <use ./figures/pipeline/watershed.png>
-Package pdftex.def Info: ./figures/pipeline/watershed.png used on input line 29.
-(pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
- <./figures/pipeline/neuroproof.png, id=20, 1027.84pt x 1027.84pt>
-File: ./figures/pipeline/neuroproof.png Graphic file (type png)
- <use ./figures/pipeline/neuroproof.png>
-Package pdftex.def Info: ./figures/pipeline/neuroproof.png used on input line 32.
-(pdftex.def)             Requested size: 119.24821pt x 119.24207pt.
-)
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 82.
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 82.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 64.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 64.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 ) [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./figures/schema/pre-multicut-with-arrows.pdf> <./figures/schema/post-multicut.png>] (./1_related_work.tex) (./2_method.tex <./figures/skeleton1.png, id=93, 903.375pt x 322.95656pt>
+ <./figures/schema/pre-multicut-with-arrows.pdf> <./figures/schema/post-multicut.png>]) (./1_related_work.tex) (./2_method.tex <./figures/methods/multicut_input.png, id=87, 343.58362pt x 464.937pt>
+File: ./figures/methods/multicut_input.png Graphic file (type png)
+ <use ./figures/methods/multicut_input.png>
+Package pdftex.def Info: ./figures/methods/multicut_input.png used on input line 6.
+(pdftex.def)             Requested size: 119.24821pt x 161.36826pt.
+ <./figures/methods/pre-multicut.png, id=88, 974.64125pt x 1204.5pt>
+File: ./figures/methods/pre-multicut.png Graphic file (type png)
+ <use ./figures/methods/pre-multicut.png>
+Package pdftex.def Info: ./figures/methods/pre-multicut.png used on input line 7.
+(pdftex.def)             Requested size: 119.24821pt x 147.36415pt.
+ <./figures/methods/multicut-graph.png, id=89, 974.64125pt x 1204.5pt>
+File: ./figures/methods/multicut-graph.png Graphic file (type png)
+ <use ./figures/methods/multicut-graph.png>
+Package pdftex.def Info: ./figures/methods/multicut-graph.png used on input line 8.
+(pdftex.def)             Requested size: 119.24821pt x 147.36415pt.
+ <./figures/methods/post-multicut.png, id=90, 974.64125pt x 1204.5pt>
+File: ./figures/methods/post-multicut.png Graphic file (type png)
+ <use ./figures/methods/post-multicut.png>
+Package pdftex.def Info: ./figures/methods/post-multicut.png used on input line 9.
+(pdftex.def)             Requested size: 119.24821pt x 147.36415pt.
+ <./figures/skeleton1.png, id=91, 1124.2pt x 396.48125pt>
 File: ./figures/skeleton1.png Graphic file (type png)
  <use ./figures/skeleton1.png>
-Package pdftex.def Info: ./figures/skeleton1.png used on input line 6.
-(pdftex.def)             Requested size: 218.16463pt x 77.99408pt.
- <./figures/skeleton2.png, id=94, 903.375pt x 431.36156pt>
+Package pdftex.def Info: ./figures/skeleton1.png used on input line 18.
+(pdftex.def)             Requested size: 218.16463pt x 76.94147pt.
+ <./figures/skeleton2.png, id=92, 924.45375pt x 411.5375pt>
 File: ./figures/skeleton2.png Graphic file (type png)
  <use ./figures/skeleton2.png>
-Package pdftex.def Info: ./figures/skeleton2.png used on input line 7.
-(pdftex.def)             Requested size: 218.16463pt x 104.17392pt.
- [2 <./figures/pipeline/image.png> <./figures/pipeline/affinities.png> <./figures/pipeline/watershed.png> <./figures/pipeline/neuroproof.png>] <./figures/split_error1.png, id=137, 578.16pt x 153.87488pt>
+Package pdftex.def Info: ./figures/skeleton2.png used on input line 19.
+(pdftex.def)             Requested size: 218.16463pt x 97.11949pt.
+ [2] <./figures/split_error1.png, id=136, 499.56638pt x 150.5625pt>
 File: ./figures/split_error1.png Graphic file (type png)
-
-<use ./figures/split_error1.png>
-Package pdftex.def Info: ./figures/split_error1.png used on input line 43.
-(pdftex.def)             Requested size: 218.16463pt x 58.06216pt.
- <./figures/split_error2.png, id=138, 578.16pt x 102.98476pt>
+ <use ./figures/split_error1.png>
+Package pdftex.def Info: ./figures/split_error1.png used on input line 56.
+(pdftex.def)             Requested size: 218.16463pt x 65.75145pt.
+ <./figures/split_error2.png, id=137, 549.85425pt x 93.951pt>
 File: ./figures/split_error2.png Graphic file (type png)
  <use ./figures/split_error2.png>
-Package pdftex.def Info: ./figures/split_error2.png used on input line 44.
-(pdftex.def)             Requested size: 218.16463pt x 38.8596pt.
- [3 <./figures/skeleton1.png> <./figures/skeleton2.png>] <figures/architecture.png, id=166, 911.405pt x 389.455pt>
-File: figures/architecture.png Graphic file (type png)
- <use figures/architecture.png>
-Package pdftex.def Info: figures/architecture.png used on input line 66.
-(pdftex.def)             Requested size: 472.01192pt x 201.69768pt.
-) (./3_evaluation.tex
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 12.
+Package pdftex.def Info: ./figures/split_error2.png used on input line 57.
+(pdftex.def)             Requested size: 218.16463pt x 37.27725pt.
+
+<./figures/merge_candidate2.png, id=138, 578.16pt x 130.38713pt>
+File: ./figures/merge_candidate2.png Graphic file (type png)
+ <use ./figures/merge_candidate2.png>
+Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 57.
+(pdftex.def)             Requested size: 201.56699pt x 45.4571pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [3 <./figures/methods/multicut_input.png> <./figures/methods/pre-multicut.png> <./figures/methods/multicut-graph.png> <./figures/methods/post-multicut.png> <./figures/skeleton1.png> <./figures/skeleton2.png>]) (./3_evaluation.tex
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 10.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Underfull \hbox (badness 1253) in paragraph at lines 12--13
+Underfull \hbox (badness 1253) in paragraph at lines 10--11
 \OT1/ptm/m/n/10 tron mi-cro-scope im-ages of the neo-cor-tex of a mouse
  []
 
 
-Underfull \hbox (badness 1478) in paragraph at lines 14--15
+Underfull \hbox (badness 1478) in paragraph at lines 13--14
 \OT1/ptm/m/n/10 by a fo-cused ion-beam milling scan-ning elec-tron mi-
  []
 
-[4 <./figures/split_error1.png> <./figures/split_error2.png>]
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-) (./4_results.tex <./figures/variation_of_information-microns-train-600.png, id=202, 462.528pt x 346.896pt>
+[4 <./figures/split_error1.png> <./figures/split_error2.png> <./figures/merge_candidate2.png>]) (./4_results.tex <./figures/variation_of_information-microns-train-600.png, id=197, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-microns-train-600.png Graphic file (type png)
  <use ./figures/variation_of_information-microns-train-600.png>
 Package pdftex.def Info: ./figures/variation_of_information-microns-train-600.png used on input line 5.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
- <./figures/variation_of_information-microns-test-600.png, id=203, 462.528pt x 346.896pt>
+ <./figures/variation_of_information-microns-test-600.png, id=198, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-microns-test-600.png Graphic file (type png)
  <use ./figures/variation_of_information-microns-test-600.png>
 Package pdftex.def Info: ./figures/variation_of_information-microns-test-600.png used on input line 6.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
- <./figures/variation_of_information-FlyEM-train-600.png, id=204, 462.528pt x 346.896pt>
+ <./figures/variation_of_information-FlyEM-train-600.png, id=199, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-FlyEM-train-600.png Graphic file (type png)
  <use ./figures/variation_of_information-FlyEM-train-600.png>
 Package pdftex.def Info: ./figures/variation_of_information-FlyEM-train-600.png used on input line 7.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
- <./figures/variation_of_information-FlyEM-test-600.png, id=205, 462.528pt x 346.896pt>
+ <./figures/variation_of_information-FlyEM-test-600.png, id=200, 462.528pt x 346.896pt>
 File: ./figures/variation_of_information-FlyEM-test-600.png Graphic file (type png)
  <use ./figures/variation_of_information-FlyEM-test-600.png>
 Package pdftex.def Info: ./figures/variation_of_information-FlyEM-test-600.png used on input line 8.
 (pdftex.def)             Requested size: 223.58379pt x 167.68857pt.
+ [5] <./figures/VI-results/multicut-correct1.png, id=221, 578.16pt x 90.63863pt>
+File: ./figures/VI-results/multicut-correct1.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-correct1.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct1.png used on input line 38.
+(pdftex.def)             Requested size: 201.56699pt x 31.59952pt.
+ <./figures/VI-results/multicut-correct2.png, id=222, 538.11038pt x 317.68687pt>
+File: ./figures/VI-results/multicut-correct2.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-correct2.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct2.png used on input line 39.
+(pdftex.def)             Requested size: 201.56699pt x 119.00139pt.
+ <./figures/VI-results/multicut-correct3.png, id=223, 545.33737pt x 284.86424pt>
+File: ./figures/VI-results/multicut-correct3.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-correct3.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct3.png used on input line 40.
+(pdftex.def)             Requested size: 201.56699pt x 105.28944pt.
+ <./figures/VI-results/multicut-correct4.png, id=224, 578.16pt x 86.724pt>
+File: ./figures/VI-results/multicut-correct4.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-correct4.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct4.png used on input line 41.
+(pdftex.def)             Requested size: 201.56699pt x 30.23474pt.
+ <./figures/VI-results/multicut-correct5.png, id=225, 578.16pt x 124.96687pt>
+File: ./figures/VI-results/multicut-correct5.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-correct5.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct5.png used on input line 42.
+(pdftex.def)             Requested size: 201.56699pt x 43.56744pt.
+ <./figures/VI-results/multicut-incorrect1.png, id=226, 952.55875pt x 212.795pt>
+File: ./figures/VI-results/multicut-incorrect1.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-incorrect1.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-incorrect1.png used on input line 49.
+(pdftex.def)             Requested size: 201.56699pt x 45.02594pt.
+ <./figures/VI-results/multicut-incorrect2.png, id=227, 931.48pt x 306.14375pt>
+File: ./figures/VI-results/multicut-incorrect2.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-incorrect2.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-incorrect2.png used on input line 50.
+(pdftex.def)             Requested size: 201.56699pt x 66.2447pt.
+ <./figures/VI-results/multicut-incorrect3.png, id=228, 949.5475pt x 532.99126pt>
+File: ./figures/VI-results/multicut-incorrect3.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-incorrect3.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-incorrect3.png used on input line 51.
+(pdftex.def)             Requested size: 201.56699pt x 113.14325pt.
+ <./figures/VI-results/multicut-incorrect4.png, id=229, 946.53625pt x 307.1475pt>
+File: ./figures/VI-results/multicut-incorrect4.png Graphic file (type png)
+ <use ./figures/VI-results/multicut-incorrect4.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-incorrect4.png used on input line 52.
+(pdftex.def)             Requested size: 201.56699pt x 65.4074pt.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 68.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [5 <./figures/architecture.png>]
-Underfull \vbox (badness 1009) has occurred while \output is active []
-
-
-Underfull \hbox (badness 1215) in paragraph at lines 23--24
-[]\OT1/ptm/m/n/10 In Fig. [][]6[][], we show VI scores for the in-put over-
- []
-
-<./figures/multicut-correct1.png, id=218, 578.16pt x 114.72862pt>
-File: ./figures/multicut-correct1.png Graphic file (type png)
- <use ./figures/multicut-correct1.png>
-Package pdftex.def Info: ./figures/multicut-correct1.png used on input line 34.
-(pdftex.def)             Requested size: 201.56699pt x 39.99805pt.
- <./figures/multicut-correct2.png, id=219, 578.16pt x 306.84637pt>
-File: ./figures/multicut-correct2.png Graphic file (type png)
- <use ./figures/multicut-correct2.png>
-Package pdftex.def Info: ./figures/multicut-correct2.png used on input line 35.
-(pdftex.def)             Requested size: 201.56699pt x 106.97644pt.
- <./figures/multicut-correct3.png, id=220, 578.16pt x 210.48637pt>
-File: ./figures/multicut-correct3.png Graphic file (type png)
- <use ./figures/multicut-correct3.png>
-Package pdftex.def Info: ./figures/multicut-correct3.png used on input line 36.
-(pdftex.def)             Requested size: 201.56699pt x 73.38226pt.
- <./figures/multicut-correct4.png, id=221, 578.16pt x 75.8835pt>
-File: ./figures/multicut-correct4.png Graphic file (type png)
- <use ./figures/multicut-correct4.png>
-Package pdftex.def Info: ./figures/multicut-correct4.png used on input line 37.
-(pdftex.def)             Requested size: 201.56699pt x 26.4554pt.
- <./figures/multicut-correct5.png, id=222, 578.16pt x 118.64325pt>
-File: ./figures/multicut-correct5.png Graphic file (type png)
- <use ./figures/multicut-correct5.png>
-Package pdftex.def Info: ./figures/multicut-correct5.png used on input line 38.
-(pdftex.def)             Requested size: 201.56699pt x 41.36281pt.
- <./figures/multicut-incorrect1.png, id=223, 578.16pt x 129.48375pt>
-File: ./figures/multicut-incorrect1.png Graphic file (type png)
- <use ./figures/multicut-incorrect1.png>
-Package pdftex.def Info: ./figures/multicut-incorrect1.png used on input line 45.
-(pdftex.def)             Requested size: 201.56699pt x 45.14217pt.
- <./figures/multicut-incorrect2.png, id=224, 549.85425pt x 173.448pt>
-File: ./figures/multicut-incorrect2.png Graphic file (type png)
- <use ./figures/multicut-incorrect2.png>
-Package pdftex.def Info: ./figures/multicut-incorrect2.png used on input line 46.
-(pdftex.def)             Requested size: 201.56699pt x 63.58191pt.
- <./figures/multicut-incorrect3.png, id=225, 540.21825pt x 224.037pt>
-File: ./figures/multicut-incorrect3.png Graphic file (type png)
- <use ./figures/multicut-incorrect3.png>
-Package pdftex.def Info: ./figures/multicut-incorrect3.png used on input line 47.
-(pdftex.def)             Requested size: 201.56699pt x 83.59319pt.
- <./figures/multicut-incorrect4.png, id=226, 549.252pt x 177.0615pt>
-File: ./figures/multicut-incorrect4.png Graphic file (type png)
- <use ./figures/multicut-incorrect4.png>
-Package pdftex.def Info: ./figures/multicut-incorrect4.png used on input line 48.
-(pdftex.def)             Requested size: 201.56699pt x 64.97676pt.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 60.
-
-Overfull \hbox (7.47417pt too wide) in paragraph at lines 59--66
- [][] 
- []
-
-[6 <./figures/variation_of_information-microns-train-600.png> <./figures/variation_of_information-microns-test-600.png> <./figures/variation_of_information-FlyEM-train-600.png> <./figures/variation_of_information-FlyEM-test-600.png>]
-
-LaTeX Warning: Text page 7 contains only floats.
-
-<./figures/merge_candidate1.png, id=245, 556.78012pt x 178.56712pt>
+ [6 <./figures/variation_of_information-microns-train-600.png> <./figures/variation_of_information-microns-test-600.png> <./figures/variation_of_information-FlyEM-train-600.png> <./figures/variation_of_information-FlyEM-test-600.png>] <./figures/merge_candidate1.png, id=245, 981.6675pt x 392.46625pt>
 File: ./figures/merge_candidate1.png Graphic file (type png)
  <use ./figures/merge_candidate1.png>
-Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 77.
-(pdftex.def)             Requested size: 201.56699pt x 64.6465pt.
- <./figures/merge_candidate2.png, id=246, 558.28575pt x 138.21637pt>
-File: ./figures/merge_candidate2.png Graphic file (type png)
- <use ./figures/merge_candidate2.png>
-Package pdftex.def Info: ./figures/merge_candidate2.png used on input line 78.
-(pdftex.def)             Requested size: 201.56699pt x 49.90126pt.
+Package pdftex.def Info: ./figures/merge_candidate1.png used on input line 96.
+(pdftex.def)             Requested size: 201.56699pt x 80.58185pt.
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[7 <./figures/multicut-correct1.png> <./figures/multicut-correct2.png> <./figures/multicut-correct3.png> <./figures/multicut-correct4.png> <./figures/multicut-correct5.png> <./figures/multicut-incorrect1.png> <./figures/multicut-incorrect2.png> <./figures/multicut-incorrect3.png> <./figures/multicut-incorrect4.png> <./figures/merge_candidate1.png> <./figures/merge_candidate2.png>]
-Overfull \hbox (20.85216pt too wide) in paragraph at lines 107--114
+<./figures/receiver-operating-characteristic.jpg, id=248, 642.4pt x 481.8pt>
+File: ./figures/receiver-operating-characteristic.jpg Graphic file (type jpg)
+ <use ./figures/receiver-operating-characteristic.jpg>
+Package pdftex.def Info: ./figures/receiver-operating-characteristic.jpg used on input line 116.
+(pdftex.def)             Requested size: 225.27841pt x 168.956pt.
+
+Underfull \vbox (badness 3009) has occurred while \output is active []
+
+ [7 <./figures/VI-results/multicut-correct1.png> <./figures/VI-results/multicut-correct2.png> <./figures/VI-results/multicut-correct3.png> <./figures/VI-results/multicut-correct4.png> <./figures/VI-results/multicut-correct5.png> <./figures/VI-results/multicut-incorrect1.png (PNG copy)> <./figures/VI-results/multicut-incorrect2.png (PNG copy)> <./figures/VI-results/multicut-incorrect3.png (PNG copy)> <./figures/VI-results/multicut-incorrect4.png (PNG copy)> <./figures/merge_candidate1.png (PNG copy)>]
+Overfull \hbox (20.85216pt too wide) in paragraph at lines 131--138
  [][] 
  []
 
@@ -920,7 +904,7 @@ Underfull \hbox (badness 2318) in paragraph at lines 66--66
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
 
-
+[8 <./figures/receiver-operating-characteristic.jpg>]
 Underfull \hbox (badness 6725) in paragraph at lines 86--86
 []\OT1/ptm/m/n/9 V. Jain, B. Boll-mann, M. Richard-son, D. Berger,
  []
@@ -945,30 +929,32 @@ Underfull \hbox (badness 4366) in paragraph at lines 110--110
 \OT1/ptm/m/n/9 neu-ronal pro-cesses from elec-tron mi-croscopy im-ages.
  []
 
-[8])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 98.
- [9]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
+[9])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 103.
+ [10
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 103.
  (/Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 103.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 103.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: 548F18C2A5A72F99F6FE78007F759096;2504.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 98.
+(rerunfilecheck)             Checksum: CD6F058699BC4151A6F6573802F5CBD7;2579.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 103.
  ) 
 Here is how much of TeX's memory you used:
- 18289 strings out of 493014
- 349882 string characters out of 6133351
- 386713 words of memory out of 5000000
- 21489 multiletter control sequences out of 15000+600000
- 40420 words of font info for 94 fonts, out of 8000000 for 9000
+ 18292 strings out of 493014
+ 350492 string characters out of 6133351
+ 388416 words of memory out of 5000000
+ 21493 multiletter control sequences out of 15000+600000
+ 43083 words of font info for 97 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,10n,49p,10374b,857s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (9 pages, 6518328 bytes).
+ 44i,10n,49p,10374b,860s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.pdf (10 pages, 4274495 bytes).
 PDF statistics:
- 401 PDF objects out of 1000 (max. 8388607)
- 324 compressed objects within 4 object streams
- 97 named destinations out of 1000 (max. 500000)
+ 415 PDF objects out of 1000 (max. 8388607)
+ 340 compressed objects within 4 object streams
+ 94 named destinations out of 1000 (max. 500000)
  131 words of extra memory for PDF output out of 10000 (max. 10000000)
 

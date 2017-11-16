@@ -6,7 +6,7 @@
 	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-microns-test-600.png}
 	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-FlyEM-train-600.png}
 	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-FlyEM-test-600.png}
-	\caption{VI scores of our method (red) compared to the baseline segmentation (green) and an oracle (blue) that optimally partitions the graph based on ground truth.}
+	\caption{VI scores of our method (red) compared to the baseline segmentation (green) and an oracle (blue) that optimally partitions the graph based on ground truth. Lower scores are better. Our method improves the accuracy of the segmentation in all cases.}
 	\label{fig:variation-of-information}
 \end{figure*}
 
@@ -15,8 +15,8 @@
 \subsection{Error Metric}
 \label{sec:variation-of-information}
 
-We evaluate the performance of the different methods using the split version of variance of information (VI)~\cite{meila2003comparing}.
-Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over and undersegmentation are quantified by the conditional entropy $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropy between two clusterings, better VI scores are closer to the origin.
+We evaluate the performance of the different methods using variation of information (VI)~\cite{meila2003comparing}.
+Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over and undersegmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. Since we are measuring the entropies between two clusterings, lower VI scores are better.
 
 \subsection{Variation of Information Results}
 
@@ -24,12 +24,12 @@ In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-
 
 Our algorithm improves the accuracy of the reconstruction for every dataset, reducing the VI split score on average by \FIX{X\%} and only increasing the VI merge score by \FIX{X\%}.
 Scores closer to the origin are better for this metric, and in every instance our results are below the green curve.
-We see significant improvements on the Kasthuri datasets (VI split reduction of \FIX{X\%} and \FIX{X\%} on the training and testing datasets respectively) and more modest improvements on the FlyEM datasets (reduction of \FIX{X\%} and \FIX{X\%}). This is because the baseline segmentation algorithm for the isotropic FlyEM data (Sec.~\ref{sec:neuroproof}) performs much better, reducing the potential for improvements. It is well known that isotropic datasets are easier to segment using state-of-the-art region-based methods than anisotropic ones~\cite{plaza2014annotating}.
+We see significant improvements on the Kasthuri datasets (VI split reduction of \FIX{X\%} and \FIX{X\%} on the training and testing datasets respectively) and more modest improvements on the FlyEM datasets (reduction of \FIX{X\%} and \FIX{X\%}). This is because the baseline segmentation algorithm for the isotropic FlyEM data (Sec.~\ref{sec:neuroproof}) performs much better, reducing the potential for improvements. Isotropic datasets are easier to segment using state-of-the-art region-based methods than anisotropic ones~\cite{plaza2014annotating}.
 
 Fig.~\ref{fig:positive-results} shows successful merges on the Kasthuri Vol. 2 dataset. Several of these examples combine multiple consecutive segments that span the volume.
-In the third example we correct the over-segmentation of a dendrite.
-Fig.~\ref{fig:negative-results} shows some failure cases (red circles)
-In two of these examples the algorithm correctly predicted several merges but made one error.
+In the third example we correct the over-segmentation of a dendrite and attached spine-necks.
+Fig.~\ref{fig:negative-results} shows typical failure cases of our method (red circles).
+In two of these examples the algorithm correctly predicted several merges before a single error rendered the segment as wrong.
 In the third example (blue circle) a merge error in the initial segmentation propagated to our output.
 We now analyze how each major component of our method contributes to this final result.
 
@@ -81,27 +81,27 @@ Table \ref{table:skeletonization} shows the results of pruning the skeleton grap
 
 We generate edges in our graph by using information from the skeletons. 
 In particular, we do not enforce the constraint that edges in our graph correspond to adjacent segments.
-Although neurons are continuous, the EM images often have noisy spots which cause a break in the input segmentation.
+Although neurons are continuous, the EM images often have noisy spots which cause an interruption in the input segmentation.
 We still want to reconstruct these neurons despite the fact that the initial segmentation is non-continuous. 
 The second and fourth examples in Fig.~\ref{fig:positive-results} show correctly reconstructed neurons where two of the segments are non-adjacent. 
 This is a large benefit over enforcing segment adjacency. 
 
 There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons. 
-Fig.~\ref{fig:skeleton-results} shows such an example segment that our algorithm missed. 
+Fig.~\ref{fig:skeleton-results} shows such a case. 
 The endpoints of both segments are circled.
 In this example the small segment is carved from the larger segment in a location where there are no skeleton endpoints.
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.85\linewidth]{./figures/merge_candidate1.png}
-	\caption{Example merge candidates.}
+	\caption{A false negative example of our method due graph pruning. The distance between the endpoints (circled) of the two segments is too far to be flagged as a merge candidate.}
 	\label{fig:skeleton-results}
 \end{figure}
 
 
 \subsection{CNN Classification Results}
 
-Figure \ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all datasets.
+Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all datasets.
 %We train our CNN using one of the Kasthuri volumes and test using the other three datasets.
 Since our CNN only takes as input a region of the label volume we can train on  anisotropic data and test on isotropic data.
 This provides a major benefit given the time-intensive task of manually generating ground truth for each dataset at various resolutions.
@@ -114,7 +114,7 @@ The blue dotted curve in the figure shows a slight performance increase in this 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.95\linewidth]{./figures/receiver-operating-characteristic.jpg}
-	\caption{The receiver operating characteristic (ROC) curves of our CNN for all four datasets.}
+	\caption{The receiver operating characteristic (ROC) curves of our classifier on three connectomics datasets. The classifier works best on previously unseen data of the Kasthuri volume. The dashed blue line indicates better performance on the FlyEM datasets with retraining compared to without (solid blue).}
 	\label{fig:receiver-operating-characteristic}
 \end{figure}
 
@@ -135,6 +135,6 @@ Over the three testing datasets, applying a graph-based partitioning strategy re
 		FlyEM Vol. 1 & +2.68\% & +0.76\% & +0.66\% \\
 		FlyEM Vol. 2 & +2.22\% & -1.05\% & +0.29\% \\ \hline
 	\end{tabular}
-	\caption{Precision, recall, and accuracy changes between CNN only and graph-optimized reconstructions for the training and three test datasets.}
+	\caption{Precision, recall, and accuracy changes between CNN only and CNN paired with graph-optimized reconstructions for the training and three test datasets. The combined method results in better precision and accuracy.}
 	\label{table:multicut}
 \end{table}

@@ -120,6 +120,12 @@ S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
 \newblock Rhoananet pipeline: Dense automatic neural annotation.
 \newblock {\em arXiv preprint arXiv:1611.06973}, 2016.
 
+\bibitem{mojo2}
+S.~Knowles-Barley, M.~Roberts, N.~Kasthuri, D.~Lee, H.~Pfister, and J.~W.
+  Lichtman.
+\newblock Mojo 2.0: Connectome annotation tool.
+\newblock {\em Frontiers in Neuroinformatics}, (60), 2013.
+
 \bibitem{lee2015recursive}
 K.~Lee, A.~Zlateski, V.~Ashwin, and H.~S. Seung.
 \newblock Recursive training of 2d-3d convolutional networks for neuronal
@@ -143,10 +149,10 @@ Y.~Nesterov.
   rate o (1/k2).
 
 \bibitem{nunez2014graph}
-J.~Nunez-Iglesias, R.~Kennedy, S.~M. Plaza, A.~Chakraborty, and W.~T. Katz.
-\newblock Graph-based active learning of agglomeration (gala): a python library
-  to segment 2d and 3d neuroimages.
-\newblock {\em Frontiers in neuroinformatics}, 8, 2014.
+J.~Nunez-Iglesias, R.~Kennedy, T.~Parag, J.~Shi, and D.~B. Chklovskii.
+\newblock Machine learning of hierarchical clustering to segment 2d and 3d
+  images.
+\newblock {\em PloS one}, 8(8):e71715, 2013.
 
 \bibitem{parag2015properties}
 T.~Parag.
@@ -166,6 +172,12 @@ T.~Parag, F.~Tschopp, W.~Grisaitis, S.~C. Turaga, X.~Zhang, B.~Matejek,
 \newblock Anisotropic em segmentation by 3d affinity learning and
   agglomeration.
 \newblock {\em arXiv preprint arXiv:1707.08935}, 2017.
+
+\bibitem{plaza2014annotating}
+S.~M. Plaza, T.~Parag, G.~B. Huang, D.~J. Olbris, M.~A. Saunders, and P.~K.
+  Rivlin.
+\newblock Annotating synapses in large em datasets.
+\newblock {\em arXiv preprint arXiv:1409.1801}, 2014.
 
 \bibitem{rolnick2017morphological}
 D.~Rolnick, Y.~Meirovitch, T.~Parag, H.~Pfister, V.~Jain, J.~W. Lichtman, E.~S.
@@ -227,11 +239,6 @@ A.~V\'azquez-Reina, M.~Gelbart, D.~Huang, J.~Lichtman, E.~Miller, and
   H.~Pfister.
 \newblock Segmentation fusion for connectomics.
 \newblock In {\em Proc. IEEE ICCV}, pages 177--184, Nov 2011.
-
-\bibitem{zaitoun2015survey}
-N.~M. Zaitoun and M.~J. Aqel.
-\newblock Survey on image segmentation techniques.
-\newblock {\em Procedia Computer Science}, 65:797--806, 2015.
 
 \bibitem{zhao2014automatic}
 T.~Zhao and S.~M. Plaza.
