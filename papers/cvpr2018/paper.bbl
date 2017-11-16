@@ -84,12 +84,6 @@ V.~Jain, B.~Bollmann, M.~Richardson, D.~Berger, M.~Helmst{\"a}dter,
 \newblock Boundary learning by optimization with topological constraints.
 \newblock In {\em Proc. IEEE CVPR 2010}, pages 2488--2495, 2010.
 
-\bibitem{raveler}
-{Janelia Farm}.
-\newblock Raveler.
-\newblock \url{https://openwiki.janelia.org/wiki/display/flyem/Raveler}, 2014.
-\newblock Accessed on 11/01/2016.
-
 \bibitem{januszewski2016flood}
 M.~Januszewski, J.~Maitin-Shepard, P.~Li, J.~Kornfeld, W.~Denk, and V.~Jain.
 \newblock Flood-filling networks.

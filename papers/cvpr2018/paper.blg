@@ -3,52 +3,51 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: paper.aux
 The style file: ieee.bst
 Database file #1: paper.bib
-Warning--I didn't find a database entry for "haehn_dojo_2014"
 Warning--can't use both volume and number fields in haehn2017scalable
 Warning--there's a number but no volume in mojo2
 Warning--can't use both volume and number fields in maas2013rectifier
 Warning--empty booktitle in nesterov1983method
 Warning--empty year in nesterov1983method
 Warning--empty publisher in Turaga:2009
-You've used 43 entries,
+You've used 42 entries,
             2120 wiz_defined-function locations,
-            738 strings with 13628 characters,
-and the built_in function-call counts, 19185 in all, are:
-= -- 1776
-> -- 1314
+            732 strings with 13502 characters,
+and the built_in function-call counts, 18968 in all, are:
+= -- 1754
+> -- 1307
 < -- 16
-+ -- 523
-- -- 476
-* -- 1514
-:= -- 3207
-add.period$ -- 135
-call.type$ -- 43
-change.case$ -- 364
++ -- 520
+- -- 474
+* -- 1508
+:= -- 3170
+add.period$ -- 131
+call.type$ -- 42
+change.case$ -- 360
 chr.to.int$ -- 0
-cite$ -- 49
-duplicate$ -- 629
-empty$ -- 1207
-format.name$ -- 476
-if$ -- 3908
+cite$ -- 48
+duplicate$ -- 622
+empty$ -- 1185
+format.name$ -- 474
+if$ -- 3860
 int.to.chr$ -- 0
-int.to.str$ -- 43
+int.to.str$ -- 42
 missing$ -- 42
-newline$ -- 218
-num.names$ -- 86
-pop$ -- 390
+newline$ -- 212
+num.names$ -- 84
+pop$ -- 382
 preamble$ -- 1
-purify$ -- 321
+purify$ -- 318
 quote$ -- 0
-skip$ -- 477
+skip$ -- 471
 stack$ -- 0
-substring$ -- 933
-swap$ -- 187
+substring$ -- 928
+swap$ -- 186
 text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 172
+type$ -- 168
 warning$ -- 6
-while$ -- 144
-width$ -- 45
-write$ -- 467
-(There were 7 warnings)
+while$ -- 142
+width$ -- 44
+write$ -- 455
+(There were 6 warnings)
