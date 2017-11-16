@@ -222,40 +222,32 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     negative_candidates = []
     undetermined_candidates = []
 
-    index = 0
     for label_one in range(0, max_label):
         for label_two in range(label_one + 1, max_label):
             if smallest_distances[label_one,label_two] > endpoint_distance: continue
-            location = midpoints[label_one,label_two,:]
-            small_segmentation = segmentation[location[IB_Z]-network_radii[IB_Z]:location[IB_Z]+network_radii[IB_Z],location[IB_Y]-network_radii[IB_Y]:location[IB_Y]+network_radii[IB_Y],location[IB_X]-network_radii[IB_X]:location[IB_X]+network_radii[IB_X]]
-            small_gold = gold[location[IB_Z]-network_radii[IB_Z]:location[IB_Z]+network_radii[IB_Z],location[IB_Y]-network_radii[IB_Y]:location[IB_Y]+network_radii[IB_Y],location[IB_X]-network_radii[IB_X]:location[IB_X]+network_radii[IB_X]]
-            
-            small_seg2gold_mapping = seg2gold.Mapping(small_segmentation, small_gold)
-            if label_one < np.amax(small_segmentation) and label_two <= np.amax(small_segmentation): small_ground_truth = small_seg2gold_mapping[label_one] == small_seg2gold_mapping[label_two]
-            else: small_ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
             
             ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
-            candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], small_ground_truth)
+            candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], ground_truth)
 
-            if ground_truth != small_ground_truth: 
-                print 'Here {}'.format(index)
-                index += 1
-            
             if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: undetermined_candidates.append(candidate)
             elif ground_truth: positive_candidates.append(candidate)
             else: negative_candidates.append(candidate)
 
     # # save the files
-    # train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    # validation_filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    validation_filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     forward_filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    # undetermined_filename = 'features/skeleton/{}-{}-{}nm-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    print forward_filename
-    # if training_data:
-    #     SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
-    #     SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
-    # SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
-    # SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
+    undetermined_filename = 'features/skeleton/{}-{}-{}nm-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    
+    if training_data:
+        SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
+        SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
+    SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
+    SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
+
+    print 'Positive candidates: {}'.format(len(positive_candidates))
+    print 'Negative candidates: {}'.format(len(negative_candidates))
+    print 'Undetermined candidates: {}'.format(len(undetermined_candidates))
 
 #    # perform some tests to see how well this method can do
 #    max_value = np.uint64(np.amax(segmentation) + 1)

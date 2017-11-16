@@ -92,7 +92,7 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
     segmentation = CollapseGraph(segmentation, gold, candidates, collapsed_edges, edge_weights)
 
     # evaluate before and after multicut
-    comparestacks.Evaluate(segmentation, gold, threshold, anisotropic)
+    comparestacks.Evaluate(segmentation, gold, filtersize=threshold, anisotropic=True)
 
 
 
@@ -116,4 +116,4 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_dista
     gold = dataIO.ReadGoldData(prefix)
 
     # run the multicut algorithm
-    Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, not dataIO.IsIsotropic(prefix), heuristic)
+    Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, dataIO.IsIsotropic(prefix), heuristic)
