@@ -1,29 +1,28 @@
-\section{Skeletonization}
 
-more details regarding the skeletonization approach, which I believe was extra fast?
+\section{Graph Creation}
 
 \subsection{Node Pruning}
 
+In Section 3.1 we introduce the parameter $t_{seg}$ where any segment with fewer voxels does not receive a node in the graph.
+Figure \ref{fig:node-pruning} shows the results of varying this threshold on two quantities for the Kasthuri training volume. 
+The blue corresponds to the number of nodes remaining in the graph.
+As we increased the minimum size threshold for a label in the volume the number of nodes decreases.
+However, the rate of reduction decreases for larger thresholds.
+We also consider the percent of voxels with a label that is removed from the graph.
+Ideally this number is low since we want to only remove small segments which do not contribute much to the overall volume.
+As also seen in the curve, this number grows at an increasing rate. 
+Based on these curves we decided to set $t_{seg} = 20000$ voxels since it prunes over half of the labels that correspond to a very small chunk of the overall volume. 
+
 \subsection{Edge Pruning}
 
-\subsection{CNN Parameters}
+We call the two parameters form the algorithm presented in Section 3.2 $t_{low}$ and $t_{high}$. 
+With these parameters we want to retain the highest possible percentage of split errors in the graph as possible while keeping the number of total edges low. 
+We perform a search over varying thresholds for $40\textrm{nm} \leq t_{low} \leq 300 \textrm{nm}$ and $300 \textrm{nm} \leq t_{high} \leq 800 \textrm{nm}$ on the Kasthuri training dataset to find the parameter with the highest retention of true splits that keeps the number of total edges less than $6 \times$ the number of split errors. 
 
-We considered the following sets of parameters for the neural network and ran a brute-force search over the parameters.
-
-\begin{table}
-	\footnotesize
-	\begin{tabular}{c c} \hline
-		\textbf{Parameter} & \textbf{Considered Options} \\ \hline
-		Optimizer & \textbf{SGD with Nesterov}, Adam \\
-		Loss Function & Binary Cross Entropy, \textbf{Mean Squared Error} \\
-		Output Size & 3, 4, 5, \textbf{6}, 7 \\
-		Batch Normalization & On, \textbf{Off} \\ \hline
-	\end{tabular}
-\end{table}
-
-We also consider networks with four layers of double convolutions and increased filter sizes $(16\times32\times64)$ but both these configurations have two many parameters to learn with such small datasets. 
-
-\subsection{Performance Tests}
-
-We use a XX GHz Processor with a PASCAL TitanX 1080 GPU with 64GB of RAM for all of our performance tests. 
-Inference for the CNN takes an average of $6.2$ seconds per $1000$ examples on our network of size 
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.95\linewidth]{./figures/node-threshold.png}
+		\caption{The number of remaining labels after increasing the threshold (blue) and the number of voxels with this label as a percent of the total volume (green). }
+		\label{fig:node-pruning}
+	\end{center}
+\end{figure}
