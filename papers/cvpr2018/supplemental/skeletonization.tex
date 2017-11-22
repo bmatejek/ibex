@@ -2,7 +2,28 @@
 
 more details regarding the skeletonization approach, which I believe was extra fast?
 
-\subsection{Parameters}
+\subsection{Node Pruning}
+
+\subsection{Edge Pruning}
+
+\subsection{CNN Parameters}
+
+We considered the following sets of parameters for the neural network and ran a brute-force search over the parameters.
+
+\begin{table}
+	\footnotesize
+	\begin{tabular}{c c} \hline
+		\textbf{Parameter} & \textbf{Considered Options} \\ \hline
+		Optimizer & \textbf{SGD with Nesterov}, Adam \\
+		Loss Function & Binary Cross Entropy, \textbf{Mean Squared Error} \\
+		Output Size & 3, 4, 5, \textbf{6}, 7 \\
+		Batch Normalization & On, \textbf{Off} \\ \hline
+	\end{tabular}
+\end{table}
+
+We also consider networks with four layers of double convolutions and increased filter sizes $(16\times32\times64)$ but both these configurations have two many parameters to learn with such small datasets. 
 
 \subsection{Performance Tests}
 
+We use a XX GHz Processor with a PASCAL TitanX 1080 GPU with 64GB of RAM for all of our performance tests. 
+Inference for the CNN takes an average of $6.2$ seconds per $1000$ examples on our network of size 
