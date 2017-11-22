@@ -4,30 +4,30 @@
 
 All performance experiments ran on an Intel Core i7-6800K CPU 3.40 GHz with a Titan X Pascal GPU. 
 All code is written in Python and will be freely available upon the paper decision.
-We use the Keras deep learning library for our neural networks with Theano backend and cuDNN 7 acceleration for cuda 8.0. 
+We use the Keras deep learning library for our neural networks with Theano backend and cuDNN 7 acceleration for CUDA 8.0. 
 
 \subsection{Performance}
 
-The network trained for $34$ epochs with each epoch taking approximately $1200$ seconds to complete.
+We train the network for $34$ epochs with each epoch taking approximately $1200$ seconds to complete.
 Table \ref{table:performance} shows the total running time for each dataset for graph creation, CNN inference, and multicut partitioning. 
-In all instances the time for these three steps combined was less than 100 seconds.
+In all instances the time for these three steps combined is less than 100 seconds.
 Currently extracting the skeletons with the TEASER algorithm is the bottleneck.
-The skeleton for each label takes around $20-30$ seconds to generate. 
+The skeleton for each label takes around $20$ to $30$ seconds to generate. 
 However, the process is parallelizable as each segment can be processed independently.
-Faster skeleton extraction is an important area for future research, particularly to consider algorithms in different fields~\cite{fazekas2008skeletonization}.
-There is some existing research of fast topologically preserving skeleton generation and their applications to existing medical images (e.g. blood vessels, the colon)~\cite{palagyi2001sequential}.
+Faster skeleton extraction is an important area for future research.
+There is some existing research on fast skeleton generation and its applications to existing medical images (e.g. blood vessels, the colon)~\cite{palagyi2001sequential}.
 
 \begin{table}[t]
 	\centering
 	\small
 	\begin{tabular}{c c c } \hline
 		& \textbf{Kasthuri Vol. 1} & \textbf{Kasthuri Vol. 2} \\ \hline
-		Graph Generation & 34.76s & 35.90s \\
+		Graph Creation & 34.76s & 35.90s \\
 		Inference & 38.47s & 37.13s \\
 		Multicut & 22.94s & 22.90s \\ \hline
 		Total Time & 96.17s & 95.93s \\ \hline
 		& \textbf{FlyEM Vol. 1} & \textbf{FlyEM Vol. 2} \\ \hline
-		Graph Generation & 46.52s & 48.97s \\
+		Graph Creation & 46.52s & 48.97s \\
 		Inference & 12.55s & 10.91s \\
 		Multicut & 30.30s & 30.14s \\ \hline
 		Total Time & 89.37s & 90.02s \\ \hline

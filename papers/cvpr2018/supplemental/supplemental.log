@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.7)  22 NOV 2017 11:37
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.6.7)  22 NOV 2017 15:43
 entering extended mode
 **./supplemental.tex
 (supplemental.tex
@@ -558,7 +558,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 File: ./figures/node-threshold.png Graphic file (type png)
 
 <use ./figures/node-threshold.png>
-Package pdftex.def Info: ./figures/node-threshold.png used on input line 25.
+Package pdftex.def Info: ./figures/node-threshold.png used on input line 24.
 (pdftex.def)             Requested size: 225.27841pt x 168.95892pt.
 ) (classifier.tex
 <./figures/architecture.png, id=7, 1042.89626pt x 491.8375pt>
@@ -568,8 +568,6 @@ File: ./figures/architecture.png Graphic file (type png)
 Package pdftex.def Info: ./figures/architecture.png used on input line 22.
 (pdftex.def)             Requested size: 447.16759pt x 210.8856pt.
 )
-Underfull \vbox (badness 7344) has occurred while \output is active []
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 67.
 LaTeX Font Info:    Try loading font information for OT1+phv on input line 67.
@@ -592,6 +590,9 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 \tf@brf=\write3
 \openout3 = `supplemental.brf'.
 
+
+Underfull \vbox (badness 2846) has occurred while \output is active []
+
 )
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 75.
  [2 <./figures/architecture.png>]
@@ -600,17 +601,17 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 75.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 75.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 75.
 Package rerunfilecheck Info: File `supplemental.brf' has not changed.
-(rerunfilecheck)             Checksum: 9842C5CD9D3D9941BE0A9876EA3747A7;181.
+(rerunfilecheck)             Checksum: 4ABBE7ACCB925B408F515FF2400D73E7;115.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 75.
  ) 
 Here is how much of TeX's memory you used:
- 10647 strings out of 493323
- 162400 string characters out of 3139067
- 292647 words of memory out of 3000000
- 13873 multiletter control sequences out of 15000+200000
- 37818 words of font info for 144 fonts, out of 3000000 for 9000
+ 10635 strings out of 493323
+ 162180 string characters out of 3139067
+ 292599 words of memory out of 3000000
+ 13868 multiletter control sequences out of 15000+200000
+ 37580 words of font info for 140 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,9n,41p,428b,414s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 37i,9n,41p,433b,414s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}<C:/Program Files/Mi
 KTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9
 /fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
@@ -621,9 +622,9 @@ uhvb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:
 KTeX 2.9/fonts/type1/urw/times/utmbi8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
 ype1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/ut
 mri8a.pfb>
-Output written on supplemental.pdf (2 pages, 167075 bytes).
+Output written on supplemental.pdf (2 pages, 165210 bytes).
 PDF statistics:
- 91 PDF objects out of 1000 (max. 8388607)
- 20 named destinations out of 1000 (max. 500000)
+ 88 PDF objects out of 1000 (max. 8388607)
+ 19 named destinations out of 1000 (max. 500000)
  32267 words of extra memory for PDF output out of 35830 (max. 10000000)
 

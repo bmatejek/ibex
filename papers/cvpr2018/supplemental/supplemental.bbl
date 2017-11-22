@@ -1,10 +1,5 @@
 \begin{thebibliography}{1}\itemsep=-1pt
 
-\bibitem{fazekas2008skeletonization}
-A.~Fazekas, K.~Pal{\'a}gyi, G.~Kov{\'a}cs, and G.~N{\'e}meth.
-\newblock Skeletonization based on metrical neighborhood sequences.
-\newblock {\em Computer Vision Systems}, pages 333--342, 2008.
-
 \bibitem{kingma2014adam}
 D.~Kingma and J.~Ba.
 \newblock Adam: A method for stochastic optimization.
