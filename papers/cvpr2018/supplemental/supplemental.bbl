@@ -1,0 +1,15 @@
+\begin{thebibliography}{1}\itemsep=-1pt
+
+\bibitem{kingma2014adam}
+D.~Kingma and J.~Ba.
+\newblock Adam: A method for stochastic optimization.
+\newblock {\em arXiv preprint arXiv:1412.6980}, 2014.
+
+\bibitem{palagyi2001sequential}
+K.~Pal{\'a}gyi, E.~Balogh, A.~Kuba, C.~Halmai, B.~Erd{\H{o}}helyi, E.~Sorantin,
+  and K.~Hausegger.
+\newblock A sequential 3d thinning algorithm and its medical applications.
+\newblock In {\em Biennial International Conference on Information Processing
+  in Medical Imaging}, pages 409--415. Springer, 2001.
+
+\end{thebibliography}

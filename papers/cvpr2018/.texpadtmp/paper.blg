@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: /Users/d/Projects/ibex/papers/cvpr2018/.texpadtmp/paper.aux
+The style file: ../ieee.bst
+Database file #1: ../paper.bib
+Warning--can't use both volume and number fields in haehn2017scalable
+Warning--there's a number but no volume in mojo2
+Warning--can't use both volume and number fields in maas2013rectifier
+Warning--empty booktitle in nesterov1983method
+Warning--empty year in nesterov1983method
+Warning--empty publisher in Turaga:2009
+You've used 42 entries,
+            2120 wiz_defined-function locations,
+            733 strings with 13613 characters,
+and the built_in function-call counts, 18968 in all, are:
+= -- 1754
+> -- 1307
+< -- 16
++ -- 520
+- -- 474
+* -- 1508
+:= -- 3170
+add.period$ -- 131
+call.type$ -- 42
+change.case$ -- 360
+chr.to.int$ -- 0
+cite$ -- 48
+duplicate$ -- 622
+empty$ -- 1185
+format.name$ -- 474
+if$ -- 3860
+int.to.chr$ -- 0
+int.to.str$ -- 42
+missing$ -- 42
+newline$ -- 212
+num.names$ -- 84
+pop$ -- 382
+preamble$ -- 1
+purify$ -- 318
+quote$ -- 0
+skip$ -- 471
+stack$ -- 0
+substring$ -- 928
+swap$ -- 186
+text.length$ -- 16
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 168
+warning$ -- 6
+while$ -- 142
+width$ -- 44
+write$ -- 455
+(There were 6 warnings)

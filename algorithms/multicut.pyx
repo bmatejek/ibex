@@ -12,7 +12,7 @@ from ibex.utilities import dataIO
 from ibex.data_structures import unionfind
 from ibex.evaluation.classification import *
 from PixelPred2Seg import comparestacks
-
+import partition_comparison
 
 
 # c++ external definition
@@ -92,7 +92,7 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
     segmentation = CollapseGraph(segmentation, gold, candidates, collapsed_edges, edge_weights)
 
     # evaluate before and after multicut
-    comparestacks.Evaluate(segmentation, gold, filtersize=threshold, anisotropic=True)
+    comparestacks.Evaluate(segmentation, gold, filtersize=threshold, anisotropic=anisotropic)
 
 
 
