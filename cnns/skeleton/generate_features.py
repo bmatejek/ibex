@@ -1,5 +1,4 @@
 import math
-import time
 import numpy as np
 import random
 import struct
@@ -123,11 +122,11 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
 
     # get the mapping from segmentation to gold
     seg2gold_mapping = seg2gold.Mapping(segmentation, gold, low_threshold=0.10, high_threshold=0.80)
-
+    
     # remove small connceted components
     segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold).astype(np.int64)
     max_label = np.amax(segmentation) + 1
-
+    
     # get the grid size and the world resolution
     grid_size = segmentation.shape
     world_res = dataIO.Resolution(prefix)
@@ -233,15 +232,15 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
             elif ground_truth: positive_candidates.append(candidate)
             else: negative_candidates.append(candidate)
 
-    # # save the files
+    # save the files
     train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     validation_filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     forward_filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     undetermined_filename = 'features/skeleton/{}-{}-{}nm-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     
     if training_data:
-        SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
-        SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
+       SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
+       SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
     SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
     SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
 

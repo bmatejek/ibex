@@ -55,6 +55,7 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance,
     ncandidates = len(candidates)
 
     # get the probabilities
+    start_time = time.time()
     probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width), ncandidates, max_q_size=200)
     predictions = Prob2Pred(np.squeeze(probabilities))
 
