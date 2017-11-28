@@ -2,6 +2,8 @@ import os
 import h5py
 import numpy as np
 from ibex.data_structures import meta_data, swc
+from ibex.utilities.constants import *
+
 
 def GetWorldBBox(prefix):
     # return the bounding box for this segment
@@ -33,6 +35,11 @@ def ReadH5File(filename, dataset=None):
 
 
 
+def IsIsotropic(prefix):
+    resolution = Resolution(prefix)
+    return (resolution[IB_Z] == resolution[IB_Y]) and (resolution[IB_Z] == resolution[IB_X])
+
+
 def WriteH5File(data, filename, dataset):
     with h5py.File(filename, 'w') as hf:
         hf.create_dataset(dataset, data=data)
@@ -42,14 +49,14 @@ def WriteH5File(data, filename, dataset):
 def ReadSegmentationData(prefix):
     filename, dataset = meta_data.MetaData(prefix).SegmentationFilename()
 
-    return ReadH5File(filename, dataset)
+    return ReadH5File(filename, dataset).astype(np.int64)
 
 
 
 def ReadGoldData(prefix):
     filename, dataset = meta_data.MetaData(prefix).GoldFilename()
 
-    return ReadH5File(filename, dataset)
+    return ReadH5File(filename, dataset).astype(np.int64)
 
 
 
@@ -66,13 +73,8 @@ def ReadSkeletons(prefix, data):
     joints = []
     endpoints = []
 
-    for label in np.unique(data):
-        skeleton_filename = 'skeletons/{}/tree_{}.swc'.format(prefix, label)
-
-        # see if the skeleton exists
-        if not os.path.isfile(skeleton_filename):
-            continue
-
+    max_label = np.amax(data) + 1
+    for label in range(max_label):
         # read the skeleton
         skeleton = swc.Skeleton(prefix, label)
 

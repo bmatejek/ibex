@@ -15,7 +15,7 @@ def Agglomerate(prefix, model_prefix, threshold=0.5):
     multicut_filename = 'multicut/{}-{}.graph'.format(model_prefix, prefix)
 
     # get the maximum segmentation value
-    max_value = np.uint64(np.amax(segmentation) + 1)
+    max_value = np.amax(segmentation) + 1
 
     # create union find data structure
     union_find = [UnionFind.UnionFindElement(iv) for iv in range(max_value)]
@@ -41,7 +41,7 @@ def Agglomerate(prefix, model_prefix, threshold=0.5):
                 UnionFind.Union(union_find[label_one], union_find[label_two])
 
     # create a mapping
-    mapping = np.zeros(max_value, dtype=np.uint64)
+    mapping = np.zeros(max_value, dtype=np.int64)
 
     # update the segmentation
     for iv in range(max_value):
@@ -86,7 +86,7 @@ def MergeGroundTruth(prefix, model_prefix):
     mapping = seg2gold.Mapping(segmentation, gold)
 
     # get the maximum segmentation value
-    max_value = np.uint64(np.amax(segmentation) + 1)
+    max_value = np.amax(segmentation)
 
     # create union find data structure
     union_find = [UnionFind.UnionFindElement(iv) for iv in range(max_value)]
@@ -109,7 +109,7 @@ def MergeGroundTruth(prefix, model_prefix):
                 UnionFind.Union(union_find[label_one], union_find[label_two])
 
     # create a mapping
-    mapping = np.zeros(max_value, dtype=np.uint64)
+    mapping = np.zeros(max_value, dtype=np.int64)
 
     # update the segmentation 
     for iv in range(max_value):

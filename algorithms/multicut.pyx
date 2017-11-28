@@ -7,7 +7,7 @@ cimport numpy as np
 import ctypes
 
 import ibex.cnns.skeleton.util
-from ibex.transforms import seg2seg
+from ibex.transforms import seg2seg, seg2gold
 from ibex.utilities import dataIO
 from ibex.data_structures import unionfind
 from ibex.evaluation.classification import *
@@ -17,12 +17,12 @@ import partition_comparison
 
 # c++ external definition
 cdef extern from 'cpp-multicut.h':
-    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double beta)
+    unsigned char *CppMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *edge_weights, double beta, unsigned int heuristic)
 
 
 
 # collapse the edges from multicut
-def CollapseGraph(segmentation, candidates, collapsed_edges):
+def CollapseGraph(segmentation, gold, candidates, collapsed_edges, probabilities):
     # read the candidates
     ncandidates = len(candidates)
 
@@ -50,7 +50,7 @@ def CollapseGraph(segmentation, candidates, collapsed_edges):
         unionfind.Union(union_find[label_one], union_find[label_two])
 
     # create a mapping for the labels
-    mapping = np.zeros(max_value, dtype=np.uint64)
+    mapping = np.zeros(max_value, dtype=np.int64)
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
 
@@ -60,7 +60,7 @@ def CollapseGraph(segmentation, candidates, collapsed_edges):
 
 
 
-def Multicut(segmentation, gold, candidates, edge_weights, beta):
+def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anisotropic, heuristic):
     # get a forward and reverse mapping
     forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
 
@@ -84,21 +84,20 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta):
     cdef np.ndarray[double, ndim=1, mode='c'] cpp_edge_weights = np.ascontiguousarray(edge_weights, dtype=ctypes.c_double)
 
     # run multicut algorithm
-    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), beta)
+    cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), beta, heuristic)
     cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
     collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
 
     # collapse the edges returned from multicut
-    segmentation = CollapseGraph(segmentation, candidates, collapsed_edges)
+    segmentation = CollapseGraph(segmentation, gold, candidates, collapsed_edges, edge_weights)
 
     # evaluate before and after multicut
-    #print partition_comparison.variation_of_information(segmentation.ravel().astype(np.int64), gold.ravel().astype(np.int64))
-    comparestacks.Evaluate(segmentation, gold, filtersize=20000, anisotropic=True)
+    comparestacks.Evaluate(segmentation, gold, filtersize=threshold, anisotropic=anisotropic)
 
 
 
 # function ro run multicut algorithm
-def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta):
+def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta, heuristic):
     # read the candidates
     candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
@@ -117,4 +116,4 @@ def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_dista
     gold = dataIO.ReadGoldData(prefix)
 
     # run the multicut algorithm
-    Multicut(segmentation, gold, candidates, edge_weights, beta)
+    Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, dataIO.IsIsotropic(prefix), heuristic)

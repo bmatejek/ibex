@@ -1,7 +1,7 @@
+import math
 import numpy as np
 import random
 import struct
-import math
 from numba import jit
 
 from ibex.utilities.constants import *
@@ -13,9 +13,8 @@ from PixelPred2Seg import comparestacks
 
 
 
-
 # save the candidate files for the CNN
-def SaveCandidates(output_filename, positive_candidates, negative_candidates, inference=False, undetermined_candidates=None):
+def SaveCandidates(output_filename, positive_candidates, negative_candidates, inference=False, validation=False, undetermined_candidates=None):
     if not undetermined_candidates == None:
         candidates = undetermined_candidates
         random.shuffle(candidates)
@@ -24,11 +23,21 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, in
         candidates = positive_candidates + negative_candidates
         random.shuffle(candidates)
     else:
-        # randomly shuffle the arrays
+        positive_threshold = int(math.floor(0.80 * len(positive_candidates)))
+        negative_threshold = int(math.floor(0.80 * len(negative_candidates)))
+        
+        if not validation:
+            positive_candidates = positive_candidates[:positive_threshold]
+            negative_candidates = negative_candidates[:negative_threshold]
+        else:
+            positive_candidates = positive_candidates[positive_threshold:]
+            negative_candidates = negative_candidates[negative_threshold:]
+
+        # shuffle the positive and negative candidates
         random.shuffle(positive_candidates)
         random.shuffle(negative_candidates)
-
-        # get the minimum length of the two candidates - train in pairs
+            
+        # get the maximum length of the two candidates - train in pairs
         npoints = max(len(positive_candidates), len(negative_candidates))
         positive_index = 0
         negative_index = 0
@@ -71,143 +80,186 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, in
             fd.write(struct.pack('QQQQQQ', label_one, label_two, position[IB_Z], position[IB_Y], position[IB_X], ground_truth))
 
 
-
 @jit(nopython=True)
-# extract the neighbors from this region
-def ExtractNeighbors(segmentation, label, smallest_distance, nearest_point, network_radii, world_res, grid_size, centroid):
+def FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distance, network_distance, world_res):
+    # useful variables
     zres, yres, xres = segmentation.shape
-    
-    # iterate over the entire segment
-    for iz in range(zres):
-        for iy in range(yres):
-            for ix in range(xres):
-                # get the label for this neighbor
+    max_label = np.amax(segmentation) + 1
+
+    # get the radii and label for this centroid
+    radii = np.int64((maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X]))
+    network_radii = np.int64((network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X]))
+    label = segmentation[centroid[IB_Z],centroid[IB_Y],centroid[IB_X]]
+
+    # iterate through all the pixels close to the centroid
+    for iz in range(centroid[IB_Z]-radii[IB_Z], centroid[IB_Z]+radii[IB_Z]+1):
+        if iz < 0 or iz > zres - 1: continue
+        for iy in range(centroid[IB_Y]-radii[IB_Y], centroid[IB_Y]+radii[IB_Y]+1):
+            if iy < 0 or iy > yres - 1: continue
+            for ix in range(centroid[IB_X]-radii[IB_X], centroid[IB_X]+radii[IB_X]+1):
+                if ix < 0 or ix > xres - 1: continue
+                # skip extracellular and locations with the same label
+                if not segmentation[iz,iy,ix]: continue
+                if segmentation[iz,iy,ix] == label: continue
+
+                # get the distance from the centroid
+                distance = math.sqrt((world_res[IB_Z] * (centroid[IB_Z] - iz)) * (world_res[IB_Z] * (centroid[IB_Z] - iz))  + (world_res[IB_Y] * (centroid[IB_Y] - iy)) * (world_res[IB_Y] * (centroid[IB_Y] - iy)) + (world_res[IB_X] * (centroid[IB_X] - ix)) * (world_res[IB_X] * (centroid[IB_X] - ix)))
+                if distance > maximum_distance: continue
+
+                # is there already a closer location
                 neighbor_label = segmentation[iz,iy,ix]
-                if neighbor_label == label: continue
-
-                # get dostamce from center
-                distance = (world_res[IB_Z] * iz) ^ 2 + (world_res[IB_Y] * iy) ^ 2 + (world_res[IB_X] * ix) ^ 2
-                if distance < smallest_distance[neighbor_label]:
-                    
-                    # get what would be the midpoint of this bounding box in world coordinates
-                    midpoint = (iz - zres / 2 + centroid[IB_Z], iy - yres / 2 + centroid[IB_Y], ix - xres / 2 + centroid[IB_X])
-                    # make sure the entire bounding box is enclosed
-                    valid_location = True
-                    for dim in range(NDIMS):
-                        if (midpoint[dim] - network_radii[dim] < 0): valid_location = False
-                        if (midpoint[dim] + network_radii[dim] > grid_size[dim]): valid_location = False
-                    if not valid_location: continue
-
-                    smallest_distance[neighbor_label] = distance
-                    nearest_point[neighbor_label,:] = (midpoint[IB_Z], midpoint[IB_Y], midpoint[IB_X])
+                candidates.add(neighbor_label)
 
 
 
-# generate the features given this threshold and distance
-def GenerateFeatures(prefix, threshold, maximum_distance, network_distance):
-    # read in all relevant information
+# generate features for this prefix
+def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endpoint_distance, training_data):
+    # read in the relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     gold = dataIO.ReadGoldData(prefix)
     assert (segmentation.shape == gold.shape)
+    zres, yres, xres = segmentation.shape
 
-    # remove small connected components
-    segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold)
-    max_label = np.amax(segmentation) + np.uint64(1)
-
+    # get the mapping from segmentation to gold
+    seg2gold_mapping = seg2gold.Mapping(segmentation, gold, low_threshold=0.10, high_threshold=0.80)
+    
+    # remove small connceted components
+    segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold).astype(np.int64)
+    max_label = np.amax(segmentation) + 1
+    
     # get the grid size and the world resolution
     grid_size = segmentation.shape
     world_res = dataIO.Resolution(prefix)
 
     # get the radius in grid coordinates
-    radii = np.uint64((maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X]))
-    network_radii = np.uint64((network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X]))
+    radii = np.int64((maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X]))
+    network_radii = np.int64((network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X]))
+    
+    # get all of the skeletons
+    skeletons, _, endpoints = dataIO.ReadSkeletons(prefix, segmentation)
 
 
+    # get the set of all pairs considered
+    endpoint_candidates = [set() for _ in range(len(endpoints))]
 
-    # create the list of candidates
+    # iterate through all skeleton endpoints
+    for ie, endpoint in enumerate(endpoints):
+        # extract the region around this endpoint
+        label = endpoint.label
+        centroid = endpoint.GridPoint()
+
+        # find the candidates from this endpoint
+        candidates = set()
+        candidates.add(0)
+        FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distance, network_distance, world_res)
+
+        for candidate in candidates:
+            if not candidate: continue
+            endpoint_candidates[ie].add(candidate)
+
+
+    ##################################
+    #### BEGIN PRUNING CANDIDATES ####
+    ##################################
+        
+    endpoint_pairs = set()
+
+    # iterate through all skeleton endpoints
+    for ie, endpoint in enumerate(endpoints):
+        # get the endpoint location
+        label = endpoint.label
+
+        # find the candidates from this endpoint after pruning
+        candidates = set()
+
+        # go through all currently considered endpoints
+        for neighbor_label in endpoint_candidates[ie]:
+            for neighbor_endpoint in skeletons[neighbor_label].endpoints:
+                # get the distance
+                deltas = endpoint.WorldPoint(world_res) - neighbor_endpoint.WorldPoint(world_res)
+                distance = math.sqrt(deltas[IB_Z] * deltas[IB_Z] + deltas[IB_Y] * deltas[IB_Y] + deltas[IB_X] * deltas[IB_X])
+
+                if distance < endpoint_distance:
+                    candidates.add(neighbor_label)
+                    endpoint_pairs.add((endpoint, neighbor_endpoint))
+
+
+    # find the smallest pair between endpoints
+    smallest_distances = (endpoint_distance + 1) * np.ones((max_label, max_label), dtype=np.float32)
+    midpoints = np.zeros((max_label, max_label, 3), dtype=np.uint32)
+    
+    # go through all the endpoint pairs and prune out the ones with bad angles
+    for endpoint_pair in endpoint_pairs:
+        # get the endpoints under consideration
+        endpoint_one = endpoint_pair[0]
+        endpoint_two = endpoint_pair[1]
+        label_one = endpoint_one.label
+        label_two = endpoint_two.label
+
+        midpoint = (endpoint_one.GridPoint() + endpoint_two.GridPoint()) / 2
+
+        # make sure the bounding box fits
+        valid_location = True
+        for dim in range(NDIMS):
+            if midpoint[dim]-network_radii[dim] < 0: valid_location = False
+            if midpoint[dim]+network_radii[dim] > grid_size[dim]: valid_location = False
+        if not valid_location: continue
+
+        # get the distance between the endpoints
+        deltas = endpoint_one.WorldPoint(world_res) - endpoint_two.WorldPoint(world_res)
+        distance = math.sqrt(deltas[IB_Z] * deltas[IB_Z] + deltas[IB_Y] * deltas[IB_Y] + deltas[IB_X] * deltas[IB_X])
+        if distance > smallest_distances[label_one,label_two]: continue
+
+        smallest_distances[label_one,label_two] = distance
+        smallest_distances[label_two,label_one] = distance
+        midpoints[label_one,label_two,:] = midpoint
+        midpoints[label_two,label_one,:] = midpoint
+
+
+    # create list of candidates
     positive_candidates = []
     negative_candidates = []
     undetermined_candidates = []
 
-
-
-    # read in the skeletons, ignore the joints
-    skeletons, _, endpoints = dataIO.ReadSkeletons(prefix, segmentation)
-
-    # go through every skeleton
-    for skeleton in skeletons:
-        label_one = skeleton.label
-
-        # keep track of the best distances from other labels to this
-        max_distance = (world_res[IB_Z] * segmentation.shape[IB_Z]) ^ 2 + (world_res[IB_Y] * segmentation.shape[IB_Y]) ^ 2 + (world_res[IB_X] * segmentation.shape[IB_X]) ^ 2
-        smallest_distance = np.ones(max_label, dtype=np.uint64) * max_distance
-        nearest_point = np.zeros((max_label, 3), dtype=np.uint64)
-        
-        # iterate through every endpoint
-        for endpoint in skeleton.endpoints:
-            # the center of the region of interest
-            centroid = endpoint.GridPoint()
-
-            # get all labels in this bounding box
-            segment = segmentation[centroid[IB_Z]-radii[IB_Z]:centroid[IB_Z]+radii[IB_Z],centroid[IB_Y]-radii[IB_Y]:centroid[IB_Y]+radii[IB_Y],centroid[IB_X]-radii[IB_X]:centroid[IB_X]+radii[IB_X]]
-            ExtractNeighbors(segment, label_one, smallest_distance, nearest_point, network_radii, world_res, grid_size, centroid)
-
-        # only consider pairs where this skeleton has a smaller label
-        for label_two in range(label_one + np.uint64(1), max_label):
-            if smallest_distance[label_two] == max_distance: continue
-
-            # get the midpoint
-            midpoint = nearest_point[label_two]
-            assert (not midpoint[IB_Z] == 0 and not midpoint[IB_Y] == 0 and not midpoint[IB_X] == 0)
-            mins = midpoint - network_radii
-            maxs = midpoint + network_radii
-
-            # extra ct a small window around this midpoing
-            extracted_segmentation = segmentation[mins[IB_Z]:maxs[IB_Z],mins[IB_Y]:maxs[IB_Y],mins[IB_X]:maxs[IB_X]]
-            extracted_gold = gold[mins[IB_Z]:maxs[IB_Z],mins[IB_Y]:maxs[IB_Y],mins[IB_X]:maxs[IB_X]]
-
-            # create the gold to segmentation mapping
-            seg2gold_mapping = seg2gold.Mapping(extracted_segmentation, extracted_gold)
+    for label_one in range(0, max_label):
+        for label_two in range(label_one + 1, max_label):
+            if smallest_distances[label_one,label_two] > endpoint_distance: continue
+            
             ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+            candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], ground_truth)
 
-            # create the candidate
-            candidate = SkeletonCandidate((label_one, label_two), midpoint, ground_truth)
-            if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]:
-                undetermined_candidates.append(candidate)
-                continue
-
-            if ground_truth: positive_candidates.append(candidate)
+            if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: undetermined_candidates.append(candidate)
+            elif ground_truth: positive_candidates.append(candidate)
             else: negative_candidates.append(candidate)
 
-    # print statistics
-    print 'Results for {}, threshold {}, maximum distance {}, network distance {}:'.format(prefix, threshold, maximum_distance, network_distance)
-    print '  Positive examples: {}'.format(len(positive_candidates))
-    print '  Negative examples: {}'.format(len(negative_candidates))
-    print '  Ratio: {}'.format(len(negative_candidates) / float(len(positive_candidates)))
-
     # save the files
-    train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    validation_filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     forward_filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     undetermined_filename = 'features/skeleton/{}-{}-{}nm-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-
-    SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False)
+    
+    if training_data:
+       SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
+       SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
     SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
     SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
 
+    print 'Positive candidates: {}'.format(len(positive_candidates))
+    print 'Negative candidates: {}'.format(len(negative_candidates))
+    print 'Undetermined candidates: {}'.format(len(undetermined_candidates))
 
+#    # perform some tests to see how well this method can do
+#    max_value = np.uint64(np.amax(segmentation) + 1)
+#    union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
 
-    # # perform some tests to see how well this method can do
-    # max_value = np.amax(segmentation) + np.uint64(1)
-    # union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
+#    # iterate over all collapsed edges
+#    for candidate in positive_candidates:
+#        label_one, label_two = candidate.labels
+#        unionfind.Union(union_find[label_one], union_find[label_two])
 
-    # # iterate over all collapsed edges
-    # for candidate in positive_candidates:
-    #     label_one, label_two = candidate.labels
-    #     unionfind.Union(union_find[label_one], union_find[label_two])
-
-    # # create a mapping for the labels
-    # mapping = np.zeros(max_value, dtype=np.uint64)
-    # for iv in range(max_value):
-    #     mapping[iv] = unionfind.Find(union_find[iv]).label
-    # opt_segmentation = seg2seg.MapLabels(segmentation, mapping)
-    # comparestacks.Evaluate(opt_segmentation, gold)
+#    # create a mapping for the labels
+#    mapping = np.zeros(max_value, dtype=np.uint64)
+#    for iv in range(max_value):
+#        mapping[iv] = unionfind.Find(union_find[iv]).label
+#    opt_segmentation = seg2seg.MapLabels(segmentation, mapping)
+#    comparestacks.Evaluate(opt_segmentation, gold)

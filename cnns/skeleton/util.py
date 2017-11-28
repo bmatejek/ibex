@@ -1,4 +1,6 @@
 import struct
+import os
+
 import numpy as np
 from numba import jit
 from ibex.utilities import dataIO
@@ -15,11 +17,13 @@ class SkeletonCandidate:
 
 
 # find the candidates for this prefix and distance
-def FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False):
+def FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=False):
     if inference:
         filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+    elif validation:
+        filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
     else:
-        filename = 'features/skeleton/{}-{}-{}nm-{}nm-learning.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+        filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
 
     # read the candidate filename
     with open(filename, 'rb') as fd:
@@ -42,8 +46,8 @@ def ScaleSegment(segment, width, labels):
     nchannels = width[0]
 
     # create the example to be returned
-    example = np.zeros((1, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.uint8)
-
+    example = np.zeros((1, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.float32)
+    
     # iterate over the example coordinates
     for iz in range(width[IB_Z + 1]):
         for iy in range(width[IB_Y + 1]):
@@ -52,7 +56,7 @@ def ScaleSegment(segment, width, labels):
                 iw = int(float(zres) / float(width[IB_Z + 1]) * iz)
                 iv = int(float(yres) / float(width[IB_Y + 1]) * iy)
                 iu = int(float(xres) / float(width[IB_X + 1]) * ix)
-                
+
                 if nchannels == 1 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
                     example[0,0,iz,iy,ix] = 1
                 else:
@@ -64,6 +68,8 @@ def ScaleSegment(segment, width, labels):
                     # add third channel 
                     if nchannels == 3 and (segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two):
                         example[0,2,iz,iy,ix] = 1
+
+    example = example - 0.5
 
     return example
 
@@ -80,12 +86,12 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
 
 
     # extract the small window from this segment
-    example = segmentation[zpoint-zradius:zpoint+zradius,ypoint-yradius:ypoint+yradius,xpoint-xradius:xpoint+xradius]
+    example = segmentation[zpoint-zradius:zpoint+zradius+1,ypoint-yradius:ypoint+yradius+1,xpoint-xradius:xpoint+xradius+1]
 
     # rescale the segment
     example = ScaleSegment(example, width, labels)
 
-    # flip x axis? -> add 1 because of extra filler channel
+    # flip x axis? -> add 2 because of extra filler channel
     if rotation % 2: example = np.flip(example, IB_X + 2)
     # flip z axis?
     if (rotation / 2) % 2: example = np.flip(example, IB_Z + 2)
@@ -100,6 +106,11 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
 
 # save the features for viewing
 def SaveFeatures(prefix, threshold, maximum_distance, network_distance):
+    # make sure the folder for this model prefix exists
+    output_folder = 'features/skeleton/{}'.format(prefix)
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
     # read in relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     grid_size = segmentation.shape
@@ -123,5 +134,5 @@ def SaveFeatures(prefix, threshold, maximum_distance, network_distance):
         compressed_output[example[0,:,:,:,1] == 1] = 2
 
         # save the output file
-        filename = 'features/skeleton/{}/{}-{}nm-{:05d}.h5'.format(prefix, threshold, maximum_distance, iv)
+        filename = 'features/skeleton/{}/{}-{}nm-{}nm-{:05d}.h5'.format(prefix, threshold, maximum_distance, network_distance, iv)
         dataIO.WriteH5File(compressed_output, filename, 'main')

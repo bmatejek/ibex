@@ -7,7 +7,7 @@ import natsort
 
 from keras.models import model_from_json
 
-from ibex.cnns.skeleton.util import FindCandidates, ExtractFeature
+from ibex.cnns.nuclear.util import FindCandidates, ExtractFeature
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
 from ibex.evaluation.classification import *
@@ -15,7 +15,7 @@ from ibex.evaluation.classification import *
 
 
 # generate candidate features for the predict function
-def SkeletonCandidateGenerator(prefix, network_distance, candidates, width):
+def NuclearCandidateGenerator(prefix, network_distance, candidates, width):
     # read in all relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     world_res = dataIO.Resolution(prefix)
@@ -45,18 +45,17 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, width):
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance, width):
+def Forward(prefix, model_prefix, threshold, network_distance, width):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
     
     # get the candidate locations 
-    candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
+    candidates = FindCandidates(prefix, threshold, network_distance, inference=True)
     ncandidates = len(candidates)
 
     # get the probabilities
-    start_time = time.time()
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width), ncandidates, max_q_size=200)
+    probabilities = model.predict_generator(NuclearCandidateGenerator(prefix, network_distance, candidates, width), ncandidates, max_q_size=200)
     predictions = Prob2Pred(np.squeeze(probabilities))
 
     # create an array of labels
@@ -66,10 +65,10 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance,
         labels[ie] = candidate.ground_truth
 
     # write the precision and recall values
-    output_filename = '{}-{}-{}-{}nm.results'.format(model_prefix, prefix, threshold, maximum_distance)
+    output_filename = '{}-{}-{}.results'.format(model_prefix, prefix, threshold)
     PrecisionAndRecall(labels, predictions, output_filename)
 
-    output_filename = '{}-{}-{}-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance)
+    output_filename = '{}-{}-{}.probabilities'.format(model_prefix, prefix, threshold)
     with open(output_filename, 'wb') as fd:
         fd.write(struct.pack('i', ncandidates))
         for probability in probabilities:

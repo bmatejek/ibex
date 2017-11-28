@@ -6,7 +6,7 @@ import math
 
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
-from ibex.cnns.skeleton.util import FindCandidates, ExtractFeature
+from ibex.cnns.nuclear.util import FindCandidates, ExtractFeature
 
 
 from keras.models import Sequential
@@ -97,7 +97,7 @@ class PlotLosses(keras.callbacks.Callback):
         plt.gcf().clear()
 
 
-def SkeletonNetwork(parameters, width):
+def NuclearNetwork(parameters, width):
     # identify convenient variables
     initial_learning_rate = parameters['initial_learning_rate']
     decay_rate = parameters['decay_rate']
@@ -156,7 +156,7 @@ def WriteLogfiles(model, model_prefix, parameters):
             fd.write('{}: {}\n'.format(parameter, parameters[parameter]))
 
 
-def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters, width):
+def NuclearCandidateGenerator(prefix, network_distance, candidates, parameters, width):
     # get the number of channels for the data
     nchannels = width[0]
 
@@ -201,7 +201,7 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters,
 
 
 
-def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters):
+def Train(prefix, model_prefix, threshold, network_distance, width, parameters):
     # identify convenient variables
     nchannels = width[0]
     starting_epoch = parameters['starting_epoch']
@@ -215,7 +215,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     betas = parameters['betas']
     
     # set up the keras model
-    model = SkeletonNetwork(parameters, width)
+    model = NuclearNetwork(parameters, width)
     
     # make sure the folder for the model prefix exists
     root_location = model_prefix.rfind('/')
@@ -238,9 +238,9 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     WriteLogfiles(model, model_prefix, parameters)
 
     # get all candidates
-    training_candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=False)
+    training_candidates = FindCandidates(prefix, threshold, network_distance, inference=False, validation=False)
     ntraining_candidates = len(training_candidates)
-    validation_candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=True)
+    validation_candidates = FindCandidates(prefix, threshold, network_distance, inference=False, validation=True)
     nvalidation_candidates = len(validation_candidates)
 
     # create a set of keras callbacks
@@ -273,9 +273,9 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     if not starting_epoch == 1:
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
 
-    history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
+    history = model.fit_generator(NuclearCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
                     (rotations * ntraining_candidates / batch_size), epochs=500, verbose=1, class_weight=weights, callbacks=callbacks,\
-                    validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
+                    validation_data=NuclearCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))

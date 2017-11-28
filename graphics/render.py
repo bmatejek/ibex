@@ -47,7 +47,7 @@ def MarchingCubes(prefix, labels):
         nfaces = faces.shape[0]
 
         # center all of the vertices
-        scale_factor = 500.0
+        scale_factor = 1000.0
         for iv in range(nverts):
             verts[iv,0] = resolution[IB_Z] * downsample_rate[IB_Z] * (verts[iv,0] - segmentation.shape[IB_Z] / 2.0) / scale_factor
             verts[iv,1] = resolution[IB_Y] * downsample_rate[IB_Y] * (verts[iv,1] - segmentation.shape[IB_Y] / 2.0) / scale_factor
