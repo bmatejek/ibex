@@ -217,9 +217,6 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     # set up the keras model
     model = SkeletonNetwork(parameters, width)
 
-    other_filename = model_prefix.replace('FlyEM-', '')
-    model.load_weights('{}-best-loss.h5'.format(other_filename))
-    
     # make sure the folder for the model prefix exists
     root_location = model_prefix.rfind('/')
     output_folder = model_prefix[:root_location]
