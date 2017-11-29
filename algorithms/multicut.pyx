@@ -6,7 +6,7 @@ cimport cython
 cimport numpy as np
 import ctypes
 
-import ibex.cnns.skeleton.util
+from ibex.cnns.skeleton import util
 from ibex.transforms import seg2seg, seg2gold
 from ibex.utilities import dataIO
 from ibex.data_structures import unionfind
@@ -90,7 +90,7 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
 
     # collapse the edges returned from multicut
     segmentation = CollapseGraph(segmentation, gold, candidates, collapsed_edges, edge_weights)
-
+   
     # evaluate before and after multicut
     comparestacks.Evaluate(segmentation, gold, threshold, anisotropic)
 
@@ -99,7 +99,7 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
 # function ro run multicut algorithm
 def RunMulticut(prefix, model_prefix, threshold, maximum_distance, network_distance, beta, heuristic):
     # read the candidates
-    candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
+    candidates = util.FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
     ncandidates = len(candidates)
     
     # read the probabilities
