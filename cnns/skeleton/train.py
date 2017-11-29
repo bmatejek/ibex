@@ -216,6 +216,9 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     
     # set up the keras model
     model = SkeletonNetwork(parameters, width)
+
+    other_filename = model_prefix.replace('FlyEM-', '')
+    model.load_weights('{}-best-loss.h5'.format(other_filename))
     
     # make sure the folder for the model prefix exists
     root_location = model_prefix.rfind('/')
@@ -247,8 +250,8 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     callbacks = []
     
     # stop if patience number of epochs does not improve result
-    early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
-    callbacks.append(early_stopping)
+    #early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+    #callbacks.append(early_stopping)
     
     # save the best model seen so far
     best_loss = keras.callbacks.ModelCheckpoint('{}-best-loss.h5'.format(model_prefix), monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
