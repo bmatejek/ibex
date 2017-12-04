@@ -5,6 +5,7 @@ import numpy as np
 from numba import jit
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
+import scipy
 
 
 # class that contains all import feature data
@@ -77,7 +78,7 @@ def ScaleSegment(segment, width, labels):
 
 # extract the feature given the location and segmentation'
 def ExtractFeature(segmentation, candidate, width, radii, rotation):
-    assert (rotation < 16)
+    assert (rotation < 72)
 
     # get the data in a more convenient form
     zradius, yradius, xradius = radii
@@ -91,14 +92,21 @@ def ExtractFeature(segmentation, candidate, width, radii, rotation):
     # rescale the segment
     example = ScaleSegment(example, width, labels)
 
-    # flip x axis? -> add 2 because of extra filler channel
-    if rotation % 2: example = np.flip(example, IB_X + 2)
     # flip z axis?
-    if (rotation / 2) % 2: example = np.flip(example, IB_Z + 2)
+    if rotation / 36: example = np.flip(example, IB_Z + 2)
     
-    # rotate in y?
-    yrotation = rotation / 4
-    example = np.rot90(example, k=yrotation, axes=(IB_X + 2, IB_Y + 2))
+    # perform a rotation
+    angle = 10.0 * (rotation % 36)
+    example = scipy.ndimage.interpolation.rotate(example, angle, axes=(IB_X + 2, IB_Y + 2), reshape=False, order=0)
+
+    # # flip x axis? -> add 2 because of extra filler channel
+    # if rotation % 2: example = np.flip(example, IB_X + 2)
+    # # flip z axis?
+    # if (rotation / 2) % 2: example = np.flip(example, IB_Z + 2)
+    
+    # # rotate in y?
+    # yrotation = rotation / 4
+    # example = np.rot90(example, k=yrotation, axes=(IB_X + 2, IB_Y + 2))
 
     return example
 

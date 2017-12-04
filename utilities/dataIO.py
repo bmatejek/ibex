@@ -3,6 +3,8 @@ import h5py
 import numpy as np
 from ibex.data_structures import meta_data, swc
 from ibex.utilities.constants import *
+from PIL import Image
+import scipy.misc
 
 
 def GetWorldBBox(prefix):
@@ -89,3 +91,14 @@ def ReadSkeletons(prefix, data):
 
     # return all of the skeletons
     return skeletons, joints, endpoints
+
+
+
+def ReadImage(filename):
+    image = np.array(Image.open(filename)) / 255.0
+
+    return image
+
+
+def WriteImage(filename, image):
+    scipy.misc.imsave(filename, image)

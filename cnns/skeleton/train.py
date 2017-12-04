@@ -21,6 +21,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
+max_rotation = 72
+
 
 # add a convolutional layer to the model
 def ConvolutionalLayer(model, filter_size, kernel_size, padding, activation, normalization, input_shape=None):
@@ -168,7 +170,7 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters,
     radii = (network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X])
 
     # determine the total number of epochs
-    if parameters['augment']: rotations = 16
+    if parameters['augment']: rotations = max_rotation
     else: rotations = 1
 
     ncandidates = len(candidates)
@@ -224,8 +226,6 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-
-
     # open up the log file with no buffer
     logfile = '{}.log'.format(model_prefix)
 
@@ -263,7 +263,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     callbacks.append(plot_losses)
 
     # determine the total number of epochs
-    if parameters['augment']: rotations = 16
+    if parameters['augment']: rotations = max_rotation
     else: rotations = 1
 
     # save the json file
@@ -274,8 +274,8 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
 
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
-                    (rotations * ntraining_candidates / batch_size), epochs=500, verbose=1, class_weight=weights, callbacks=callbacks,\
-                    validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
+                    (rotations * ntraining_candidates / batch_size), epochs=250, verbose=1, class_weight=weights, callbacks=callbacks,\
+                                  validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))
