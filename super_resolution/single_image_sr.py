@@ -1,345 +1,516 @@
-# import math
-# import numpy as np
-# import skimage.transform
+import math
+import struct
+import numpy as np
+import scipy.ndimage
+import skimage.transform
+import os.path
 
-# from numba import jit
-# from scipy.spatial import KDTree
-# import scipy.ndimage
-# import scipy.signal
+from scipy.spatial import KDTree
+from numba import jit
 
-# from ibex.utilities import dataIO
+from ibex.utilities import dataIO
 
+# for KDTree to work
+import sys
+sys.setrecursionlimit(100000)
 
+# define conveniet ceil and floor functions
+def ceil(value): return int(math.ceil(value))
+def floor(value): return int(math.floor(value))
 
-# # small utility functions
-# @jit(nopython=True)
-# def ceil(value): return int(math.ceil(value))
-# @jit(nopython=True)
-# def floor(value): return int(math.floor(value))
+# conversion between linear and quadric spaces
+def IndicesToIndex(iy, ix, xres): return iy * xres + ix
+def IndexToIndices(index, xres): return (index / xres, index % xres)
 
-# def Gaussian(diameter, sigma):
-#     radius = (diameter[0] / 2, diameter[1] / 2)
-#     y_range = np.arange(-radius[0], radius[0] + 1)
-#     x_range = np.arange(-radius[1], radius[1] + 1)
+# convert the RGB image to grayscale
+def RGB2Gray(image):
+    yres, xres, _ = image.shape
+    grayscale = 0.2126 * image[:,:,2] + 0.7152 * image[:,:,1] + 0.0722 * image[:,:,0]
+    return grayscale
+
+# remove average grayscale from image
+def RemoveDC(grayscale):
+    return grayscale - np.mean(grayscale)
+
+# create a gaussian kernel
+def SSDGaussian(diameter):
+    # no variance equals the delta function
+    sigma = diameter[0] / 6.4
     
-#     xx, yy = np.meshgrid(x_range, y_range)
-#     kernel = np.exp(-(xx**2 + yy**2) / (2 * sigma**2)) 
-#     kernel = kernel / np.sum(kernel)
+    # get the radius that ends after truncate deviations
+    radius = (diameter[0] / 2, diameter[1] / 2)
 
-#     return kernel
+    # create a mesh grid of size (2 * radius + 1)^2
+    xspan = np.arange(-radius[0], radius[0] + 1)
+    yspan = np.arange(-radius[1], radius[1] + 1)
+    xx, yy = np.meshgrid(xspan, yspan)
 
-# # convert the image to grayscale
-# def RGB2Gray(image):
-#     yres, xres, depth = image.shape
-#     assert (depth == 3)
-#     # G = 0.2126 R + 0.7152 G + 0.0722 B
-#     grayscale = 0.2126 * image[:,:,2] + 0.7152 * image[:,:,1] + 0.0722 * image[:,:,0]
-#     return grayscale
+    # create the kernel
+    kernel = np.exp(-(xx**2 + yy**2) / (2 * sigma**2)) 
+    kernel = kernel / np.sum(kernel)
 
-# # apply a gaussian blue
-# def GaussianBlur(image, sigma):
-#     return scipy.ndimage.filters.gaussian_filter(image, sigma)
+    return np.sqrt(kernel).flatten()
 
-# # downsample using bilinear interpolation
-# def BilinearDownsample(image, factor):
-#     # get the current yres and xres
-#     yres, xres = image.shape
-#     down_yres, down_xres = (int(yres * factor), int(xres * factor))
+# get from calling SSDGaussian((5, 5))
+ssd_kernel = [0.0192885, 0.06591123, 0.0992765, 0.06591123, 0.0192885, \
+              0.06591123, 0.22522702, 0.33924035, 0.22522702, 0.06591123, \
+              0.0992765, 0.33924035, 0.51096897, 0.33924035, 0.0992765, \
+              0.06591123, 0.22522702, 0.33924035, 0.22522702, 0.06591123, \
+              0.0192885, 0.06591123, 0.0992765, 0.06591123, 0.0192885 ]
 
-#     downsampled = np.zeros((down_yres, down_xres), dtype=np.float32)
+# extract the feature from this location
+def ExtractFeature(grayscale, iy, ix, diameter):
+    # get convenient variables
+    radius = (diameter[0] / 2, diameter[1] / 2)
+    yres, xres = grayscale.shape
 
-#     for iy in range(down_yres):
-#         for ix in range(down_xres):
-#             # get the upsampled y and x values
-#             upy = iy / factor
-#             upx = ix / factor
+    # see if reflection is needed
+    if iy > radius[0] - 1 and ix > radius[1] - 1 and iy < yres - radius[0] and ix < xres - radius[1]:
+        return np.multiply(ssd_kernel, grayscale[iy-radius[0]:iy+radius[0]+1,ix-radius[1]:ix+radius[1]+1].flatten())
+    else: 
+        return sys.maxint * np.ones(diameter, dtype=np.float32).flatten()
+    
+# create the kdtree of features for this image
+def CreateKDTree(grayscale, diameter):
+    # get useful parameters
+    yres, xres = grayscale.shape
+    nfeatures = yres * xres
+    feature_size = diameter[0] * diameter[1]
+    features = np.zeros((nfeatures, feature_size), dtype=np.float32)
+    radius = (diameter[0] / 2, diameter[1] / 2)
+    for iy in range(yres):
+        for ix in range(xres):
+            features[IndicesToIndex(iy, ix, xres),:] = ExtractFeature(grayscale, iy, ix, diameter)
 
-#             # use bilinear interpolation
-#             alphax = ceil(upx) - upx
-#             alphay = ceil(upy) - upy
+    return KDTree(features)
 
-#             # downsample the image
-#             downsampled[iy,ix] = alphax * alphay * image[floor(upy),floor(upx)] + alphax * (1 - alphay) * image[ceil(upy),floor(upx)] + (1 - alphax) * alphay * image[floor(upy),ceil(upx)] + (1 - alphax) * (1 - alphay) * image[ceil(upy),ceil(upx)]
+# get the patch-specific good distances
+def GoodDistance(grayscale, diameter):
+    # get useful parameters
+    yres, xres = grayscale.shape
+    # shift the image by half a pixel
+    shift = scipy.ndimage.interpolation.shift(grayscale, (0.0, 0.5))
+    distance = np.zeros((yres, xres), dtype=np.float32)
 
-#     return downsampled
+    for iy in range(yres):
+        for ix in range(xres):
+            grayscale_feature = ExtractFeature(grayscale, iy, ix, diameter)
+            shift_feature = ExtractFeature(shift, iy, ix, diameter)
 
-# # remove average grayscale from image
-# def RemoveDC(grayscale):
-#     return grayscale - np.mean(grayscale)
+            distance[iy,ix] = 0.5 * math.sqrt(np.sum(np.multiply(grayscale_feature - shift_feature, grayscale_feature - shift_feature)))
 
-# # extract the features from each valid window
-# def CreateKDTree(image, diameter):
-#     yres, xres = image.shape
+    return distance
 
-#     # create an empty features array
-#     nfeatures = (yres - diameter[0] + 1) * (xres - diameter[1] + 1)
-#     ndims = diameter[0] * diameter[1]
-#     features = np.zeros((nfeatures, ndims), dtype=np.float32)
+# create a hierarchy of images, grayscales, and kdtrees
+def CreateHierarchy(parameters, hierachies):
+    # get useful parameters
+    root_filename = parameters['root_filename']
+    m = parameters['m']                             # number of down level supports
+    scale = parameters['scale']                     # scale to increase each layer
+    truncate = parameters['truncate']               # number of sigma in gaussian blur
+    diameter = parameters['diameter']               # diameter of features
 
-#     # generate all features
-#     index = 0
-#     radius = (diameter[0] / 2, diameter[1] / 2)
-#     for iy in range(radius[0], yres - radius[0]):
-#         for ix in range(radius[1], xres - radius[1]):
-#             features[index,:] = image[iy-radius[0]:iy+radius[0]+1,ix-radius[1]:ix+radius[1]+1].flatten()
-#             index += 1
+    images = hierachies['images']
+    grayscales = hierachies['grayscales']
+    kdtrees = hierachies['kdtrees']
+    distances = hierachies['distances']
 
-#     return KDTree(features)
+    # read in the first image and convert to grayscale
+    filename = 'pictures/{}.png'.format(root_filename)
+    images[0] = dataIO.ReadImage(filename)
+    grayscales[0] = RGB2Gray(images[0])
+    yres, xres = grayscales[0].shape
 
-# # create a hierarchy of images
-# def CreateHierachy(image, parameters):
-#     # get useful parameters and variables
-#     m = parameters['m']
-#     n = parameters['n']
-#     scale = parameters['scale']
-#     diameter = parameters['diameter']
+    # output the input image into the hierarchy subfolder
+    grayscale_filename = 'hierarchy/{}-grayscale-0.png'.format(root_filename)
+    image_filename = 'hierarchy/{}-image-0.png'.format(root_filename)
+    dataIO.WriteImage(grayscale_filename, grayscales[0])
+    dataIO.WriteImage(image_filename, images[0])
 
-#     nlayers = m + n + 1
+    # go through all levels of the hierarchy
+    for iv in range(-1, -(m + 1), -1):
+        # get the standard deviation of the blur filter
+        sigma = math.sqrt(pow(scale, -iv))
 
-#     # create empty variables for the grayscale images and the kdtrees for features
-#     grayscales = [ _ for _ in range(nlayers)]
-#     kdtrees = [ _ for _ in range(nlayers)]
+        # filter the input image 
+        blurred_grayscale = scipy.ndimage.filters.gaussian_filter(grayscales[0], sigma, truncate=truncate)
+        blurred_red = scipy.ndimage.filters.gaussian_filter(images[0][:,:,0], sigma, truncate=truncate)
+        blurred_green = scipy.ndimage.filters.gaussian_filter(images[0][:,:,1], sigma, truncate=truncate)
+        blurred_blue = scipy.ndimage.filters.gaussian_filter(images[0][:,:,2], sigma, truncate=truncate)
 
-#     # create the hierarchy of images
-#     grayscales[0] = RGB2Gray(image)
-#     for iv in range(-1, -(m + 1), -1):
-#         sigma = math.sqrt(pow(scale, -1 * iv))
-#         factor = pow(scale, iv)
-#         grayscales[iv] = BilinearDownsample(GaussianBlur(grayscales[0], sigma), factor)
+        # get the scale difference between this level and the first level
+        magnification = pow(scale, iv)
+        low_yres, low_xres = (ceil(yres * magnification), ceil(xres * magnification))
+        
+        # perform bilinear interpolation
+        grayscales[iv] = skimage.transform.resize(blurred_grayscale, (low_yres, low_xres), order=1, mode='reflect')
+        images[iv] = np.zeros((low_yres, low_xres, 3), dtype=np.float32)
+        images[iv][:,:,0] = skimage.transform.resize(blurred_red, (low_yres, low_xres), order=1, mode='reflect')
+        images[iv][:,:,1] = skimage.transform.resize(blurred_green, (low_yres, low_xres), order=1, mode='reflect')
+        images[iv][:,:,2] = skimage.transform.resize(blurred_blue, (low_yres, low_xres), order=1, mode='reflect')
 
-#     # remove the DC components from every image
-#     grayscales[0] = RemoveDC(grayscales[0])
-#     for iv in range(-1, -(m + 1), -1):
-#         grayscales[iv] = RemoveDC(grayscales[iv])
+        # output the images
+        grayscale_filename = 'hierarchy/{}-grayscale-{}.png'.format(root_filename, -iv)
+        image_filename = 'hierarchy/{}-image-{}.png'.format(root_filename, -iv)
+        dataIO.WriteImage(grayscale_filename, grayscales[iv])
+        dataIO.WriteImage(image_filename, images[iv])
 
-#     # create the kdtree for every known layer
-#     for iv in range(-m, 1):
-#         kdtrees[iv] = CreateKDTree(grayscales[iv], diameter)
+    # remove all DC components from grayscale images for feature extraction
+    for iv in range(0, -(m + 1), -1):
+        grayscales[iv] = RemoveDC(grayscales[iv])
+        kdtrees[iv] = CreateKDTree(grayscales[iv], diameter)
+        distances[iv] = GoodDistance(grayscales[iv], diameter)
 
-#     return grayscales, kdtrees
+# create a gaussian kernel
+def Gaussian(variance, truncate):
+    # no variance equals the delta function
+    if variance == 0: return np.ones((1, 1), dtype=np.float32)
 
-# # shift the image by x and y pixels
-# def SubpixelShift(images, xshift, yshift, parameters):
-#     # get useful parameters and variables
-#     m = parameters['m']
-#     n = parameters['n']
-#     nlayers = m + n + 1
+    sigma = math.sqrt(variance)
+    
+    # get the radius that ends after truncate deviations
+    radius = int(truncate * sigma + 0.5)
 
-#     shifts = [ _ for _ in range(nlayers)]
-#     for ie in range(-m, 1):
-#         shifts[ie] = scipy.ndimage.interpolation.shift(images[ie], (yshift, xshift))
+    # create a mesh grid of size (2 * radius + 1)^2
+    span = np.arange(-radius, radius + 1)
+    xx, yy = np.meshgrid(span, span)
 
-#     # return the shifted image
-#     return shifts
+    # create the kernel
+    kernel = np.exp(-(xx**2 + yy**2) / (2 * sigma**2)) 
+    kernel = kernel / np.sum(kernel)
 
-# # get the distance threshold for each image
-# def DistanceThreshold(images, shifts, parameters):
-#     # get useful parameters and variables
-#     m = parameters['m']
-#     n = parameters['n']
-#     diameter = parameters['diameter']
-#     radius = (diameter[0] / 2, diameter[1] / 2)
+    return kernel
 
-#     nlayers = m + n + 1
-#     gaussian_kernel = Gaussian(diameter, 1.5).flatten()
-#     # go through every image
-#     distances = [ _ for _ in range(nlayers)]
-#     for ie in range(-m , 1):
-#         yres, xres = images[ie].shape
-#         distances[ie] = np.zeros((yres, xres), dtype=np.float32)
+class Constraint:
+    def __init__(self, iy, ix, l, value):
+        self.iy = iy
+        self.ix = ix
+        self.l = l
+        self.value = value
 
-#         # go through each element in this image
+# save the constraints file
+def SaveConstraints(constraints_filename, constraints):
+    # save the constraints to the cache
+    with open(constraints_filename, 'wb') as fd:
+        fd.write(struct.pack('i', len(constraints)))
+        for constraint in constraints:
+            fd.write(struct.pack('iiif', constraint.iy, constraint.ix, constraint.l, constraint.value))
+
+# read the constraints file
+def ReadConstraints(constraints_filename):
+    constraints = []
+    with open(constraints_filename, 'rb') as fd:
+        nconstraints, = struct.unpack('i', fd.read(4))
+        for iv in range(nconstraints):
+            iy, ix, l, value, = struct.unpack('iiif', fd.read(16))
+            constraints.append(Constraint(iy, ix, l, value))
+
+    return constraints
+
+# increase the resolution to level in one pass
+def SinglePassSuperResolution(parameters, hierachies, n):
+    # get useful parameters
+    root_filename = parameters['root_filename']
+    n = parameters['n']
+    m = parameters['m']
+    k = parameters['k']
+    scale = parameters['scale']
+    diameter = parameters['diameter']
+    truncate = parameters['truncate']
+
+    grayscales = hierachies['grayscales']
+    kdtrees = hierachies['kdtrees']
+    distances = hierachies['distances']
+
+    L = grayscales[0]
+    Ldist = distances[0]
+    yres, xres = L.shape
+    radius = (diameter[0] / 2, diameter[1] / 2)
+
+    lowres_kdtree = kdtrees[-1]
+    lowres_grayscale = grayscales[-1]
+    magnification = pow(scale, n)
+
+    high_yres, high_xres = (ceil(yres * magnification), ceil(xres * magnification))
+    highres_image = np.zeros((high_yres, high_xres), dtype=np.float32)
+
+    constraints = []
+    constraints_filename = 'cache/{}-single-pass-constraints.cache'.format(root_filename)
+
+    if os.path.exists(constraints_filename):
+        constraints = ReadConstraints(constraints_filename)
+    else:
+        for iy in range(radius[0], yres - radius[0]):
+            for ix in range(radius[1], xres - radius[1]):
+                print '{} {}'.format(iy, ix)
+                sys.stdout.flush()
+
+                # create one constraint for this level
+                constraints.append(Constraint(iy, ix, 0, L[iy,ix]))
+
+                # get the feature at this location
+                feature = ExtractFeature(L, iy, ix, diameter)
+
+                # find the closest feature in the lowres image
+                value, location = lowres_kdtree.query(feature, 1, distance_upper_bound=Ldist[iy,ix])
+                if value == float('inf'): continue
+
+                # get the low resolution location
+                lowy, lowx = IndexToIndices(location, lowres_grayscale.shape[1])
+                # get the corresponding location and window in L
+                Ly, Lx = (int(round(lowy * magnification)), int(round(lowx * magnification)))
+                Lradius = (floor(diameter[0] * magnification) / 2, floor(diameter[1] * magnification) / 2)
+                if Ly - Lradius[0] < 0 or Lx - Lradius[1] < 0: continue
+                if Ly + Lradius[0] > yres - 1 or Lx + Lradius[1] > xres - 1: continue            
+                Lwindow = L[Ly-Lradius[0]:Ly+Lradius[0]+1,Lx-Lradius[1]:Lx+Lradius[1]+1]
+
+                # get the high res location
+                highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
+                if highy - Lradius[0] < 0 or highx - Lradius[1] < 0: continue
+                if highy + Lradius[0] > high_yres - 1 or highx + Lradius[1] > high_xres + 1: continue
+
+                # create a constraint for every pixel at this level
+                for ij, iv in enumerate(range(highy - Lradius[0], highy + Lradius[0] + 1)):
+                    for ii, iu in enumerate(range(highx - Lradius[1], highx + Lradius[1] + 1)):
+                        constraints.append(Constraint(iy, ix, 1, Lwindow[ij,ii]))
+
+                highres_image[highy-Lradius[0]:highy+Lradius[0]+1,highx-Lradius[1]:highx+Lradius[1]+1] = Lwindow
+        SaveConstraints(constraints_filename, constraints)
+
+    # create the linear algebra system
+    # nconstraints = len(constraints)
+    # H = np.zeros((high_yres * high_xres, nconstraints), dtype=np.float32)
+    # b = np.zeros(nconstraints, dtype=np.float32)
+
+    # print nconstraints
+    # print high_yres
+    # print high_xres
+
+    # for ie, constraint in enumerate(constraints):
+    #     #if constraint.l == n: H[ie]
+
+    #     # set the value
+    #     b[ie] = constraint.value
+
+    grayscales[n] = highres_image
+    dataIO.WriteImage('output.jpg', grayscales[n])
+
+
+# increase the resolution of the image
+def SingleImageSR(parameters):
+    # get useful parameters
+    root_filename = parameters['root_filename']
+    n = parameters['n']                             # number of levels to increase
+    m = parameters['m']                             # number of down level supports
+    scale = parameters['scale']                     # scale to increase each layer
+
+    # useful variables
+    nlayers = n + m + 1
+    
+    # hierarchy variables
+    images = [ _ for _ in range(nlayers)]
+    grayscales = [ _ for _ in range(nlayers)]
+    kdtrees = [ _ for _ in range(nlayers)]
+    distances = [ _ for _ in range(nlayers)]
+
+
+    hierachies = {}
+    hierachies['images'] = images
+    hierachies['grayscales'] = grayscales
+    hierachies['kdtrees'] = kdtrees
+    hierachies['distances'] = distances
+
+    CreateHierarchy(parameters, hierachies)
+
+    #VisualizeSelectionProcess(parameters, hierachies)
+
+    SinglePassSuperResolution(parameters, hierachies, 1)
+
+# create a bounding box of size diameter around this location
+def BoundingBox(image, iy, ix, diameter):
+    radius = (ceil(diameter[0] / 2), ceil(diameter[1] / 2))
+    yres, xres, depth = image.shape
+
+    output_image = np.zeros((yres, xres, depth), dtype=np.float32)
+    output_image[:,:,:] = image[:,:,:]
+    
+    lowy, lowx = (iy - (radius[0] + 1), ix - (radius[1] + 1))
+    highy, highx = (iy + (radius[0] + 1), ix + (radius[1] + 1))
+
+    output_image[lowy:highy+1,lowx,:] = 1.0
+    output_image[lowy:highy+1,highx,:] = 1.0
+    output_image[lowy,lowx:highx+1,:] = 1.0
+    output_image[highy,lowx:highx+1,:] = 1.0
+
+    return output_image
+
+# show a visualization of the process for equation on p 353
+def VisualizeSelectionProcess(parameters, hierachies):
+    # get useful parameters
+    root_filename = parameters['root_filename']    
+    diameter = parameters['diameter']               # diameter of features
+    scale = parameters['scale']                     # scale to increase each layer
+
+    images = hierachies['images']
+    grayscales = hierachies['grayscales']
+    kdtrees = hierachies['kdtrees']
+
+    # arbitray location for example
+    iy, ix = (80, 80)
+
+    feature = ExtractFeature(grayscales[0], iy, ix, diameter)
+    highres_image = BoundingBox(images[0], iy, ix, diameter)
+
+    # get the feature from both lower levels
+    for iv in range(-1, -6, -1):
+        # find the closest feature in this level
+        _, location = kdtrees[iv].query(feature, 1)
+        lowy, lowx = IndexToIndices(location, grayscales[iv].shape[1])
+
+        # create the image 
+        lowres_image = BoundingBox(images[iv], lowy, lowx, diameter)
+
+        visualization_filename = 'visualizations/{}-bbox-{}.png'.format(root_filename, -iv)
+        dataIO.WriteImage(visualization_filename, lowres_image)
+
+        # get the high res locations
+        magnification = pow(scale, -iv)
+        highy, highx = (int(round(lowy * magnification)), int(round(lowx * magnification)))
+        high_diameter = (diameter[0] * magnification, diameter[1] * magnification)
+
+        highres_image = BoundingBox(highres_image, highy, highx, high_diameter)
+
+    visualization_filename = 'visualizations/{}-bbox-0.png'.format(root_filename)
+    dataIO.WriteImage(visualization_filename, highres_image)
+
+def NearestNeighborInterpolation(parameters):
+    # get useful parameters
+    root_filename = parameters['root_filename']
+    n = parameters['n']                             # number of layers to increase
+    scale = parameters['scale']                     # scale of each layer
+
+    # get the original image
+    image_filename = 'pictures/{}.png'.format(root_filename)
+    image = dataIO.ReadImage(image_filename)
+    yres, xres, depth = image.shape
+
+    magnification = pow(scale, n)
+    high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
+    highres_image = skimage.transform.resize(image, (high_yres, high_xres, depth), order=0, mode='reflect')
+
+    nearest_filename = 'baseline/{}-{}-nearest-neighbor.png'.format(root_filename, n)
+    dataIO.WriteImage(nearest_filename, highres_image)
+
+def BicubicInterpolation(parameters):
+    # get useful parameters
+    root_filename = parameters['root_filename']
+    n = parameters['n']                             # number of layers to increase
+    scale = parameters['scale']                     # scale of each layer
+
+    # get the original image
+    image_filename = 'pictures/{}.png'.format(root_filename)
+    image = dataIO.ReadImage(image_filename)
+    yres, xres, depth = image.shape
+
+    magnification = pow(scale, n)
+    high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
+    highres_image = skimage.transform.resize(image, (high_yres, high_xres, depth), order=3, mode='reflect')
+
+    bicubic_filename = 'baseline/{}-{}-bicubic.png'.format(root_filename, n)
+    dataIO.WriteImage(bicubic_filename, highres_image)
+
+
+
+
+
+
+# grayscales = hierachies['grayscales']
+# kdtrees = hierachies['kdtrees']
+# distances = hierachies['distances']
+
+# # get the low resolution image
+# L = grayscales[0]
+# distance = distances[0]
+# yres, xres = L.shape
+# radius = (diameter[0] / 2, diameter[1] / 2)
+
+# # use the cache if it exists
+# constraints_filename = 'cache/{}-single-pass-constraints.cache'.format(root_filename)
+
+# if not os.path.exists(constraints_filename):        
+#     constraints = []
+
+#     # go through every level
+#     for l in range(-1, (-m + 1), -1):
+#         kdtree = kdtrees[l]
+#         magnification = pow(scale, -l)
+#         high_radius = (ceil(diameter[0] * magnification) / 2, ceil(diameter[1] * magnification) / 2)
+
 #         for iy in range(radius[0], yres - radius[0]):
 #             for ix in range(radius[1], xres - radius[1]):
-#                 # get the features for the normal and shifted image
-#                 image_feature = images[ie][iy-radius[0]:iy+radius[0]+1,ix-radius[1]:ix+radius[1]+1].flatten()
-#                 shift_feature = shifts[ie][iy-radius[0]:iy+radius[0]+1,ix-radius[1]:ix+radius[1]+1].flatten()
-                
-#                 # get the gaussian weighted SSD difference
-#                 distances[ie][iy,ix] = np.sum(np.multiply(np.multiply(image_feature - shift_feature, image_feature - shift_feature), gaussian_kernel))
+#                 print '{} {}'.format(iy, ix)
+#                 sys.stdout.flush()
+#                 # get the valid locations
+#                 feature = ExtractFeature(L, iy, ix, diameter)
+#                 value, location = kdtree.query(feature, k, distance_upper_bound=distance[iy,ix])
 
-#     return distances
+#                 # # iterate over all locations
+#                 # for index, location in enumerate(locations):
+#                 if value > distance[iy,ix]: continue
 
-# # convert the index to indices
-# @jit(nopython=True)
-# def IndexToIndices(index, shape, diameter):
-#     # get the correct shape for this value
-#     xres = shape[1] - diameter[1] + 1
-#     iy = index / xres
-#     ix = index % xres
-#     return iy + diameter[0] / 2, ix + diameter[1] / 2
+#                 lowy, lowx = IndexToIndices(location, grayscales[l].shape[1])
+#                 Ly, Lx = (int(round(lowy * magnification)), int(round(lowx * magnification)))
+#                 highy, highx = (int(round(Ly * magnification)), int(round(Lx * magnification)))
 
-# @jit(nopython=True)
-# def IndicesToIndex(ix, iy, shape):
-#     return iy * shape[1] + ix
+#                 # extract the local region
+#                 Q = L[Ly-high_radius[0]:Ly+high_radius[0]+1,Lx-high_radius[1]:Lx+high_radius[1]+1]
+#                 if not Q.size == (2 * high_radius[0] + 1) * (2 * high_radius[1] + 1): continue
 
-# class Constraint:
-#     def __init__(self, highy, highx, ys, xs, value, sigma):
-#         self.highy = highy
-#         self.highx = highx
-#         self.ys = ys
-#         self.xs = xs
-#         self.value = value
-#         self.sigma = sigma
+#                 for iv, ij in enumerate(range(highy - high_radius[0], highy + high_radius[0] + 1)):
+#                     for iu, ii in enumerate(range(highx - high_radius[1], highx + high_radius[1] + 1)):
+#                         constraints.append(Constraint(ij, ii, -l, Q[iv,iu]))
 
-# # get the next level 
-# def Upsample(grayscales, kdtrees, n, parameters):
-#     # get useful parameters and variables
-#     scale = parameters['scale']
-#     diameter = parameters['diameter']
-#     radius = (diameter[0] / 2, diameter[1] / 2)
+#     SaveConstraints(constraints_filename, constraints)
+# else:
+#     constraints = ReadConstraints(constraints_filename)
+# nconstraints = len(constraints)
 
-#     # create an empty high res image
-#     yres, xres = grayscales[0].shape
-#     magnification = pow(scale, n)
-#     high_yres, high_xres = (ceil(yres * magnification), ceil(xres * magnification))
-#     grayscales[n] = np.zeros((high_yres, high_xres), dtype=np.float32)
+# # get the size of the final image
+# magnification = pow(scale, n)
+# high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
 
+# H = np.zeros((nconstraints, high_yres * high_xres), dtype=np.float32)
+# b = np.zeros(nconstraints)
 
-#     # consider all high res images from 0 to level
-#     for ii in range(1):
-#         # get this image
-#         image = grayscales[ii]
+# # create gaussian blurs for every difference
+# blurs = [GaussianBlur(pow(scale, iv), truncate) for iv in range(n)]
 
-#         # get the size of this image
-#         yres, xres = image.shape
-
-#         # get the difference between n and this level
-#         delta = n - ii
-
-#         # get the low resolution image
-#         lowres_image_shape = grayscales[-1 * delta].shape
-#         lowres_kdtree = kdtrees[-1 * delta]
-
-#         # get the scale from the lowres image to image
-#         magnification = pow(scale, delta)
-
-#         # iterate through all valid locations
-#         for iy in range(radius[0], yres - radius[0]):
-#             print iy
-#             import sys
-#             sys.stdout.flush()
-#             for ix in range(radius[1], xres - radius[1]):
-#                 # get the feature at this location
-#                 feature = image[iy-radius[0]:iy+radius[0]+1,ix-radius[0]:ix+radius[1]+1].flatten()
-
-#                 # search for the closest feature in the lowres_image
-#                 _, location = lowres_kdtree.query(feature, 1)
-
-#                 lowres_y, lowres_x = IndexToIndices(location, lowres_image_shape, diameter)
-#                 high_radius = (floor(diameter[0] / 2 * magnification), floor(diameter[1] / 2 * magnification))
-#                 highy, highx = (int(round(lowres_y * magnification)), int(round(lowres_x * magnification)))
-
-#                 # scale iy and ix
-#                 scaled_iy = int(round(magnification * iy))
-#                 scaled_ix = int(round(magnification * ix))
-
-#                 # get the corresponding image section
-#                 grayscales[n][scaled_iy-high_radius[0]:scaled_iy+high_radius[0]+1,scaled_ix-high_radius[1]:scaled_ix+high_radius[1]+1] = image[highy-high_radius[0]:highy+high_radius[0]+1,highx-high_radius[1]:highx+high_radius[1]+1]
-#     kdtrees[n] = CreateKDTree(grayscales[n], diameter)
-
-# # calculate the single image super resolution
-# def SingleImageSR(root_filename, parameters):
-#     # get useful parameters and variables
-#     m = parameters['m']
-#     n = parameters['n']
-#     scale = parameters['scale']
-
-#     # total number of layers
-#     nlayers = m + n + 1
-
-#     # read the image into a float32 array between [0, 1]
-#     image = dataIO.ReadImage('{}.png'.format(root_filename))
-#     yres, xres, depth = image.shape
-#     assert (depth == 3)
-
-#     # create the hierarchy of images
-#     grayscales, kdtrees = CreateHierachy(image, parameters)
-
-#     # create a shift of the input image
-#     shifts = SubpixelShift(grayscales, 0.5, 0.0, parameters)
-
-#     # get the distance for all images
-#     distances = DistanceThreshold(grayscales, shifts, parameters)
-
-#     #Upsample(grayscales, kdtrees, 1, parameters)
-#     #dataIO.WriteImage('output-1.png', grayscales[1])
-#     #Upsample(grayscales, kdtrees, 2, parameters)
-#     #dataIO.WriteImage('output-2.png', grayscales[2])
-#     Upsample(grayscales, kdtrees, 3, parameters)
-#     dataIO.WriteImage('output-3.png', grayscales[3])
-#     Upsample(grayscales, kdtrees, 4, parameters)
-#     dataIO.WriteImage('output-4.png', grayscales[4])
-#     Upsample(grayscales, kdtrees, 5, parameters)
-#     dataIO.WriteImage('output-5.png', grayscales[5])
-#     Upsample(grayscales, kdtrees, 6, parameters)
-#     dataIO.WriteImage('output-6.png', grayscales[6])
+# for iv, constraint in enumerate(constraints):
+#     print '{}/{}'.format(iv, nconstraints)
+#     sys.stdout.flush()
+#     # get the particular of this constraint
+#     iy = constraint.iy
+#     ix = constraint.ix
+#     l = constraint.l
+#     p = constraint.value
     
-    
-    
-    
-    
-    
-#     # run nearest neighbor and bicubic interpolation
-#     magnification = pow(scale, n)
-#     high_yres, high_xres = (ceil(yres * magnification), ceil(xres * magnification))
+#     # get the high resolution locations
+#     difference = n - l
+#     magnification = pow(scale, difference)
+#     highy, highx = (int(round(magnification * iy)), int(round(magnification * ix)))
+#     kernel = blurs[difference]
+#     kernel_radius = (kernel.shape[0] / 2, kernel.shape[1], 2)
 
-#     nearest_neighbor = skimage.transform.resize(image, (high_yres, high_xres), order=0, mode='reflect')
-#     bicubic_interpolation = skimage.transform.resize(image, (high_yres, high_xres), order=3, mode='reflect')
+#     # iterate over the entire kernel
+#     for iv, iy in enumerate(range(highy - kernel_radius[0], highy + kernel_radius[0] + 1)):
+#         if iy < 0 or iy > high_yres - 1: continue
+#         for iu, ix in enumerate(range(highx - kernel_radius[1], highx + kernel_radius[1] + 1)):
+#             if ix < 0 or ix > high_xres - 1: continue
 
-#     nearest_filename = '{}-nearest-neighbor.png'.format(root_filename)
-#     bicubic_filename = '{}-bicubic-interpolation.png'.format(root_filename)
+#             high_index = IndexToIndices(iy, ix, high_xres)
+#             H[iv,high_index] = kernel[iv,iu]
 
-#     dataIO.WriteImage(nearest_filename, nearest_neighbor)
-#     dataIO.WriteImage(bicubic_filename, bicubic_interpolation)
+#     b[iv] = constraint.value
 
-
-# #################################
-# #### VISUALIZATION FUNCTIONS ####
-# #################################
-
-# def BoundingBox(output_filename, image, ix, iy, diameter):
-#     radius = (diameter[0] / 2, diameter[1] / 2)
-
-#     # get the high and low parameters for the image
-#     xlow = (ix - radius[1] - 1)
-#     xhigh = (ix + radius[1] + 1)
-#     ylow = (iy - radius[0] - 1)
-#     yhigh = (iy + radius[0] + 1)
-
-#     image[ylow:yhigh+1,xlow] = 1
-#     image[ylow:yhigh+1,xhigh] = 1
-#     image[ylow,xlow:xhigh+1] = 1
-#     image[yhigh,xlow:xhigh+1] = 1
-
-#     dataIO.WriteImage(output_filename, image)
-
-# def FeatureMatching(root_filename, grayscales, kdtrees, parameters):
-#     # get useful parameters and variables
-#     diameter = parameters['diameter']
-#     scale = parameters['scale']
-
-#     yres, xres = grayscales[0].shape  
-#     radius = (diameter[0] / 2, diameter[1] / 2)
-
-#     ix = 80
-#     iy = 80
-
-#     # get this feature
-#     feature = grayscales[0][iy-radius[0]:iy+radius[0]+1,ix-radius[1]:ix+radius[1]+1].flatten()
-
-#     # find the closest feature in the next lowest level
-#     value, location = kdtrees[-1].query(feature, 1)
-
-#     # get the coordinate in this lower level
-#     lowy, lowx = IndexToIndices(location, grayscales[-1].shape, diameter)
-
-#     BoundingBox('{}-bounding.png'.format(root_filename), grayscales[0], ix, iy, diameter)
-#     BoundingBox('{}-bounding-low.png'.format(root_filename), grayscales[-1], lowx, lowy, diameter)
-
-#     # get the difference between the scales
-#     increase = pow(scale, 1)
-#     high_diameter = (floor(diameter[0] * increase), floor(diameter[1] * increase))
-#     highy, highx = (int(round(lowy * increase)), int(round(lowx * increase)))
-#     BoundingBox('{}-bounding-high.png'.format(root_filename), grayscales[0], highx, highy, high_diameter)
-
+#     # solve the linear system
+#     np.linalg.solve(H, b)
