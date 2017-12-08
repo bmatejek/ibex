@@ -97,7 +97,7 @@ def GoodDistance(grayscale, diameter):
             grayscale_feature = ExtractFeature(grayscale, iy, ix, diameter)
             shift_feature = ExtractFeature(shift, iy, ix, diameter)
 
-            distance[iy,ix] = 0.5 * math.sqrt(np.sum(np.multiply(grayscale_feature - shift_feature, grayscale_feature - shift_feature)))
+            distance[iy,ix] = math.sqrt(np.sum(np.multiply(grayscale_feature - shift_feature, grayscale_feature - shift_feature)))
 
     return distance
 
@@ -276,21 +276,121 @@ def SinglePassSuperResolution(parameters, hierachies, n):
 
                 highres_image[highy-Lradius[0]:highy+Lradius[0]+1,highx-Lradius[1]:highx+Lradius[1]+1] = Lwindow
         SaveConstraints(constraints_filename, constraints)
+        dataIO.WriteImage('output-original.jpg', highres_image)
+    # create gaussian blurs for every difference
+    blurs = [Gaussian(pow(scale, iv), truncate) for iv in range(n + 1)]
 
-    # create the linear algebra system
-    # nconstraints = len(constraints)
-    # H = np.zeros((high_yres * high_xres, nconstraints), dtype=np.float32)
-    # b = np.zeros(nconstraints, dtype=np.float32)
+    index = 0
+    nconstraints = 0
+    for ie, constraint in enumerate(constraints):
+        iy = constraint.iy
+        ix = constraint.ix
+        l = constraint.l
 
-    # print nconstraints
-    # print high_yres
-    # print high_xres
+        # if the level is the desired level
+        if l == n:
+            index += 1
+        else:
+            
+            # get the high resolution location
+            magnification = pow(scale, n - l)
+            highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
 
-    # for ie, constraint in enumerate(constraints):
-    #     #if constraint.l == n: H[ie]
+            # take a gaussian blur around the location in the low res image
+            gaussian_blur = blurs[n - l]
+            gaussian_radius = (gaussian_blur.shape[0] / 2, gaussian_blur.shape[1] / 2)
 
-    #     # set the value
-    #     b[ie] = constraint.value
+            if highy - gaussian_radius[0] < 0 or highx - gaussian_radius[1] < 0: continue
+            if highy + gaussian_radius[0] > yres - 1 or highx + gaussian_radius[1] > xres - 1: continue
+
+            for ij, iv in enumerate(range(highy - gaussian_radius[0], highy + gaussian_radius[0] + 1)):
+                for ii, iu in enumerate(range(highx - gaussian_radius[1], highx + gaussian_radius[1] + 1)):
+                    if iv < 0 or iv > high_yres - 1: continue
+                    if iu < 0 or iu > high_xres - 1: continue
+                    index += 1
+        nconstraints += 1
+
+    # create a system of sparse equations
+    #nconstraints = len(constraints)
+    nnonzero = index
+
+    data = np.zeros(nnonzero, dtype=np.float32)
+    i = np.zeros(nnonzero, dtype=np.float32)
+    j = np.zeros(nnonzero, dtype=np.float32)
+    
+    b = np.zeros(nconstraints, dtype=np.float32)
+
+    index = 0
+    index2 = 0
+    for ie, constraint in enumerate(constraints):
+        iy = constraint.iy
+        ix = constraint.ix
+        l = constraint.l
+        value = constraint.value
+
+
+        # if the level is the desired level
+        if l == n:
+            high_index = IndicesToIndex(iy, ix, highres_image.shape[1])
+
+            i[index] = index2
+            j[index] = high_index
+            data[index] = 1
+            index += 1
+        else:
+            
+            # get the high resolution location
+            magnification = pow(scale, n - l)
+            highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
+
+            # take a gaussian blur around the location in the low res image
+            gaussian_blur = blurs[n - l]
+            gaussian_radius = (gaussian_blur.shape[0] / 2, gaussian_blur.shape[1] / 2)
+
+            if highy - gaussian_radius[0] < 0 or highx - gaussian_radius[1] < 0: continue
+            if highy + gaussian_radius[0] > yres - 1 or highx + gaussian_radius[1] > xres - 1: continue
+
+            for ij, iv in enumerate(range(highy - gaussian_radius[0], highy + gaussian_radius[0] + 1)):
+                for ii, iu in enumerate(range(highx - gaussian_radius[1], highx + gaussian_radius[1] + 1)):
+                    if iv < 0 or iv > high_yres - 1: continue
+                    if iu < 0 or iu > high_xres - 1: continue
+
+                    # get the index
+                    high_index = IndicesToIndex(iv, iu, high_xres)
+
+                    i[index] = ie
+                    j[index] = high_index
+                    data[index] = gaussian_blur[ij,ii]
+                    index += 1
+
+        # set the least square values
+        b[index2] = value
+        index2 += 1
+    
+    print nconstraints
+    print nnonzero
+    print b.size
+    print np.amax(data)
+    print np.amin(data)
+    print np.amax(i)
+    print np.amax(j)
+    print np.amin(i)
+    print np.amin(j)
+    print high_yres
+    print high_xres
+    sparse_matrix = scipy.sparse.coo_matrix((data, (i, j)), shape=(nconstraints, high_yres * high_xres))
+    H, _, _, _,_, _, _, _, _, _ = scipy.sparse.linalg.lsqr(sparse_matrix, b, show=True)
+    
+    maximum = np.amax(H)
+    minimum = np.amin(H)
+    print 'Minimum: {}'.format(minimum)
+    print 'Maximum: {}'.format(maximum)
+
+    for iy in range(high_yres):
+        for ix in range(high_xres):
+            index = IndicesToIndex(iy, ix, high_xres)
+
+            highres_image[iy,ix] = (H[index] - minimum) / (maximum - minimum)
 
     grayscales[n] = highres_image
     dataIO.WriteImage('output.jpg', grayscales[n])
