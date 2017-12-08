@@ -34,6 +34,7 @@ def RemoveDC(grayscale):
 
 # create a gaussian kernel
 def SSDGaussian(diameter):
+    sys.stderr.write('Warning: using diameter of ({}, {}) for SSD'.format(diameter[0], diameter[1]))
     # no variance equals the delta function
     sigma = diameter[0] / 6.4
     
@@ -49,14 +50,10 @@ def SSDGaussian(diameter):
     kernel = np.exp(-(xx**2 + yy**2) / (2 * sigma**2)) 
     kernel = kernel / np.sum(kernel)
 
-    return np.sqrt(kernel).flatten()
+    return kernel.flatten()
 
-# get from calling SSDGaussian((5, 5))
-ssd_kernel = [0.0192885, 0.06591123, 0.0992765, 0.06591123, 0.0192885, \
-              0.06591123, 0.22522702, 0.33924035, 0.22522702, 0.06591123, \
-              0.0992765, 0.33924035, 0.51096897, 0.33924035, 0.0992765, \
-              0.06591123, 0.22522702, 0.33924035, 0.22522702, 0.06591123, \
-              0.0192885, 0.06591123, 0.0992765, 0.06591123, 0.0192885 ]
+# call once globally to save time
+ssd_kernel = SSDGaussian((5, 5))
 
 # extract the feature from this location
 def ExtractFeature(grayscale, iy, ix, diameter):
@@ -89,7 +86,7 @@ def GoodDistance(grayscale, diameter):
     # get useful parameters
     yres, xres = grayscale.shape
     # shift the image by half a pixel
-    shift = scipy.ndimage.interpolation.shift(grayscale, (0.0, 0.5))
+    shift = scipy.ndimage.interpolation.shift(grayscale, (0.5, 0.5))
     distance = np.zeros((yres, xres), dtype=np.float32)
 
     for iy in range(yres):
@@ -252,31 +249,32 @@ def SinglePassSuperResolution(parameters, hierachies, n):
                 feature = ExtractFeature(L, iy, ix, diameter)
 
                 # find the closest feature in the lowres image
-                value, location = lowres_kdtree.query(feature, 1, distance_upper_bound=Ldist[iy,ix])
-                if value == float('inf'): continue
+                values, locations = lowres_kdtree.query(feature, 3, distance_upper_bound=Ldist[iy,ix])
+                for value, location in zip(values, locations):
+                    if value == float('inf'): continue
 
-                # get the low resolution location
-                lowy, lowx = IndexToIndices(location, lowres_grayscale.shape[1])
-                # get the corresponding location and window in L
-                Ly, Lx = (int(round(lowy * magnification)), int(round(lowx * magnification)))
-                Lradius = (floor(diameter[0] * magnification) / 2, floor(diameter[1] * magnification) / 2)
-                if Ly - Lradius[0] < 0 or Lx - Lradius[1] < 0: continue
-                if Ly + Lradius[0] > yres - 1 or Lx + Lradius[1] > xres - 1: continue            
-                Lwindow = L[Ly-Lradius[0]:Ly+Lradius[0]+1,Lx-Lradius[1]:Lx+Lradius[1]+1]
+                    # get the low resolution location
+                    lowy, lowx = IndexToIndices(location, lowres_grayscale.shape[1])
+                    # get the corresponding location and window in L
+                    Ly, Lx = (int(round(lowy * magnification)), int(round(lowx * magnification)))
+                    Lradius = (floor(diameter[0] * magnification) / 2, floor(diameter[1] * magnification) / 2)
+                    if Ly - Lradius[0] < 0 or Lx - Lradius[1] < 0: continue
+                    if Ly + Lradius[0] > yres - 1 or Lx + Lradius[1] > xres - 1: continue            
+                    Lwindow = L[Ly-Lradius[0]:Ly+Lradius[0]+1,Lx-Lradius[1]:Lx+Lradius[1]+1]
 
-                # get the high res location
-                highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
-                if highy - Lradius[0] < 0 or highx - Lradius[1] < 0: continue
-                if highy + Lradius[0] > high_yres - 1 or highx + Lradius[1] > high_xres + 1: continue
+                    # get the high res location
+                    highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
+                    if highy - Lradius[0] < 0 or highx - Lradius[1] < 0: continue
+                    if highy + Lradius[0] > high_yres - 1 or highx + Lradius[1] > high_xres + 1: continue
 
-                # create a constraint for every pixel at this level
-                for ij, iv in enumerate(range(highy - Lradius[0], highy + Lradius[0] + 1)):
-                    for ii, iu in enumerate(range(highx - Lradius[1], highx + Lradius[1] + 1)):
-                        constraints.append(Constraint(iy, ix, 1, Lwindow[ij,ii]))
+                    # create a constraint for every pixel at this level
+                    for ij, iv in enumerate(range(highy - Lradius[0], highy + Lradius[0] + 1)):
+                        for ii, iu in enumerate(range(highx - Lradius[1], highx + Lradius[1] + 1)):
+                            constraints.append(Constraint(iy, ix, 1, Lwindow[ij,ii]))
 
-                highres_image[highy-Lradius[0]:highy+Lradius[0]+1,highx-Lradius[1]:highx+Lradius[1]+1] = Lwindow
+                    highres_image[highy-Lradius[0]:highy+Lradius[0]+1,highx-Lradius[1]:highx+Lradius[1]+1] = Lwindow
         SaveConstraints(constraints_filename, constraints)
-        dataIO.WriteImage('output-original.jpg', highres_image)
+        dataIO.WriteImage('output-original.png', highres_image)
     # create gaussian blurs for every difference
     blurs = [Gaussian(pow(scale, iv), truncate) for iv in range(n + 1)]
 
@@ -393,7 +391,7 @@ def SinglePassSuperResolution(parameters, hierachies, n):
             highres_image[iy,ix] = (H[index] - minimum) / (maximum - minimum)
 
     grayscales[n] = highres_image
-    dataIO.WriteImage('output.jpg', grayscales[n])
+    dataIO.WriteImage('output.png', grayscales[n])
 
 
 # increase the resolution of the image
@@ -422,9 +420,54 @@ def SingleImageSR(parameters):
 
     CreateHierarchy(parameters, hierachies)
 
+    # diameter = parameters['diameter']
+    # radius = (diameter[0] / 2, diameter[1] / 2)
+    # distance = distances[0]
+    # grayscale = grayscales[0]
+    # k = 10
+    # nvalids = [0 for iv in range(k + 1)]
+    # yres, xres = grayscale.shape
+    # for iy in range(radius[0], yres - radius[0]):
+    #     for ix in range(radius[1], xres - radius[1]):
+    #         # get this feature
+    #         feature = ExtractFeature(grayscale, iy, ix, diameter)
+
+    #         # go through every lower level
+    #         values, locations = kdtrees[-6].query(feature, k=k, distance_upper_bound=distance[iy,ix])
+
+    #         nvalid = 0
+    #         for ie in range(len(locations)):
+    #             if values[ie] < distance[iy,ix]:
+    #                 nvalid += 1
+
+    #         nvalids[nvalid] += 1
+    #     print nvalids
+    #     sys.stdout.flush()
+
+
     #VisualizeSelectionProcess(parameters, hierachies)
 
     SinglePassSuperResolution(parameters, hierachies, 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # create a bounding box of size diameter around this location
 def BoundingBox(image, iy, ix, diameter):
