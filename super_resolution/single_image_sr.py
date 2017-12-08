@@ -22,11 +22,21 @@ def floor(value): return int(math.floor(value))
 def IndicesToIndex(iy, ix, xres): return iy * xres + ix
 def IndexToIndices(index, xres): return (index / xres, index % xres)
 
-# convert the RGB image to grayscale
-def RGB2Gray(image):
-    yres, xres, _ = image.shape
-    grayscale = 0.2126 * image[:,:,2] + 0.7152 * image[:,:,1] + 0.0722 * image[:,:,0]
-    return grayscale
+# convert the RGB image to YIQ
+def RGB2YIQ(image):
+    Y = 0.299 * image[:,:,0] + 0.587 * image[:,:,1] + 0.114 * image[:,:,2]
+    I = 0.596 * image[:,:,0] - 0.274 * image[:,:,1] - 0.322 * image[:,:,2]
+    Q = 0.211 * image[:,:,0] - 0.523 * image[:,:,1] + 0.312 * image[:,:,2]
+    return Y, I, Q
+
+# convert the YIQ images to RGB
+def YIQ2RGB(Y, I, Q):
+    yres, xres = Y.shape
+    RGB = np.zeros((yres, xres, 3), dtype=np.float32)
+    RGB[:,:,0] = Y + 0.956 * I + 0.621 * Q
+    RGB[:,:,1] = Y - 0.272 * I - 0.647 * Q
+    RGB[:,:,2] = Y - 1.106 * I + 1.703 * Q
+    return RGB
 
 # remove average grayscale from image
 def RemoveDC(grayscale):
@@ -34,7 +44,7 @@ def RemoveDC(grayscale):
 
 # create a gaussian kernel
 def SSDGaussian(diameter):
-    sys.stderr.write('Warning: using diameter of ({}, {}) for SSD'.format(diameter[0], diameter[1]))
+    sys.stderr.write('Warning: using diameter of ({}, {}) for SSD\n'.format(diameter[0], diameter[1]))
     # no variance equals the delta function
     sigma = diameter[0] / 6.4
     
@@ -234,7 +244,7 @@ def SinglePassSuperResolution(parameters, hierachies, n):
     constraints = []
     constraints_filename = 'cache/{}-single-pass-constraints.cache'.format(root_filename)
 
-    if os.path.exists(constraints_filename):
+    if False:#os.path.exists(constraints_filename):
         constraints = ReadConstraints(constraints_filename)
     else:
         for iy in range(radius[0], yres - radius[0]):
@@ -249,30 +259,29 @@ def SinglePassSuperResolution(parameters, hierachies, n):
                 feature = ExtractFeature(L, iy, ix, diameter)
 
                 # find the closest feature in the lowres image
-                values, locations = lowres_kdtree.query(feature, 3, distance_upper_bound=Ldist[iy,ix])
-                for value, location in zip(values, locations):
-                    if value == float('inf'): continue
+                value, location = lowres_kdtree.query(feature, 1, distance_upper_bound=Ldist[iy,ix])
+                if value == float('inf'): continue
 
-                    # get the low resolution location
-                    lowy, lowx = IndexToIndices(location, lowres_grayscale.shape[1])
-                    # get the corresponding location and window in L
-                    Ly, Lx = (int(round(lowy * magnification)), int(round(lowx * magnification)))
-                    Lradius = (floor(diameter[0] * magnification) / 2, floor(diameter[1] * magnification) / 2)
-                    if Ly - Lradius[0] < 0 or Lx - Lradius[1] < 0: continue
-                    if Ly + Lradius[0] > yres - 1 or Lx + Lradius[1] > xres - 1: continue            
-                    Lwindow = L[Ly-Lradius[0]:Ly+Lradius[0]+1,Lx-Lradius[1]:Lx+Lradius[1]+1]
+                # get the low resolution location
+                lowy, lowx = IndexToIndices(location, lowres_grayscale.shape[1])
+                # get the corresponding location and window in L
+                Ly, Lx = (int(round(lowy * magnification)), int(round(lowx * magnification)))
+                Lradius = (floor(diameter[0] * magnification) / 2, floor(diameter[1] * magnification) / 2)
+                if Ly - Lradius[0] < 0 or Lx - Lradius[1] < 0: continue
+                if Ly + Lradius[0] > yres - 1 or Lx + Lradius[1] > xres - 1: continue            
+                Lwindow = L[Ly-Lradius[0]:Ly+Lradius[0]+1,Lx-Lradius[1]:Lx+Lradius[1]+1]
+                
+                # get the high res location
+                highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
+                if highy - Lradius[0] < 0 or highx - Lradius[1] < 0: continue
+                if highy + Lradius[0] > high_yres - 1 or highx + Lradius[1] > high_xres + 1: continue
 
-                    # get the high res location
-                    highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
-                    if highy - Lradius[0] < 0 or highx - Lradius[1] < 0: continue
-                    if highy + Lradius[0] > high_yres - 1 or highx + Lradius[1] > high_xres + 1: continue
-
-                    # create a constraint for every pixel at this level
-                    for ij, iv in enumerate(range(highy - Lradius[0], highy + Lradius[0] + 1)):
-                        for ii, iu in enumerate(range(highx - Lradius[1], highx + Lradius[1] + 1)):
-                            constraints.append(Constraint(iy, ix, 1, Lwindow[ij,ii]))
-
-                    highres_image[highy-Lradius[0]:highy+Lradius[0]+1,highx-Lradius[1]:highx+Lradius[1]+1] = Lwindow
+                # create a constraint for every pixel at the high level
+                for ij, iv in enumerate(range(highy - Lradius[0], highy + Lradius[0] + 1)):
+                    for ii, iu in enumerate(range(highx - Lradius[1], highx + Lradius[1] + 1)):
+                        constraints.append(Constraint(iv, iu, 1, Lwindow[ij,ii]))
+                        
+                highres_image[highy-Lradius[0]:highy+Lradius[0]+1,highx-Lradius[1]:highx+Lradius[1]+1] = Lwindow
         SaveConstraints(constraints_filename, constraints)
         dataIO.WriteImage('output-original.png', highres_image)
     # create gaussian blurs for every difference
@@ -289,7 +298,7 @@ def SinglePassSuperResolution(parameters, hierachies, n):
         if l == n:
             index += 1
         else:
-            
+            #continue
             # get the high resolution location
             magnification = pow(scale, n - l)
             highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
@@ -333,10 +342,10 @@ def SinglePassSuperResolution(parameters, hierachies, n):
 
             i[index] = index2
             j[index] = high_index
-            data[index] = 1
+            data[index] = l
             index += 1
         else:
-            
+            #continue
             # get the high resolution location
             magnification = pow(scale, n - l)
             highy, highx = (int(round(iy * magnification)), int(round(ix * magnification)))
@@ -344,7 +353,7 @@ def SinglePassSuperResolution(parameters, hierachies, n):
             # take a gaussian blur around the location in the low res image
             gaussian_blur = blurs[n - l]
             gaussian_radius = (gaussian_blur.shape[0] / 2, gaussian_blur.shape[1] / 2)
-
+            
             if highy - gaussian_radius[0] < 0 or highx - gaussian_radius[1] < 0: continue
             if highy + gaussian_radius[0] > yres - 1 or highx + gaussian_radius[1] > xres - 1: continue
 
@@ -365,22 +374,23 @@ def SinglePassSuperResolution(parameters, hierachies, n):
         b[index2] = value
         index2 += 1
     
-    print nconstraints
-    print nnonzero
-    print b.size
-    print np.amax(data)
-    print np.amin(data)
-    print np.amax(i)
-    print np.amax(j)
-    print np.amin(i)
-    print np.amin(j)
-    print high_yres
-    print high_xres
+    print 'Number of constraints: {}'.format(nconstraints)
+    print 'Number of nonzero entries: {}'.format(nnonzero)
+    print 'Minimum data entry: {}'.format(np.amin(data))
+    print 'Maximum data entry: {}'.format(np.amax(data))
+    min_index = int(round(np.amin(j)))
+    miny, minx = IndexToIndices(min_index, high_xres)
+    print 'Minimum Index {} ({}, {})'.format(min_index, miny, minx)
+    max_index = int(round(np.amax(j)))
+    maxy, maxx = IndexToIndices(max_index, high_xres)
+    print 'Maximum Index {} ({}, {})'.format(max_index, maxy, maxx)
+    
     sparse_matrix = scipy.sparse.coo_matrix((data, (i, j)), shape=(nconstraints, high_yres * high_xres))
     H, _, _, _,_, _, _, _, _, _ = scipy.sparse.linalg.lsqr(sparse_matrix, b, show=True)
-    
-    maximum = np.amax(H)
+    H[H < 0] = 0
+    H[H > 1] = 1
     minimum = np.amin(H)
+    maximum = np.amax(H)
     print 'Minimum: {}'.format(minimum)
     print 'Maximum: {}'.format(maximum)
 
@@ -406,20 +416,42 @@ def SingleImageSR(parameters):
     nlayers = n + m + 1
     
     # hierarchy variables
-    images = [ _ for _ in range(nlayers)]
-    grayscales = [ _ for _ in range(nlayers)]
+    RGBs = [ _ for _ in range(nlayers)]
+    Ys = [ _ for _ in range(nlayers)]
+    Is = [ _ for _ in range(nlayers)]
+    Qs = [ _ for _ in range(nlayers)]
     kdtrees = [ _ for _ in range(nlayers)]
     distances = [ _ for _ in range(nlayers)]
 
 
     hierachies = {}
-    hierachies['images'] = images
-    hierachies['grayscales'] = grayscales
+    hierachies['RGBs'] = RGBs
+    hierachies['Ys'] = Ys
+    hierachies['Is'] = Is
+    hierachies['Qs'] = Qs
     hierachies['kdtrees'] = kdtrees
     hierachies['distances'] = distances
 
     CreateHierarchy(parameters, hierachies)
 
+    #VisualizeSelectionProcess(parameters, hierachies)
+
+    SinglePassSuperResolution(parameters, hierachies, 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     # diameter = parameters['diameter']
     # radius = (diameter[0] / 2, diameter[1] / 2)
     # distance = distances[0]
@@ -443,31 +475,6 @@ def SingleImageSR(parameters):
     #         nvalids[nvalid] += 1
     #     print nvalids
     #     sys.stdout.flush()
-
-
-    #VisualizeSelectionProcess(parameters, hierachies)
-
-    SinglePassSuperResolution(parameters, hierachies, 1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # create a bounding box of size diameter around this location
 def BoundingBox(image, iy, ix, diameter):
@@ -561,99 +568,3 @@ def BicubicInterpolation(parameters):
 
     bicubic_filename = 'baseline/{}-{}-bicubic.png'.format(root_filename, n)
     dataIO.WriteImage(bicubic_filename, highres_image)
-
-
-
-
-
-
-# grayscales = hierachies['grayscales']
-# kdtrees = hierachies['kdtrees']
-# distances = hierachies['distances']
-
-# # get the low resolution image
-# L = grayscales[0]
-# distance = distances[0]
-# yres, xres = L.shape
-# radius = (diameter[0] / 2, diameter[1] / 2)
-
-# # use the cache if it exists
-# constraints_filename = 'cache/{}-single-pass-constraints.cache'.format(root_filename)
-
-# if not os.path.exists(constraints_filename):        
-#     constraints = []
-
-#     # go through every level
-#     for l in range(-1, (-m + 1), -1):
-#         kdtree = kdtrees[l]
-#         magnification = pow(scale, -l)
-#         high_radius = (ceil(diameter[0] * magnification) / 2, ceil(diameter[1] * magnification) / 2)
-
-#         for iy in range(radius[0], yres - radius[0]):
-#             for ix in range(radius[1], xres - radius[1]):
-#                 print '{} {}'.format(iy, ix)
-#                 sys.stdout.flush()
-#                 # get the valid locations
-#                 feature = ExtractFeature(L, iy, ix, diameter)
-#                 value, location = kdtree.query(feature, k, distance_upper_bound=distance[iy,ix])
-
-#                 # # iterate over all locations
-#                 # for index, location in enumerate(locations):
-#                 if value > distance[iy,ix]: continue
-
-#                 lowy, lowx = IndexToIndices(location, grayscales[l].shape[1])
-#                 Ly, Lx = (int(round(lowy * magnification)), int(round(lowx * magnification)))
-#                 highy, highx = (int(round(Ly * magnification)), int(round(Lx * magnification)))
-
-#                 # extract the local region
-#                 Q = L[Ly-high_radius[0]:Ly+high_radius[0]+1,Lx-high_radius[1]:Lx+high_radius[1]+1]
-#                 if not Q.size == (2 * high_radius[0] + 1) * (2 * high_radius[1] + 1): continue
-
-#                 for iv, ij in enumerate(range(highy - high_radius[0], highy + high_radius[0] + 1)):
-#                     for iu, ii in enumerate(range(highx - high_radius[1], highx + high_radius[1] + 1)):
-#                         constraints.append(Constraint(ij, ii, -l, Q[iv,iu]))
-
-#     SaveConstraints(constraints_filename, constraints)
-# else:
-#     constraints = ReadConstraints(constraints_filename)
-# nconstraints = len(constraints)
-
-# # get the size of the final image
-# magnification = pow(scale, n)
-# high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
-
-# H = np.zeros((nconstraints, high_yres * high_xres), dtype=np.float32)
-# b = np.zeros(nconstraints)
-
-# # create gaussian blurs for every difference
-# blurs = [GaussianBlur(pow(scale, iv), truncate) for iv in range(n)]
-
-# for iv, constraint in enumerate(constraints):
-#     print '{}/{}'.format(iv, nconstraints)
-#     sys.stdout.flush()
-#     # get the particular of this constraint
-#     iy = constraint.iy
-#     ix = constraint.ix
-#     l = constraint.l
-#     p = constraint.value
-    
-#     # get the high resolution locations
-#     difference = n - l
-#     magnification = pow(scale, difference)
-#     highy, highx = (int(round(magnification * iy)), int(round(magnification * ix)))
-#     kernel = blurs[difference]
-#     kernel_radius = (kernel.shape[0] / 2, kernel.shape[1], 2)
-
-#     # iterate over the entire kernel
-#     for iv, iy in enumerate(range(highy - kernel_radius[0], highy + kernel_radius[0] + 1)):
-#         if iy < 0 or iy > high_yres - 1: continue
-#         for iu, ix in enumerate(range(highx - kernel_radius[1], highx + kernel_radius[1] + 1)):
-#             if ix < 0 or ix > high_xres - 1: continue
-
-#             high_index = IndexToIndices(iy, ix, high_xres)
-#             H[iv,high_index] = kernel[iv,iu]
-
-#     b[iv] = constraint.value
-
-#     # solve the linear system
-#     np.linalg.solve(H, b)
