@@ -11,6 +11,10 @@ def floor(value): return int(math.floor(value))
 def IndicesToIndex(iy, ix, xres): return iy * xres + ix
 def IndexToIndices(index, xres): return (index / xres, index % xres)
 
+# remove average intensity from image
+def RemoveDC(intensity):
+    return intensity - np.mean(intensity)
+
 # create a gaussian kernel
 def SSDGaussian(diameter):
     sys.stderr.write('Warning: using diameter of ({}, {}) for SSD\n'.format(diameter[0], diameter[1]))

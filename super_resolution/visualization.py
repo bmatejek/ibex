@@ -1,6 +1,7 @@
 import numpy as np
 import skimage.transform
 import scipy.ndimage
+import math
 
 from ibex.utilities import dataIO
 from ibex.super_resolution.util import *
@@ -44,6 +45,7 @@ def VisualizeClassicalSR(parameters, hierarchies, iy, ix):
     root_filename = parameters['root_filename']
     diameter = parameters['diameter']               # diameter of feature
     k = parameters['k']                             # number of parameters at scale
+    scale = parameters['scale']                     # get the scale
 
     RGBs = hierarchies['RGBs']
     Ys = hierarchies['Ys']
@@ -54,7 +56,6 @@ def VisualizeClassicalSR(parameters, hierarchies, iy, ix):
 
     # useful variables for this function
     yres, xres = Ys[0].shape
-    iy, ix = (21, 21)
     enlargement = 80
     radius = diameter / 2
     max_distance = distances[0][iy,ix]
@@ -79,11 +80,20 @@ def VisualizeClassicalSR(parameters, hierarchies, iy, ix):
     original_filename = '{}/features/{}-sample-({}-{}).png'.format(folder, root_filename, iy, ix)
     dataIO.WriteImage(original_filename, MagnifyImage(boxed_image, enlargement))
 
+    # get the range of possible misalignments (subtract this value)
+    possible_alignments = [iv / float(scale) for iv in range(-floor(scale - 0.01), floor(scale - 0.01) + 1)]
+    possible_shifts = {}
+    for ij, yshift in enumerate(possible_alignments):
+        for ii, xshift in enumerate(possible_alignments):
+            possible_shifts[(ij, ii)] = RemoveDC(scipy.ndimage.interpolation.shift(features[0], (yshift, xshift), order=3))
+
     # get the k features within scale
     SSD_filename = '{}/features/{}-SSD-scores-within.log'.format(folder, root_filename)
     with open(SSD_filename, 'w') as fd:
         fd.write('Shift Score: {}\n'.format(max_distance))
-        values, locations = kdtrees[0].query(ExtractFeature(features[0], iy, ix, diameter), k=k, distance_upper_bound=max_distance)
+        feature = ExtractFeature(features[0], iy, ix, diameter)
+        # add one since the first location will be trivial
+        values, locations = kdtrees[0].query(feature, k=k+1, distance_upper_bound=max_distance)
         for index, (value, location) in enumerate(zip(values, locations)):
             if value == float('inf'): continue
             # get the location
@@ -100,13 +110,28 @@ def VisualizeClassicalSR(parameters, hierarchies, iy, ix):
 
             # write this value
             fd.write('Match Score: {}\n'.format(value))
+            
+            # only do this for one feature
+            if not index == 3: continue
 
-    # compute the sub pixel alignments
-    scale = 2                                          # hardcode the scale factor for better images
+            SSD_alignment_filename = '{}/features/{}-SSD-alignment.log'.format(folder, root_filename)
+            with open(SSD_alignment_filename, 'w') as ssd_fd:    
+                # find the best misalignment
+                for ij in range(len(possible_alignments)):
+                    for ii in range(len(possible_alignments)):
+                        # get the misaligned features
+                        misaligned_feature = ExtractFeature(possible_shifts[ij, ii], iv, iu, diameter, weighted=False)
+                        misaligned_filename = '{}/features/{}-misaligned_feature-{}-{}.png'.format(folder, root_filename, ij, ii)
+                        dataIO.WriteImage(misaligned_filename, MagnifyImage(misaligned_feature.reshape(diameter, diameter), enlargement))
 
-    # compute each of the possible misalignments
+                        # get this feature but weighted
+                        misaligned_feature = ExtractFeature(possible_shifts[ij, ii], iv, iu, diameter)
+                        # find the ssd score
+                        ssd_score = math.sqrt(np.sum(np.multiply(misaligned_feature - feature, misaligned_feature - feature)))
 
+                        ssd_fd.write('Match Score ({}, {}): {}'.format(possible_alignments[ij], possible_alignments[ii], ssd_score))
 
+    # write the within scale filename
     within_scale_filename = '{}/features/{}-within-scale-matches.png'.format(folder, root_filename)
     dataIO.WriteImage(within_scale_filename, MagnifyImage(boxed_image, enlargement))
 
