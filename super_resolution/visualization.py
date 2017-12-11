@@ -203,3 +203,18 @@ def VisualizeExamplarSR(parameters, hierarchies, iy, ix):
 
     across_scale_filename = '{}/features/{}-across-scale-matches.png'.format(folder, root_filename)
     dataIO.WriteImage(across_scale_filename, MagnifyImage(boxed_image, enlargement))
+
+# visualize the redundancy of patches at different scales
+def VisualizeRedundancy(parameters, hierarchies):
+    # get useful parameters
+    root_filename = parameters['root_filename']
+    m = parameters['m']                             # number of lower levels
+    scale = parameters['scale']                     # the scaling factor
+    diameter = parameters['diameter']               # diameter of feature
+
+    RGBs = hierarchies['RGBs']
+    Ys = hierarchies['Ys']
+    features = hierarchies['features']
+    kdtrees = hierarchies['kdtrees']
+    distances = hierarchies['distances']
+    

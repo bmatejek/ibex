@@ -17,6 +17,7 @@ from ibex.super_resolution import visualization
 import sys
 sys.setrecursionlimit(100000)
 
+folder = '/home/bmatejek/harvard/classes/cs283/final/figures'
 
 # convert the RGB image to YIQ
 def RGB2YIQ(image):
@@ -189,7 +190,8 @@ def GetClassicalConstraints(parameters, hierarchies, n):
     scale = parameters['scale']
     diameter = parameters['diameter']
     truncate = parameters['truncate']
-
+    min_weight = parameters['min_weight']
+    
     Ys = hierarchies['Ys']
     kdtrees = hierarchies['kdtrees']
     distances = hierarchies['distances']
@@ -213,10 +215,11 @@ def GetClassicalConstraints(parameters, hierarchies, n):
 
         # get the magnification from the mid level to the high level
         magnification = pow(scale, n - level)
-
+        
         # get the range of possible misalignments (subtract this value)
-        possible_alignments = [iv / float(scale) for iv in range(-floor(scale - 0.01), floor(scale - 0.01) + 1)]
+        possible_alignments = [iv / float(magnification) for iv in range(-floor(scale - 0.01), floor(scale - 0.01) + 1)]
         possible_shifts = {}
+        
         for ij, yshift in enumerate(possible_alignments):
             for ii, xshift in enumerate(possible_alignments):
                 possible_shifts[(ij, ii)] = RemoveDC(scipy.ndimage.interpolation.shift(features[0], (yshift, xshift), order=3))
@@ -234,7 +237,7 @@ def GetClassicalConstraints(parameters, hierarchies, n):
                 for value, location in zip(values, locations):
                     if value == float('inf'): continue
                     midy, midx = IndexToIndices(location, mid_xres)
-
+                    
                     # keep track of the best offset
                     best_score = value
                     yoffset = 0
@@ -253,7 +256,8 @@ def GetClassicalConstraints(parameters, hierarchies, n):
 
                     # get the weight of this patch depending on how good it is
                     weight = (max_distance - best_score) / max_distance
-
+                    if weight < min_weight: continue
+                    
                     # get this location to determine the number of nonzero entries
                     highy, highx = (int(round(magnification * iy)) + yoffset, int(round(magnification * ix)) + xoffset)
                     blur = blurs[n - level]
@@ -278,8 +282,9 @@ def GetExampleConstraints(parameters, hierarchies, n):
     # get useful parameters
     scale = parameters['scale']
     diameter = parameters['diameter']
-    truncate = parameters['truncate']
-
+    truncate = parameters['truncate'] 
+    min_weight = parameters['min_weight']
+   
     Ys = hierarchies['Ys']
     kdtrees = hierarchies['kdtrees']
     distances = hierarchies['distances']
@@ -292,7 +297,7 @@ def GetExampleConstraints(parameters, hierarchies, n):
 
     example_constraints = []
 
-    blurs = [Gaussian(pow(scale, iv), 20.0) for iv in range(n)]
+    blurs = [Gaussian(pow(scale, iv), 50.0) for iv in range(n)]
 
     # go through all levels from 0 to (n - 1)
     for level in range(n):
@@ -326,7 +331,8 @@ def GetExampleConstraints(parameters, hierarchies, n):
 
                 # get the weight of this patch depending on how good it is
                 weight = (max_distance - value) / max_distance
-
+                if weight < min_weight: continue
+                
                 # create constraints for the variables
                 for ij, iv in enumerate(range(-high_radius, high_radius + 1)):
                     for ii, iu in enumerate(range(-high_radius, high_radius + 1)):
@@ -337,7 +343,7 @@ def GetExampleConstraints(parameters, hierarchies, n):
 
                         mid_value = mid_image[midy+iv,midx+iu]
                         
-                        example_constraints.append(ExemplarBasedConstraints(highy+iv, highx+iu, mid_value, weight * blurs[level][ij,ii]))
+                        example_constraints.append(ExemplarBasedConstraints(highy+iv, highx+iu, mid_value, weight))
 
     return example_constraints, len(example_constraints)
 
@@ -368,16 +374,22 @@ def SuperResolution(parameters, hierarchies, n):
     # get all of the gaussian blurs
     blurs = [Gaussian(pow(scale, iv), truncate) for iv in range(n + 1)]
 
-    if n > 1:
+    # use example based or classical only
+    classical_only = False
+    example_only = False
+    assert (not example_only or not classical_only)
+
+    if example_only:
         classical_constraints = []
         nnonzero_entries_from_classical = 0
     else:    
         classical_constraints, nnonzero_entries_from_classical = GetClassicalConstraints(parameters, hierarchies, n)
-    #if n == 2:
-    #     example_constraints = []
-    #     nnonzero_entries_from_example = 0
-    # else:
-    example_constraints, nnonzero_entries_from_example = GetExampleConstraints(parameters, hierarchies, n)
+    
+    if classical_only:
+        example_constraints = []
+        nnonzero_entries_from_example = 0        
+    else: 
+        example_constraints, nnonzero_entries_from_example = GetExampleConstraints(parameters, hierarchies, n)
 
     # solve the system of linear equations
     nconstraints = len(classical_constraints) + len(example_constraints)
@@ -388,7 +400,7 @@ def SuperResolution(parameters, hierarchies, n):
     b = np.zeros(nconstraints, dtype=np.float32)
 
     classical_weight = 1.0
-    example_weight = 0.2
+    example_weight = 1.0
 
     nentries = 0
     for ie, constraint in enumerate(classical_constraints):
@@ -450,18 +462,21 @@ def SuperResolution(parameters, hierarchies, n):
 
     smally, smallx = IndexToIndices(int(round(np.amin(j))), high_xres)
     largey, largex = IndexToIndices(int(round(np.amax(j))), high_xres)
-
+    print 'Original minimum x: {}'.format(np.amin(x))
+    print 'Original maximum x: {}'.format(np.amax(x))
+    x[x < 0] = 0
+    x[x > 1] = 1
     maximum = np.amax(x)
     minimum = np.amin(x)
-
+    
     print 'Minimum Index: ({}, {})'.format(smally, smallx)
     print 'Maximum Index: ({}, {})'.format(largey, largex)
     print 'Minimum Data: {}'.format(np.amin(data))
     print 'Maximum Data: {}'.format(np.amax(data))
     print 'Minumum B: {}'.format(np.amin(b))
     print 'Maximum B: {}'.format(np.amax(b))
-    print 'Minimum H: {}'.format(np.amin(x))
-    print 'Maximum H: {}'.format(np.amax(x))    
+    print 'Minimum x: {}'.format(np.amin(x))
+    print 'Maximum x: {}'.format(np.amax(x))    
 
     highres_Y = np.zeros((high_yres, high_xres), dtype=np.float32)
     for iy in range(high_yres):
@@ -481,9 +496,19 @@ def SuperResolution(parameters, hierarchies, n):
 
     Ys[n] = highres_Y
 
-    dataIO.WriteImage('output-classical-super-resolution-intensity-{}.png'.format(n), Ys[n])
+    if classical_only:
+        grayscale_filename = '{}/results/{}-super-resolution-grayscale-classical-{}.png'.format(folder, root_filename, n)
+        rgb_filename = '{}/results/{}-super-resolution-RGB-classical-{}.png'.format(folder, root_filename, n)
+    elif example_only:
+        grayscale_filename = '{}/results/{}-super-resolution-grayscale-example-{}.png'.format(folder, root_filename, n)
+        rgb_filename = '{}/results/{}-super-resolution-RGB-example-{}.png'.format(folder, root_filename, n)
+    else:
+        grayscale_filename = '{}/results/{}-super-resolution-grayscale-{}.png'.format(folder, root_filename, n)
+        rgb_filename = '{}/results/{}-super-resolution-RGB-{}.png'.format(folder, root_filename, n)
+    
+    dataIO.WriteImage(grayscale_filename, Ys[n])
     RGBs[n] = YIQ2RGB(Ys[n], Is[n], Qs[n])
-    dataIO.WriteImage('output-classical-super-resolution-{}.png'.format(n), RGBs[n])  
+    dataIO.WriteImage(rgb_filename, RGBs[n])
 
 
     features[n] = RemoveDC(Ys[n])
@@ -526,6 +551,9 @@ def SingleImageSR(parameters):
 
     CreateHierarchy(parameters, hierarchies)
 
+    # find similar patches at various scales
+    visualization.VisualizeRedundancy(parameters, hierarchies)
+    
     #visualization.VisualizeClassicalSR(parameters, hierarchies, 21, 21)
 
     #visualization.VisualizeExamplarSR(parameters, hierarchies, 20, 20)
@@ -534,8 +562,8 @@ def SingleImageSR(parameters):
     SuperResolution(parameters, hierarchies, 2)
     SuperResolution(parameters, hierarchies, 3)
     SuperResolution(parameters, hierarchies, 4)
-    SuperResolution(parameters, hierarchies, 5)
-    SuperResolution(parameters, hierarchies, 6)
+    # SuperResolution(parameters, hierarchies, 5)
+    # SuperResolution(parameters, hierarchies, 6)
 
 def NearestNeighborInterpolation(parameters):
     # get useful parameters
@@ -548,12 +576,13 @@ def NearestNeighborInterpolation(parameters):
     image = dataIO.ReadImage(image_filename)
     yres, xres, depth = image.shape
 
-    magnification = pow(scale, n)
-    high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
-    highres_image = skimage.transform.resize(image, (high_yres, high_xres, depth), order=0, mode='reflect')
+    for iv in range(1, n + 1):
+        magnification = pow(scale, iv)
+        high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
+        highres_image = skimage.transform.resize(image, (high_yres, high_xres, depth), order=0, mode='reflect')
 
-    nearest_filename = 'baseline/{}-{}-nearest-neighbor.png'.format(root_filename, n)
-    dataIO.WriteImage(nearest_filename, highres_image)
+        nearest_filename = '{}/baseline/{}-{}-nearest-neighbor.png'.format(folder, root_filename, iv)
+        dataIO.WriteImage(nearest_filename, highres_image)
 
 def BicubicInterpolation(parameters):
     # get useful parameters
@@ -566,9 +595,10 @@ def BicubicInterpolation(parameters):
     image = dataIO.ReadImage(image_filename)
     yres, xres, depth = image.shape
 
-    magnification = pow(scale, n)
-    high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
-    highres_image = skimage.transform.resize(image, (high_yres, high_xres, depth), order=3, mode='reflect')
+    for iv in range(1, n + 1):
+        magnification = pow(scale, iv)
+        high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
+        highres_image = skimage.transform.resize(image, (high_yres, high_xres, depth), order=3, mode='reflect')
 
-    bicubic_filename = 'baseline/{}-{}-bicubic.png'.format(root_filename, n)
-    dataIO.WriteImage(bicubic_filename, highres_image)
+        bicubic_filename = '{}/baseline/{}-{}-bicubic.png'.format(folder, root_filename, iv)
+        dataIO.WriteImage(bicubic_filename, highres_image)
