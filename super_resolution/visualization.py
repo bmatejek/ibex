@@ -211,10 +211,49 @@ def VisualizeRedundancy(parameters, hierarchies):
     m = parameters['m']                             # number of lower levels
     scale = parameters['scale']                     # the scaling factor
     diameter = parameters['diameter']               # diameter of feature
-
+    k = parameters['k']                             # number of nearest neighbors
+    
     RGBs = hierarchies['RGBs']
     Ys = hierarchies['Ys']
     features = hierarchies['features']
     kdtrees = hierarchies['kdtrees']
     distances = hierarchies['distances']
+
+    L = features[0]
+    yres, xres = L.shape
+    radius = diameter / 2
     
+    
+    output_filename = '{}/patches/{}-patches-within-across.log'.format(folder, root_filename)
+    with open(output_filename, 'w') as fd:
+        # go through every level
+        for level in range(0, -(m + 1), -1):
+            print 'Evaluating level {} for {}'.format(level, root_filename)
+            
+            # get the tree for this level
+            kdtree = kdtrees[level]
+
+            matches_for_this_level = [0 for _ in range(k + 2)]
+            
+            # go through every pixel
+            for iy in range(radius, yres - radius):
+                for ix in range(radius, xres - radius):
+                    # get the feature at this location
+                    feature = ExtractFeature(L, iy, ix, diameter)
+
+                    # get the features that are similar, add one for same level since there is a trivial result
+                    values, locations = kdtree.query(feature, k=k+(level == 0), distance_upper_bound=distances[0][iy,ix])
+
+                    nmatches = 0
+                    for value, location in zip(values, locations):
+                        if value == float('inf'): continue
+                        iv, iu = IndexToIndices(location, Ys[level].shape[1])
+                        if level == 0 and iv == iy and iu == ix: continue
+
+                        nmatches += 1
+
+                    matches_for_this_level[nmatches] += 1
+
+            # output the number of matches for this level
+            fd.write('{} {}'.format(level, matches_for_this_level))
+            fd.write('\n')

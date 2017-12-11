@@ -148,7 +148,7 @@ def Gaussian(variance, truncate):
     # no variance equals the delta function
     if variance == 0: return np.ones((1, 1), dtype=np.float32)
 
-    sigma = math.sqrt(variance) / 2.5
+    sigma = math.sqrt(variance)
     
     # get the radius that ends after truncate deviations
     radius = int(truncate * sigma + 0.5)
@@ -191,20 +191,22 @@ def GetClassicalConstraints(parameters, hierarchies, n):
     diameter = parameters['diameter']
     truncate = parameters['truncate']
     min_weight = parameters['min_weight']
+    blur_classical = parameters['blur_classical']
     
     Ys = hierarchies['Ys']
     kdtrees = hierarchies['kdtrees']
     distances = hierarchies['distances']
     features = hierarchies['features']
 
+    
     # get parameters of the high resolution image
     yres, xres = Ys[0].shape
     magnification = pow(scale, n)
     high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
 
     # get all of the gaussian blurs
-    blurs = [Gaussian(pow(scale, iv), truncate) for iv in range(n + 1)]
-
+    blurs = [Gaussian(pow(scale, iv) / blur_classical, truncate) for iv in range(n + 1)]
+    
     classical_constraints = []
 
     # go through every lower level
@@ -226,6 +228,7 @@ def GetClassicalConstraints(parameters, hierarchies, n):
 
         # iterate through every pixel in this midres image
         for iy in range(mid_yres):
+            print 'Classical SR level: {}, iy: {}'.format(level, iy)
             for ix in range(mid_xres):
                 # extract the feature at this location
                 feature = ExtractFeature(features[level], iy, ix, diameter)
@@ -263,6 +266,7 @@ def GetClassicalConstraints(parameters, hierarchies, n):
                     blur = blurs[n - level]
                     radius = blur.shape[0] / 2
                     gaussian_sum = 0.0
+
                     for ij, iv in enumerate(range(highy - radius, highy + radius + 1)):
                         for ii, iu in enumerate(range(highx - radius, highx + radius + 1)):
                             if iv < 0 or iu < 0: continue
@@ -284,7 +288,8 @@ def GetExampleConstraints(parameters, hierarchies, n):
     diameter = parameters['diameter']
     truncate = parameters['truncate'] 
     min_weight = parameters['min_weight']
-   
+    blur_example = parameters['blur_example']
+    
     Ys = hierarchies['Ys']
     kdtrees = hierarchies['kdtrees']
     distances = hierarchies['distances']
@@ -297,8 +302,8 @@ def GetExampleConstraints(parameters, hierarchies, n):
 
     example_constraints = []
 
-    blurs = [Gaussian(pow(scale, iv), 50.0) for iv in range(n)]
-
+    blurs = [Gaussian(pow(scale, iv), 50.0) for iv in range(n + 1)]
+    
     # go through all levels from 0 to (n - 1)
     for level in range(n):
         mid_image = Ys[level]
@@ -307,8 +312,18 @@ def GetExampleConstraints(parameters, hierarchies, n):
         # get the magnification from the mid level to the high level
         magnification = pow(scale, n - level)
 
+        # the high resolution diameter
+        high_diameter = floor(magnification * diameter)
+        high_radius = high_diameter / 2
+
+        # get the import part of the blur
+        mid_blur = blurs[n-level].shape[0] / 2
+        blur = blurs[n - level][mid_blur-high_radius:mid_blur+high_radius+1,mid_blur-high_radius:mid_blur+high_radius+1]
+
+        
         # iterate through every pixel in this midres image
         for iy in range(mid_yres):
+            print 'Example SR level: {}, iy: {}'.format(level, iy)
             for ix in range(mid_xres):
                 # extract the feature at this location
                 feature = ExtractFeature(features[level], iy, ix, diameter)
@@ -325,14 +340,10 @@ def GetExampleConstraints(parameters, hierarchies, n):
                 # where does (iy, ix) occur in the high resolution image
                 highy, highx = (int(round(magnification * iy)), int(round(magnification * ix)))
 
-                # the high resolution diameter
-                high_diameter = floor(magnification * diameter)
-                high_radius = high_diameter / 2
-
                 # get the weight of this patch depending on how good it is
                 weight = (max_distance - value) / max_distance
                 if weight < min_weight: continue
-                
+
                 # create constraints for the variables
                 for ij, iv in enumerate(range(-high_radius, high_radius + 1)):
                     for ii, iu in enumerate(range(-high_radius, high_radius + 1)):
@@ -342,8 +353,11 @@ def GetExampleConstraints(parameters, hierarchies, n):
                         if highy + iv > high_yres - 1 or highx + iu > high_xres - 1: continue
 
                         mid_value = mid_image[midy+iv,midx+iu]
-                        
-                        example_constraints.append(ExemplarBasedConstraints(highy+iv, highx+iu, mid_value, weight))
+
+                        if blur_example:
+                            example_constraints.append(ExemplarBasedConstraints(highy+iv, highx+iu, mid_value, blur[ij,ii] * weight))
+                        else:
+                            example_constraints.append(ExemplarBasedConstraints(highy+iv, highx+iu, mid_value, weight))
 
     return example_constraints, len(example_constraints)
 
@@ -356,7 +370,8 @@ def SuperResolution(parameters, hierarchies, n):
     scale = parameters['scale']
     diameter = parameters['diameter']
     truncate = parameters['truncate']
-
+    blur_classical = parameters['blur_classical']
+    
     RGBs = hierarchies['RGBs']
     Ys = hierarchies['Ys']
     Is = hierarchies['Is']
@@ -372,7 +387,7 @@ def SuperResolution(parameters, hierarchies, n):
     high_yres, high_xres = (ceil(magnification * yres), ceil(magnification * xres))
 
     # get all of the gaussian blurs
-    blurs = [Gaussian(pow(scale, iv), truncate) for iv in range(n + 1)]
+    blurs = [Gaussian(pow(scale, iv) / blur_classical, truncate) for iv in range(n + 1)]
 
     # use example based or classical only
     classical_only = False
@@ -433,7 +448,7 @@ def SuperResolution(parameters, hierarchies, n):
 
         # set the value of the system
         b[ie] = classical_weight * weight * constraint.value
-
+        
     nclassical_constraints = len(classical_constraints)
     for ie, constraint in enumerate(example_constraints):
         iy, ix = (constraint.iy, constraint.ix)
@@ -447,7 +462,7 @@ def SuperResolution(parameters, hierarchies, n):
         # set the value of the system
         b[ie + nclassical_constraints] = example_weight * weight * constraint.value
         nentries += 1
-
+        
     # create the sparse matrix
     A = scipy.sparse.coo_matrix((data, (i, j)), shape=(nconstraints, high_yres * high_xres))
 
@@ -517,7 +532,7 @@ def SuperResolution(parameters, hierarchies, n):
 
 
 # increase the resolution of the image
-def SingleImageSR(parameters):
+def SingleImageSR(parameters, visualize=False):
     # get useful parameters
     root_filename = parameters['root_filename']
     n = parameters['n']                             # number of levels to increase
@@ -550,21 +565,16 @@ def SingleImageSR(parameters):
     hierarchies['shifts'] = shifts
 
     CreateHierarchy(parameters, hierarchies)
-
-    # find similar patches at various scales
-    visualization.VisualizeRedundancy(parameters, hierarchies)
     
-    #visualization.VisualizeClassicalSR(parameters, hierarchies, 21, 21)
-
-    #visualization.VisualizeExamplarSR(parameters, hierarchies, 20, 20)
-
-    SuperResolution(parameters, hierarchies, 1)
-    SuperResolution(parameters, hierarchies, 2)
-    SuperResolution(parameters, hierarchies, 3)
-    SuperResolution(parameters, hierarchies, 4)
-    # SuperResolution(parameters, hierarchies, 5)
-    # SuperResolution(parameters, hierarchies, 6)
-
+    # find similar patches at various scales
+    if visualize:
+        visualization.VisualizeRedundancy(parametrs, hierarchies)
+        visualization.VisualizeClassicalSR(parameters, hierarchies, 21, 21)
+        visualization.VisualizeExamplarSR(parameters, hierarchies, 20, 20)
+        
+    for iv in range(1, n + 1):
+        SuperResolution(parameters, hierarchies, iv)
+        
 def NearestNeighborInterpolation(parameters):
     # get useful parameters
     root_filename = parameters['root_filename']
