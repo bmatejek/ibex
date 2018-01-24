@@ -375,7 +375,7 @@ def SuperResolution(parameters, hierarchies, n):
     blurs = [Gaussian(pow(scale, iv), truncate) for iv in range(n + 1)]
 
     # use example based or classical only
-    classical_only = False
+    classical_only = True
     example_only = False
     assert (not example_only or not classical_only)
 
