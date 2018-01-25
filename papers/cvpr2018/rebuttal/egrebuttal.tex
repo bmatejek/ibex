@@ -108,9 +108,19 @@ Unfortunately the challenge datasets (SNEMI3D, CREMI) are too small for meaningf
 
 \section*{Reviewer 3}
 
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=0.32\linewidth]{./figures/MSF.png}
+		\caption{Error with minimum spanning forest.}
+		\label{figure:msf}
+	\end{center}
+\end{figure}
+
 \textbf{Address acyclic nature of graph.}
 
-There are some polynomial time algorithms for finding the general minimum spanning forest on a general graph ($O(V^2 E)$). The multicut algorithm we use has a running time of $O(V^2 log(V))$, although provides an approximation to the optimal solution. Exploring both of these algorithms is reasonable in a future revision. 
+Fig.~\ref{figure:msf} addresses one problem of using a minimum spanning forest where negative edges represent high affinities and positive edges represent low affinities. 
+With a multicut formulation, the edge between nodes 1 and 4 will keep the blue and green segments separate.
+In a minimum spanning forest nodes 1 and 4 will connect because of the moderate affinity between nodes 2 and 3.
 
 {\small
 \bibliographystyle{ieee}

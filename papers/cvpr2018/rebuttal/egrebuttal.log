@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  24 JAN 2018 17:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  24 JAN 2018 20:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -365,54 +365,56 @@ Underfull \hbox (badness 10000) in paragraph at lines 107--108
 []\OT1/ptm/m/n/10 Unfortunately the chal-lenge datasets (SNEMI3D,
  []
 
-(./egrebuttal.bbl (./egrebuttal.brf)
-\tf@brf=\write3
-\openout3 = `egrebuttal.brf'.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 13.
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 13.
+<./figures/MSF.png, id=8, 247.92625pt x 209.78375pt>
+File: ./figures/MSF.png Graphic file (type png)
+<use ./figures/MSF.png>
+Package pdftex.def Info: ./figures/MSF.png  used on input line 113. on input li
+ne 113.
+Package pdftex.def Info: Requested size: 75.88522pt x 64.20961pt on input line 
+113.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 124.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 ) [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
-])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 120.
+ <./figures/MSF.png>]
+(./egrebuttal.bbl (./egrebuttal.brf)
+\tf@brf=\write3
+\openout3 = `egrebuttal.brf'.
+
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 130.
  [2
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 120.
-
-(./egrebuttal.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 120.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 120.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 130.
+ (./egrebuttal.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 130.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 130.
 Package rerunfilecheck Info: File `egrebuttal.brf' has not changed.
 (rerunfilecheck)             Checksum: F46A20C650F6B92B3939D0161099C48C;133.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 120.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 130.
  ) 
 Here is how much of TeX's memory you used:
- 6428 strings out of 492990
- 92957 string characters out of 6132622
- 186244 words of memory out of 5000000
- 9881 multiletter control sequences out of 15000+600000
- 31370 words of font info for 67 fonts, out of 8000000 for 9000
+ 6427 strings out of 492990
+ 92979 string characters out of 6132622
+ 185300 words of memory out of 5000000
+ 9880 multiletter control sequences out of 15000+600000
+ 29306 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,9n,26p,355b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 32i,9n,26p,254b,322s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
-xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texl
-ive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive
-/2017/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/t
-exmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2017/texmf-di
-st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
-ype1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/t
-imes/utmri8a.pfb>
-Output written on egrebuttal.pdf (2 pages, 86655 bytes).
+exlive/2017/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/
+2017/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2017/te
+xmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/f
+onts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1
+/urw/times/utmri8a.pfb>
+Output written on egrebuttal.pdf (2 pages, 74207 bytes).
 PDF statistics:
- 65 PDF objects out of 1000 (max. 8388607)
- 52 compressed objects within 1 object stream
- 10 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 58 PDF objects out of 1000 (max. 8388607)
+ 46 compressed objects within 1 object stream
+ 11 named destinations out of 1000 (max. 500000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
