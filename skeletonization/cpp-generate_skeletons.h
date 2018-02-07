@@ -1,0 +1,1 @@
+long *CppGenerateSkeletons(long *input_segmentation, long input_zres, long input_yres, long input_xres, char *lookup_table_directory);
