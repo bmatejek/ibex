@@ -25,8 +25,6 @@ long *CppMapping(long *segmentation, int *gold, long nentries, double low_thresh
     unsigned long *nvoxels_per_segment = new unsigned long[max_segmentation_value];
     for (long iv = 0; iv < max_segmentation_value; ++iv)
         nvoxels_per_segment[iv] = 0;
-    for (long iv = 0; iv < nentries; ++iv) 
-        nvoxels_per_segment[segmentation[iv]]++;
 
     /* TODO way too memory expensive */
     unsigned long **seg2gold_overlap = new unsigned long *[max_segmentation_value];
@@ -39,6 +37,7 @@ long *CppMapping(long *segmentation, int *gold, long nentries, double low_thresh
 
     // iterate over every voxel
     for (long iv = 0; iv < nentries; ++iv) {
+        nvoxels_per_segment[segmentation[iv]]++;
         seg2gold_overlap[segmentation[iv]][gold[iv]]++;
     }
 

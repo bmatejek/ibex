@@ -2,6 +2,7 @@
 from ibex.utilities.constants import *
 from numba import jit
 import numpy as np
+import math
 
 
 # downsample the data by (z, y, x) ratio
@@ -12,7 +13,7 @@ def DownsampleData(data, ratio=(1, 2, 2)):
 
     # create an empty array for downsampling
     (down_zres, down_yres, down_xres) = (zres / ratio[IB_Z], yres / ratio[IB_Y], xres / ratio[IB_X])
-    downsampled_data = np.zeros((zres / ratio[IB_Z], yres / ratio[IB_Y], xres / ratio[IB_X]), dtype=data.dtype)
+    downsampled_data = np.zeros((down_zres, down_yres, down_xres), dtype=data.dtype)
     
     # fill in the entries of the array
     for iz in range(down_zres):

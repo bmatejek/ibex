@@ -4,7 +4,7 @@ import numpy as np
 from ibex.data_structures import meta_data, swc
 from ibex.utilities.constants import *
 from PIL import Image
-import scipy.misc
+import imageio
 
 
 def GetWorldBBox(prefix):
@@ -96,9 +96,16 @@ def ReadSkeletons(prefix, data):
 
 def ReadImage(filename):
     image = np.array(Image.open(filename)) / 255.0
-
+    # make into RGB image
+    if len(image.shape) == 2:
+        RGB_image = np.zeros((image.shape[0], image.shape[1], 3), dtype=np.float32)
+        RGB_image[:,:,0] = image
+        RGB_image[:,:,1] = image
+        RGB_image[:,:,2] = image
+        return RGB_image
+    
     return image
 
 
 def WriteImage(filename, image):
-    scipy.misc.imsave(filename, image)
+    imageio.imwrite(filename, image)

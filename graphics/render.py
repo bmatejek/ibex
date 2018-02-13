@@ -58,6 +58,6 @@ def MarchingCubes(prefix, labels):
             for jj in range(3):
                 stl_mesh.vectors[ii][jj] = verts[face[jj],:]
 
-        output_filename = 'cvpr/{}-{}.stl'.format(prefix, label)
+        output_filename = 'meshes/{}-{}.stl'.format(prefix, label)
         stl_mesh.save(output_filename)
         print 'Wrote {}'.format(output_filename)

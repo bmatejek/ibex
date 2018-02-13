@@ -1,44 +1,62 @@
+import math
+import time
+import os
+
 cimport cython
 cimport numpy as np
 import ctypes
 import numpy as np
+from numba import jit
+import scipy.ndimage
 
 from ibex.utilities import dataIO
-#from ibex.skeletonization.lookup_tables import GenerateLookupTables
+from ibex.skeletonization.lookup_tables import GenerateSmoothingLookupTable
+from ibex.transforms import h52h5
+from ibex.utilities.constants import *
 
 
 cdef extern from 'cpp-generate_skeletons.h':
-    long *CppGenerateSkeletons(long *input_segmentation, long input_zres, long input_yres, long input_xres, char *lookup_table_directory)
+    void SetDirectory(char *directory)
+    void CppTopologicalDownsampleData(long *input_segmentation, long resolution[3], int ratio[3])
+    void CppGenerateSkeletons(long label, char *lookup_table_directory)
 
 
 
 
 # generate skeletons for this volume
 def GenerateSkeletons(prefix):
+    start_time = time.time()
+
+    # generate the smoothing lookup table if it is not already there
+    GenerateSmoothingLookupTable()
+    
+    # get the output directory
+    home_directory = os.path.expanduser('~')
+    directory = '{}/neuronseg/skeletons/topological-thinning/{}'.format(home_directory, prefix)
+    SetDirectory(directory);
+
+    # downsampling ratio
+    ratio = (1, 5, 5)
 
     # get the segmentation for this prefix
     segmentation = dataIO.ReadSegmentationData(prefix)
-    # add slight padding to the segmentation
-    segmentation = np.pad(segmentation, 1, 'constant')
 
+    high_zres, high_yres, high_xres = segmentation.shape
+    low_zres, low_yres, low_xres = (int(math.ceil(high_zres / ratio[IB_Z])), int(math.ceil(high_yres / ratio[IB_Y])), int(math.ceil(high_xres / ratio[IB_X])))
 
-    zres, yres, xres = segmentation.shape
-
-
-    segmentation[segmentation != 430] = 0
-    segmentation[segmentation == 430] = 1
-
-    # read in the array
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
     cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
-    cdef long *cpp_skeletons = CppGenerateSkeletons(&(cpp_segmentation[0,0,0]), zres, yres, xres, "/home/bmatejek/ibex/skeletonization")
+    CppTopologicalDownsampleData(&(cpp_segmentation[0,0,0]), [high_zres, high_yres, high_xres], [1, 5, 5])
 
-    cdef long[:] tmp_skeletons = <long[:segmentation.size]> cpp_skeletons
-    skeletons = np.reshape(np.asarray(tmp_skeletons), (zres, yres, xres))
+    # get the resolution 
+    high_zres, high_yres, high_xres = segmentation.shape
+    low_zres, low_yres, low_xres = (int(math.ceil(high_zres / ratio[IB_Z])), int(math.ceil(high_yres / ratio[IB_Y])), int(math.ceil(high_xres / ratio[IB_X])))
 
-    skeletons = skeletons[1:-1,1:-1,1:-1]
+    # create the empty skeleton array
+    skeletons = np.zeros((low_zres, low_yres, low_xres), dtype=np.int64)
 
-    dataIO.WriteH5File(skeletons, 'skeletons-mine.h5', 'main')
+    unique_labels = np.unique(segmentation)
+    for label in unique_labels:
+        CppGenerateSkeletons(label, "/home/bmatejek/ibex/skeletonization")
 
-    import sys
-    sys.exit()
+    print 'Skeletonization time: {}'.format(time.time() - start_time)
