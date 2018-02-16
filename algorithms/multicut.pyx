@@ -92,7 +92,7 @@ def Multicut(segmentation, gold, candidates, edge_weights, beta, threshold, anis
     segmentation = CollapseGraph(segmentation, gold, candidates, collapsed_edges, edge_weights)
    
     # evaluate before and after multicut
-    comparestacks.Evaluate(segmentation, gold, filtersize=threshold, anisotropic=anisotropic)
+    #comparestacks.Evaluate(segmentation, gold, filtersize=threshold, anisotropic=anisotropic)
 
 
 

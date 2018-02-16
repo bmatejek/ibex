@@ -1,7 +1,7 @@
 import os
 import h5py
 import numpy as np
-from ibex.data_structures import meta_data, swc
+from ibex.data_structures import meta_data, skeleton_formats
 from ibex.utilities.constants import *
 from PIL import Image
 import imageio
@@ -69,7 +69,7 @@ def ReadImageData(prefix):
 
 
 
-def ReadSkeletons(prefix, data):
+def ReadSWCSkeletons(prefix, data):
     # read in all of the skeletons
     skeletons = []
     joints = []
@@ -78,7 +78,7 @@ def ReadSkeletons(prefix, data):
     max_label = np.amax(data) + 1
     for label in range(max_label):
         # read the skeleton
-        skeleton = swc.Skeleton(prefix, label)
+        skeleton = skeleton_formats.SWCSkeleton(prefix, label)
 
         skeletons.append(skeleton)
 
@@ -94,6 +94,28 @@ def ReadSkeletons(prefix, data):
 
 
 
+def ReadTopologySkeletons(prefix, data):
+    # read in all of the skeletons
+    skeletons = []
+    endpoints = []
+
+    max_label = np.amax(data) + 1
+    for label in range(max_label):
+        # read the skeleton
+        skeleton = skeleton_formats.TopologySkeleton(prefix, label, data.shape)
+
+        skeletons.append(skeleton)
+
+        # add all endpoints for this skeleton
+        for ip in range(skeleton.NEndPoints()):
+            endpoints.append(skeleton.EndPoint(ip));
+
+
+    # return all of the skeletons
+    return skeletons, endpoints
+
+
+
 def ReadImage(filename):
     image = np.array(Image.open(filename)) / 255.0
     # make into RGB image
@@ -105,6 +127,7 @@ def ReadImage(filename):
         return RGB_image
     
     return image
+
 
 
 def WriteImage(filename, image):

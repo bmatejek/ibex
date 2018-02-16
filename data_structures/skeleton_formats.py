@@ -1,6 +1,108 @@
+import struct
 import numpy as np
 
+
 from ibex.utilities.constants import *
+
+class TopologyEntry:
+    def __init__(self, skeleton, x, y, z, label):
+        self.skeleton = skeleton
+        self.x = x
+        self.y = y
+        self.z = z
+        self.label = label
+    
+    def GridPoint(self):
+        grid_location = (self.z, self.y, self.x)
+        return np.array(grid_location).astype(dtype=np.int32)
+
+    def WorldPoint(self, world_res):
+        world_location = (self.z * world_res[IB_Z], self.y * world_res[IB_Y], self.x * world_res[IB_X])
+        return np.array(world_location).astype(dtype=np.int32)
+    
+    def X(self):
+        return self.x
+
+    def Y(self):
+        return self.y
+
+    def Z(self):
+        return self.z
+
+    def Label(self):
+        return self.label
+
+
+
+class TopologySkeleton:
+    def __init__(self, prefix, label, resolution):
+        self.label = label
+        self.joints = []
+        self.endpoints = []
+
+        # skip extracellular predictions
+        if label == 0: return
+
+        # get the resolution in each dimension
+        zres = resolution[IB_Z]
+        yres = resolution[IB_Y]
+        xres = resolution[IB_X]
+
+        # get the skeleton filename
+        filename = 'skeletons/topological-thinning/{}/skeleton-{}.pts'.format(prefix, label)
+
+        # open the file and read all of the points
+        with open(filename, 'rb') as fd:
+            npts, = struct.unpack('l', fd.read(8))
+
+            for _ in range(npts):
+                index, = struct.unpack('l', fd.read(8))
+                    
+                # is this index an endpoint
+                endpoint = False
+                if (index < 0):
+                    endpoint = True
+                    index *= -1
+
+                iz = index / (xres * yres)
+                iy = (index - iz * xres * yres) / xres
+                ix = index % xres
+
+                skeleton_entry = TopologyEntry(self, ix, iy, iz, label)
+                self.joints.append(skeleton_entry)
+                if endpoint: self.endpoints.append(skeleton_entry)         
+
+    # return the kth endpoint
+    def EndPoint(self, k):
+        assert (0 <= k and k < self.NEndPoints())
+        return self.endpoints[k]
+
+    # return all endpoints
+    def EndPoints(self):
+        return self.endpoints
+
+    # return the number of endpoints
+    def NEndPoints(self):
+        return len(self.endpoints)
+
+    # return the kth joint
+    def Joint(self, k):
+        assert (0 <= k and k < self.NJoints())
+        return self.joints[k]
+
+    # return all joints
+    def Joints(self):
+        return self.joints
+
+    # return the number of joints
+    def NJoints(self):
+        return len(self.joints)
+
+    # return the segment label
+    def Label(self):
+        return self.label
+        
+
 
 class SWCEntry:
     def __init__(self, skeleton, sample_number, structure_id, x, y, z, radius, parent_sample, label):
@@ -66,14 +168,14 @@ class SWCEntry:
         return neighbors
 
 
-class Skeleton:
+class SWCSkeleton:
     def __init__(self, prefix, label):
         self.label = label
         self.joints = []
         self.endpoints = []
 
         # get the skeleton filename
-        filename = 'skeletons/' + prefix + '/tree_' + str(label) + '.swc'
+        filename = 'skeletons/NeuTu/{}/tree_{}.swc'.format(prefix, label)
 
         # open the file and read all of the swc entries
         with open(filename, 'r') as fd:
