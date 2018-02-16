@@ -34,7 +34,8 @@ static int set_directory = 0;
 
 
 
-static bool allow_smoothing = false;
+static bool smoothing;
+static bool first_only;
 static int print_verbose = 1;
 
 
@@ -150,7 +151,7 @@ typedef struct {
 
 List surface_voxels;
 
-void NewSurfaceVoxel(long iv, long ix, long iy, long iz)
+static void NewSurfaceVoxel(long iv, long ix, long iy, long iz)
 {
     ListElement *LE = new ListElement();
     LE->iv = iv;
@@ -166,7 +167,7 @@ void NewSurfaceVoxel(long iv, long ix, long iy, long iz)
     if (surface_voxels.first == NULL) surface_voxels.first = LE;
 }
 
-void RemoveSurfaceVoxel(ListElement *LE) {
+static void RemoveSurfaceVoxel(ListElement *LE) {
     ListElement *LE2;
     if (surface_voxels.first == LE) surface_voxels.first = LE->next;
     if (surface_voxels.last == LE) surface_voxels.last = LE->prev;
@@ -182,13 +183,13 @@ void RemoveSurfaceVoxel(ListElement *LE) {
     delete LE;
 }
 
-void CreatePointList(PointList *s) {
+static void CreatePointList(PointList *s) {
     s->head = NULL;
     s->tail = NULL;
     s->length = 0;
 }
 
-void AddToList(PointList *s, Voxel e, ListElement *ptr) {
+static void AddToList(PointList *s, Voxel e, ListElement *ptr) {
     Cell *newcell = new Cell();
     newcell->v = e;
     newcell->ptr = ptr;
@@ -206,7 +207,7 @@ void AddToList(PointList *s, Voxel e, ListElement *ptr) {
     }
 }
 
-Voxel GetFromList(PointList *s, ListElement **ptr)
+static Voxel GetFromList(PointList *s, ListElement **ptr)
 {
     Voxel V;
     Cell *tmp;
@@ -231,7 +232,7 @@ Voxel GetFromList(PointList *s, ListElement **ptr)
     }
 }
 
-void DestroyPointList(PointList *s) {
+static void DestroyPointList(PointList *s) {
     ListElement *ptr;
     while (s->length) GetFromList(s, &ptr);
 }
@@ -245,21 +246,21 @@ static unsigned char *segmentation = NULL;
 
 // helper functions
 
-void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
+static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
 {
     iz = iv / sheet_size;
     iy = (iv - iz * sheet_size) / row_size;
     ix = iv % row_size;
 }
 
-long IndicesToIndex(long ix, long iy, long iz)
+static long IndicesToIndex(long ix, long iy, long iz)
 {
     return iz * sheet_size + iy * row_size + ix;
 }
 
 
 
-void InitializeLookupTables(char *lookup_table_directory)
+static void InitializeLookupTables(char *lookup_table_directory)
 {
     char lut_filename[4096];
     FILE *lut_file;
@@ -327,7 +328,7 @@ void InitializeLookupTables(char *lookup_table_directory)
 
 
 
-void CollectSurfaceVoxels(void)
+static void CollectSurfaceVoxels(void)
 {
     for (long iz = 1; iz < zres - 1; ++iz) {
         for (long iy = 1; iy < yres - 1; ++iy) {
@@ -352,7 +353,7 @@ void CollectSurfaceVoxels(void)
 
 
 
-unsigned int Collect26Neighbors(long ix, long iy, long iz)
+static unsigned int Collect26Neighbors(long ix, long iy, long iz)
 {
     unsigned int neighbors = 0;
     long index = 0;
@@ -377,14 +378,14 @@ unsigned int Collect26Neighbors(long ix, long iy, long iz)
 
 
 
-bool Simple26_6(unsigned int neighbors)
+static bool Simple26_6(unsigned int neighbors)
 {
     return lut_simple[(neighbors >> 3)] & char_mask[neighbors % 8];
 }
 
 
 
-bool Smoothing26_6(unsigned int neighbors, unsigned int direction)
+static bool Smoothing26_6(unsigned int neighbors, unsigned int direction)
 {
     if (direction == 0) return lut_smoothing_r1[(neighbors >> 3)] & char_mask[neighbors % 8];
     else return lut_smoothing_r2[(neighbors >> 3)] & char_mask[neighbors % 8];
@@ -392,14 +393,14 @@ bool Smoothing26_6(unsigned int neighbors, unsigned int direction)
 
 
 
-bool Isthmus(unsigned int neighbors)
+static bool Isthmus(unsigned int neighbors)
 {
     return lut_isthmus[(neighbors >> 3)] & char_mask[neighbors % 8];
 }
 
 
 
-void DetectSimpleBorderPoints(PointList *deletable_points, int direction)
+static void DetectSimpleBorderPoints(PointList *deletable_points, int direction)
 {
     ListElement *LE = (ListElement *)surface_voxels.first;
     while (LE != NULL) {
@@ -464,7 +465,7 @@ void DetectSimpleBorderPoints(PointList *deletable_points, int direction)
 
 
 
-void DetectSmoothingBorderPoints(PointList *deletable_points, int direction)
+static void DetectSmoothingBorderPoints(PointList *deletable_points, int direction)
 {
     ListElement *LE = (ListElement *)surface_voxels.first;
     while (LE != NULL) {
@@ -490,7 +491,7 @@ void DetectSmoothingBorderPoints(PointList *deletable_points, int direction)
 
 
 
-long ThinningIterationStep(void)
+static long ThinningIterationStep(void)
 {
     long changed = 0;
 
@@ -556,7 +557,7 @@ long ThinningIterationStep(void)
 
 
 
-long SmoothingIterationStep(void)
+static long SmoothingIterationStep(void)
 {
     long changed = 0;
 
@@ -621,15 +622,17 @@ long SmoothingIterationStep(void)
 
 
 
-void SequentialThinning(void)
+static void SequentialThinning(void)
 {
     // create a vector of surface voxels
     CollectSurfaceVoxels();
 
+
     int iteration = 0;
     long changed = 0;
     do {
-        if (allow_smoothing) {
+        if (smoothing) {
+	  if (!first_only || !iteration) {
             int smoothing_iteration = 0;
             long smoothing_changed = 0;
             do {
@@ -637,8 +640,8 @@ void SequentialThinning(void)
                 smoothing_iteration++;
                 if (print_verbose) printf("\n    smoothing step: %3d.    (deleted point(s): %6ld)", smoothing_iteration, smoothing_changed);
             } while (smoothing_changed);
+	  }
         }
-
         changed = ThinningIterationStep();
         iteration++;
         if (print_verbose) printf("\n  thinning step: %3d.    (deleted point(s): %6ld)", iteration, changed);
@@ -667,12 +670,15 @@ static bool IsEndpoint(long ix, long iy, long iz)
 
 
 
-void CppGenerateSkeletons(long label, char *lookup_table_directory)
+void CppGenerateSkeletons(long label, bool input_smoothing, bool input_first_only, char *lookup_table_directory)
 {
     // make sure downsampling has occurred
     assert (topological_downsampling);
     assert (set_directory);
 
+    smoothing = input_smoothing;
+    first_only = input_first_only;
+    
     // create the segmentation that will correspond to the skeletons
     segmentation = new unsigned char[nentries];
     for (long iv = 0; iv < nentries; ++iv)
@@ -706,7 +712,7 @@ void CppGenerateSkeletons(long label, char *lookup_table_directory)
 
     // write the skeleton to an output folder
     char output_filename[4096];
-    sprintf(output_filename, "%s/skeleton-%d.pts", output_directory, label);
+    sprintf(output_filename, "%s/skeleton-%ld.pts", output_directory, label);
 
     FILE *fp = fopen(output_filename, "wb");
     if (!fp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -808,7 +814,7 @@ void CppTopologicalDownsampleData(long *input_segmentation, long input_high_res[
         }
     }
 
-    // initialize convenient variables for thining
+    // initialize convenient variables for thinning
     zres = low_res[IB_Z];
     yres = low_res[IB_Y];
     xres = low_res[IB_X];

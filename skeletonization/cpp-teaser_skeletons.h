@@ -1,0 +1,1 @@
+unsigned char *CppGenerateTeaserSkeletons(long *input_segmentation, long label, long input_grid_size[3], long input_world_res[3]);
