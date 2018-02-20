@@ -1,0 +1,143 @@
+\relax 
+\citation{haehn2017scalable,kasthuri2015saturated}
+\citation{hildebrand2017whole}
+\citation{haehn2014design}
+\citation{seymour2016rhoananet,lee2015recursive,nunez2014graph,parag2017anisotropic,ronneberger2015u,zlateski2015image}
+\@writefile{toc}{\contentsline {title}{Graph-Based Neural Reconstruction from Skeletonized 3D Networks}{1}}
+\@writefile{toc}{\authcount {1}}
+\@writefile{toc}{\contentsline {author}{Anonymous ECCV submission}{1}}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}}
+\citation{andres2012globally}
+\citation{ciresan2012deep,jain2010boundary,kaynig2015large,seymour2016rhoananet,amelio_segmentation}
+\citation{lee2015recursive,ronneberger2015u,turaga2010convolutional}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Example improvement of neural reconstruction. (a) We extract 3D skeletons from pixel-based segmentation algorithms to create a 3D graph representation. Edges with high segmentation error probabilities are indicated by the red arrows. (b) We improve the segmentation accuracy using a graph partitioning algorithm, leveraging both local and global information.\relax }}{2}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:teaser}{{1}{2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {}}}{2}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {}}}{2}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}}
+\@writefile{toc}{\contentsline {paragraph}{Pixel-based methods.}{2}}
+\citation{briggman2009maximin}
+\citation{januszewski2016flood}
+\citation{zlateski2015image}
+\citation{seymour2016rhoananet,nunez2014graph,10.1371/journal.pone.0125825,parag2017anisotropic,zlateski2015image}
+\citation{haehn2017guided,haehn2014design,mojo2}
+\citation{rolnick2017morphological,error_correction_using_CNN}
+\citation{andres2012globally}
+\citation{kappes2016higher,shi2000normalized,tatiraju2008image}
+\citation{demaine2006correlation}
+\citation{horvnakova2017analysis}
+\citation{keuper2015efficient}
+\citation{parag2015properties}
+\@writefile{toc}{\contentsline {paragraph}{Region-based methods.}{3}}
+\@writefile{toc}{\contentsline {paragraph}{Error-correction methods.}{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}}
+\citation{10.1371/journal.pone.0125825}
+\citation{nunez2014graph}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Outline of our approach, from left to right: result of the pixel-based segmentation and agglomeration algorithm; segments of several selected neurons from the initial segmentation; extracted skeletonized 3D network of those segments; improved 3D reconstruction of the selected segments after graph construction and partitioning with constraints.\relax }}{4}}
+\newlabel{fig:overview}{{2}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Node Generation}{4}}
+\newlabel{sec:skeletonization}{{3.1}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Edge Generation}{4}}
+\citation{sato2000teasar,zhao2014automatic}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Example skeletons (in black) extracted from segments using the TEASER algorithm.\relax }}{5}}
+\newlabel{fig:skeletonization}{{3}{5}}
+\citation{chatfield2014return}
+\citation{funahashi1989approximate}
+\citation{maas2013rectifier}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Three erroneously split segments.\relax }}{6}}
+\newlabel{fig:merge_candidates}{{4}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Edge Weights Assignment}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{Classifier Input}{6}}
+\citation{nesterov1983method}
+\citation{keuper2015efficient}
+\citation{kasthuri2015saturated}
+\citation{takemura2017connectome}
+\citation{zlateski2015image}
+\citation{schlegel2017learning}
+\citation{ronneberger2015u,Turaga:2009}
+\citation{10.1371/journal.pone.0125825}
+\@writefile{toc}{\contentsline {subsubsection}{Network Architecture \& Training}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Graph Partitioning}{7}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Results}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Datasets}{7}}
+\newlabel{sec:dataset}{{4.1}{7}}
+\@writefile{toc}{\contentsline {paragraph}{Kasthuri.}{7}}
+\@writefile{toc}{\contentsline {paragraph}{FlyEM.}{7}}
+\citation{takemura2017connectome}
+\citation{10.1371/journal.pone.0125825}
+\citation{glorot2010understanding}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Pixel-Based Segmentations}{8}}
+\newlabel{sec:neuroproof}{{4.2}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Graph Pruning Parameters}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Classifier Training}{8}}
+\newlabel{sec:network-parameters}{{4.4}{8}}
+\citation{meila2003comparing}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces VI scores of our method (red) compared to the baseline segmentation (green) and an oracle (blue) that optimally partitions the graph based on ground truth. Lower scores are better. Our method improves the accuracy of the segmentation in all cases.\relax }}{9}}
+\newlabel{fig:variation-of-information}{{5}{9}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Training parameters.\relax }}{9}}
+\newlabel{table:architecture}{{1}{9}}
+\citation{plaza2014annotating}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Error Metric}{10}}
+\newlabel{sec:variation-of-information}{{4.5}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Variation of Information Results}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Graph Pruning Results}{10}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 763) compared to total number of edges in the graph (e.g., 21,242) for each case.\relax }}{11}}
+\newlabel{table:skeletonization}{{2}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}CNN Classification Results}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Graph Optimization Results}{11}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Precision, recall, and accuracy changes between CNN only and CNN paired with graph-optimized reconstructions for the training and three test datasets. The combined method results in better precision and accuracy.\relax }}{12}}
+\newlabel{table:multicut}{{3}{12}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusions}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Segments of neurons that were correctly merged by our method.\relax }}{13}}
+\newlabel{fig:positive-results}{{6}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Circles indicate areas of wrong merges by our method (red) or by the initial pixel-based segmentation (blue).\relax }}{14}}
+\newlabel{fig:negative-results}{{7}{14}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces A false negative example of our method due to graph pruning. The distance between the endpoints (circled) of the two segments is too far to be flagged as a merge candidate.\relax }}{15}}
+\newlabel{fig:skeleton-results}{{8}{15}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces The receiver operating characteristic (ROC) curves of our classifier on three connectomics datasets. The classifier works best on previously unseen data of the Kasthuri volume. The dashed blue line indicates better performance on the FlyEM datasets with retraining compared to without (solid blue).\relax }}{15}}
+\newlabel{fig:receiver-operating-characteristic}{{9}{15}}
+\bibstyle{splncs}
+\bibdata{egbib}
+\bibcite{haehn2017scalable}{1}
+\bibcite{kasthuri2015saturated}{2}
+\bibcite{hildebrand2017whole}{3}
+\bibcite{haehn2014design}{4}
+\bibcite{seymour2016rhoananet}{5}
+\bibcite{lee2015recursive}{6}
+\bibcite{nunez2014graph}{7}
+\bibcite{parag2017anisotropic}{8}
+\bibcite{ronneberger2015u}{9}
+\bibcite{zlateski2015image}{10}
+\bibcite{andres2012globally}{11}
+\bibcite{ciresan2012deep}{12}
+\bibcite{jain2010boundary}{13}
+\bibcite{kaynig2015large}{14}
+\bibcite{amelio_segmentation}{15}
+\bibcite{turaga2010convolutional}{16}
+\bibcite{briggman2009maximin}{17}
+\bibcite{januszewski2016flood}{18}
+\bibcite{10.1371/journal.pone.0125825}{19}
+\bibcite{haehn2017guided}{20}
+\bibcite{mojo2}{21}
+\bibcite{rolnick2017morphological}{22}
+\bibcite{error_correction_using_CNN}{23}
+\bibcite{kappes2016higher}{24}
+\bibcite{shi2000normalized}{25}
+\bibcite{tatiraju2008image}{26}
+\bibcite{demaine2006correlation}{27}
+\bibcite{horvnakova2017analysis}{28}
+\bibcite{keuper2015efficient}{29}
+\bibcite{parag2015properties}{30}
+\bibcite{sato2000teasar}{31}
+\bibcite{zhao2014automatic}{32}
+\bibcite{chatfield2014return}{33}
+\bibcite{funahashi1989approximate}{34}
+\bibcite{maas2013rectifier}{35}
+\bibcite{nesterov1983method}{36}
+\bibcite{takemura2017connectome}{37}
+\bibcite{schlegel2017learning}{38}
+\bibcite{Turaga:2009}{39}
+\bibcite{glorot2010understanding}{40}
+\bibcite{meila2003comparing}{41}
+\bibcite{plaza2014annotating}{42}

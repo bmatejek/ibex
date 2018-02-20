@@ -1,0 +1,79 @@
+% last updated in April 2002 by Antje Endemann
+% Based on CVPR 07 and LNCS, with modifications by DAF, AZ and elle, 2008 and AA, 2010, and CC, 2011; TT, 2014; AAS, 2016
+
+\documentclass[runningheads]{llncs}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb} % define this before the line numbering.
+\usepackage{ruler}
+\usepackage{color}
+\usepackage{subfig}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{caption}
+%\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{siunitx}
+\usepackage{float}
+\usepackage[width=122mm,left=12mm,paperwidth=146mm,height=193mm,top=12mm,paperheight=217mm]{geometry}
+
+
+
+
+\begin{document}
+% \renewcommand\thelinenumber{\color[rgb]{0.2,0.5,0.8}\normalfont\sffamily\scriptsize\arabic{linenumber}\color[rgb]{0,0,0}}
+% \renewcommand\makeLineNumber {\hss\thelinenumber\ \hspace{6mm} \rlap{\hskip\textwidth\ \hspace{6.5mm}\thelinenumber}}
+% \linenumbers
+\pagestyle{headings}
+\mainmatter
+\def\ECCV18SubNumber{***}  % Insert your submission number here
+
+\titlerunning{ECCV-18 submission ID \ECCV18SubNumber}
+
+\authorrunning{ECCV-18 submission ID \ECCV18SubNumber}
+
+\title{Graph-Based Neural Reconstruction from Skeletonized 3D Networks}
+
+\author{Anonymous ECCV submission}
+\institute{Paper ID \ECCV18SubNumber}
+
+
+\maketitle
+
+\begin{abstract}
+Advancements in electron microscopy image acquisition have created massive connectomics datasets in the terabyte range that make manual reconstruction of neuronal structures infeasible.
+Current state-of-the-art automatic methods segment neural membranes at the pixel level followed by agglomeration methods to create full neuron reconstructions.
+However, these approaches widely neglect global geometric properties that are inherent in the graph structure of neural wiring diagrams.
+In this work, we follow bottom-up pixel-based reconstruction by a top-down graph-based method to more accurately approximate neural pathways.
+We first generate skeletons in 3D from the neuron labels of the pixel-based segmentation.
+We then simplify this skeletonized 3D network into a 3D graph with nodes corresponding to labels from the segmentation and edges identifying potential locations of segmentation errors.
+We use a CNN classifier trained on ground truth data to generate edge weights on the 3D graph corresponding to error probabilities.
+We then apply a multicut algorithm to generate a partition on the graph that improves the final segmentation.
+Because the 3D graph is small and encodes top-down information our method is efficient and globally improves the neural reconstruction.
+We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average split variation of information improvement of 19.3\%.
+\keywords{connectomics, skeletonization, deep learning}
+\end{abstract}
+
+\input{0_introduction}
+
+\input{1_related_work}
+
+\input{2_method}
+
+\input{3_evaluation}
+
+\input{4_results}
+
+\input{5_conclusions}
+	
+\clearpage
+	
+\bibliographystyle{splncs}
+\bibliography{egbib}
+
+\end{document}
