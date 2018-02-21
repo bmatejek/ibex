@@ -4,8 +4,7 @@ import numpy as np
 import ctypes
 
 from ibex.transforms import distance, seg2seg
-from cremi_python.evaluation.voi import voi
-
+from cremi_python.cremi.evaluation.voi import voi
 
 
 cdef extern from 'cpp-comparestacks.h':
@@ -47,12 +46,12 @@ def CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=T
 
     # run the cremi variation of information algorithm
     if mask_ground_truth:
-        voi(segmentation, gold, [], [0])
+        vi_split, vi_merge = voi(segmentation, gold, [], [0])
         print 'Variation of Information Full: {}'.format(vi_split + vi_merge)
         print 'Variation of Information Merge: {}'.format(vi_merge)
         print 'Variation of Information Split: {}'.format(vi_split)
     else:
-        voi(segmentation, gold, [], [])
+        vi_split, vi_merge = voi(segmentation, gold, [], [])
         print 'Variation of Information Full: {}'.format(vi_split + vi_merge)
         print 'Variation of Information Merge: {}'.format(vi_merge)
         print 'Variation of Information Split: {}'.format(vi_split)
