@@ -69,7 +69,7 @@ def ReadImageData(prefix):
 
 
 
-def ReadSWCSkeletons(prefix, data):
+def ReadSWCSkeletons(prefix, minObjSize, minLength, data):
     # read in all of the skeletons
     skeletons = []
     joints = []
@@ -78,7 +78,7 @@ def ReadSWCSkeletons(prefix, data):
     max_label = np.amax(data) + 1
     for label in range(max_label):
         # read the skeleton
-        skeleton = skeleton_formats.SWCSkeleton(prefix, label)
+        skeleton = skeleton_formats.SWCSkeleton(prefix, minObjSize, minLength, label)
 
         skeletons.append(skeleton)
 

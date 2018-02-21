@@ -169,13 +169,13 @@ class SWCEntry:
 
 
 class SWCSkeleton:
-    def __init__(self, prefix, label):
+    def __init__(self, prefix, minObjSize, minLength, label):
         self.label = label
         self.joints = []
         self.endpoints = []
 
         # get the skeleton filename
-        filename = 'skeletons/NeuTu/{}/tree_{}.swc'.format(prefix, label)
+        filename = 'skeletons/NeuTu/{}-{}-{}/tree_{}.swc'.format(prefix, minObjSize, minLength, label)
 
         # open the file and read all of the swc entries
         with open(filename, 'r') as fd:
