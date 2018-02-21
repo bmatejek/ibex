@@ -43,7 +43,7 @@ static double *PDRF = NULL;
 
 // helper functions
 
-static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
+static void IndexToIndices(long iv, long &ix, long &iy, long &iz)
 {
     iz = iv / sheet_size;
     iy = (iv - iz * sheet_size) / row_size;
@@ -275,7 +275,7 @@ long ComputeDistanceFromVoxelField(long source_index, bool calculate_pdrf, bool 
 
         // visit all 26 neighbors of this index
         long ix, iy, iz;
-        IndexToIndicies(voxel_index, ix, iy, iz);
+        IndexToIndices(voxel_index, ix, iy, iz);
 
         for (long iw = iz - 1; iw <= iz + 1; ++iw) {
             if (iw < 0 or iw >= grid_size[IB_Z]) continue;
@@ -330,7 +330,7 @@ long ComputeDistanceFromVoxelField(long source_index, bool calculate_pdrf, bool 
         for (long iv = 0; iv < nentries; ++iv) {
             if (not inside[iv]) continue;
             long ix, iy, iz;
-            IndexToIndicies(iv, ix, iy, iz);
+            IndexToIndices(iv, ix, iy, iz);
 
             DijkstraData *current = &(voxel_data[voxel_index]);
 
@@ -339,7 +339,7 @@ long ComputeDistanceFromVoxelField(long source_index, bool calculate_pdrf, bool 
                 long skeleton_index = current->iv;
 
                 long ii, ij, ik;
-                IndexToIndicies(skeleton_index, ii, ij, ik);
+                IndexToIndices(skeleton_index, ii, ij, ik);
 
                 double distance = world_res[IB_X] * world_res[IB_X] * (ii - ix) * (ii - ix) + world_res[IB_Y] * world_res[IB_Y] * (ij - iy) * (ij - iy) + world_res[IB_Z] * world_res[IB_Z] * (ik - iz) * (ik - iz);
 

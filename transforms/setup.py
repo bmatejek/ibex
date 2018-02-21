@@ -4,6 +4,13 @@ import numpy as np
 
 extensions = [
     Extension(
+        name='distance',
+        include_dirs=[np.get_include()],
+        sources=['distance.pyx', 'cpp-distance.cpp'],
+        extra_compile_args=['-O4', '-std=c++0x'],
+        language='c++'
+    ),
+    Extension(
         name='seg2gold',
         include_dirs=[np.get_include()],
         sources=['seg2gold.pyx', 'cpp-seg2gold.cpp'],

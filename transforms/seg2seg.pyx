@@ -33,6 +33,8 @@ def MapLabels(segmentation, mapping):
 
 # remove the components less than min size
 def RemoveSmallConnectedComponents(segmentation, threshold=64):
+    if threshold == 0: return segmentation
+
     nentries = segmentation.size
     zres, yres, xres = segmentation.shape
 

@@ -107,7 +107,6 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
 
 
 
-
     // calculate the variation of information
     double VI_split = 0.0;
     double VI_merge = 0.0;

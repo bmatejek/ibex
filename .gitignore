@@ -35,8 +35,8 @@
 build/
 algorithms/multicut.cpp
 evaluation/comparestacks.cpp
+skeletonization/teaser_skeletons.cpp
 transforms/distance.cpp
-
 transforms/seg2seg.cpp
 transforms/seg2gold.cpp
 
