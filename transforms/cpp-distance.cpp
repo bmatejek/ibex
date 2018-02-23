@@ -30,7 +30,7 @@ static long IndicesToIndex(long ix, long iy, long iz)
 
 
 
-double *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3])
+float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3])
 {
     // initialize convenient variables for distances
     nentries = resolution[IB_Z] * resolution[IB_Y] * resolution[IB_X];
@@ -38,10 +38,10 @@ double *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3
     row_size = resolution[IB_X];
     infinity = resolution[IB_Z] * resolution[IB_Z] + resolution[IB_Y] * resolution[IB_Y] + resolution[IB_X] * resolution[IB_X];
 
-    double *DBF = new double[nentries];
+    float *DBF = new float[nentries];
 
     // allocate memory for bounday map and distance transform
-    long *b = new long[nentries];
+    float *b = new float[nentries];
     for (long iz = 0; iz < resolution[IB_Z]; ++iz) {
         for (long iy = 0; iy < resolution[IB_Y]; ++iy) {
             for (long ix = 0; ix < resolution[IB_X]; ++ix) {
@@ -66,7 +66,7 @@ double *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3
 
             long k = 0;
             long *v = new long[resolution[IB_Y]];
-            double *z = new double[resolution[IB_Y]];
+            float *z = new float[resolution[IB_Y]];
 
             v[0] = 0;
             z[0] = -1 * infinity;
@@ -75,7 +75,7 @@ double *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3
             for (long q = 1; q < resolution[IB_Y]; ++q) {
                 // label for jump statement
                 ylabel:
-                double s = ((b[IndicesToIndex(ix, q, iz)] + q * q) - (b[IndicesToIndex(ix, v[k], iz)] + v[k] * v[k])) / (float)(2 * q - 2 * v[k]);
+                float s = ((b[IndicesToIndex(ix, q, iz)] + q * q) - (b[IndicesToIndex(ix, v[k], iz)] + v[k] * v[k])) / (float)(2 * q - 2 * v[k]);
 
                 if (s <= z[k]) {
                     --k;
@@ -119,7 +119,7 @@ double *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3
 
             long k = 0;
             long *v = new long[resolution[IB_X]];
-            double *z = new double[resolution[IB_X]];
+            float *z = new float[resolution[IB_X]];
 
             v[0] = 0;
             z[0] = -1 * infinity;
@@ -128,7 +128,7 @@ double *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3
             for (long q = 1; q < resolution[IB_X]; ++q) {
                 // label for jump statement
                 xlabel:
-                double s = ((b[IndicesToIndex(q, iy, iz)] + q * q) - (b[IndicesToIndex(v[k], iy, iz)] +  v[k] * v[k])) / (float)(2 * q - 2 * v[k]);
+                float s = ((b[IndicesToIndex(q, iy, iz)] + q * q) - (b[IndicesToIndex(v[k], iy, iz)] +  v[k] * v[k])) / (float)(2 * q - 2 * v[k]);
 
                 if (s <= z[k]) {
                     --k;
@@ -167,14 +167,14 @@ double *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3
 }
 
 
-long *CppDilateData(long *data, long resolution[3], double distance)
+long *CppDilateData(long *data, long resolution[3], float distance)
 {
     // initialize convenient variables for distances
     nentries = resolution[IB_Z] * resolution[IB_Y] * resolution[IB_X];
     sheet_size = resolution[IB_Y] * resolution[IB_X];
     row_size = resolution[IB_X];
 
-    double *distances = CppTwoDimensionalDistanceTransform(data, resolution);
+    float *distances = CppTwoDimensionalDistanceTransform(data, resolution);
 
     // mask out distances that are two close
     long *masked_data = new long[nentries];

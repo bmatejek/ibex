@@ -39,20 +39,24 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, width):
         index += 1
 
         # rotation equals 0
-        yield ExtractFeature(segmentation, candidate, width, radii, 0)
+        yield ExtractFeature(segmentation, candidate, width, radii, training=False)
 
 
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, threshold, maximum_distance, network_distance, width):
+def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
     
     # get the candidate locations 
-    candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)
+    positive_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'positive')
+    negative_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'negative')
+    candidates = positive_candidates + negative_candidates
+    random.shuffle(candidates)
     ncandidates = len(candidates)
+
 
     # get the probabilities
     start_time = time.time()

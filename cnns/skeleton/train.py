@@ -2,7 +2,7 @@ import numpy as np
 import os
 import sys
 import math
-
+import random
 
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
@@ -158,9 +158,12 @@ def WriteLogfiles(model, model_prefix, parameters):
             fd.write('{}: {}\n'.format(parameter, parameters[parameter]))
 
 
-def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters, width):
+def SkeletonCandidateGenerator(prefix, network_distance, positive_candidates, negative_candidates, parameters, width):
     # get the number of channels for the data
     nchannels = width[0]
+
+    npositive_candidates = len(positive_candidates)
+    nnegative_candidates = len(negative_candidates)
 
     # read in all relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
@@ -170,46 +173,50 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, parameters,
     radii = (network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X])
 
     # determine the total number of epochs
-    if parameters['augment']: rotations = max_rotation
-    else: rotations = 1
-
-    ncandidates = len(candidates)
     batch_size = parameters['batch_size']
-    if rotations * ncandidates % batch_size: 
-        nbatches = (rotations * ncandidates / batch_size) + 1
-    else:
-        nbatches = (rotations * ncandidates / batch_size)
 
     examples = np.zeros((batch_size, nchannels, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1]), dtype=np.float32)
     labels = np.zeros(batch_size, dtype=np.float32)
     
+    random.shuffle(positive_candidates)
+    random.shuffle(negative_candidates)
+
+    positive_index = 0
+    negative_index = 0
+
     while True:
-        index = 0
-        for _ in range(nbatches):
-            for iv in range(batch_size):
-                # get the candidate index and the rotation
-                rotation = index / ncandidates
-                candidate = candidates[index % ncandidates]
+        # randomly choose elements for the batch
+        for iv in range(batch_size / 2):
+            positive_candidate = positive_candidates[positive_index]
+            negative_candidate = negative_candidates[negative_index]
 
-                # get the example and label
-                examples[iv,:,:,:,:] = ExtractFeature(segmentation, candidate, width, radii, rotation)
-                labels[iv] = candidate.ground_truth
+            examples[2*iv,:,:,:,:] = ExtractFeature(segmentation, positive_candidate, width, radii)
+            labels[2*iv] = positive_candidate.ground_truth
+            examples[2*iv+1,:,:,:,:] = ExtractFeature(segmentation, negative_candidate, width, radii)
+            labels[2*iv+1] = negative_candidate.ground_truth
 
-                # provide overflow relief
-                index += 1
-                if index >= ncandidates * rotations: index = 0
-                
-            yield (examples, labels)
+            positive_index += 1
+            if positive_index == npositive_candidates:
+                random.shuffle(positive_candidates)
+                positive_index = 0
+            negative_index += 1
+            if negative_index == nnegative_candidates:
+                random.shuffle(negative_candidates)
+                negative_index = 0
+
+        yield (examples, labels)
 
 
 
-def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, width, parameters):
+
+def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width, parameters):
     # identify convenient variables
     nchannels = width[0]
     starting_epoch = parameters['starting_epoch']
     batch_size = parameters['batch_size']
     initial_learning_rate = parameters['initial_learning_rate']
     decay_rate = parameters['decay_rate']
+    examples_per_epoch = parameters['examples_per_epoch']
 
     # architecture parameters
     activation = parameters['activation']
@@ -238,10 +245,11 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     WriteLogfiles(model, model_prefix, parameters)
 
     # get all candidates
-    training_candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=False)
-    ntraining_candidates = len(training_candidates)
-    validation_candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=True)
-    nvalidation_candidates = len(validation_candidates)
+    positive_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'positive')
+    negative_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance,  network_distance, 'negative')
+    validation_threshold = 0.8
+    positive_cutoff = int(validation_threshold * len(positive_candidates))
+    negative_cutoff = int(validation_threshold * len(negative_candidates))
 
     # create a set of keras callbacks
     callbacks = []
@@ -262,10 +270,6 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     plot_losses = PlotLosses(model_prefix)
     callbacks.append(plot_losses)
 
-    # determine the total number of epochs
-    if parameters['augment']: rotations = max_rotation
-    else: rotations = 1
-
     # save the json file
     json_string = model.to_json()
     open('{}.json'.format(model_prefix), 'w').write(json_string)
@@ -273,9 +277,9 @@ def Train(prefix, model_prefix, threshold, maximum_distance, network_distance, w
     if not starting_epoch == 1:
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
 
-    history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, training_candidates, parameters, width),\
-                    (rotations * ntraining_candidates / batch_size), epochs=250, verbose=1, class_weight=weights, callbacks=callbacks,\
-                                  validation_data=SkeletonCandidateGenerator(prefix, network_distance, validation_candidates, parameters, width), validation_steps=(rotations * nvalidation_candidates / batch_size))
+    history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[:positive_cutoff], negative_candidates[:negative_cutoff], parameters, width),\
+                    (examples_per_epoch / batch_size), epochs=250, verbose=1, class_weight=weights, callbacks=callbacks,\
+                                  validation_data=SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[positive_cutoff:], negative_candidates[negative_cutoff:], parameters, width), validation_steps=(examples_per_epoch / batch_size))
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))

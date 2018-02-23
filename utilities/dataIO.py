@@ -69,16 +69,16 @@ def ReadImageData(prefix):
 
 
 
-def ReadSWCSkeletons(prefix, minObjSize, minLength, data):
+def ReadSWCSkeletons(prefix, data):
     # read in all of the skeletons
     skeletons = []
     joints = []
     endpoints = []
 
-    max_label = np.amax(data) + 1
-    for label in range(max_label):
+    labels = np.unique(data)
+    for label in labels:
         # read the skeleton
-        skeleton = skeleton_formats.SWCSkeleton(prefix, minObjSize, minLength, label)
+        skeleton = skeleton_formats.SWCSkeleton(prefix, label)
 
         skeletons.append(skeleton)
 
@@ -99,8 +99,8 @@ def ReadTopologySkeletons(prefix, data):
     skeletons = []
     endpoints = []
 
-    max_label = np.amax(data) + 1
-    for label in range(max_label):
+    labels = np.unique(data)
+    for label in labels:
         # read the skeleton
         skeleton = skeleton_formats.TopologySkeleton(prefix, label, data.shape)
 

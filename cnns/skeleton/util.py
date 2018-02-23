@@ -1,5 +1,6 @@
 import struct
 import os
+import random
 
 import numpy as np
 from numba import jit
@@ -18,13 +19,8 @@ class SkeletonCandidate:
 
 
 # find the candidates for this prefix and distance
-def FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=False, validation=False):
-    if inference:
-        filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    elif validation:
-        filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    else:
-        filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+def FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, suffix):
+    filename = 'features/skeleton/{}-{}-{}nm-{}nm-{}nm-{}.candidates'.format(prefix, threshold, maximum_distance, endpoint_distance, network_distance, suffix)
 
     # read the candidate filename
     with open(filename, 'rb') as fd:
@@ -32,7 +28,7 @@ def FindCandidates(prefix, threshold, maximum_distance, network_distance, infere
         candidates = []
         # iterate over all of the candidate merge locations
         for _ in range(ncandidates):
-            label_one, label_two, zpoint, ypoint, xpoint, ground_truth = struct.unpack('QQQQQQ', fd.read(48))
+            label_one, label_two, zpoint, ypoint, xpoint, ground_truth = struct.unpack('qqqqq?', fd.read(41))
             candidates.append(SkeletonCandidate((label_one, label_two), (zpoint, ypoint, xpoint), ground_truth))
 
     return candidates
@@ -77,26 +73,24 @@ def ScaleSegment(segment, width, labels):
 
 
 # extract the feature given the location and segmentation'
-def ExtractFeature(segmentation, candidate, width, radii, rotation):
-    assert (rotation < 72)
-
+def ExtractFeature(segmentation, candidate, width, radii, training=True):
     # get the data in a more convenient form
     zradius, yradius, xradius = radii
     zpoint, ypoint, xpoint = candidate.location
     labels = candidate.labels
-
 
     # extract the small window from this segment
     example = segmentation[zpoint-zradius:zpoint+zradius+1,ypoint-yradius:ypoint+yradius+1,xpoint-xradius:xpoint+xradius+1]
 
     # rescale the segment
     example = ScaleSegment(example, width, labels)
+    if not training: return example
 
     # flip z axis?
-    if rotation / 36: example = np.flip(example, IB_Z + 2)
+    if random.random() > 0.5: example = np.flip(example, IB_Z + 2)
     
     # perform a rotation
-    angle = 10.0 * (rotation % 36)
+    angle = random.uniform(0, 360)
     example = scipy.ndimage.interpolation.rotate(example, angle, axes=(IB_X + 2, IB_Y + 2), reshape=False, order=0)
 
     # # flip x axis? -> add 2 because of extra filler channel

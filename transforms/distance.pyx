@@ -6,8 +6,8 @@ import numpy as np
 
 
 cdef extern from 'cpp-distance.h':
-    double *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3])
-    long *CppDilateData(long *data, long resolution[3], double distance)
+    float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3])
+    long *CppDilateData(long *data, long resolution[3], float distance)
 
 
 # get the two dimensional distance transform
@@ -18,8 +18,8 @@ def TwoDimensionalDistanceTransform(segmentation):
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
     cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
 
-    cdef double *cpp_distances = CppTwoDimensionalDistanceTransform(&(cpp_segmentation[0,0,0]), [zres, yres, xres])
-    cdef double[:] tmp_distances = <double[:segmentation.size]> cpp_distances
+    cdef float *cpp_distances = CppTwoDimensionalDistanceTransform(&(cpp_segmentation[0,0,0]), [zres, yres, xres])
+    cdef float[:] tmp_distances = <float[:segmentation.size]> cpp_distances
 
     return np.reshape(np.asarray(tmp_distances), (zres, yres, xres))
 
@@ -33,7 +33,7 @@ def DilateData(data, distance):
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_data
     cpp_data = np.ascontiguousarray(data, dtype=ctypes.c_int64)
 
-    cdef long *cpp_dilated = CppDilateData(&(cpp_data[0,0,0]), [zres, yres, xres], long(distance))
+    cdef long *cpp_dilated = CppDilateData(&(cpp_data[0,0,0]), [zres, yres, xres], float(distance))
     cdef long[:] tmp_dilated = <long[:data.size]> cpp_dilated
 
     return np.reshape(np.asarray(tmp_dilated), (zres, yres, xres))

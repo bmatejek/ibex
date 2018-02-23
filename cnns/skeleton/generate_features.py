@@ -3,63 +3,22 @@ import numpy as np
 import random
 import struct
 from numba import jit
+import gc
 
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
 from ibex.transforms import seg2seg, seg2gold
 from ibex.cnns.skeleton.util import SkeletonCandidate
 from ibex.data_structures import unionfind
-from PixelPred2Seg import comparestacks
+from ibex.evaluation import comparestacks
 
 
 
 # save the candidate files for the CNN
-def SaveCandidates(output_filename, positive_candidates, negative_candidates, inference=False, validation=False, undetermined_candidates=None):
-    if not undetermined_candidates == None:
-        candidates = undetermined_candidates
-        random.shuffle(candidates)
-    elif inference:
-        # concatenate the two lists
-        candidates = positive_candidates + negative_candidates
-        random.shuffle(candidates)
-    else:
-        positive_threshold = int(math.floor(0.80 * len(positive_candidates)))
-        negative_threshold = int(math.floor(0.80 * len(negative_candidates)))
-        
-        if not validation:
-            positive_candidates = positive_candidates[:positive_threshold]
-            negative_candidates = negative_candidates[:negative_threshold]
-        else:
-            positive_candidates = positive_candidates[positive_threshold:]
-            negative_candidates = negative_candidates[negative_threshold:]
+def SaveCandidates(output_filename, candidates):
+    random.shuffle(candidates)
+    ncandidates = len(candidates)
 
-        # shuffle the positive and negative candidates
-        random.shuffle(positive_candidates)
-        random.shuffle(negative_candidates)
-            
-        # get the maximum length of the two candidates - train in pairs
-        npoints = max(len(positive_candidates), len(negative_candidates))
-        positive_index = 0
-        negative_index = 0
-
-        # train in pairs, duplicate when needed
-        candidates = []
-        for _ in range(npoints):
-            candidates.append(positive_candidates[positive_index])
-            candidates.append(negative_candidates[negative_index])
-
-            # increment the indices
-            positive_index += 1
-            negative_index += 1
-
-            # handle dimension mismatch by reseting index and reshuffling array
-            if positive_index >= len(positive_candidates): 
-                positive_index = 0
-                random.shuffle(positive_candidates)
-            if negative_index >= len(negative_candidates): 
-                negative_index = 0
-                random.shuffle(negative_candidates)
-            
     # write all candidates to the file
     with open(output_filename, 'wb') as fd:
         fd.write(struct.pack('i', len(candidates)))
@@ -72,12 +31,11 @@ def SaveCandidates(output_filename, positive_candidates, negative_candidates, in
 
             # get the location of this candidate
             position = candidate.location
-
-            # get the ground truth for this candidate
             ground_truth = candidate.ground_truth
 
             # write this candidate to the evaluation candidate list
-            fd.write(struct.pack('QQQQQQ', label_one, label_two, position[IB_Z], position[IB_Y], position[IB_X], ground_truth))
+            fd.write(struct.pack('qqqqq?', label_one, label_two, position[IB_Z], position[IB_Y], position[IB_X], ground_truth))          
+
 
 
 @jit(nopython=True)
@@ -121,7 +79,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     zres, yres, xres = segmentation.shape
 
     # get the mapping from segmentation to gold
-    seg2gold_mapping = seg2gold.Mapping(segmentation, gold, low_threshold=0.10, high_threshold=0.80)
+    seg2gold_mapping = seg2gold.Mapping(segmentation, gold, low_threshold=0.50, high_threshold=0.80)
     
     # remove small connceted components
     segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold).astype(np.int64)
@@ -138,6 +96,11 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     # get all of the skeletons
     if topology: skeletons, endpoints = dataIO.ReadTopologySkeletons(prefix, segmentation)
     else: skeletons, _, endpoints = dataIO.ReadSWCSkeletons(prefix, segmentation)
+
+    # get a mapping from the labels to indices in skeletons and endpoints
+    label_to_index = [-1 for _ in range(max_label)]
+    for ie, skeleton in enumerate(skeletons):
+        label_to_index[skeleton.label] = ie 
 
 
     # get the set of all pairs considered
@@ -170,25 +133,20 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         # get the endpoint location
         label = endpoint.label
 
-        # find the candidates from this endpoint after pruning
-        candidates = set()
-
         # go through all currently considered endpoints
         for neighbor_label in endpoint_candidates[ie]:
-            for neighbor_endpoint in skeletons[neighbor_label].endpoints:
-                
+            for neighbor_endpoint in skeletons[label_to_index[neighbor_label]].endpoints:
                 # get the distance
                 deltas = endpoint.WorldPoint(world_res) - neighbor_endpoint.WorldPoint(world_res)
                 distance = math.sqrt(deltas[IB_Z] * deltas[IB_Z] + deltas[IB_Y] * deltas[IB_Y] + deltas[IB_X] * deltas[IB_X])
 
                 if distance < endpoint_distance:
-                    candidates.add(neighbor_label)
                     endpoint_pairs.add((endpoint, neighbor_endpoint))
 
 
     # find the smallest pair between endpoints
     smallest_distances = (endpoint_distance + 1) * np.ones((max_label, max_label), dtype=np.float32)
-    midpoints = np.zeros((max_label, max_label, 3), dtype=np.uint32)
+    midpoints = np.zeros((max_label, max_label, 3), dtype=np.int32)
     
     # go through all the endpoint pairs and prune out the ones with bad angles
     for endpoint_pair in endpoint_pairs:
@@ -226,7 +184,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     for label_one in range(0, max_label):
         for label_two in range(label_one + 1, max_label):
             if smallest_distances[label_one,label_two] > endpoint_distance: continue
-            
+
             ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
             candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], ground_truth)
 
@@ -234,24 +192,22 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
             elif ground_truth: positive_candidates.append(candidate)
             else: negative_candidates.append(candidate)
 
-    # save the files
-    train_filename = 'features/skeleton/{}-{}-{}nm-{}nm-training.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    validation_filename = 'features/skeleton/{}-{}-{}nm-{}nm-validation.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    forward_filename = 'features/skeleton/{}-{}-{}nm-{}nm-inference.candidates'.format(prefix, threshold, maximum_distance, network_distance)
-    undetermined_filename = 'features/skeleton/{}-{}-{}nm-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance, network_distance)
+
+    # save positive and negative candidates separately
+    positive_filename = 'features/skeleton/{}-{}-{}nm-{}nm-{}nm-positive.candidates'.format(prefix, threshold, maximum_distance, endpoint_distance, network_distance)
+    negative_filename = 'features/skeleton/{}-{}-{}nm-{}nm-{}nm-negative.candidates'.format(prefix, threshold, maximum_distance, endpoint_distance, network_distance)
+    undetermined_filename = 'features/skeleton/{}-{}-{}nm-{}nm-{}nm-undetermined.candidates'.format(prefix, threshold, maximum_distance, endpoint_distance, network_distance)
     
-    if training_data:
-       SaveCandidates(train_filename, positive_candidates, negative_candidates, inference=False, validation=False)
-       SaveCandidates(validation_filename, positive_candidates, negative_candidates, inference=False, validation=True)
-    SaveCandidates(forward_filename, positive_candidates, negative_candidates, inference=True)
-    SaveCandidates(undetermined_filename, positive_candidates, negative_candidates, undetermined_candidates=undetermined_candidates)
+    SaveCandidates(positive_filename, positive_candidates)
+    SaveCandidates(negative_filename, negative_candidates)
+    SaveCandidates(undetermined_filename, undetermined_candidates)
 
     print 'Positive candidates: {}'.format(len(positive_candidates))
     print 'Negative candidates: {}'.format(len(negative_candidates))
     print 'Undetermined candidates: {}'.format(len(undetermined_candidates))
 
     # perform some tests to see how well this method can do
-    max_value = np.uint64(np.amax(segmentation) + 1)
+    max_value = np.amax(segmentation) + 1
     union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
 
     # iterate over all collapsed edges
@@ -259,9 +215,13 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         label_one, label_two = candidate.labels
         unionfind.Union(union_find[label_one], union_find[label_two])
 
+    gc.collect()
+
     # create a mapping for the labels
-    mapping = np.zeros(max_value, dtype=np.uint64)
+    mapping = np.zeros(max_value, dtype=np.int64)
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
-    opt_segmentation = seg2seg.MapLabels(segmentation, mapping)
-    comparestacks.Evaluate(opt_segmentation, gold)
+    segmentation = seg2seg.MapLabels(segmentation, mapping)
+    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
+    
+    gc.collect()
