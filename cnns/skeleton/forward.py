@@ -15,7 +15,7 @@ from ibex.evaluation.classification import *
 
 
 # generate candidate features for the predict function
-def SkeletonCandidateGenerator(prefix, network_distance, candidates, width):
+def SkeletonCandidateGenerator(prefix, network_distance, candidates, width, augment):
     # read in all relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     world_res = dataIO.Resolution(prefix)
@@ -39,13 +39,13 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, width):
         index += 1
 
         # rotation equals 0
-        yield ExtractFeature(segmentation, candidate, width, radii, training=False)
+        yield ExtractFeature(segmentation, candidate, width, radii, augment=augment)
 
 
 
 
 # run the forward pass for the given prefix
-def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width):
+def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width, naugmentations):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
@@ -54,13 +54,13 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
     positive_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'positive')
     negative_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'negative')
     candidates = positive_candidates + negative_candidates
-    random.shuffle(candidates)
     ncandidates = len(candidates)
 
-
-    # get the probabilities
-    start_time = time.time()
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width), ncandidates, max_q_size=200)
+    # compute augmentations
+    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, False), ncandidates, max_q_size=200)
+    for _ in range(naugmentations):
+        probabilities += model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, True), ncandidates, max_q_size=200)
+    probabilities /= (1 + naugmentations)
     predictions = Prob2Pred(np.squeeze(probabilities))
 
     # create an array of labels

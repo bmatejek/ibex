@@ -73,7 +73,7 @@ def ScaleSegment(segment, width, labels):
 
 
 # extract the feature given the location and segmentation'
-def ExtractFeature(segmentation, candidate, width, radii, training=True):
+def ExtractFeature(segmentation, candidate, width, radii, augment=True):
     # get the data in a more convenient form
     zradius, yradius, xradius = radii
     zpoint, ypoint, xpoint = candidate.location
@@ -84,7 +84,7 @@ def ExtractFeature(segmentation, candidate, width, radii, training=True):
 
     # rescale the segment
     example = ScaleSegment(example, width, labels)
-    if not training: return example
+    if not augment: return example
 
     # flip z axis?
     if random.random() > 0.5: example = np.flip(example, IB_Z + 2)
