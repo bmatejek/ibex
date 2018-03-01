@@ -15,7 +15,7 @@ The FlyEM dataset comes from the mushroom body of a 5-day old adult male \textit
 \subsection{Pixel-Based Segmentations}
 \label{sec:neuroproof}
 
-The segmentation of the Kasthuri dataset was computed by agglomerating 3D supervoxels produced by the z-watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. A recent study by Funke et al.~\cite{schlegel2017learning} demonstrated superior performance of such methods over existing ones on anisotropic data. We learn 3D affinities using MALIS loss with a U-net~\cite{ronneberger2015u,Turaga:2009}. We apply the z-watershed algorithm with suitable parameters to compute a 3D oversegmentation of the volume. The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
+The segmentation of the Kasthuri dataset was computed by agglomerating 3D supervoxels produced by the z-watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. A recent study by Funke et al.~\cite{funke2017deep} demonstrated superior performance of such methods over existing ones on anisotropic data. We learn 3D affinities using MALIS loss with a U-net~\cite{ronneberger2015u,Turaga:2009}. We apply the z-watershed algorithm with suitable parameters to compute a 3D oversegmentation of the volume. The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
 
 For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we applied a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. This segmentation framework learns voxel and supervoxel classifiers with an emphasis to minimize under-segmentation error. At the same time this framework produces lower over-segmentation than standard algorithms. The algorithm first computes multi-channel 3-D predictions for membranes, cell interiors, and mitochondria, among other cell features. The membrane prediction channel is used to produce an over-segmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. We used exactly the same parameters as the publicly available code for this algorithm.
 
@@ -52,6 +52,7 @@ We consider networks with varying input sizes, optimizers, loss functions, filte
 	\label{table:architecture}
 \end{table}
 
+\paragraph{Data Augmentation.}
 
 
 
