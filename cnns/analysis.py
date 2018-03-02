@@ -17,31 +17,18 @@ class NetworkResult:
     def Accuracy(self):
         return [result.accuracy for result in self.results]
 
+    def Prefixes(self):
+        return [result.prefix for result in self.results]
+
     def __cmp__(self, other):
-        self_width = self.architecture.input_size.strip('()').split(', ')
-        other_width = other.architecture.input_size.strip('()').split(', ')
-
-
-        self_input_size = int(self_width[0]) * int(self_width[1]) * int(self_width[2]) * int(self_width[3])
-        other_input_size = int(other_width[0]) * int(other_width[1]) * int(other_width[2]) * int(other_width[3])
-
         if self.name > other.name: return 1
         else: return -1
-        
-        if self_input_size > other_input_size: return 1
-        elif self_input_size < other_input_size: return -1
-        elif self.parameters['iterations'] > other.parameters['iterations']: return 1
-        elif self.parameters['iterations'] < other.parameters['iterations']: return -1
-        elif self.parameters['initial_learning_rate'] < other.parameters['initial_learning_rate']: return 1
-        elif self.parameters['initial_learning_rate'] > other.parameters['initial_learning_rate']: return -1
-        elif self.name < other.name: return 1
-        elif self.name > other.name: return -1
-        else: return 0
 
 
 
 class Result:
-    def __init__(self, true_positives, false_negatives, false_positives, true_negatives):
+    def __init__(self, prefix, true_positives, false_negatives, false_positives, true_negatives):
+        self.prefix = prefix
         self.true_positives = true_positives
         self.false_positives = false_positives
         self.false_negatives = false_negatives
@@ -76,6 +63,8 @@ class Architecture:
 
 
 def ParseResults(filename):
+    prefix = filename.split('/')[-1].split('.')[0].strip('skeleton')[1:-12]
+
     # open the results filename
     with open(filename, 'r') as fd:
         for line in fd.readlines():
@@ -87,7 +76,7 @@ def ParseResults(filename):
                 false_positives = int(line.split()[3])
                 true_negatives = int(line.split()[4])
 
-    return Result(true_positives, false_negatives, false_positives, true_negatives)
+    return Result(prefix, true_positives, false_negatives, false_positives, true_negatives)
 
 
 
@@ -127,7 +116,6 @@ def CNNResults(problem):
 
     # iterate over all networks
     for name in network_names:
-        if name == 'small-train': continue
         directory = '{}/{}'.format(parent_directory, name)
 
         # there needs to be a log file for this to work
