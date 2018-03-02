@@ -4,7 +4,7 @@ import numpy as np
 from ibex.data_structures import meta_data, skeleton_formats
 from ibex.utilities.constants import *
 from PIL import Image
-import imageio
+#import imageio
 
 
 def GetWorldBBox(prefix):
@@ -130,5 +130,5 @@ def ReadImage(filename):
 
 
 
-def WriteImage(filename, image):
-    imageio.imwrite(filename, image)
+#def WriteImage(filename, image):
+#    imageio.imwrite(filename, image)

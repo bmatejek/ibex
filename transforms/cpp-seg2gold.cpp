@@ -55,9 +55,9 @@ long *CppMapping(long *segmentation, int *gold, long nentries, double low_thresh
             }
         }
 
-        // the number of non zeros pixels must be greater than 10%
+        // the number of matching gold values must be greater than the low threshold
         if (gold_max_value / (double)nvoxels_per_segment[is] < low_threshold) segmentation_to_gold[is] = 0;
-        // number of non zero pixels must be greater than threhsold
+        // number of non zero pixels must be greater than the high  threhsold
         else if (gold_max_value / (double)(nvoxels_per_segment[is] - seg2gold_overlap[is][0]) > high_threshold) segmentation_to_gold[is] = gold_id;
         else segmentation_to_gold[is] = 0;
     }

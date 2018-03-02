@@ -3,7 +3,6 @@ import numpy as np
 import random
 import struct
 from numba import jit
-import gc
 import time
 
 from ibex.utilities.constants import *
@@ -207,4 +206,5 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
     segmentation = seg2seg.MapLabels(segmentation, mapping)
+
     comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=6.25, mask_ground_truth=True, filtersize=0)

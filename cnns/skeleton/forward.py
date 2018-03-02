@@ -35,7 +35,7 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, width, augm
         # increment the index
         index += 1
 
-        if not (index % 1000): 
+        if not (index % (len(candidates) / 10)): 
             print '{}/{}: {}'.format(index, len(candidates), time.time() - start_time)
 
         # rotation equals 0
@@ -57,9 +57,9 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
     ncandidates = len(candidates)
 
     # compute augmentations
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, False), ncandidates, max_q_size=200)
+    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, False), ncandidates, max_q_size=2000)
     for _ in range(naugmentations):
-        probabilities += model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, True), ncandidates, max_q_size=200)
+        probabilities += model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, True), ncandidates, max_q_size=2000)
     probabilities /= (1 + naugmentations)
     predictions = Prob2Pred(np.squeeze(probabilities))
 
@@ -112,13 +112,13 @@ def AnalyzeAugmentation(prefix, model_prefix, threshold, maximum_distance, endpo
         labels[ie] = candidate.ground_truth
     
     # compute augmentations
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, False), ncandidates, max_q_size=200)
+    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, False), ncandidates, max_q_size=800)
     first_predictions = Prob2Pred(np.squeeze(probabilities))
     for iv in range(100):
         # get the predictions from the previous probabilities
         previous_predictions = Prob2Pred(np.squeeze(probabilities) / (iv + 1))
         # update the probabilities
-        probabilities += model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, True), ncandidates, max_q_size=200)
+        probabilities += model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, True), ncandidates, max_q_size=800)
         # get the predictions after this round
         current_predictions = Prob2Pred(np.squeeze(probabilities) / (iv + 2))
         
