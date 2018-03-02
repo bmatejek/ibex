@@ -15,9 +15,9 @@
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.82\linewidth]{./figures/skeleton1.png}
-	\includegraphics[width=0.82\linewidth]{./figures/skeleton2.png}
-	\includegraphics[width=0.82\linewidth]{./figures/skeleton3.png}
+	\includegraphics[width=0.32\linewidth]{./figures/skeleton1.png}
+	\includegraphics[width=0.32\linewidth]{./figures/skeleton2.png}
+	\includegraphics[width=0.32\linewidth]{./figures/skeleton3.png}
 	\caption{Example skeletons (in black) extracted from segments using the TEASER algorithm.}
 	\label{fig:skeletonization}
 \end{figure}
@@ -54,8 +54,8 @@ In the first pass, we iterate over all endpoints $e$ belonging to a segment $S$ 
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.92\linewidth]{./figures/split_error1.png}
-	\includegraphics[width=0.92\linewidth]{./figures/split_error2.png}		\includegraphics[width=0.85\linewidth]{./figures/merge_candidate2.png}
+	\includegraphics[width=0.32\linewidth]{./figures/split_error1.png}
+	\includegraphics[width=0.32\linewidth]{./figures/split_error2.png}		\includegraphics[width=0.32\linewidth]{./figures/merge_candidate2.png}
 	\caption{Three erroneously split segments.}
 	\label{fig:merge_candidates}
 \end{figure}
@@ -86,4 +86,10 @@ For training we use a stochastic gradient descent optimizer with Nesterov's acce
 
 \subsection{Graph Partitioning}
 
-After constructing the 3D graph we apply graph partitioning using multicut to compute the final segmentation. Using top-down graph partitioning allows us to apply biological constraints on the output. Neuroscientists know that neuronal connectivity graphs in the brain are acyclic (i.e., the graphs have a genus of zero). We enforce this constraint by finding a multicut partition of the graph that generates a \textit{forest} of nodes, i.e., a set of trees where no segment has a cycle. To solve this constraing multicut problem we use the method by Keuper et al.~\cite{keuper2015efficient} that produces a feasible solution by greedy additive edge contraction.
+After constructing the 3D graph we apply graph partitioning using multicut to compute the final segmentation. 
+Using top-down graph partitioning allows us to apply biological constraints on the output. 
+Formulating the problem as a multicut minimization problem allows us to guarantee \TODO{FIX} globally consistent solutions where every cycle of ``merge" edges is closed \TODO{CONFUSING}.
+To solve this constraining multicut problem we use the method by Keuper et al.~\cite{keuper2015efficient} that produces a feasible solution by greedy additive edge contraction.
+We extend the multicut formulation the ``lifted" version of the problem where non-adjacent nodes have edge weights corresponding to the probability of belonging to the same neuron \TODO{(CITE)}.
+We determine the lifted edge weights following the example of Keuper et al. \cite{keuper2015efficient}.
+\TODO{find better source and describe the process}

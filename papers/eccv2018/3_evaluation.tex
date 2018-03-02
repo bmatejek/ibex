@@ -30,10 +30,14 @@ In our implementation we use nanometers for these thresholds and not voxels. Con
 \subsection{Classifier Training}
 \label{sec:network-parameters}
 
-We use the left cylinder of the Kasthuri dataset for training and validation. We train on 80\% of the potential merge candidates for this volume.
-We validate the CNN classifier on the remaining 20\% of candidates. We apply data augmentation to the generated examples to increase the size of the training datasets. We consider all rotations of $90$ degrees along the $xy$-plane in addition to mirroring along the $x$ and $z$ axes. This produces 16 times more training data.
+We use half of the Kasthuri dataset for training and validation. 
+We train on 80\% of the potential merge candidates for this volume.
+We validate the CNN classifier on the remaining 20\% of candidates. 
 
-We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. The supplemental material includes information on the experiments that determined these final parameters. Table~\ref{table:architecture} provides the parameters of the final network. There are 7,294,705 learnable parameters in our final architecture. All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. Training concluded after 34 epochs.
+We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. The supplemental material includes information on the experiments that determined these final parameters. Table~\ref{table:architecture} provides the parameters of the final network. 
+There are 7,294,705 learnable parameters in our final architecture. 
+All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. 
+Training concluded after \TODO{YYY} epochs.
 
 \begin{table}[h!]
 	\centering
@@ -52,7 +56,16 @@ We consider networks with varying input sizes, optimizers, loss functions, filte
 	\label{table:architecture}
 \end{table}
 
-\paragraph{Data Augmentation.}
+\paragraph{Training Augmentation.}
+
+Since our input is an existing segmentation of the EM images, there are very few training examples compared to per-pixel classifiers that a unique window for each voxel. 
+The Kasthuri dataset represents a region of brain over $\SI[product-units=single]{800}{\micro\meter}^3$ in volume and only yields \TODO{700} positive and \TODO{7000} negative examples.
+To avoid overfitting our deep networks, we apply the following augmentations on the example.
+During a single batch, we randomly select ten positive examples and ten negative examples. 
+With probability 0.5, the example is flipped across the $xy$-plane. 
+We then rotate the example by a random angle between $0$ and $360$ degrees using nearest neighbor interpolation. 
+The supplemental material contains experiments demonstrating that benefits of this augmentation strategy.
+We have 20,000 such examples per epoch.
 
 
 

@@ -26,38 +26,34 @@ Our algorithm improves the accuracy of the reconstruction for every dataset, red
 Scores closer to the origin are better for this metric, and in every instance our results are below the green curve.
 We see significant improvements on the Kasthuri datasets (VI split reduction of 27.7\% and 24.8\% on the training and testing datasets respectively) and more modest improvements on the FlyEM datasets (reduction of 15.2\% and 18.0\%). This is because the baseline segmentation algorithm for the isotropic FlyEM data (Sec.~\ref{sec:neuroproof}) performs much better, reducing the potential for improvements. Isotropic datasets are easier to segment using state-of-the-art region-based methods than anisotropic ones~\cite{plaza2014annotating}.
 
-Fig.~\ref{fig:positive-results} shows successful merges on the Kasthuri Vol. 2 dataset. Several of these examples combine multiple consecutive segments that span the volume.
+Fig.~\ref{fig:qualitative-results} shows successful merges on the Kasthuri Vol. 2 dataset. Several of these examples combine multiple consecutive segments that span the volume.
 In the third example we correct the over-segmentation of a dendrite and attached spine-necks.
-Fig.~\ref{fig:negative-results} shows typical failure cases of our method (red circles).
+Fig.~\ref{fig:qualitative-results} shows typical failure cases of our method (red circles).
 In two of these examples the algorithm correctly predicted several merges before a single error rendered the segment as wrong.
 In the third example (blue circle) a merge error in the initial segmentation propagated to our output.
 We now analyze how each major component of our method contributes to this final result.
 
 \begin{figure}[t]
-	\centering
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct1.png}
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct2.png}
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct3.png}
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct4.png}
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct5.png}
-	\caption{Segments of neurons that were correctly merged by our method.}
-	\label{fig:positive-results}
+	\begin{minipage}{0.45\linewidth}
+		\centering
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct1.png}
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct2.png}
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct3.png}
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct4.png}
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-correct5.png}
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\centering
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect1.png}
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect2.png}
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect3.png}
+		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect4.png}
+	\end{minipage}
+	\caption{(left) Segments of neurons that were correctly merged by our method. (right) Circles indicate areas of wrong merges by our method (red) or by the initial pixel-based segmentation (blue).}
+	\label{fig:qualitative-results}
 \end{figure}
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect1.png}
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect2.png}
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect3.png}
-	\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect4.png}
-	\caption{Circles indicate areas of wrong merges by our method (red) or by the initial pixel-based segmentation (blue).}
-	\label{fig:negative-results}
-\end{figure}
-
 
 \subsection{Graph Pruning Results}
-
-
 
 Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. This edge pruning is essential for the graph partitioning algorithm, which has a computational complexity dependence on the number of edges. The baseline algorithm considers all adjacent regions for merging. Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., 753 compared to 763). Our pruning heuristic removes at least $6\times$ the number of edges on all datasets, achieving a maximum removal rate of $20\times$.
 
@@ -101,6 +97,16 @@ In this example the small segment is carved from the larger segment in a locatio
 
 \subsection{CNN Classification Results}
 
+\paragraph{Inference Augmentation.}
+
+When computing the probability to merge two segments, we input the initial segment into our CNN as well as \TODO{XX} randomly rotated and flipped examples (in the same manner as training augmentation).
+This produces some additional increase in overall accuracy (Table ~\ref{table:inference-augmentation}). 
+The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
+
+
+
+\TODO{Add table for augmentation}
+
 Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.
 %We train our CNN using one of the Kasthuri volumes and test using the other three datasets.
 Since our CNN only takes as input a region of the label volume we can train on  anisotropic data and test on isotropic data.
@@ -139,3 +145,5 @@ Over the three testing datasets, applying a graph-based partitioning strategy re
 	\caption{Precision, recall, and accuracy changes between CNN only and CNN paired with graph-optimized reconstructions for the training and three test datasets. The combined method results in better precision and accuracy.}
 	\label{table:multicut}
 \end{table}
+
+\TODO{How does using lifted-multicut improve the results!}
