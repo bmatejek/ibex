@@ -238,7 +238,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, 
 
     # if the file exists do not continue
     if os.path.isfile(logfile) and starting_epoch == 1:
-        sys.stderr.write('Discovered {}, exiting'.format(logfile))
+        sys.stderr.write('Discovered {}, exiting\n'.format(logfile))
         sys.exit()
 
     # write out the network parameters to a file
@@ -276,10 +276,14 @@ def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, 
     
     if not starting_epoch == 1:
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
+    # start with a better baseline (pre-trained LCylinder)
+    if 'CREMI' in model_prefix:
+        LCylinder_model_prefix = model_prefix.replace('-CREMI', '')
+        model.load_weights('{}-best-acc.h5'.format(LCylinder_model_prefix))
 
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[:positive_cutoff], negative_candidates[:negative_cutoff], parameters, width),\
                     (examples_per_epoch / batch_size), epochs=2500, verbose=1, class_weight=weights, callbacks=callbacks,\
-                                  validation_data=SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[positive_cutoff:], negative_candidates[negative_cutoff:], parameters, width), validation_steps=(examples_per_epoch / batch_size))
+                                  validation_data=SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[positive_cutoff:], negative_candidates[negative_cutoff:], parameters, width), validation_steps=500 / batch_size)
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))

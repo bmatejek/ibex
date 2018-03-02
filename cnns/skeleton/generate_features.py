@@ -4,6 +4,7 @@ import random
 import struct
 from numba import jit
 import gc
+import time
 
 from ibex.utilities.constants import *
 from ibex.utilities import dataIO
@@ -72,6 +73,8 @@ def FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distan
 
 # generate features for this prefix
 def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endpoint_distance, topology, training_data):
+    start_time = time.time()
+
     # read in the relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
     gold = dataIO.ReadGoldData(prefix)
@@ -79,10 +82,10 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     zres, yres, xres = segmentation.shape
 
     # get the mapping from segmentation to gold
-    seg2gold_mapping = seg2gold.Mapping(segmentation, gold, low_threshold=0.50, high_threshold=0.80)
-    
+    seg2gold_mapping = seg2gold.Mapping(segmentation, gold, low_threshold=0.10, high_threshold=0.80)
+
     # remove small connceted components
-    segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold).astype(np.int64)
+    thresholded_segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold).astype(np.int64)
     max_label = np.amax(segmentation) + 1
     
     # get the grid size and the world resolution
@@ -94,41 +97,38 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     network_radii = np.int64((network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X]))
     
     # get all of the skeletons
-    if topology: skeletons, endpoints = dataIO.ReadTopologySkeletons(prefix, segmentation)
-    else: skeletons, _, endpoints = dataIO.ReadSWCSkeletons(prefix, segmentation)
+    if topology: skeletons, endpoints = dataIO.ReadTopologySkeletons(prefix, thresholded_segmentation)
+    else: skeletons, _, endpoints = dataIO.ReadSWCSkeletons(prefix, thresholded_segmentation)
+
+    # get the set of all considered pairs
+    endpoint_candidates = [set() for _ in range(len(endpoints))]
+    for ie, endpoint in enumerate(endpoints):
+        # extract the region around this endpoint
+        label = endpoint.label
+        centroid = endpoint.GridPoint()
+
+        # find the candidates near this endpoint
+        candidates = set()
+        candidates.add(0)
+        FindNeighboringCandidates(thresholded_segmentation, centroid, candidates, maximum_distance, network_distance, world_res)
+
+        for candidate in candidates:
+            # skip extracellular
+            if not candidate: continue
+            endpoint_candidates[ie].add(candidate)
 
     # get a mapping from the labels to indices in skeletons and endpoints
     label_to_index = [-1 for _ in range(max_label)]
     for ie, skeleton in enumerate(skeletons):
         label_to_index[skeleton.label] = ie 
 
+    # begin pruning the candidates based on the endpoints
+    endpoint_pairs = {}
 
-    # get the set of all pairs considered
-    endpoint_candidates = [set() for _ in range(len(endpoints))]
+    # find the smallest pair between endpoints
+    smallest_distances = (endpoint_distance + 1) * np.ones((max_label, max_label), dtype=np.float32)
+    midpoints = np.zeros((max_label, max_label, 3), dtype=np.int32)
 
-    # iterate through all skeleton endpoints
-    for ie, endpoint in enumerate(endpoints):
-        # extract the region around this endpoint
-        label = endpoint.label
-        centroid = endpoint.GridPoint()
-
-        # find the candidates from this endpoint
-        candidates = set()
-        candidates.add(0)
-        FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distance, network_distance, world_res)
-
-        for candidate in candidates:
-            if not candidate: continue
-            endpoint_candidates[ie].add(candidate)
-
-
-    ##################################
-    #### BEGIN PRUNING CANDIDATES ####
-    ##################################
-        
-    endpoint_pairs = set()
-
-    # iterate through all skeleton endpoints
     for ie, endpoint in enumerate(endpoints):
         # get the endpoint location
         label = endpoint.label
@@ -140,58 +140,45 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
                 deltas = endpoint.WorldPoint(world_res) - neighbor_endpoint.WorldPoint(world_res)
                 distance = math.sqrt(deltas[IB_Z] * deltas[IB_Z] + deltas[IB_Y] * deltas[IB_Y] + deltas[IB_X] * deltas[IB_X])
 
-                if distance < endpoint_distance:
-                    endpoint_pairs.add((endpoint, neighbor_endpoint))
+                if distance < smallest_distances[label, neighbor_label]:
+                    midpoints[label,neighbor_label] = (endpoint.GridPoint() + neighbor_endpoint.GridPoint()) / 2
+                    midpoints[neighbor_label,label] = (endpoint.GridPoint() + neighbor_endpoint.GridPoint()) / 2
+                    midpoint = midpoints[label,neighbor_label]
 
+                    # make sure the bounding box fits
+                    valid_location = True
+                    for dim in range(NDIMS):
+                        if midpoint[dim]-network_radii[dim] < 0: valid_location = False
+                        if midpoint[dim]+network_radii[dim] > grid_size[dim]: valid_location = False
+                    if not valid_location: continue
+            
+                    smallest_distances[label,neighbor_label] = distance
+                    smallest_distances[neighbor_label,label] = distance
 
-    # find the smallest pair between endpoints
-    smallest_distances = (endpoint_distance + 1) * np.ones((max_label, max_label), dtype=np.float32)
-    midpoints = np.zeros((max_label, max_label, 3), dtype=np.int32)
-    
-    # go through all the endpoint pairs and prune out the ones with bad angles
-    for endpoint_pair in endpoint_pairs:
-        # get the endpoints under consideration
-        endpoint_one = endpoint_pair[0]
-        endpoint_two = endpoint_pair[1]
-        label_one = endpoint_one.label
-        label_two = endpoint_two.label
-
-        midpoint = (endpoint_one.GridPoint() + endpoint_two.GridPoint()) / 2
-
-        # make sure the bounding box fits
-        valid_location = True
-        for dim in range(NDIMS):
-            if midpoint[dim]-network_radii[dim] < 0: valid_location = False
-            if midpoint[dim]+network_radii[dim] > grid_size[dim]: valid_location = False
-        if not valid_location: continue
-
-        # get the distance between the endpoints
-        deltas = endpoint_one.WorldPoint(world_res) - endpoint_two.WorldPoint(world_res)
-        distance = math.sqrt(deltas[IB_Z] * deltas[IB_Z] + deltas[IB_Y] * deltas[IB_Y] + deltas[IB_X] * deltas[IB_X])
-        if distance > smallest_distances[label_one,label_two]: continue
-
-        smallest_distances[label_one,label_two] = distance
-        smallest_distances[label_two,label_one] = distance
-        midpoints[label_one,label_two,:] = midpoint
-        midpoints[label_two,label_one,:] = midpoint
-
+                    # add to the dictionary
+                    endpoint_pairs[(label, neighbor_label)] = (endpoint, neighbor_endpoint)
+                    endpoint_pairs[(neighbor_label, label)] = (neighbor_endpoint, endpoint)
 
     # create list of candidates
     positive_candidates = []
     negative_candidates = []
     undetermined_candidates = []
 
-    for label_one in range(0, max_label):
-        for label_two in range(label_one + 1, max_label):
-            if smallest_distances[label_one,label_two] > endpoint_distance: continue
+    for match in endpoint_pairs:
+        endpoint_one = endpoint_pairs[match][0]
+        endpoint_two = endpoint_pairs[match][1]
 
-            ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
-            candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], ground_truth)
+        label_one = endpoint_one.label
+        label_two = endpoint_two.label
 
-            if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: undetermined_candidates.append(candidate)
-            elif ground_truth: positive_candidates.append(candidate)
-            else: negative_candidates.append(candidate)
+        if (label_one > label_two): continue
 
+        ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+        candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], ground_truth)
+    
+        if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: undetermined_candidates.append(candidate)
+        elif ground_truth: positive_candidates.append(candidate)
+        else: negative_candidates.append(candidate)
 
     # save positive and negative candidates separately
     positive_filename = 'features/skeleton/{}-{}-{}nm-{}nm-{}nm-positive.candidates'.format(prefix, threshold, maximum_distance, endpoint_distance, network_distance)
@@ -215,13 +202,9 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         label_one, label_two = candidate.labels
         unionfind.Union(union_find[label_one], union_find[label_two])
 
-    gc.collect()
-
     # create a mapping for the labels
     mapping = np.zeros(max_value, dtype=np.int64)
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
     segmentation = seg2seg.MapLabels(segmentation, mapping)
-    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
-    
-    gc.collect()
+    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=6.25, mask_ground_truth=True, filtersize=0)
