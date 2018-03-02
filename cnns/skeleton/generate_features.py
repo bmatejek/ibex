@@ -71,7 +71,7 @@ def FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distan
 
 
 # generate features for this prefix
-def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endpoint_distance, topology, training_data):
+def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endpoint_distance, topology):
     start_time = time.time()
 
     # read in the relevant information
