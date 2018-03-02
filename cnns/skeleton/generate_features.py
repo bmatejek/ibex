@@ -10,7 +10,7 @@ from ibex.utilities import dataIO
 from ibex.transforms import seg2seg, seg2gold
 from ibex.cnns.skeleton.util import SkeletonCandidate
 from ibex.data_structures import unionfind
-from ibex.evaluation import comparestacks
+#from ibex.evaluation import comparestacks
 
 
 

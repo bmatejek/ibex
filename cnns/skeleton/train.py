@@ -95,7 +95,7 @@ class PlotLosses(keras.callbacks.Callback):
         plt.plot(self.x, self.val_losses, label="val_loss")
         plt.legend()
         plt.show();
-        plt.savefig('{}-training-curve.png'.format(self.model_prefix))
+        plt.savefig('{}-training-curve-update.png'.format(self.model_prefix))
         plt.gcf().clear()
 
 
@@ -279,7 +279,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, 
 
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[:positive_cutoff], negative_candidates[:negative_cutoff], parameters, width),\
                     (examples_per_epoch / batch_size), epochs=2500, verbose=1, class_weight=weights, callbacks=callbacks,\
-                                  validation_data=SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[positive_cutoff:], negative_candidates[negative_cutoff:], parameters, width), validation_steps=(examples_per_epoch / batch_size))
+                                  validation_data=SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[positive_cutoff:], negative_candidates[negative_cutoff:], parameters, width), validation_steps=(examples_per_epoch / batch_size), initial_epoch=starting_epoch+1)
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))
