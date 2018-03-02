@@ -209,7 +209,7 @@ def SkeletonCandidateGenerator(prefix, network_distance, positive_candidates, ne
 
 
 
-def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width, parameters):
+def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width, parameters, pretrained_model=''):
     # identify convenient variables
     nchannels = width[0]
     starting_epoch = parameters['starting_epoch']
@@ -277,9 +277,8 @@ def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, 
     if not starting_epoch == 1:
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
     # start with a better baseline (pre-trained LCylinder)
-    if 'CREMI' in model_prefix:
-        LCylinder_model_prefix = model_prefix.replace('-CREMI', '')
-        model.load_weights('{}-best-acc.h5'.format(LCylinder_model_prefix))
+    if len(pretrained_model):
+        model.load_weights('{}-best-loss.h5'.format(pretrained_model))
 
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[:positive_cutoff], negative_candidates[:negative_cutoff], parameters, width),\
                     (examples_per_epoch / batch_size), epochs=2500, verbose=1, class_weight=weights, callbacks=callbacks,\
