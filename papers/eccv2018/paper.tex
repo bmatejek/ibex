@@ -31,12 +31,11 @@
 % \linenumbers
 \pagestyle{headings}
 \mainmatter
-\def\ECCV18SubNumber{***}  % Insert your submission number here
+\def\ECCV18SubNumber{534}  % Insert your submission number here
 
 \titlerunning{ECCV-18 submission ID \ECCV18SubNumber}
 
 \authorrunning{ECCV-18 submission ID \ECCV18SubNumber}
-
 \title{Graph-Based Neural Reconstruction from Skeletonized 3D Networks}
 
 \author{Anonymous ECCV submission}
@@ -48,16 +47,16 @@
 \maketitle
 
 \begin{abstract}
-Advancements in electron microscopy image acquisition have created massive connectomics datasets in the terabyte range that make manual reconstruction of neuronal structures infeasible.
-Current state-of-the-art automatic methods segment neural membranes at the pixel level followed by agglomeration methods to create full neuron reconstructions.
+Advancements in electron microscopy image acquisition have created connectomics datasets terabytes in size making manual reconstruction of neuronal structures infeasible.
+Current state-of-the-art automatic methods classify neural membranes at the pixel level followed by agglomeration methods to create full neuron reconstructions.
 However, these approaches widely neglect global geometric properties that are inherent in the graph structure of neural wiring diagrams.
-In this work, we follow bottom-up pixel-based reconstruction by a top-down graph-based method to more accurately approximate neural pathways.
+In this work, we follow pixel-based reconstruction by a global graph-based method to more accurately approximate neural pathways.
 We first generate skeletons in 3D from the neuron labels of the pixel-based segmentation.
-We then simplify this skeletonized 3D network into a 3D graph with nodes corresponding to labels from the segmentation and edges identifying potential locations of segmentation errors.
-We use a CNN classifier trained on ground truth data to generate edge weights on the 3D graph corresponding to error probabilities.
-We then apply a multicut algorithm to generate a partition on the graph that improves the final segmentation.
-Because the 3D graph is small and encodes top-down information our method is efficient and globally improves the neural reconstruction.
-We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average split variation of information improvement of 19.3\%.
+Next, we simplify this skeletonized 3D network into a graph with nodes corresponding to labels from the segmentation and edges identifying potential locations of split errors.
+A CNN classifier produces edge weights for the graph corresponding to the probability of error. 
+We formulate the graph into a multicut partitioning problem to improve the final segmentation.
+Since the 3D graph is small and encodes top-down information our method is efficient and globally improves the neural reconstruction.
+We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average split variation of information improvement of \TODO{XX}\%.
 \keywords{connectomics, skeletonization, deep learning}
 \end{abstract}
 

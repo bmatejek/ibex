@@ -99,6 +99,7 @@ In this example the small segment is carved from the larger segment in a locatio
 
 \paragraph{Inference Augmentation.}
 
+Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d}.
 When computing the probability to merge two segments, we input the initial segment into our CNN as well as \TODO{XX} randomly rotated and flipped examples (in the same manner as training augmentation).
 This produces some additional increase in overall accuracy (Table ~\ref{table:inference-augmentation}). 
 The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
