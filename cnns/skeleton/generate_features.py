@@ -80,9 +80,6 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     assert (segmentation.shape == gold.shape)
     zres, yres, xres = segmentation.shape
 
-    # get the mapping from segmentation to gold
-    seg2gold_mapping = seg2gold.Mapping(segmentation, gold, low_threshold=0.10, high_threshold=0.80)
-
     # remove small connceted components
     thresholded_segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold).astype(np.int64)
     max_label = np.amax(segmentation) + 1
@@ -140,9 +137,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
                 distance = math.sqrt(deltas[IB_Z] * deltas[IB_Z] + deltas[IB_Y] * deltas[IB_Y] + deltas[IB_X] * deltas[IB_X])
 
                 if distance < smallest_distances[label, neighbor_label]:
-                    midpoints[label,neighbor_label] = (endpoint.GridPoint() + neighbor_endpoint.GridPoint()) / 2
-                    midpoints[neighbor_label,label] = (endpoint.GridPoint() + neighbor_endpoint.GridPoint()) / 2
-                    midpoint = midpoints[label,neighbor_label]
+                    midpoint = (endpoint.GridPoint() + neighbor_endpoint.GridPoint()) / 2
 
                     # make sure the bounding box fits
                     valid_location = True
@@ -158,12 +153,16 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
                     endpoint_pairs[(label, neighbor_label)] = (endpoint, neighbor_endpoint)
                     endpoint_pairs[(neighbor_label, label)] = (neighbor_endpoint, endpoint)
 
+                    midpoints[label,neighbor_label] = midpoint
+                    midpoints[neighbor_label,label] = midpoint
+
     # create list of candidates
     positive_candidates = []
     negative_candidates = []
     undetermined_candidates = []
 
-    for match in endpoint_pairs:
+    for ie, match in enumerate(endpoint_pairs):
+        if (ie % 10 == 0): print '{}/{}'.format(ie, len(endpoint_pairs))
         endpoint_one = endpoint_pairs[match][0]
         endpoint_two = endpoint_pairs[match][1]
 
@@ -172,10 +171,21 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
 
         if (label_one > label_two): continue
 
-        ground_truth = (seg2gold_mapping[label_one] == seg2gold_mapping[label_two])
+        # extract a bounding box around this midpoint
+        midz, midy, midx = midpoints[label_one,label_two]
+
+        extracted_segmentation = segmentation[midz-network_radii[IB_Z]:midz+network_radii[IB_Z],midy-network_radii[IB_Y]:midy+network_radii[IB_Y],midx-network_radii[IB_X]:midx+network_radii[IB_X]]
+        extracted_gold = gold[midz-network_radii[IB_Z]:midz+network_radii[IB_Z],midy-network_radii[IB_Y]:midy+network_radii[IB_Y],midx-network_radii[IB_X]:midx+network_radii[IB_X]]
+
+        extracted_seg2gold_mapping = seg2gold.Mapping(extracted_segmentation, extracted_gold, low_threshold=0.1, high_threshold=0.40)
+        gold_one = extracted_seg2gold_mapping[label_one]
+        gold_two = extracted_seg2gold_mapping[label_two]
+
+        ground_truth = (gold_one == gold_two)
+
         candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], ground_truth)
-    
-        if not seg2gold_mapping[label_one] or not seg2gold_mapping[label_two]: undetermined_candidates.append(candidate)
+
+        if not extracted_seg2gold_mapping[label_one] or not extracted_seg2gold_mapping[label_two]: undetermined_candidates.append(candidate)
         elif ground_truth: positive_candidates.append(candidate)
         else: negative_candidates.append(candidate)
 
@@ -192,22 +202,20 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     print 'Negative candidates: {}'.format(len(negative_candidates))
     print 'Undetermined candidates: {}'.format(len(undetermined_candidates))
 
-    # # perform some tests to see how well this method can do
-    # max_value = np.amax(segmentation) + 1
-    # union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
+    # perform some tests to see how well this method can do
+    max_value = np.amax(segmentation) + 1
+    union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
 
-    # # iterate over all collapsed edges
-    # for candidate in positive_candidates:
-    #     label_one, label_two = candidate.labels
-    #     unionfind.Union(union_find[label_one], union_find[label_two])
+    # iterate over all collapsed edges
+    for candidate in positive_candidates:
+        label_one, label_two = candidate.labels
+        unionfind.Union(union_find[label_one], union_find[label_two])
     
-    # comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
+    # create a mapping for the labels
+    mapping = np.zeros(max_value, dtype=np.int64)
+    for iv in range(max_value):
+        mapping[iv] = unionfind.Find(union_find[iv]).label
+    segmentation = seg2seg.MapLabels(segmentation, mapping)
 
-    # # create a mapping for the labels
-    # mapping = np.zeros(max_value, dtype=np.int64)
-    # for iv in range(max_value):
-    #     mapping[iv] = unionfind.Find(union_find[iv]).label
-    # segmentation = seg2seg.MapLabels(segmentation, mapping)
-
-    # comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
+    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
 
