@@ -95,7 +95,7 @@ class PlotLosses(keras.callbacks.Callback):
         plt.plot(self.x, self.val_losses, label="val_loss")
         plt.legend()
         plt.show();
-        plt.savefig('{}-training-curve-update.png'.format(self.model_prefix))
+        plt.savefig('{}-training-curve-update-after-restart.png'.format(self.model_prefix))
         plt.gcf().clear()
 
 
