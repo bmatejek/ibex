@@ -207,4 +207,4 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         mapping[iv] = unionfind.Find(union_find[iv]).label
     segmentation = seg2seg.MapLabels(segmentation, mapping)
 
-    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=6.25, mask_ground_truth=True, filtersize=0)
+    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=5000)
