@@ -24,10 +24,14 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, width, augm
     index = 0
     
     start_time = time.time()
+    continue_printing = True
+
     # continue indefinitely
     while True:
         # this prevents overflow on the queue - the repeated samples are never used
-        if index >= len(candidates): index = 0
+        if index >= len(candidates): 
+            continue_printing = False
+            index = 0
 
         # get the current candidate
         candidate = candidates[index]
@@ -35,7 +39,7 @@ def SkeletonCandidateGenerator(prefix, network_distance, candidates, width, augm
         # increment the index
         index += 1
 
-        if not (index % (len(candidates) / 10)): 
+        if continue_printing and not (index % (len(candidates) / 10)): 
             print '{}/{}: {}'.format(index, len(candidates), time.time() - start_time)
 
         # rotation equals 0
