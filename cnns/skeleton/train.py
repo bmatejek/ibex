@@ -274,7 +274,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, 
     json_string = model.to_json()
     open('{}.json'.format(model_prefix), 'w').write(json_string)
     
-    if not starting_epoch == 1:
+    if starting_epoch:
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
     # start with a better baseline (pre-trained LCylinder)
     if len(pretrained_model):
@@ -282,7 +282,8 @@ def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, 
 
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[:positive_cutoff], negative_candidates[:negative_cutoff], parameters, width),\
                     (examples_per_epoch / batch_size), epochs=2500, verbose=1, class_weight=weights, callbacks=callbacks,\
-                                  validation_data=SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[positive_cutoff:], negative_candidates[negative_cutoff:], parameters, width), validation_steps=(examples_per_epoch / batch_size), initial_epoch=starting_epoch+1)
+                    validation_data=SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[positive_cutoff:], negative_candidates[negative_cutoff:], parameters, width), \
+                    validation_steps=(examples_per_epoch / batch_size), initial_epoch=starting_epoch)
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))

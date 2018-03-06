@@ -192,19 +192,21 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     print 'Negative candidates: {}'.format(len(negative_candidates))
     print 'Undetermined candidates: {}'.format(len(undetermined_candidates))
 
-    # perform some tests to see how well this method can do
-    max_value = np.amax(segmentation) + 1
-    union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
+    # # perform some tests to see how well this method can do
+    # max_value = np.amax(segmentation) + 1
+    # union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
 
-    # iterate over all collapsed edges
-    for candidate in positive_candidates:
-        label_one, label_two = candidate.labels
-        unionfind.Union(union_find[label_one], union_find[label_two])
+    # # iterate over all collapsed edges
+    # for candidate in positive_candidates:
+    #     label_one, label_two = candidate.labels
+    #     unionfind.Union(union_find[label_one], union_find[label_two])
+    
+    # comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
 
-    # create a mapping for the labels
-    mapping = np.zeros(max_value, dtype=np.int64)
-    for iv in range(max_value):
-        mapping[iv] = unionfind.Find(union_find[iv]).label
-    segmentation = seg2seg.MapLabels(segmentation, mapping)
+    # # create a mapping for the labels
+    # mapping = np.zeros(max_value, dtype=np.int64)
+    # for iv in range(max_value):
+    #     mapping[iv] = unionfind.Find(union_find[iv]).label
+    # segmentation = seg2seg.MapLabels(segmentation, mapping)
 
-    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=6.25, mask_ground_truth=True, filtersize=0)
+    # comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
