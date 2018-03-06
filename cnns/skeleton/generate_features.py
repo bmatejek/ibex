@@ -162,7 +162,6 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     undetermined_candidates = []
 
     for ie, match in enumerate(endpoint_pairs):
-        if (ie % 10 == 0): print '{}/{}'.format(ie, len(endpoint_pairs))
         endpoint_one = endpoint_pairs[match][0]
         endpoint_two = endpoint_pairs[match][1]
 
