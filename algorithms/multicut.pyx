@@ -64,12 +64,12 @@ def Multicut(prefix, candidates, edge_weights, beta, threshold, heuristic):
     segmentation = CollapseGraph(segmentation, candidates, collapsed_edges, edge_weights)
    
     # evaluate before and after multicut
-    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
+    #comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
 
 
 
 # function ro run multicut algorithm
-def RunMulticut(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, beta, heuristic):
+def RunMulticut(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, beta, heuristic=1):
     # read the candidates
     candidates, edge_weights = RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance)
 

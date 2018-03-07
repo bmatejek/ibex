@@ -28,9 +28,10 @@ unsigned char *CppLiftedMulticut(unsigned long nvertices, unsigned long nedges, 
     std::vector<double> weights(lifted_graph.numberOfEdges());
 
     for (unsigned long iv1 = 0; iv1 < nvertices; ++iv1) {
-        for (unsigned long iv2 = 0; iv2 < nvertices; ++iv2) {
+        for (unsigned long iv2 = iv1 + 1; iv2 < nvertices; ++iv2) {
             double probability = lifted_weights[iv1 * nvertices + iv2];
-            if (probability < 1e-6) weights[lifted_graph.findEdge(iv1, iv2).second] = -100;
+            if (probability < 0.0001) probability = 0.0001;
+            if (probability > 0.9999) probability = 0.9999;
             else weights[lifted_graph.findEdge(iv1, iv2).second] = log(probability / (1.0 - probability)) + log((1.0 - beta) / beta);
         }
     }

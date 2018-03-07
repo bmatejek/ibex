@@ -27,7 +27,7 @@ def GenerateLiftedEdges(vertex_ones, vertex_twos, edge_weights, nvertices):
         updated_edge_weights[ie] = -math.log(edge_weights[ie])
 
     sparse_graph = scipy.sparse.coo_matrix((updated_edge_weights, (vertex_ones, vertex_twos)), shape=(nvertices, nvertices))
-    dijkstra_distance = scipy.sparse.csgraph.dijkstra(sparse_graph)
+    dijkstra_distance = scipy.sparse.csgraph.dijkstra(sparse_graph, directed=False)
 
     return np.exp(-1 * dijkstra_distance)
 
@@ -39,11 +39,8 @@ def LiftedMulticut(prefix, candidates, edge_weights, beta, threshold, heuristic)
     segmentation = dataIO.ReadSegmentationData(prefix)
     gold = dataIO.ReadGoldData(prefix)
 
-    # get a forward and reverse mapping
-    forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
-
     # get the number of vertices and edges
-    nvertices = reverse_mapping.size
+    nvertices = np.amax(segmentation) + 1
     nedges = edge_weights.size
 
     # convert the candidate labels to vertices
@@ -53,8 +50,8 @@ def LiftedMulticut(prefix, candidates, edge_weights, beta, threshold, heuristic)
     # populate vertex arrays
     for iv, candidate in enumerate(candidates):
         label_one, label_two = candidate.labels
-        vertex_ones[iv] = forward_mapping[label_one]
-        vertex_twos[iv] = forward_mapping[label_two]
+        vertex_ones[iv] = label_one
+        vertex_twos[iv] = label_two
 
     # convert to c++ arrays
     cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_ones = np.ascontiguousarray(vertex_ones, dtype=ctypes.c_uint64)
@@ -87,7 +84,7 @@ def LiftedMulticut(prefix, candidates, edge_weights, beta, threshold, heuristic)
 
 
 # function ro run multicut algorithm
-def RunLiftedMulticut(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, beta, heuristic):
+def RunLiftedMulticut(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, beta, heuristic=1):
     # read the candidates
     candidates, edge_weights = RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance)
 
