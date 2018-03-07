@@ -34,6 +34,7 @@
 *~
 build/
 algorithms/multicut.cpp
+algorithms/lifted_multicut.cpp
 evaluation/comparestacks.cpp
 skeletonization/teaser_skeletons.cpp
 transforms/distance.cpp
