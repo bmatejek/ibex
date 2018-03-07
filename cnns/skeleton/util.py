@@ -93,15 +93,6 @@ def ExtractFeature(segmentation, candidate, width, radii, augment=True):
     angle = random.uniform(0, 360)
     example = scipy.ndimage.interpolation.rotate(example, angle, axes=(IB_X + 2, IB_Y + 2), reshape=False, order=0)
 
-    # # flip x axis? -> add 2 because of extra filler channel
-    # if rotation % 2: example = np.flip(example, IB_X + 2)
-    # # flip z axis?
-    # if (rotation / 2) % 2: example = np.flip(example, IB_Z + 2)
-    
-    # # rotate in y?
-    # yrotation = rotation / 4
-    # example = np.rot90(example, k=yrotation, axes=(IB_X + 2, IB_Y + 2))
-
     return example
 
 

@@ -2,6 +2,7 @@ import numpy as np
 import time
 import struct
 import random
+import os
 from numba import jit
 
 from keras.models import model_from_json
@@ -61,10 +62,10 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
     ncandidates = len(candidates)
 
     # compute augmentations
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, False), ncandidates, max_q_size=2000)
+    probabilities = np.zeros((ncandidates, 1), dtype=np.float64)
     for _ in range(naugmentations):
         probabilities += model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, True), ncandidates, max_q_size=2000)
-    probabilities /= (1 + naugmentations)
+    probabilities /= (naugmentations)
     predictions = Prob2Pred(np.squeeze(probabilities))
 
     # create an array of labels
@@ -83,23 +84,8 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
             fd.write(struct.pack('d', probability))
 
 
-@jit(nopython=True)
-def ComparePredictions(previous_predictions, current_predictions, labels):
-    ncandidates = current_predictions.size
-    ncorrections = 0
-    nerrors = 0
-    
-    for iv in range(ncandidates):
-        if current_predictions[iv] == previous_predictions[iv]: continue
-
-        if current_predictions[iv] == labels[iv]: ncorrections += 1
-        else: nerrors += 1
-
-    return ncorrections, nerrors
-
-
         
-def AnalyzeAugmentation(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width):
+def AnalyzeAugmentation(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width, max_augmentations):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
@@ -115,30 +101,23 @@ def AnalyzeAugmentation(prefix, model_prefix, threshold, maximum_distance, endpo
     for ie, candidate in enumerate(candidates):
         labels[ie] = candidate.ground_truth
     
+    # create the output directory if it does not exist
+    model_name = model_prefix.split('/')[2]
+    directory = 'plots/test-augmentations/{}'.format(model_name)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     # compute augmentations
-    probabilities = model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, False), ncandidates, max_q_size=800)
-    first_predictions = Prob2Pred(np.squeeze(probabilities))
-    for iv in range(100):
-        # get the predictions from the previous probabilities
-        previous_predictions = Prob2Pred(np.squeeze(probabilities) / (iv + 1))
+    probabilities = np.zeros((ncandidates, 1), dtype=np.float64)
+    for iv in range(max_augmentations):
+        print 'Iteration No. {}'.format(iv)
+
         # update the probabilities
         probabilities += model.predict_generator(SkeletonCandidateGenerator(prefix, network_distance, candidates, width, True), ncandidates, max_q_size=800)
-        # get the predictions after this round
-        current_predictions = Prob2Pred(np.squeeze(probabilities) / (iv + 2))
         
-        # find which predictions are different
-        ncorrections, nerrors = ComparePredictions(previous_predictions, current_predictions, labels)
-
-        print 'Augmentation No. {}'.format(iv)
-        print '  From Previous Iteration'
-        print '    Corrections: {}'.format(ncorrections)
-        print '    Errors: {}'.format(nerrors)
-
-        ncorrections, nerrors = ComparePredictions(first_predictions, current_predictions, labels)
-
-        print 'Augmentation No. {}'.format(iv)
-        print '  From First Iteration'
-        print '    Corrections: {}'.format(ncorrections)
-        print '    Errors: {}'.format(nerrors)
-
+        # get the predictions from the previous probabilities
+        predictions = Prob2Pred(np.squeeze(probabilities) / (iv + 1))
         
+        # write the precision and recall
+        output_filename = '{}/{}-{:04d}.aug'.format(directory, prefix, iv)
+        PrecisionAndRecall(labels, predictions, output_filename)
