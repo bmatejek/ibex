@@ -237,7 +237,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, 
     logfile = '{}.log'.format(model_prefix)
 
     # if the file exists do not continue
-    if os.path.isfile(logfile) and starting_epoch == 1:
+    if os.path.isfile(logfile) and not starting_epoch:
         sys.stderr.write('Discovered {}, exiting\n'.format(logfile))
         sys.exit()
 
