@@ -12,14 +12,14 @@ def DownsampleData(data, ratio=(1, 2, 2)):
     (zres, yres, xres) = data.shape
 
     # create an empty array for downsampling
-    (down_zres, down_yres, down_xres) = (zres / ratio[IB_Z], yres / ratio[IB_Y], xres / ratio[IB_X])
+    (down_zres, down_yres, down_xres) = (int(zres / ratio[IB_Z]), int(yres / ratio[IB_Y]), int(xres / ratio[IB_X]))
     downsampled_data = np.zeros((down_zres, down_yres, down_xres), dtype=data.dtype)
     
     # fill in the entries of the array
     for iz in range(down_zres):
         for iy in range(down_yres):
             for ix in range(down_xres):
-                downsampled_data[iz,iy,ix] = data[iz * ratio[0], iy * ratio[1], ix * ratio[2]]
+                downsampled_data[iz,iy,ix] = data[int(iz * ratio[IB_Z]), int(iy * ratio[IB_Y]), int(ix * ratio[IB_X])]
 
     return downsampled_data
 
