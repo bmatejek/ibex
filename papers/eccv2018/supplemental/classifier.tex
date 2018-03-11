@@ -1,6 +1,35 @@
 \section{Merge Classification}
 
-\subsection{Architecture}
+\subsection{Network Architecture}
+
+We tested various architectures before deciding on the one we present in the paper. 
+Each architecture uses VGG-style blocks (i.e. two convolutions of size $3\times3\times3$ followed by a max-pooling layer)~\cite{chatfield2014return}.
+For the first two layers the max-pooling is anisotropic with reduction only in the $x$ and $y$ dimensions. 
+The number of filters starts at 16 for the first block and doubles in each subsequent block.
+Our architectures vary in the input size and number of layers. 
+In all instances we extract a \SI{1200}{\nano\meter^3} region of interest and map the extracted voxels to the given input size. 
+These input sizes correspond to specific output sizes from the last VGG block.
+
+\begin{table}
+	\scriptsize
+	\centering
+	\begin{tabular}{c c c c c c c}
+		\hline
+		\textbf{Depth} & \textbf{Input Size} & \textbf{No. Parameters} & \textbf{Output Size} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} \\ \hline
+		      3        & (3, 18, 52, 52)     & 1,101,553               & (64, 3, 3, 3)        &                   &                    &  \\
+		      3        & (3, 20, 60, 60)     & 2,313,969               & (64, 4, 4, 4)        &                   &                    &  \\
+		      3        & (3, 22, 68, 68)     & 4,312,817               & (64, 5, 5, 5)        &                   &                    &  \\
+		      3        & (3, 24, 76, 76)     & 7,294,705               & (64, 6, 6, 6)        &                   &                    &  \\
+		      3        & (3, 26, 84, 84)     & 11,456,241              & (64, 7, 7, 8)        &                   &                    &  \\
+		      3        & (3, 28, 92, 92)     & 16,994,033              & (64, 8, 7, 8)        &                   &                    &  \\
+		      3        & (3, 30, 100, 100)   & 24,104,689              & (64, 9, 9, 9)        &                   &                    &  \\
+		      4        & (3, 28, 92, 92)     & 1,404,913               & (128, 2, 2, 2)       &                   &                    &  \\
+		      4        & (3, 32, 108, 108)   & 2,650,097               & (128, 3, 3, 3)       &                   &                    &  \\ \hline
+	\end{tabular}
+	\caption{The results of various network architectures trained on the Kasthuri data.}
+	\label{table:input-size}
+\end{table}
+
 
 \subsection{Training Augmentation}
 
