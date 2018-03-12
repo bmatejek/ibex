@@ -57,6 +57,7 @@ This removed on average \TODO{XX}\% of the segments in our  datasets (Sec.~\ref{
 \end{figure}
 
 A typical approach for generating edges produces one between all adjacent segments. Two segments $l_1$ and $l_2$ are considered adjacent if there is a pair of adjacent voxels with one labeled $l_1$ and the other labeled $l_2$.
+\TODO{maybe not mentioning neuroproof, but mean agglomeration and waterz}
 For example, pixel-based agglomeration methods such as NeuroProof~\cite{10.1371/journal.pone.0125825} and GALA~\cite{nunez2014graph} consider all pairs of adjacent segments for merging.
 However, this method produces too many edges in the graph for graph-based optimization approaches. 
 We identify a smaller number of pairs of segments to consider as graph edges using the following approach.
@@ -124,7 +125,7 @@ We employ dropouts of $0.2$ after every pooling layer and the first dense layer,
 We discuss all other network parameters in Sec.~\ref{sec:network-parameters}.
 
 \subsection{Graph Partitioning}
-
+\TODO{the subsection name isn't intuitive for reviewers to link to reduce split error}
 After constructing the 3D graph we seek to partition the graph into labels where every label corresponds to a neuronal process. 
 We formulate this graph partitioning problem as a multicut problem.
 There are two primary benefits to using a multicut formulation. 

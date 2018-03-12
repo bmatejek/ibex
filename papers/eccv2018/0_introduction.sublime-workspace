@@ -1,0 +1,621 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"if",
+				"ifmain\tif __name__ == '__main__'"
+			],
+			[
+				"com",
+				"compose-maps"
+			],
+			[
+				"t",
+				"theta"
+			],
+			[
+				"ome",
+				"omega_r"
+			],
+			[
+				"ball",
+				"ballRadius"
+			],
+			[
+				"get_ob",
+				"get_object_position"
+			],
+			[
+				"set_tr",
+				"set_trace"
+			],
+			[
+				"mass",
+				"mass_"
+			],
+			[
+				"ran",
+				"random"
+			],
+			[
+				"pa",
+				"pause"
+			],
+			[
+				"docum",
+				"document\tDocument"
+			],
+			[
+				"cosn",
+				"console.log('$0');"
+			],
+			[
+				"le",
+				"length\tString"
+			],
+			[
+				"cons",
+				"console.log('$0');"
+			],
+			[
+				"forEac",
+				"forEach(${0:callback})\tArray"
+			],
+			[
+				"l",
+				"allTheLetters"
+			],
+			[
+				"subst",
+				"substring(${0:indexA})\tString"
+			],
+			[
+				"port",
+				"portfolio"
+			],
+			[
+				"ga",
+				"galleryPairs"
+			],
+			[
+				"gall",
+				"galleryName"
+			],
+			[
+				"My",
+				"MyWay"
+			],
+			[
+				"ex",
+				"exports"
+			],
+			[
+				"desc",
+				"description"
+			],
+			[
+				"quer",
+				"query_err"
+			],
+			[
+				"ser",
+				"search"
+			],
+			[
+				"get",
+				"getElementById"
+			],
+			[
+				"re",
+				"result1"
+			],
+			[
+				"res",
+				"result2"
+			],
+			[
+				"Ar",
+				"Artwork"
+			],
+			[
+				"A",
+				"Artwork"
+			],
+			[
+				"ar",
+				"artwork"
+			],
+			[
+				"galle",
+				"galleries"
+			],
+			[
+				"con",
+				"console"
+			],
+			[
+				"gal",
+				"gallery_ref"
+			],
+			[
+				"find",
+				"findOne"
+			],
+			[
+				"acc",
+				"accessNumber"
+			],
+			[
+				"val",
+				"valid_filenames"
+			],
+			[
+				"gallery",
+				"galleryObj"
+			],
+			[
+				"galler",
+				"galleryObj"
+			],
+			[
+				"line",
+				"line_seg"
+			],
+			[
+				"wa",
+				"way_edges"
+			],
+			[
+				"mapname",
+				"map_name"
+			],
+			[
+				"ed",
+				"edge_pair"
+			],
+			[
+				"node",
+				"node2"
+			],
+			[
+				"nod",
+				"node1"
+			],
+			[
+				"mAdd",
+				"mAddNode"
+			],
+			[
+				"server",
+				"server_fn"
+			],
+			[
+				"pro",
+				"process"
+			],
+			[
+				"req",
+				"require"
+			],
+			[
+				"foll",
+				"followings"
+			],
+			[
+				"user",
+				"user_id"
+			],
+			[
+				"in",
+				"index"
+			],
+			[
+				"fo",
+				"followers"
+			],
+			[
+				"fol",
+				"following"
+			],
+			[
+				"p",
+				"param"
+			],
+			[
+				"twet",
+				"tweet_id"
+			],
+			[
+				"show",
+				"show_page"
+			],
+			[
+				"ind",
+				"indexOf"
+			],
+			[
+				"us",
+				"userId"
+			],
+			[
+				"u",
+				"userId"
+			],
+			[
+				"gete",
+				"getElementsByClassName"
+			],
+			[
+				"tw",
+				"tweets"
+			],
+			[
+				"ren",
+				"render_pix"
+			],
+			[
+				"selec",
+				"select_init"
+			],
+			[
+				"run",
+				"RUNNING"
+			],
+			[
+				"lo",
+				"log"
+			],
+			[
+				"NU",
+				"NUM_Y"
+			],
+			[
+				"NUM",
+				"NUM_X"
+			],
+			[
+				"update",
+				"update_ind"
+			],
+			[
+				"St",
+				"STATE"
+			],
+			[
+				"fill",
+				"fill2D"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				":w",
+				":w - Save"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Package Control: Remove Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				":",
+				":w - Save"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"pa",
+				"Package Control: Install Package"
+			],
+			[
+				"pac",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 476.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/Stephen/Desktop/untitled",
+		"/Users/Stephen/Desktop/Session I: Sat afternoon",
+		"/Users/Stephen/Desktop/HP-comments",
+		"/Users/Stephen/Downloads/BMVC2018_sty_review/bmvc_review.tex",
+		"/Users/Stephen/Desktop/2018.02.23",
+		"/Users/Stephen/Desktop/SPRING",
+		"/Volumes/Life/em/IDM.c",
+		"/Users/Stephen/Desktop/2018.02.02",
+		"/Users/Stephen/Desktop/2018Spring/passport/online.txt",
+		"/Users/Stephen/Desktop/wakeword_rnn_demo-master/train.py",
+		"/Users/Stephen/Desktop/wakeword_rnn_demo-master/input_pipe.py",
+		"/Users/Stephen/Code/VisionLib/Donglai/Util/io/scol2im.m",
+		"/Users/Stephen/Downloads/DEMO/README",
+		"/Users/Stephen/Soft/anaconda/pkgs/tensorflow-1.1.0-np112py27_0/lib/python2.7/site-packages/tensorflow/include/Eigen/src/SuperLUSupport/SuperLUSupport.h",
+		"/Volumes/Life/em/lib/test_assets.jl",
+		"/Users/Stephen/Desktop/2017.01.19",
+		"/Users/Stephen/Desktop/01.12",
+		"/Users/Stephen/Desktop/01.05",
+		"/Users/Stephen/Desktop/brian",
+		"/Users/Stephen/Desktop/2017Fall/greencard/recomm/pp",
+		"/Volumes/Life/Dropbox (Personal)/OS/sys_config/.bashrc_mac",
+		"/Users/Stephen/Desktop/ht-seeker",
+		"/Users/Stephen/Desktop/Hyejin smn",
+		"/Volumes/Life/em/result/data_1130/jwr/data.htm",
+		"/Users/Stephen/Desktop/tg_msg",
+		"/Volumes/Life/Dropbox (Personal)/Apps/ShareLaTeX/[cvpr2018]LearningTheArrowOfTime/supp/experiment_billiard.tex",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/video_clip/flow/teaser/tmp.m",
+		"/Users/Stephen/Desktop/gg",
+		"/Volumes/Life/Dropbox (Personal)/Apps/ShareLaTeX/[cvpr2018]LearningTheArrowOfTime/introduction.tex",
+		"/Volumes/Life/Dropbox (Personal)/Apps/ShareLaTeX/[cvpr2018]LearningTheArrowOfTime/bib.bib",
+		"/Volumes/Life/Dropbox (Personal)/Apps/ShareLaTeX/[cvpr2018]LearningTheArrowOfTime/previous_work.tex",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/figure/cvpr18/hist/do_hist.py",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/figure/cvpr18/tsne/sel_kinetic.txt",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/figure/cvpr18/tsne/do_k.sh",
+		"/Volumes/Life/Dropbox (Personal)/research/proj/LearnTarrow/figure/cvpr18/hist/acc.csv",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/figure/cvpr18/do_crop.m",
+		"/Users/Stephen/Desktop/cvpr18/ibex/papers/cvpr2018/paper.tex",
+		"/Users/Stephen/Desktop/cvpr18/ibex/papers/cvpr2018/0_introduction.tex",
+		"/Users/Stephen/Desktop/cvpr18/ibex/papers/cvpr2018/3_evaluation.tex",
+		"/Users/Stephen/Desktop/cvpr18/ibex/papers/cvpr2018/1_related_work.tex",
+		"/Users/Stephen/Desktop/cvpr18/ibex/papers/cvpr2018/2_method.tex",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/figure/cvpr18/tsne/flickr_Tue/sel.txt",
+		"/Users/Stephen/Downloads/hmap/sel.txt",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/figure/cvpr18/teaser/do_crop.m",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/webTime/vips_java/www/T_im_seg.htm",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/figure/cvpr18/teaser/crop.m",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/webTime/code/T_seg.m",
+		"/Users/Stephen/Desktop/flickr_pick",
+		"/Users/Stephen/Desktop/2017.10.27",
+		"/Users/Stephen/Downloads/the-lord-of-the-rings-the-fellowship-of-the-ring-yify-english.srt",
+		"/Users/Stephen/Downloads/bluewhitered/bluewhitered.m",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/web_cnns/segment_test/T_seg.m",
+		"/Volumes/Life/Dropbox (Personal)/mylink.url",
+		"/Volumes/Life/Dropbox (Personal)/aa.url",
+		"/Volumes/Life/Dropbox (Personal)/Christ/Doc/2017_Gfest/GF/2017 ISM Thanksgiving Talent Shows Trailer.mp4",
+		"/Volumes/Life/Dropbox (Personal)/Christ/misc/Video/ChristianFest_SongFest/qsh.txt",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/review_rebuttal/iccv17_rebuttal.txt",
+		"/Volumes/Life/Dropbox (Personal)/Research/Proj/LearnTarrow/review_rebuttal/iccv_rebuttal.txt",
+		"/Volumes/Life/Dropbox (Personal)/myfile.txt",
+		"/Users/Stephen/Desktop/script_slide.txt",
+		"/Volumes/NO NAME/script.txt",
+		"/Volumes/NO NAME/SlideShow/script_part1.txt",
+		"/Volumes/Life/Dropbox (Personal)/Christ/Doc/2017_Gfest/GF0922/filename.txt",
+		"/Volumes/Life/Dropbox (Personal)/mylink.txt",
+		"/Users/Stephen/Desktop/a.txt",
+		"/Volumes/Life/Dropbox (Personal)/a.txt",
+		"/Users/Stephen/Desktop/testimony_draft",
+		"/Users/Stephen/Desktop/ha.m",
+		"/Users/Stephen/Desktop/3840x2160",
+		"/Volumes/Life/Dropbox (Personal)/Christ/misc/Video/RaceOfLifeTime2017/subtitle/script.txt",
+		"/Users/Stephen/Desktop/txt__j.txt",
+		"/Users/Stephen/Desktop/0827_hm",
+		"/Users/Stephen/Desktop/script.txt",
+		"/Users/Stephen/Desktop/https:::static1.squarespace.com:static:52e0079fe4b",
+		"/Users/Stephen/Dropbox (Personal)/a.txt",
+		"/Users/Stephen/Desktop/v3.txt",
+		"/Users/Stephen/Desktop/harvard",
+		"/Users/Stephen/Desktop/1. intro",
+		"/Users/Stephen/Desktop/email.txt",
+		"/Users/Stephen/Desktop/FNBS_0727",
+		"/Users/Stephen/Desktop/untitled2",
+		"/Users/Stephen/Desktop/Mark 8:27-9:1",
+		"/Users/Stephen/Desktop/a",
+		"/Users/Stephen/Desktop/v1.txt",
+		"/Users/Stephen/Desktop/v2.txt",
+		"/Users/Stephen/Desktop/em/T_0727.m",
+		"/Users/Stephen/Dropbox (Personal)/OS/sys_install/linux_2017.txt",
+		"/Users/Stephen/Desktop/em/T_0723.m",
+		"/Users/Stephen/Desktop/em/result/d14/bid/grayscale_maps_cube2_b.txt",
+		"/Users/Stephen/Dropbox (MIT)/Course/2011Fall/6867/Sans/DW_code/IDM2.c",
+		"/Users/Stephen/Dropbox (MIT)/Course/2011Fall/6867/Sans/DW_code/IDM3.c",
+		"/Users/Stephen/Dropbox (MIT)/Course/2011Fall/6867/Sans/DW_code/IDM5.c",
+		"/Users/Stephen/Code/VisionLib/Donglai/Low/Flow/CeOF/demoflow.m",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/[cvpr2018]LearningTheArrowOfTime/application.tex",
+		"/Users/Stephen/Desktop/07.21",
+		"/Users/Stephen/Desktop/[30,36]",
+		"/Volumes/Untitled/readme.txt",
+		"/Users/Stephen/Desktop/thesisComment",
+		"/Users/Stephen/Downloads/TSP_2013-06-26/compile_MEX.m",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/webCNN/conclusion.tex",
+		"/Users/Stephen/Dropbox (Personal)/tmp/katie/main.tex",
+		"/Users/Stephen/Downloads/cvpr2017AuthorKit/latex/egpaper_for_review.tex",
+		"/Users/Stephen/Dropbox (MIT)/Proj/LearnTarrow/figure/iccv/flickr_local/fn2.txt",
+		"/Users/Stephen/Desktop/1. Our world is constantly changing.",
+		"/Users/Stephen/Dropbox (MIT)/Proj/LearnTarrow/figure/iccv/flickr_local/fn.txt",
+		"/Users/Stephen/Dropbox (MIT)/Proj/LearnTarrow/figure/iccv/data/data.txt",
+		"/Users/Stephen/Desktop/abstract",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/webCNN/thesis.sty",
+		"/Users/Stephen/Dropbox (MIT)/Research/Submission/2017_CHI_web/extended-abstract.tex",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/0_intro.tex",
+		"/Users/Stephen/Desktop/John 4:13-26",
+		"/Users/Stephen/Desktop/GTA_email",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/main.tex",
+		"/Users/Stephen/Desktop/P. Joseph",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/bib.bib",
+		"/Users/Stephen/Desktop/Yes. please fill it up as a test case. Let's discu",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/Web/fig/pix2pix/eg_color.txt",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/Web/fig/vae/T_fig.m",
+		"/Users/Stephen/Dropbox (Personal)/Camera Uploads/a.txt",
+		"/Users/Stephen/Dropbox (Personal)/tmp.txt",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/webCNN/model_GAN.tex",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/webCNN/model_pix2pix.tex",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/Web/intro.tex",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/AoT_see/intro.tex",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/macro.tex",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/abstract.tex",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/AoT_see/related.tex",
+		"/Users/Stephen/Dropbox (Personal)/Apps/ShareLaTeX/PhDThesis/intro.tex"
+	],
+	"find":
+	{
+		"height": 39.0
+	},
+	"find_in_files":
+	{
+		"height": 202.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": false,
+		"use_buffer2": false,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 70.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 28.0
+	},
+	"output.find_results":
+	{
+		"height": 243.0
+	},
+	"pinned_build_system": "",
+	"project": "0_introduction.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"1. Isaiah 8:14-15"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 208.0,
+	"status_bar_visible": false,
+	"template_settings":
+	{
+	}
+}

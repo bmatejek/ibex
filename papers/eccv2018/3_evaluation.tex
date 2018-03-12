@@ -1,6 +1,6 @@
 % !TEX root =  paper.tex
 \section{Experimental Results}
-
+\TODO{right now, too many subsections. shall we break it into "Setup" and "Results"}
 We evaluate our method by comparing it to a state-of-the-art pixel-based reconstruction approach using datasets from mouse and fly brains.
 
 \subsection{Datasets}
@@ -23,11 +23,14 @@ We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 
 \subsection{Pixel-Based Segmentations}
 \label{sec:neuroproof}
 
-The segmentation of the Kasthuri dataset was computed by agglomerating 3D supervoxels produced by the z-watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. 
-A recent study by Funke et al.~\cite{funke2017deep} demonstrated superior performance of such methods over existing ones on anisotropic data. 
-We learn 3D affinities using MALIS loss with a U-net~\cite{ronneberger2015u,Turaga:2009}. 
-We apply the z-watershed algorithm with suitable parameters to compute a 3D oversegmentation of the volume. 
-The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
+%The segmentation of the Kasthuri dataset was computed by agglomerating 3D supervoxels produced by the watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. 
+%A recent study by Funke et al.~\cite{funke2017deep} demonstrated superior performance of such methods over existing ones on anisotropic data. 
+%We learn 3D affinities using MALIS loss with a U-net~\cite{ronneberger2015u,Turaga:2009}. 
+%We apply the z-watershed algorithm with suitable parameters to compute a 3D oversegmentation of the volume. 
+%The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
+For the Kasthuri dataset, we used the segmentation pipeline from Funke et al.~\cite{funke2017deep}. 
+We first trained a 3D affinity prediction U-Net model~\cite{ronneberger2015u} with Malis loss~\cite{Turaga:2009} and applied the watershed and agglomeration method~\cite{funke2017deep} to obtain the final segmentation result.
+
 
 For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we applied a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. 
 This segmentation framework learns voxel and supervoxel classifiers with an emphasis to minimize under-segmentation error. 
@@ -62,6 +65,7 @@ There are \TODO{X,XXX,XXX} learnable parameters in our final architecture.
 All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. 
 Training concluded after \TODO{XXX} epochs.
 
+\TODO{we don't have space for the table for training parameters: move to supp}
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{l l} \hline

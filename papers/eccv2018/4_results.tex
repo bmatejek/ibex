@@ -112,7 +112,7 @@ There are on average $\TODO{XX}$ such examples in our datasets, corresponding to
 
 \paragraph{Inference Augmentation.}
 
-Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d}.
+Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d,lee2017superhuman}.
 When computing the probability to merge two segments, we input the initial segment into our CNN as well as \TODO{XX} randomly rotated and flipped examples (in the same manner as training augmentation).
 This produces some additional increase in overall accuracy (Table ~\ref{table:inference-augmentation}). 
 The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
@@ -144,7 +144,7 @@ The blue dotted curve in the figure shows a slight performance increase in this 
 \end{figure}
 
 \paragraph{Neural Network Transference.}
-
+\TODO{rename: Generalization to Other Dataset.}
 Our neural network does not take as input the images or affinities to allow us to transfer network weights from one dataset to the next.
 Table~TODO{X} shows the result when training on the FlyEM data and inferring on the Kasthuri data and vice versa.
 The classification results are reasonable despite the fact that the datasets vary in resolution and even animal type.
