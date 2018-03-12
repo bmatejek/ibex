@@ -125,9 +125,6 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     smallest_distances = {}
     midpoints = {}
 
-    #smallest_distances = (endpoint_distance + 1) * np.ones((max_label, max_label), dtype=np.float32)
-    #midpoints = np.zeros((max_label, max_label, 3), dtype=np.int32)
-
     for ie, endpoint in enumerate(endpoints):
         label = endpoint.label
         for neighbor_label in endpoint_candidates[ie]:
@@ -225,6 +222,9 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
     segmentation = seg2seg.MapLabels(segmentation, mapping)
+
+    import gc
+    gc.collect()
 
     comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
 
