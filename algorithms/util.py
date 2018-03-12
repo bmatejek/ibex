@@ -46,8 +46,18 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
         labels[iv] = candidates[iv].ground_truth
 
     # create an empty union find data structure
-    max_value = np.uint64(np.amax(segmentation) + 1)
+    max_value = np.amax(segmentation) + 1
     union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
+
+    # create adjacency sets for the elements in the segment
+    adjacency_sets = [set() for _ in range(ncandidates)]
+
+    for candidate in candidates:
+        label_one = candidate.labels[0]
+        label_two = candidate.labels[1]
+
+        adjacency_sets[label_one].add(label_two)
+        adjacency_sets[label_two].add(label_one)
 
     # iterate over the candidates in order of decreasing probability
     zipped = zip(probabilities, [ie for ie in range(ncandidates)])
@@ -57,10 +67,19 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
         if collapsed_edges[ie]: continue
         # skip if this creates a cycle
         label_one, label_two = candidates[ie].labels
-        if unionfind.Find(union_find[label_one]).label == unionfind.Find(union_find[label_two]).label: 
-            collapsed_edges[ie] = True
-            continue
 
+        # get the parent of this label
+        label_two_union_find = unionfind.Find(union_find[label_two]).label
+
+        # make sure none of the other adjacent nodes already has this label
+        for neighbor_label in adjacency_sets[label_one]:
+            if neighbor_label == label_two: continue
+
+            if unionfind.Find(union_find[neighbor_label]).label == label_two_union_find: 
+                collapsed_edges[ie] = True
+
+        # skip if the edge is no longer collapsed
+        if collapsed_edges[ie]: continue
         unionfind.Union(union_find[label_one], union_find[label_two])
 
     print '\nBorder Constraints\n'

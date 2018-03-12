@@ -12,16 +12,50 @@ def DownsampleData(data, ratio=(1, 2, 2)):
     (zres, yres, xres) = data.shape
 
     # create an empty array for downsampling
-    (down_zres, down_yres, down_xres) = (zres / ratio[IB_Z], yres / ratio[IB_Y], xres / ratio[IB_X])
+    (down_zres, down_yres, down_xres) = (int(zres / ratio[IB_Z]), int(yres / ratio[IB_Y]), int(xres / ratio[IB_X]))
     downsampled_data = np.zeros((down_zres, down_yres, down_xres), dtype=data.dtype)
     
     # fill in the entries of the array
     for iz in range(down_zres):
         for iy in range(down_yres):
             for ix in range(down_xres):
-                downsampled_data[iz,iy,ix] = data[iz * ratio[0], iy * ratio[1], ix * ratio[2]]
+                downsampled_data[iz,iy,ix] = data[int(iz * ratio[IB_Z]), int(iy * ratio[IB_Y]), int(ix * ratio[IB_X])]
 
     return downsampled_data
+
+
+
+@jit(nopython=True)
+def MaskAndCropSegmentation(data, labels):
+    # create a set of valid segments
+    ids = set()
+    for label in labels:
+        ids.add(label)
+
+    # get the shape of the data
+    zres, yres, xres = data.shape
+
+    zmin, ymin, xmin = data.shape
+    zmax, ymax, xmax = (0, 0, 0)
+
+    masked_data = np.zeros((zres, yres, xres), dtype=np.int64)
+
+    # go through the entire data set
+    for iz in range(zres):
+        for iy in range(yres):
+            for ix in range(xres):
+                # skip masked out values
+                if not data[iz,iy,ix] in ids: continue
+                
+                masked_data[iz,iy,ix] = data[iz,iy,ix]
+                if iz < zmin: zmin = iz
+                if iy < ymin: ymin = iy
+                if ix < xmin: xmin = ix
+                if iz > zmax: zmax = iz
+                if iy > ymax: ymax = iy
+                if ix > xmax: xmax = ix
+
+    return masked_data[zmin:zmax,ymin:ymax,xmin:xmax]
 
 
 

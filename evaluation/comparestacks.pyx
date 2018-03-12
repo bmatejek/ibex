@@ -33,7 +33,7 @@ def PrincetonEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_tru
 
 
 
-def CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0):
+def CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, mask_segmentation=False, filtersize=0):
     # make sure these elements are the same size
     assert (segmentation.shape == gold.shape)
 
@@ -45,13 +45,12 @@ def CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=T
         gold = distance.DilateData(gold, dilate_ground_truth)
 
     # run the cremi variation of information algorithm
-    if mask_ground_truth:
-        vi_split, vi_merge = voi(segmentation, gold, [], [0])
-        print 'Variation of Information Full: {}'.format(vi_split + vi_merge)
-        print 'Variation of Information Merge: {}'.format(vi_merge)
-        print 'Variation of Information Split: {}'.format(vi_split)
-    else:
-        vi_split, vi_merge = voi(segmentation, gold, [], [])
-        print 'Variation of Information Full: {}'.format(vi_split + vi_merge)
-        print 'Variation of Information Merge: {}'.format(vi_merge)
-        print 'Variation of Information Split: {}'.format(vi_split)
+    if mask_ground_truth: gold_mask = [0]
+    else: gold_mask = []
+    if mask_segmentation: segment_mask = [0]
+    else: segment_mask = []
+
+    vi_split, vi_merge = voi(segmentation, gold, segment_mask, gold_mask)
+    print 'Variation of Information Full: {}'.format(vi_split + vi_merge)
+    print 'Variation of Information Merge: {}'.format(vi_merge)
+    print 'Variation of Information Split: {}'.format(vi_split)

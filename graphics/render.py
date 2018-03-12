@@ -2,44 +2,35 @@ import numpy as np
 
 from skimage import measure
 from stl import mesh
-
-from ibex.utilities.constants import *
-from ibex.utilities import dataIO
-
-
 from numba import jit
 
 
-@jit(nopython=True)
-def Downsample(segmentation, factor):
-    zres, yres, xres = segmentation.shape
-    newz, newy, newx = (zres / factor[IB_Z], yres / factor[IB_Y], xres / factor[IB_X])
+from ibex.utilities.constants import *
+from ibex.utilities import dataIO
+from ibex.transforms import h52h5
 
-    downsampled_segmentation = np.zeros((newz, newy, newx), dtype=np.int32)
-
-    for iz in range(newz):
-        for iy in range(newy):
-            for ix in range(newx):
-                iw = iz * factor[IB_Z]
-                iv = iy * factor[IB_Y]
-                iu = ix * factor[IB_X]
-
-                downsampled_segmentation[iz,iy,ix] = segmentation[iw,iv,iu]
-
-    return downsampled_segmentation
 
 
 
 # run the marching cube algorithm for these labels
-def MarchingCubes(prefix, labels):
-    downsample_rate = (1, 2, 2)
-    segmentation = Downsample(dataIO.ReadSegmentationData(prefix), downsample_rate)
-    resolution = dataIO.Resolution(prefix)
+def MarchingCubes(data, resolution, downsample_rate, output_prefix):
+    # downsample the input data to a manageable size
+    downsampled_data = h52h5.DownsampleData(data, downsample_rate)
+
+    # get the new grid size
+    zres, yres, xres = downsampled_data.shape
+
+    # go through all labels
+    labels = np.unique(downsampled_data)
+    # to make sure masking occurred (arbitrary value)
+    assert (len(labels) < 100)
 
     for label in labels:
-        binary_image = np.zeros(segmentation.shape, dtype=np.uint8)
+        if not label: continue
 
-        binary_image[segmentation == label] = 1
+        # create a binary image for this label
+        binary_image = np.zeros(downsampled_data.shape, dtype=np.uint8)
+        binary_image[downsampled_data == label] = 1
 
         # get the meshes from the marching cubes
         verts, faces, normals, values = measure.marching_cubes_lewiner(binary_image)
@@ -49,15 +40,16 @@ def MarchingCubes(prefix, labels):
         # center all of the vertices
         scale_factor = 1000.0
         for iv in range(nverts):
-            verts[iv,0] = resolution[IB_Z] * downsample_rate[IB_Z] * (verts[iv,0] - segmentation.shape[IB_Z] / 2.0) / scale_factor
-            verts[iv,1] = resolution[IB_Y] * downsample_rate[IB_Y] * (verts[iv,1] - segmentation.shape[IB_Y] / 2.0) / scale_factor
-            verts[iv,2] = resolution[IB_X] * downsample_rate[IB_X] * (verts[iv,2] - segmentation.shape[IB_X] / 2.0) / scale_factor
+            # divide by 2.0 to center the vertices
+            verts[iv,0] = resolution[IB_Z] * downsample_rate[IB_Z] * (verts[iv,IB_Z] - zres / 2.0) / scale_factor
+            verts[iv,1] = resolution[IB_Y] * downsample_rate[IB_Y] * (verts[iv,IB_Y] - yres / 2.0) / scale_factor
+            verts[iv,2] = resolution[IB_X] * downsample_rate[IB_X] * (verts[iv,IB_X] - xres / 2.0) / scale_factor
 
         stl_mesh = mesh.Mesh(np.zeros(nfaces, dtype=mesh.Mesh.dtype))
         for ii, face in enumerate(faces):
             for jj in range(3):
                 stl_mesh.vectors[ii][jj] = verts[face[jj],:]
 
-        output_filename = 'meshes/{}-{}.stl'.format(prefix, label)
+        output_filename = '{}-{}.stl'.format(output_prefix, label)
         stl_mesh.save(output_filename)
         print 'Wrote {}'.format(output_filename)

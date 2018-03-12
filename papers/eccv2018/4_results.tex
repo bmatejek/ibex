@@ -20,20 +20,20 @@ Since we are measuring the entropy between two clusterings, lower VI scores are 
 \subsection{Variation of Information Results}
 
 In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-based reconstructions of the Kasthuri and FlyEM data (Sec.~\ref{sec:neuroproof}) for varying thresholds of agglomeration (green). 
-We use one of these segmentations (green circle) as out input dataset with an agglomeration threshold of 0.3 for all datasets. 
+We use one of these segmentations (green circle) as our input dataset with an agglomeration threshold of 0.3 for all datasets. 
 The results from our method are shown in red for varying the $\beta$ parameter. 
 We show comparisons to an oracle (blue) that correctly partitions the graph from our method based on ground truth.
 
 Our algorithm improves the accuracy of the reconstruction for every dataset, reducing the VI split score on average by \TODO{XX}\% on the three testing datasets. 
 Scores closer to the origin are better for this metric, and in every instance our results are below the green curve.
 We see significant improvements on the Kasthuri datasets (VI split reduction of \TODO{XX}\% and \TODO{XX}\% on the training and testing datasets respectively) and more modest improvements on the FlyEM datasets (reduction of \TODO{XX}\% and \TODO{XX}\%). 
-This is because the baseline segmentation algorithm for the isotropic FlyEM data (Sec.~\ref{sec:neuroproof}) performs much better, reducing the potential for improvements. 
-Isotropic datasets are easier to segment using state-of-the-art region-based methods than anisotropic ones~\cite{plaza2014annotating}.
+\TODO{FIX: This is because the baseline segmentation algorithm for the isotropic FlyEM data (Sec.~\ref{sec:neuroproof}) performs much better, reducing the potential for improvements. 
+Isotropic datasets are easier to segment using state-of-the-art region-based methods than anisotropic ones~\cite{plaza2014annotating}.}
 
-Fig.~\ref{fig:qualitative-results} shows successful merges on the Kasthuri Vol. 2 dataset. 
+Fig.~\ref{fig:qualitative-results} (left) shows successful merges on the Kasthuri Vol. 2 dataset. 
 Several of these examples combine multiple consecutive segments that span the volume.
-In the third example we correct the over-segmentation of a dendrite and attached spine-necks.
-Fig.~\ref{fig:qualitative-results} shows typical failure cases of our method (red circles).
+In the third example on the left we correct the over-segmentation of a dendrite and attached spine-necks.
+Fig.~\ref{fig:qualitative-results} (right) shows typical failure cases of our method (red circles).
 In two of these examples the algorithm correctly predicted several merges before a single error rendered the segment as wrong.
 In the third example (blue circle) a merge error in the initial segmentation propagated to our output.
 We now analyze how each major component of our method contributes to this final result.
@@ -65,6 +65,9 @@ This edge pruning is essential for the graph partitioning algorithm, which has a
 The baseline algorithm considers all adjacent regions for merging. 
 Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., \TODO{XXX} compared to \TODO{XXX}). 
 Our pruning heuristic removes at least $\TODO{X}\times$ the number of edges on all datasets, achieving a maximum removal rate of $\TODO{XX}\times$.
+However, there are some adjacent over-segmented labels which are considered. 
+Table~\ref{table:skeletonization} shows the results for our edge generation including the number of missed neighbors and potential penalty in VI score.
+\TODO{augment table}
 We present additional analysis of the skeletonization parameters in the supplemental material.
 
 \begin{table}
@@ -90,7 +93,7 @@ In particular, we do not enforce the constraint that edges in our graph correspo
 Although neurons are continuous, the EM images often have noisy spots which cause an interruption in the input segmentation.
 We still want to reconstruct these neurons despite the fact that the initial segmentation is non-continuous. 
 The second and fourth examples in Fig.~\ref{fig:qualitative-results} show correctly reconstructed neurons where two of the segments are non-adjacent. 
-This is a large benefit over enforcing segment adjacency. 
+On average in our datasets we correctly merge \TODO{XX} number of non-adjacent segments. 
 
 There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons.
 Fig.~\ref{fig:skeleton-results} shows two such cases. 
@@ -109,7 +112,7 @@ There are on average $\TODO{XX}$ such examples in our datasets, corresponding to
 
 \paragraph{Inference Augmentation.}
 
-Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d}.
+Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d,lee2017superhuman}.
 When computing the probability to merge two segments, we input the initial segment into our CNN as well as \TODO{XX} randomly rotated and flipped examples (in the same manner as training augmentation).
 This produces some additional increase in overall accuracy (Table ~\ref{table:inference-augmentation}). 
 The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
@@ -128,14 +131,10 @@ The supplemental material contains experiments showing the trade-offs between in
 \end{table}
 
 Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.
-%We train our CNN using one of the Kasthuri volumes and test using the other three datasets.
-Since our CNN only takes as input a region of the label volume we can train on  anisotropic data and test on isotropic data.
-This provides a major benefit given the time-intensive task of manually generating ground truth for each dataset at various resolutions.
-
-As shown by the ROC curve, the test results on the Kasthuri data are better than the results for FlyEM.
+\TODO{As shown by the ROC curve, the test results on the Kasthuri data are better than the results for FlyEM.
 We believe this is in part because of the differences in the datasets (i.e., isotropy and $xy$ resolution).
 To test this hypothesis, we also evaluate the performance of the FlyEM datasets when the network trains on FlyEM Vol. 1 and infers on FlyEM Vol. 2.\footnote{Since the FlyEM datasets have significantly fewer examples, we initialize the network with the weights from the Kasthuri training and have an initial learning rate of $10^{-4}$.}
-The blue dotted curve in the figure shows a slight performance increase in this case. However, the improvement is minor, which led us to use the CNN trained on the anisotropic data for the rest of our experiments.
+The blue dotted curve in the figure shows a slight performance increase in this case. However, the improvement is minor, which led us to use the CNN trained on the anisotropic data for the rest of our experiments. -- FIX THIS, also AUC values}
 
 \begin{figure}
 	\centering
@@ -144,12 +143,18 @@ The blue dotted curve in the figure shows a slight performance increase in this 
 	\label{fig:receiver-operating-characteristic}
 \end{figure}
 
+\paragraph{Neural Network Transference.}
+\TODO{rename: Generalization to Other Dataset.}
+Our neural network does not take as input the images or affinities to allow us to transfer network weights from one dataset to the next.
+Table~TODO{X} shows the result when training on the FlyEM data and inferring on the Kasthuri data and vice versa.
+The classification results are reasonable despite the fact that the datasets vary in resolution and even animal type.
+
+
 \subsection{Graph Optimization Results}
 
 The graph optimization strategy using multicut increases our accuracy over using just the CNN.
 Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all four datasets compared to the CNN.
-The precision increases on each dataset, although the recall decreases on all but one of the datasets.
-Since it is more difficult to correct merge errors than split errors, it is often desirable to sacrifice recall for precision.
+The precision increases on each dataset, although the recall decreases on all but one of the datasets.Since it is more difficult to correct merge errors than split errors, it is often desirable to sacrifice recall for precision.
 Over the three testing datasets, applying a graph-based partitioning strategy reduced the number of merge errors by \TODO{XX}\%, \TODO{XX}\% and \TODO{XX}\%, respectively. 
 
 \begin{table}[h]
@@ -167,3 +172,5 @@ Over the three testing datasets, applying a graph-based partitioning strategy re
 \end{table}
 
 \TODO{How does using lifted-multicut improve the results!}
+
+\TODO{What are the benefits of post processing?}
