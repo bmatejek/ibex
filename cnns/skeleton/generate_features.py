@@ -171,7 +171,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     undetermined_candidates = []
 
     for ie, match in enumerate(endpoint_pairs):
-        if (ie % 100 == 0): print '{}/{}'.format(ie, len(endpoint_pairs))
+        if (ie % 1 == 0): print '{}/{}'.format(ie, len(endpoint_pairs))
         endpoint_one = endpoint_pairs[match][0]
         endpoint_two = endpoint_pairs[match][1]
 
@@ -214,17 +214,18 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     # perform some tests to see how well this method can do
     max_value = np.amax(segmentation) + 1
     union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
-
+    print 'A'
     # iterate over all collapsed edges
     for candidate in positive_candidates:
         label_one, label_two = candidate.labels
         unionfind.Union(union_find[label_one], union_find[label_two])
-    
+    print 'B'
     # create a mapping for the labels
     mapping = np.zeros(max_value, dtype=np.int64)
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
+    print 'C'
     segmentation = seg2seg.MapLabels(segmentation, mapping)
-
-    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
-
+    print 'D'
+    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, mask_segmentation=True, filtersize=0)
+    print 'E'
