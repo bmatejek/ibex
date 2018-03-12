@@ -122,8 +122,17 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     endpoint_pairs = {}
 
     # find the smallest pair between endpoints
-    smallest_distances = (endpoint_distance + 1) * np.ones((max_label, max_label), dtype=np.float32)
-    midpoints = np.zeros((max_label, max_label, 3), dtype=np.int32)
+    smallest_distances = {}
+    midpoints = {}
+
+    #smallest_distances = (endpoint_distance + 1) * np.ones((max_label, max_label), dtype=np.float32)
+    #midpoints = np.zeros((max_label, max_label, 3), dtype=np.int32)
+
+    for ie, endpoint in enumerate(endpoints):
+        label = endpoint.label
+        for neighbor_label in endpoint_candidates[ie]:
+            smallest_distances[(label,neighbor_label)] = endpoint_distance + 1
+            smallest_distances[(neighbor_label,label)] = endpoint_distance + 1
 
     for ie, endpoint in enumerate(endpoints):
         # get the endpoint location
@@ -135,8 +144,8 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
                 # get the distance
                 deltas = endpoint.WorldPoint(world_res) - neighbor_endpoint.WorldPoint(world_res)
                 distance = math.sqrt(deltas[IB_Z] * deltas[IB_Z] + deltas[IB_Y] * deltas[IB_Y] + deltas[IB_X] * deltas[IB_X])
-
-                if distance < smallest_distances[label, neighbor_label]:
+                
+                if distance < smallest_distances[(label, neighbor_label)]:
                     midpoint = (endpoint.GridPoint() + neighbor_endpoint.GridPoint()) / 2
 
                     # make sure the bounding box fits
@@ -146,15 +155,15 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
                         if midpoint[dim]+network_radii[dim] > grid_size[dim]: valid_location = False
                     if not valid_location: continue
             
-                    smallest_distances[label,neighbor_label] = distance
-                    smallest_distances[neighbor_label,label] = distance
+                    smallest_distances[(label,neighbor_label)] = distance
+                    smallest_distances[(neighbor_label,label)] = distance
 
                     # add to the dictionary
                     endpoint_pairs[(label, neighbor_label)] = (endpoint, neighbor_endpoint)
                     endpoint_pairs[(neighbor_label, label)] = (neighbor_endpoint, endpoint)
 
-                    midpoints[label,neighbor_label] = midpoint
-                    midpoints[neighbor_label,label] = midpoint
+                    midpoints[(label,neighbor_label)] = midpoint
+                    midpoints[(neighbor_label,label)] = midpoint
 
     # create list of candidates
     positive_candidates = []
@@ -162,6 +171,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     undetermined_candidates = []
 
     for ie, match in enumerate(endpoint_pairs):
+        if (ie % 100 == 0): print '{}/{}'.format(ie, len(endpoint_pairs))
         endpoint_one = endpoint_pairs[match][0]
         endpoint_two = endpoint_pairs[match][1]
 
@@ -171,18 +181,18 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         if (label_one > label_two): continue
 
         # extract a bounding box around this midpoint
-        midz, midy, midx = midpoints[label_one,label_two]
+        midz, midy, midx = midpoints[(label_one,label_two)]
 
         extracted_segmentation = segmentation[midz-network_radii[IB_Z]:midz+network_radii[IB_Z],midy-network_radii[IB_Y]:midy+network_radii[IB_Y],midx-network_radii[IB_X]:midx+network_radii[IB_X]]
         extracted_gold = gold[midz-network_radii[IB_Z]:midz+network_radii[IB_Z],midy-network_radii[IB_Y]:midy+network_radii[IB_Y],midx-network_radii[IB_X]:midx+network_radii[IB_X]]
 
-        extracted_seg2gold_mapping = seg2gold.Mapping(extracted_segmentation, extracted_gold, low_threshold=0.1, high_threshold=0.40)
+        extracted_seg2gold_mapping = seg2gold.Mapping(extracted_segmentation, extracted_gold, match_threshold=0.70, nonzero_threshold=0.40)
         gold_one = extracted_seg2gold_mapping[label_one]
         gold_two = extracted_seg2gold_mapping[label_two]
 
         ground_truth = (gold_one == gold_two)
 
-        candidate = SkeletonCandidate((label_one, label_two), midpoints[label_one,label_two,:], ground_truth)
+        candidate = SkeletonCandidate((label_one, label_two), midpoints[(label_one,label_two)], ground_truth)
 
         if not extracted_seg2gold_mapping[label_one] or not extracted_seg2gold_mapping[label_two]: undetermined_candidates.append(candidate)
         elif ground_truth: positive_candidates.append(candidate)
