@@ -139,7 +139,7 @@ However, determining such probabilities is computationally expensive.
 We approximate these probabilities by finding the maximal probable path between any two nodes using Dijkstra's algorithm~\cite{keuper2015efficient}.
 Since our graphs are sufficiently small, we can generate ``lifted'' edges between all pairs of nodes. 
 
-\paragraph{Post-processing}
+\subsubsection{Post-processing}
 
 By reformulating the segmentation problem as a graph partitioning one, we can enforce some global constraints on our result based on the underlying biology.
 Traditional hierarchical clustering algorithms do not rely on such constraints but consider local decisions independently.

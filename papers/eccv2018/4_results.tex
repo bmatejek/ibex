@@ -3,10 +3,9 @@
 
 \begin{figure*}[t!]
 	\centering
-	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-microns-train-600.png}
-	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-microns-test-600.png}
-	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-FlyEM-train-600.png}
-	\includegraphics[width=0.45\linewidth]{./figures/variation_of_information-FlyEM-test-600.png}
+	\includegraphics[width=0.32\linewidth]{./figures/variation_of_information-microns-test-600.png}
+	\includegraphics[width=0.32\linewidth]{./figures/variation_of_information-FlyEM-train-600.png}
+	\includegraphics[width=0.32\linewidth]{./figures/variation_of_information-FlyEM-test-600.png}
 	\caption{VI scores of our method (red) compared to the baseline segmentation (green) and an oracle (blue) that optimally partitions the graph based on ground truth. Lower scores are better. Our method improves the accuracy of the segmentation in all cases.}
 	\label{fig:variation-of-information}
 \end{figure*}
@@ -46,7 +45,7 @@ We now analyze how each major component of our method contributes to this final 
 		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect3.png}
 		\includegraphics[width=0.85\linewidth]{./figures/VI-results/multicut-incorrect4.png}
 	\end{minipage}
-	\caption{(left) Segments of neurons that were correctly merged by our method. (right) Circles indicate areas of wrong merges by our method (red) or by the initial pixel-based segmentation (blue).}
+	\caption{(left) Segments of neurons before they were correctly merged by our method. (right) Circles indicate areas of wrong merges by our method (red) or by the initial pixel-based segmentation (blue).}
 	\label{fig:qualitative-results}
 \end{figure}
 
@@ -101,25 +100,12 @@ There are on average $\TODO{XX}$ such examples in our datasets, corresponding to
 
 \subsection{CNN Classification Results}
 
-\paragraph{Inference Augmentation.}
+\subsubsection{Inference Augmentation}
 
 Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d,lee2017superhuman}.
 When computing the probability to merge two segments, we input the initial segment into our CNN as well as \TODO{XX} randomly rotated and flipped examples (in the same manner as training augmentation).
-This produces some additional increase in overall accuracy (Table ~\ref{table:inference-augmentation}). 
+This produces some additional increase in overall accuracy (Figure ~\ref{fig:receiver-operating-characteristic}).
 The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
-
-\begin{table}
-	\begin{center}
-		\begin{tabular}{c | c c c}
-			Dataset & Precision & Recall & Accuracy \\ \hline
-			Kasthuri & & & \\
-			FlyEM Vol. 1 & & & \\
-			FlyEM Vol. 2 & & & 
-		\end{tabular}
-		\caption{Data augmentation during test time increases the precision, recall, and accuracy of all three datasets.}
-		\label{table:inference-augmentation}
-	\end{center}
-\end{table}
 
 Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.
 As shown by the ROC curve, the test results on the Kasthuri data are better than the results for FlyEM.
@@ -129,12 +115,12 @@ We believe this is in part because of the differences in the datasets (i.e., iso
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.45\linewidth]{./figures/receiver-operating-characteristic.jpg}
+	\includegraphics[width=0.45\linewidth]{./figures/receiver-operating-characteristic.jpg}		\includegraphics[width=0.45\linewidth]{./figures/receiver-operating-characteristic.jpg}
 	\caption{The receiver operating characteristic (ROC) curves of our classifier on three connectomics datasets. The classifier works best on previously unseen data of the Kasthuri volume. The dashed blue line indicates better performance on the FlyEM datasets with retraining compared to without (solid blue).}
 	\label{fig:receiver-operating-characteristic}
 \end{figure}
 
-\paragraph{Generalization to Other Datasets.}
+\subsubsection{Generalization to Other Datasets}
 
 Our neural network does not take as input the images or affinities to allow us to transfer network weights from one dataset to the next.
 Table~\TODO{X} shows the result when training on the FlyEM data and inferring on the Kasthuri data and vice versa.
@@ -168,3 +154,6 @@ Over the three testing datasets, applying a graph-based partitioning strategy re
 
 Our post-processing method to agglomerate segments while enforcing the acyclic nature of our graph additionally improves precision by $\TODO{XX}\%$ on average while only costing $\TODO{XX}\%$ in recall. 
 Note that our post-processing strategy by design cannot increase the recall. 
+
+\subsection{Computational Performance}
+

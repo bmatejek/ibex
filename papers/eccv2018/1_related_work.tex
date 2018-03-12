@@ -2,7 +2,7 @@
 
 \section{Related Work}
 
-\paragraph{Pixel-based methods.}
+\subsubsection{Pixel-based methods}
 A significant amount of connectomics research considers the problem of extracting segmentation information at the pixel (i.e., voxel) level from the raw EM images. 
 Some methods use a random forest populated with hand-designed features based on image characteristics around a given pixel to predict membrane probabilities~\cite{kaynig2015large}.
 Most recent advancements use convolutional neural networks since machine-learned features outperform hand-designed ones~\cite{bogovic2013learned}.
@@ -15,7 +15,7 @@ These networks produce impressive accuracies but at a high computational cost.
 Data augmentation in both training and testing can increase the prediction accuracy in boundary detection~\cite{zeng2017deepem3d}.
 Lee et al. surpass the estimated human accuracy on the SNEMI3D dataset with a variant of the 3D U-Net architecture~\cite{lee2017superhuman}.
 
-\paragraph{Region-based methods.}
+\subsubsection{Region-based methods}
 
 Some early techniques apply computationally expensive graph partitioning algorithms with a single node per superpixel~\cite{andres2012globally}. 
 Several pixel-based approaches generate probabilities that neighboring pixels belong to the same neuron.
@@ -24,7 +24,7 @@ Many methods build on top of these region-based strategies and train random-fore
 Some methods rely solely on the accuracy of the predicted affinities and agglomerate hierarchically based on the mean affinity between supervoxels~\cite{lee2017superhuman,funke2017deep}.
 Pape et al. present a scalable multicut algorithm to partition superpixels~\cite{beier2017multicut}.
 
-\paragraph{Error-correction methods.}
+\subsubsection{Error-correction methods}
 Additional research builds on top of these region-based methods to correct errors in the segmentation either using human proofreading~\cite{haehn2014design,haehn2017guided,mojo2} or automatic methods~\cite{rolnick2017morphological,error_correction_using_CNN}.
 However, to our knowledge, our method is the first to extract a 3D graph from an input segmentation for a true top-down\TODO{?} error correction approach. 
 This allows us to enforce domain-specific biology constraints and use efficient graph partitioning algorithms. 

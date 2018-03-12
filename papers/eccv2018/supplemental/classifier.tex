@@ -31,6 +31,23 @@ These input sizes correspond to specific output sizes from the last VGG block.
 \end{table}
 
 
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{l l} \hline
+		\textbf{Parameters} & \textbf{Values} \\ \hline
+		Loss Function & Mean Squared Error \\
+		Optimizer & SGD  with Nesterov Momentum \\
+		Momentum & 0.9 \\
+		Initial Learning Rate & 0.0001 \\
+		Decay Rate & $5 * 10^{-8}$ \\
+		Activation & LeakyReLU $(\alpha = 0.001)$ \\
+		Kernel Sizes & $3 \times 3 \times 3$ \\
+		Filter Sizes & $16 \to 32 \to 64$ \\ \hline
+	\end{tabular}
+	\caption{Training parameters.}
+	\label{table:architecture}
+\end{table}
+
 \subsection{Training Augmentation}
 
 \subsection{Testing Augmentation}
