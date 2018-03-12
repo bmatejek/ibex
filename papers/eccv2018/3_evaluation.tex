@@ -1,6 +1,6 @@
 % !TEX root =  paper.tex
-\section{Experimental Results}
-\TODO{right now, too many subsections. shall we break it into "Setup" and "Results"}
+\section{Experiments}
+
 We evaluate our method by comparing it to a state-of-the-art pixel-based reconstruction approach using datasets from mouse and fly brains.
 
 \subsection{Datasets}
@@ -20,6 +20,10 @@ The mushroom body in this species is the primary site of associative learning.
 The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro\meter}^3$ volume with a resolution of $\SI[product-units=single]{10 x 10 x 10}{\nano\meter}^3$ per voxel. 
 We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$ or $999 \times 999 \times 999$ voxels.
 
+\paragraph{Fib-25.}
+The Fib-25 dataset comes from the visual system of a \textit{Drosophila} fly~\cite{takemura2015synaptic}. This sample is imaged at a resolution of $\SI[product-units=single]{8 x 8 x 8}{\nano\meter}^3$ and has $2588 \times 2108 \times 2876$ voxels representing a volume of $\SI[product-units=single]{23.0 x 16.9 x 23.0}{\micro\meter}^3$. 
+There is currently a reconstruction challenge based on this sample.
+
 \subsection{Pixel-Based Segmentations}
 \label{sec:neuroproof}
 
@@ -29,14 +33,13 @@ We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 
 %We apply the z-watershed algorithm with suitable parameters to compute a 3D oversegmentation of the volume. 
 %The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
 For the Kasthuri dataset, we used the segmentation pipeline from Funke et al.~\cite{funke2017deep}. 
-We first trained a 3D affinity prediction U-Net model~\cite{ronneberger2015u} with Malis loss~\cite{Turaga:2009} and applied the watershed and agglomeration method~\cite{funke2017deep} to obtain the final segmentation result.
-
-
-For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we applied a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. 
+We first train a 3D affinity prediction U-Net model~\cite{ronneberger2015u} with MALIS loss~\cite{Turaga:2009} and apply the watershed and agglomeration method~\cite{funke2017deep} to obtain the final segmentation result.
+For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we apply a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. 
 This segmentation framework learns voxel and supervoxel classifiers with an emphasis to minimize under-segmentation error. 
 The algorithm first computes multi-channel 3-D predictions for membranes, cell interiors, and mitochondria, among other cell features. 
 The membrane prediction channel is used to produce an over-segmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
 We used exactly the same parameters as the publicly available code for this algorithm.
+For the Fib-25 challenge dataset, we use the segmentation from Funke et al. as our input~\cite{funke2017deep}.
 
 \subsection{Graph Pruning Parameters}
 
@@ -54,9 +57,10 @@ Although the voxels vary between different datasets, the physical space remains 
 \subsection{Classifier Training}
 \label{sec:network-parameters}
 
-We use half of the Kasthuri dataset for training and validation. 
+We use half of the Kasthuri and FlyEM datasets\footnote{Since the FlyEM datasets have significantly fewer examples, we initialize the network with the weights from the Kasthuri training and have an initial learning rate of $10^{-4}$.} for training and validation. 
 We train on 80\% of the potential merge candidates for this volume.
 We validate the CNN classifier on the remaining 20\% of candidates. 
+
 
 We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. 
 The supplemental material includes information on the experiments that determined these final parameters. 
@@ -65,7 +69,6 @@ There are \TODO{X,XXX,XXX} learnable parameters in our final architecture.
 All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. 
 Training concluded after \TODO{XXX} epochs.
 
-\TODO{we don't have space for the table for training parameters: move to supp}
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{l l} \hline
@@ -93,3 +96,11 @@ With probability 0.5, the example is reflected across the $xy$-plane.
 We then rotate the example by a random angle between $0$ and $360$ degrees using nearest neighbor interpolation. 
 The supplemental material contains experiments demonstrating the benefits of this augmentation strategy.
 We have 20,000 such examples per epoch.
+
+
+\subsection{Error Metric}
+\label{sec:variation-of-information}
+
+We evaluate the performance of the different methods using the split variation of information (VI)~\cite{meila2003comparing}.
+Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over- and under-segmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. 
+Since we are measuring the entropy between two clusterings, lower VI scores are better.
