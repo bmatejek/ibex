@@ -33,8 +33,8 @@ There is currently a reconstruction challenge based on this sample.
 %We apply the z-watershed algorithm with suitable parameters to compute a 3D oversegmentation of the volume. 
 %The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
 For the Kasthuri dataset, we used the segmentation pipeline from Funke et al.~\cite{funke2017deep}. 
-We first trained a 3D affinity prediction U-Net model~\cite{ronneberger2015u} with MALIS loss~\cite{Turaga:2009} and applied the watershed and agglomeration method~\cite{funke2017deep} to obtain the final segmentation result.
-For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we applied a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. 
+We first train a 3D affinity prediction U-Net model~\cite{ronneberger2015u} with MALIS loss~\cite{Turaga:2009} and apply the watershed and agglomeration method~\cite{funke2017deep} to obtain the final segmentation result.
+For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we apply a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. 
 This segmentation framework learns voxel and supervoxel classifiers with an emphasis to minimize under-segmentation error. 
 The algorithm first computes multi-channel 3-D predictions for membranes, cell interiors, and mitochondria, among other cell features. 
 The membrane prediction channel is used to produce an over-segmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
