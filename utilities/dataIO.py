@@ -117,15 +117,7 @@ def ReadTopologySkeletons(prefix, data):
 
 
 def ReadImage(filename):
-    image = np.array(Image.open(filename)) / 255.0
-    # make into RGB image
-    if len(image.shape) == 2:
-        RGB_image = np.zeros((image.shape[0], image.shape[1], 3), dtype=np.float32)
-        RGB_image[:,:,0] = image
-        RGB_image[:,:,1] = image
-        RGB_image[:,:,2] = image
-        return RGB_image
-    
+    image = np.array(Image.open(filename))
     return image
 
 
