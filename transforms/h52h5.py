@@ -25,6 +25,40 @@ def DownsampleData(data, ratio=(1, 2, 2)):
 
 
 
+@jit(nopython=True)
+def MaskAndCropSegmentation(data, labels):
+    # create a set of valid segments
+    ids = set()
+    for label in labels:
+        ids.add(label)
+
+    # get the shape of the data
+    zres, yres, xres = data.shape
+
+    zmin, ymin, xmin = data.shape
+    zmax, ymax, xmax = (0, 0, 0)
+
+    masked_data = np.zeros((zres, yres, xres), dtype=np.int64)
+
+    # go through the entire data set
+    for iz in range(zres):
+        for iy in range(yres):
+            for ix in range(xres):
+                # skip masked out values
+                if not data[iz,iy,ix] in ids: continue
+                
+                masked_data[iz,iy,ix] = data[iz,iy,ix]
+                if iz < zmin: zmin = iz
+                if iy < ymin: ymin = iy
+                if ix < xmin: xmin = ix
+                if iz > zmax: zmax = iz
+                if iy > ymax: ymax = iy
+                if ix > xmax: xmax = ix
+
+    return masked_data[zmin:zmax,ymin:ymax,xmin:xmax]
+
+
+
 # split the data to create training and validation data
 @jit(nopython=True)
 def SplitData(data, axis, threshold=0.5):
