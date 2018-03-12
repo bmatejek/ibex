@@ -91,7 +91,8 @@ def ExtractFeature(segmentation, candidate, width, radii, augment=True):
     
     # perform a rotation
     angle = random.uniform(0, 360)
-    example = scipy.ndimage.interpolation.rotate(example, angle, axes=(IB_X + 2, IB_Y + 2), reshape=False, order=0)
+    # cvalue is -0.5 to match the background being -0.5
+    example = scipy.ndimage.interpolation.rotate(example, angle, axes=(IB_X + 2, IB_Y + 2), reshape=False, order=0, mode='constant', cval=-0.5)
 
     return example
 

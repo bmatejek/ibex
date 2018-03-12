@@ -54,7 +54,7 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
-    
+
     # get the candidate locations 
     positive_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'positive')
     negative_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'negative')
