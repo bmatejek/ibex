@@ -37,31 +37,6 @@ long *CppMapping(long *segmentation, int *gold, long nentries, double match_thre
       seg2gold_overlap[segmentation[iv]][gold[iv]]++;
     }
     
-
-
-    /* TODO way too memory expensive */
-    long **seg2gold_overlap_old = new long *[max_segmentation_value];
-    for (long is = 0; is < max_segmentation_value; ++is) {
-        seg2gold_overlap_old[is] = new long[max_gold_value];
-        for (long ig = 0; ig < max_gold_value; ++ig) {
-            seg2gold_overlap_old[is][ig] = 0;
-        }
-    }
-
-    // iterate over every voxel
-    for (long iv = 0; iv < nentries; ++iv) {
-      seg2gold_overlap_old[segmentation[iv]][gold[iv]]++;
-    }
-
-    for (long is = 0; is < max_segmentation_value; ++is) {
-      for (long ig = 0; ig < max_gold_value; ++ig) {
-	if (seg2gold_overlap_old[is][ig]) 
-	  if (seg2gold_overlap[is][ig] != seg2gold_overlap_old[is][ig]) printf("NO!\n");
-      }
-    }
-	  
-
-    
     // create the mapping
     long *segmentation_to_gold = new long[max_segmentation_value];
     for (long is = 0; is < max_segmentation_value; ++is) {
