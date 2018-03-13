@@ -43,10 +43,10 @@ unsigned char *CppLiftedMulticut(unsigned long nvertices, unsigned long nedges, 
     else if (heuristic == 1) andres::graph::multicut_lifted::greedyAdditiveEdgeContraction(original_graph, lifted_graph, weights, edge_labels);
 
     // turn vector into char array and return
-    unsigned char *collapsed_edges = new unsigned char[nedges];
+    unsigned char *maintain_edges = new unsigned char[nedges];
     for (unsigned long ie = 0; ie < nedges; ++ie) {
-        collapsed_edges[ie] = edge_labels[lifted_graph.findEdge(vertex_ones[ie], vertex_twos[ie]).second];
+        maintain_edges[ie] = edge_labels[lifted_graph.findEdge(vertex_ones[ie], vertex_twos[ie]).second];
     }
 
-    return collapsed_edges;
+    return maintain_edges;
 }

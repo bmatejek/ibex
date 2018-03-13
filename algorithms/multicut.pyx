@@ -48,7 +48,7 @@ def Multicut(prefix, candidates, edge_weights, beta, threshold, heuristic):
     # run multicut algorithm
     cdef unsigned char *cpp_collapsed_edges = CppMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_edge_weights[0]), beta, heuristic)
     cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
-    collapsed_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
+    maintain_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
     
     ncandidates = len(candidates)
     labels = np.zeros(ncandidates, dtype=np.uint8)
@@ -57,14 +57,13 @@ def Multicut(prefix, candidates, edge_weights, beta, threshold, heuristic):
 
     print '\nAfter Multicut\n'
 
-    PrecisionAndRecall(labels, 1 - collapsed_edges)
-
+    PrecisionAndRecall(labels, 1 - maintain_edges)
 
     # collapse the edges returned from multicut
-    segmentation = CollapseGraph(segmentation, candidates, collapsed_edges, edge_weights)
-   
-    # evaluate before and after multicut
-    #comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
+    output_filename = 'multicuts/{}-{}.results'.format(prefix, beta)
+    CollapseGraph(segmentation, candidates, maintain_edges, edge_weights, output_filename)
+    
+
 
 
 

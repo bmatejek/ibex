@@ -37,7 +37,7 @@ def RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoi
 
 
 # collapse the edges from multicut
-def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
+def CollapseGraph(segmentation, candidates, maintain_edges, probabilities, output_filename):
     ncandidates = len(candidates)
 
     # get the ground truth and the predictions
@@ -50,7 +50,7 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
     union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
 
     # create adjacency sets for the elements in the segment
-    adjacency_sets = [set() for _ in range(ncandidates)]
+    adjacency_sets = [set() for _ in range(max_value)]
 
     for candidate in candidates:
         label_one = candidate.labels[0]
@@ -64,7 +64,7 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
 
     for probability, ie in sorted(zipped, reverse=True):
         # skip if the edge is not collapsed
-        if collapsed_edges[ie]: continue
+        if maintain_edges[ie]: continue
         # skip if this creates a cycle
         label_one, label_two = candidates[ie].labels
 
@@ -76,21 +76,17 @@ def CollapseGraph(segmentation, candidates, collapsed_edges, probabilities):
             if neighbor_label == label_two: continue
 
             if unionfind.Find(union_find[neighbor_label]).label == label_two_union_find: 
-                collapsed_edges[ie] = True
+                maintain_edges[ie] = True
 
         # skip if the edge is no longer collapsed
-        if collapsed_edges[ie]: continue
+        if maintain_edges[ie]: continue
         unionfind.Union(union_find[label_one], union_find[label_two])
 
     print '\nBorder Constraints\n'
-    PrecisionAndRecall(labels, 1 - collapsed_edges)
+    PrecisionAndRecall(labels, 1 - maintain_edges)
 
-
-    # create a mapping for the labels
-    mapping = np.zeros(max_value, dtype=np.int64)
-    for iv in range(max_value):
-        mapping[iv] = unionfind.Find(union_find[iv]).label
-
-    segmentation = seg2seg.MapLabels(segmentation, mapping)
-
-    return segmentation
+    # for every edge, save if the edge is collapsed
+    with open(output_filename, 'wb') as fd:
+        fd.write(struct.pack('q', ncandidates))
+        for ie in range(ncandidates):
+            fd.write(struct.pack('?', maintain_edges[ie]))
