@@ -5,6 +5,7 @@ import ctypes
 
 from ibex.transforms import distance, seg2seg
 from cremi_python.cremi.evaluation.voi import voi
+from cremi_python.cremi.evaluation import border_mask
 
 
 cdef extern from 'cpp-comparestacks.h':
@@ -42,7 +43,10 @@ def CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=T
         segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, filtersize)
         gold = seg2seg.RemoveSmallConnectedComponents(gold, filtersize)
     if dilate_ground_truth > 0:
-        gold = distance.DilateData(gold, dilate_ground_truth)
+        masked_gold = np.zeros(gold.shape, dtype=gold.dtype)
+        border_mask.create_border_mask(gold, masked_gold, dilate_ground_truth, 0)
+    else:
+        masked_gold = np.copy(gold)
 
     # run the cremi variation of information algorithm
     if mask_ground_truth: gold_mask = [0]
@@ -50,7 +54,7 @@ def CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=T
     if mask_segmentation: segment_mask = [0]
     else: segment_mask = []
 
-    vi_split, vi_merge = voi(segmentation, gold, segment_mask, gold_mask)
+    vi_split, vi_merge = voi(segmentation, masked_gold, segment_mask, gold_mask)
     print 'Variation of Information Full: {}'.format(vi_split + vi_merge)
     print 'Variation of Information Merge: {}'.format(vi_merge)
     print 'Variation of Information Split: {}'.format(vi_split)

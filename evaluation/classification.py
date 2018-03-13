@@ -15,7 +15,60 @@ def Prob2Pred(probabilities, threshold=0.5):
     return predictions
 
 
+def PrecisionAndRecallCurve(ground_truth, probabilities):
+    results = sorted(zip(probabilities, ground_truth), reverse=True)
 
+    precisions = []
+    recalls = []
+
+    TP = 0
+    FP = 0
+    FN = 0
+    TN = 0
+
+    for (probability, label) in results:
+        if probability > 0.5 and label: TP += 1
+        if probability > 0.5 and not label: FP += 1
+        if probability < 0.5 and label: FN += 1
+        if probability < 0.5 and not label: TN += 1
+
+        if TP + FP == 0 or TP + FN == 0: continue
+        precisions.append(TP / float(TP + FP))
+        recalls.append(TP / float(TP + FN))
+
+    return precisions, recalls
+        
+    
+    
+
+def ReceiverOperatingCharacteristicCurve(ground_truth, probabilities):
+    results = sorted(zip(probabilities, ground_truth), reverse=True)
+
+    true_positive_rates = []
+    false_positive_rates = []
+
+    TP = 0
+    FP = 0
+    FN = 0
+    TN = 0
+    
+    for (probability, label) in results:
+        if probability > 0.5 and label: TP += 1
+        if probability > 0.5 and not label: FP += 1
+        if probability < 0.5 and label: FN += 1
+        if probability < 0.5 and not label: TN += 1
+
+        if TP + FN == 0 or TN + FP == 0: continue
+        true_positive_rates.append(TP / float(TP + FN))
+        false_positive_rates.append(1.0 - TN / float(TN + FP))
+
+    true_positive_rates.append(0)
+    false_positive_rates.append(0)
+        
+    return true_positive_rates, false_positive_rates
+    
+    
+    
 def PrecisionAndRecall(ground_truth, predictions, output_filename=None, binary=True):
     assert (ground_truth.shape == predictions.shape)
 

@@ -175,6 +175,8 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         label_one = endpoint_one.label
         label_two = endpoint_two.label
 
+        if label_two > label_one: continue
+        
         # extract a bounding box around this midpoint
         midz, midy, midx = midpoints[(label_one,label_two)]
 
