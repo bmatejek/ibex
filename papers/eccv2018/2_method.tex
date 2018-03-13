@@ -117,7 +117,7 @@ The first channel is $0.5$ only if the corresponding voxel has label $l_1$.
 The second channel is $0.5$ only if the corresponding voxel has label $l_2$. 
 The third channel is $0.5$ if the corresponding voxel is either $l_1$ or $l_2$.
 We do not use the raw EM image information to avoid the need to retrain the network on datasets that have been stained differently or imaged at different resolution. 
-This reduces the needfor generating costly manually-labeled ground truth. 
+This reduces the need for generating costly manually-labeled ground truth. 
 
 \begin{figure}[t]
 	\centering
@@ -158,7 +158,7 @@ After constructing the 3D graph we seek to partition the graph into labels where
 We formulate this graph partitioning problem as a multicut problem.
 There are two primary benefits to using a multicut formulation. 
 First, the number of segments in the final graph is not predetermined but depends on the input graph itself. 
-Second, this minimization produces globally consistent solutions (i.e. a boundary remains if and only if the two corresponding nodes belong to unique segments).
+Second, this minimization produces globally consistent solutions (i.e. a boundary remains if and only if the two corresponding nodes belong to unique segments)~\cite{keuper2015efficient}.
 
 We apply the algorithms of Keuper et al.~\cite{keuper2015efficient} to produce a feasible solution to the multicut problem using greedy additive edge contraction.
 Following their example, we employ the generalized ``lifted'' multicut formulation.
