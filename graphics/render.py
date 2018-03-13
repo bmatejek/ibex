@@ -13,17 +13,12 @@ from ibex.transforms import h52h5
 
 
 # run the marching cube algorithm for these labels
-def MarchingCubes(data, resolution, downsample_rate, output_prefix):
+def MarchingCubes(data, labels, resolution, downsample_rate, output_prefix):
     # downsample the input data to a manageable size
     downsampled_data = h52h5.DownsampleData(data, downsample_rate)
 
     # get the new grid size
     zres, yres, xres = downsampled_data.shape
-
-    # go through all labels
-    labels = np.unique(downsampled_data)
-    # to make sure masking occurred (arbitrary value)
-    assert (len(labels) < 100)
 
     for label in labels:
         if not label: continue
@@ -38,7 +33,7 @@ def MarchingCubes(data, resolution, downsample_rate, output_prefix):
         nfaces = faces.shape[0]
 
         # center all of the vertices
-        scale_factor = 1000.0
+        scale_factor = 500.0
         for iv in range(nverts):
             # divide by 2.0 to center the vertices
             verts[iv,0] = resolution[IB_Z] * downsample_rate[IB_Z] * (verts[iv,IB_Z] - zres / 2.0) / scale_factor
