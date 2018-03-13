@@ -17,7 +17,7 @@ def RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoi
     ncandidates = len(candidates)
 
     # read the probabilities foor this candidate
-    probabilities_filename = '{}-{}-{}-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance)
+    probabilities_filename = '{}-{}-{}-{}nm-{}nm-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance, endpoint_distance, network_distance)
     with open(probabilities_filename, 'rb') as fd:
         nprobabilities, = struct.unpack('i', fd.read(4))
         assert (nprobabilities == ncandidates)
