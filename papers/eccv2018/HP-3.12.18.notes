@@ -1,12 +1,3 @@
-top-down graph based method instead of global
-	Top-down Graph-based Neural Reconstruction
-		no more skeletonized 3d networks
-
-we should include scalable 
-	scalable graph-based neural reconstruction for connectomics
-	make them equal sizes 
-
-	top-down instead of global since it is in constrast to bottom up
 
 	add a teaser image
 
@@ -15,8 +6,6 @@ we should include scalable
 
 		top-down is fine
 
-perhaps scalable graph-based error correction for neural reconstruction
-	neural reconstruction or error correction
 
 add in paragraph biological constraints (give it a separate subsection 3.1)
 	expand this a little bit 
@@ -28,9 +17,6 @@ add in paragraph biological constraints (give it a separate subsection 3.1)
 		if there is a synapse on a spine it should be connected to dendrite			
 			fine to say some of this is future work and can expand as the data sets/graph sizes increase, biology understanding improves
 
-post-processing should be in bold like classifier input
-
-be very upfront about how these datasets are so much larger than CREMI/SNEMI
 
 add in paragraph about running times (subsection 5.5)
 	move from supplemental material -> to main paper (results)
@@ -39,27 +25,21 @@ add in paragraph about running times (subsection 5.5)
 get the total length of all the skeletons in the datasets
 	show scalability to very large datasets
 
-training augmentation, inference augmentation, generalization to other datasets -> bold and no period
+
 
 5.4 add some visual examples
 
-Figure 5 -> put three graphs next to each other and only include testing
 
-figure 6 -> segments of neurons before they were correctly...
 
 figure 6 -> add example of merge that we missed
 
 figure 7 -> say specifically that these are examples that are misssed
 
-figure 8 -> ROC + Precision and recall curves
-
-remove table 3 and add to figure 8
-
-in error metric talk about what I mean by precision/recall (only looking at true positive relation)
-	change to error metrics
 
 make these edits right now with placeholders for the figures and with new tables
 	get Toufiq and Donglai for an edit pass
+
+
 
 David Cox still affiliated 
 	ask him about qualifying exams
@@ -67,3 +47,39 @@ David Cox still affiliated
 Let's try for May - get committee together
 	check with Michaela about HPs schedule 
 	
+
+
+
+
+
+
+
+be very upfront about how these datasets are so much larger than CREMI/SNEMI
+
+post-processing should be in bold like classifier input
+
+training augmentation, inference augmentation, generalization to other datasets -> bold and no period
+
+remove table 3 and add to figure 8
+
+figure 8 -> ROC + Precision and recall curves
+
+figure 6 -> segments of neurons before they were correctly...
+
+Figure 5 -> put three graphs next to each other and only include testing
+
+top-down graph based method instead of global
+	Top-down Graph-based Neural Reconstruction
+		no more skeletonized 3d networks
+
+we should include scalable 
+	scalable graph-based neural reconstruction for connectomics
+	make them equal sizes 
+
+	top-down instead of global since it is in constrast to bottom up
+
+perhaps scalable graph-based error correction for neural reconstruction
+	neural reconstruction or error correction
+
+in error metric talk about what I mean by precision/recall (only looking at true positive relation)
+	change to error metrics
