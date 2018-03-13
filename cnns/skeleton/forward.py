@@ -74,10 +74,10 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
         labels[ie] = candidate.ground_truth
 
     # write the precision and recall values
-    output_filename = '{}-{}-{}-{}nm.results'.format(model_prefix, prefix, threshold, maximum_distance)
+    output_filename = '{}-{}-{}-{}nm-{}nm-{}nm.results'.format(model_prefix, prefix, threshold, maximum_distance, endpoint_distance, network_distance)
     PrecisionAndRecall(labels, predictions, output_filename)
 
-    output_filename = '{}-{}-{}-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance)
+    output_filename = '{}-{}-{}-{}nm-{}nm-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance, endpoint_distance, network_distance)
     with open(output_filename, 'wb') as fd:
         fd.write(struct.pack('i', ncandidates))
         for probability in probabilities:

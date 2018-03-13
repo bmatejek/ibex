@@ -6,7 +6,11 @@ We evaluate our method by comparing it to a state-of-the-art pixel-based reconst
 \subsection{Datasets}
 \label{sec:dataset}
 
-\paragraph{Kasthuri.}
+Our proposed method is designed for very large connectomics datasets. 
+Popular challenge datasets such as CREMI and SNEMI3D are simply too small for any noticeable change. 
+The following three datasets contain from 4 to 40 times more volume than the CREMI datasets. 
+
+\subsubsection{Kasthuri}
 The Kasthuri dataset consists of scanning electron microscope images of the neocortex of a mouse brain~\cite{kasthuri2015saturated}. 
 This dataset is $5342 \times 3618 \times 338$ voxels in size. 
 The resolution of the dataset is $\SI[product-units=single]{3 x 3 x 30}{\nano\meter}^3$ per voxel. 
@@ -14,13 +18,13 @@ We evaluate our methods using the left cylinder of this 3-cylinder dataset.
 We downsample the dataset in the $x$ and $y$ dimensions to give a final resolution of $\SI[product-units=single]{6 x 6 x 30}{\nano\meter}^3$ per voxel. 
 We divide the dataset into two volumes (Vol. 1 and Vol. 2) along the $x$ dimension, where each volume is $\SI[product-units=single]{8.0 x 10.9 x 10.1}{\micro\meter}^3$ or $1335 \times 1809 \times 338$ voxels.
 
-\paragraph{FlyEM.}
+\subsubsection{FlyEM}
 The FlyEM dataset comes from the mushroom body of a 5-day old adult male \textit{Drosophila} fly imaged by a focused ion-beam milling scanning electron microscopy~\cite{takemura2017connectome}.
 The mushroom body in this species is the primary site of associative learning. 
 The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro\meter}^3$ volume with a resolution of $\SI[product-units=single]{10 x 10 x 10}{\nano\meter}^3$ per voxel. 
 We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$ or $999 \times 999 \times 999$ voxels.
 
-\paragraph{Fib-25.}
+\subsubsection{Fib-25}
 The Fib-25 dataset comes from the visual system of a \textit{Drosophila} fly~\cite{takemura2015synaptic}. This sample is imaged at a resolution of $\SI[product-units=single]{8 x 8 x 8}{\nano\meter}^3$ and has $2588 \times 2108 \times 2876$ voxels representing a volume of $\SI[product-units=single]{23.0 x 16.9 x 23.0}{\micro\meter}^3$. 
 There is currently a reconstruction challenge based on this sample.
 
@@ -64,29 +68,13 @@ We validate the CNN classifier on the remaining 20\% of candidates.
 
 We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. 
 The supplemental material includes information on the experiments that determined these final parameters. 
-Table~\ref{table:architecture} provides the parameters of the final network. 
+We provide all parameters of the final network in the supplemental material. 
 There are \TODO{X,XXX,XXX} learnable parameters in our final architecture. 
 All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. 
 Training concluded after \TODO{XXX} epochs.
 
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{l l} \hline
-		\textbf{Parameters} & \textbf{Values} \\ \hline
-		Loss Function & Mean Squared Error \\
-		Optimizer & SGD  with Nesterov Momentum \\
-		Momentum & 0.9 \\
-		Initial Learning Rate & 0.0001 \\
-		Decay Rate & $5 * 10^{-8}$ \\
-		Activation & LeakyReLU $(\alpha = 0.001)$ \\
-		Kernel Sizes & $3 \times 3 \times 3$ \\
-		Filter Sizes & $16 \to 32 \to 64$ \\ \hline
-	\end{tabular}
-	\caption{Training parameters.}
-	\label{table:architecture}
-\end{table}
 
-\paragraph{Training Augmentation.}
+\subsubsection{Training Augmentation.}
 
 Since our input is an existing segmentation of the EM images, there are very few training examples compared to per-pixel classifiers that can train on a unique window for each voxel. 
 The Kasthuri dataset represents a region of brain over $\SI[product-units=single]{800}{\micro\meter}^3$ in volume and only yields \TODO{700} positive merge examples and \TODO{7000} negative ones.
@@ -98,9 +86,12 @@ The supplemental material contains experiments demonstrating the benefits of thi
 We have 20,000 such examples per epoch.
 
 
-\subsection{Error Metric}
+\subsection{Error Metrics}
 \label{sec:variation-of-information}
 
 We evaluate the performance of the different methods using the split variation of information (VI)~\cite{meila2003comparing}.
 Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over- and under-segmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. 
 Since we are measuring the entropy between two clusterings, lower VI scores are better.
+
+We use both precision and recall to evaluate the convolutional neural network and multicut outputs. 
+Since our method attempts to only correct \textit{split errors}, we define a true positive as a pair of segments that are correctly merged together after our pipeline.
