@@ -1,6 +1,7 @@
 import numpy as np
 from numba import jit
 
+from sklearn.metrics import auc, average_precision_score, precision_recall_curve, roc_curve
 
 
 @jit(nopython=True)
@@ -16,56 +17,14 @@ def Prob2Pred(probabilities, threshold=0.5):
 
 
 def PrecisionAndRecallCurve(ground_truth, probabilities):
-    results = sorted(zip(probabilities, ground_truth), reverse=True)
+    precisions, recalls, _ = precision_recall_curve(ground_truth, probabilities)
+    return precisions, recalls, average_precision_score(ground_truth, probabilities)
 
-    precisions = []
-    recalls = []
-
-    TP = 0
-    FP = 0
-    FN = 0
-    TN = 0
-
-    for (probability, label) in results:
-        if probability > 0.5 and label: TP += 1
-        if probability > 0.5 and not label: FP += 1
-        if probability < 0.5 and label: FN += 1
-        if probability < 0.5 and not label: TN += 1
-
-        if TP + FP == 0 or TP + FN == 0: continue
-        precisions.append(TP / float(TP + FP))
-        recalls.append(TP / float(TP + FN))
-
-    return precisions, recalls
-        
-    
     
 
 def ReceiverOperatingCharacteristicCurve(ground_truth, probabilities):
-    results = sorted(zip(probabilities, ground_truth), reverse=True)
-
-    true_positive_rates = []
-    false_positive_rates = []
-
-    TP = 0
-    FP = 0
-    FN = 0
-    TN = 0
-    
-    for (probability, label) in results:
-        if probability > 0.5 and label: TP += 1
-        if probability > 0.5 and not label: FP += 1
-        if probability < 0.5 and label: FN += 1
-        if probability < 0.5 and not label: TN += 1
-
-        if TP + FN == 0 or TN + FP == 0: continue
-        true_positive_rates.append(TP / float(TP + FN))
-        false_positive_rates.append(1.0 - TN / float(TN + FP))
-
-    true_positive_rates.append(0)
-    false_positive_rates.append(0)
-        
-    return true_positive_rates, false_positive_rates
+    false_positive_rates, true_positive_rates, _ = roc_curve(ground_truth, probabilities)
+    return false_positive_rates, true_positive_rates, auc(false_positive_rates, true_positive_rates)
     
     
     
