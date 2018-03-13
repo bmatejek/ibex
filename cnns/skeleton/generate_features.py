@@ -175,8 +175,6 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         label_one = endpoint_one.label
         label_two = endpoint_two.label
 
-        if (label_one > label_two): continue
-
         # extract a bounding box around this midpoint
         midz, midy, midx = midpoints[(label_one,label_two)]
 
@@ -184,6 +182,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         extracted_gold = gold[midz-network_radii[IB_Z]:midz+network_radii[IB_Z],midy-network_radii[IB_Y]:midy+network_radii[IB_Y],midx-network_radii[IB_X]:midx+network_radii[IB_X]]
 
         extracted_seg2gold_mapping = seg2gold.Mapping(extracted_segmentation, extracted_gold, match_threshold=0.70, nonzero_threshold=0.40)
+
         gold_one = extracted_seg2gold_mapping[label_one]
         gold_two = extracted_seg2gold_mapping[label_two]
 
@@ -222,5 +221,5 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
    
-    segmentation = seg2seg.MapLabels(segmentation, mapping)
-    comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
+    # segmentation = seg2seg.MapLabels(segmentation, mapping)
+    # comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)

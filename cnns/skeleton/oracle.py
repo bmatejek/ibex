@@ -5,34 +5,11 @@ from ibex.utilities import dataIO
 from ibex.transforms import seg2seg, seg2gold
 from ibex.cnns.skeleton.util import FindCandidates
 from ibex.data_structures import unionfind
-from PixelPred2Seg import comparestacks
+from ibex.evaluation import comparestacks
 
 
 
 def Oracle(prefix, threshold, maximum_distance, network_distance):
-    segmentation = dataIO.ReadSegmentationData(prefix)
-    gold = dataIO.ReadGoldData(prefix)
-
-    seg2gold_mapping = seg2gold.Mapping(segmentation, gold, low_threshold=0.10, high_threshold=0.80)
-
-    # connect all segment that have the same gold label
-    max_segmentation = np.max(segmentation) + 1
-    mapping = np.zeros(max_segmentation, dtype=np.int64)
-
-    nzeros = 1
-    for iv in range(max_segmentation):
-        if not seg2gold_mapping[iv]:
-            mapping[iv] = max_segmentation + nzeros
-            nzeros += 1
-        else:
-            mapping[iv] = seg2gold_mapping[iv]
-
-    oracle_segmentation = seg2seg.MapLabels(segmentation, mapping)
-    comparestacks.Evaluate(oracle_segmentation, gold)
-
-    return
-
-
     # get all of the candidates
     candidates = FindCandidates(prefix, threshold, maximum_distance, network_distance, inference=True)  
     ncandidates = len(candidates)

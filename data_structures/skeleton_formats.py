@@ -215,25 +215,6 @@ class SWCSkeleton:
             if endpoints[ie]:
                 self.endpoints.append(self.joints[ie])
 
-        # go though all endpoints and add their parents
-        augmented_endpoints = []
-        for endpoint in self.endpoints:
-            if endpoint.parent_sample == -1: continue
-            augmented_endpoints.append(self.joints[endpoint.parent_sample - 1])
-
-        for joint in self.joints:
-            if joint.parent_sample == -1: continue
-            parent = self.joints[joint.parent_sample - 1]
-            for endpoint in self.endpoints:
-                if parent.sample_number == endpoint.sample_number:
-                    augmented_endpoints.append(joint)
-        self.endpoints = list(set(self.endpoints + augmented_endpoints))
-       
-        for ie1 in range(len(self.endpoints)):
-            for ie2 in range(ie1 + 1, len(self.endpoints)):
-                assert (self.endpoints[ie1].sample_number != self.endpoints[ie2].sample_number)
-
-
     # return the kth endpoint
     def EndPoint(self, k):
         assert (0 <= k and k < self.NEndPoints())
