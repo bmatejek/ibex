@@ -63,21 +63,21 @@ Although the voxels vary between different datasets, the physical space remains 
 
 We use half of the Kasthuri and FlyEM datasets\footnote{Since the FlyEM datasets have significantly fewer examples, we initialize the network with the weights from the Kasthuri training and have an initial learning rate of $10^{-4}$.} for training and validation. 
 We train on 80\% of the potential merge candidates for this volume.
-We validate the CNN classifier on the remaining 20\% of candidates. 
+We validate the CNN classifier on the remaining 20\% of the candidates. 
 
 
 We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. 
 The supplemental material includes information on the experiments that determined these final parameters. 
 We provide all parameters of the final network in the supplemental material. 
-There are \TODO{X,XXX,XXX} learnable parameters in our final architecture. 
+There are 2,313,969 learnable parameters in our final architecture. 
 All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. 
-Training concluded after \TODO{XXX} epochs.
+Training concluded after 1000 epochs.
 
 
 \subsubsection{Training Augmentation.}
 
 Since our input is an existing segmentation of the EM images, there are very few training examples compared to per-pixel classifiers that can train on a unique window for each voxel. 
-The Kasthuri dataset represents a region of brain over $\SI[product-units=single]{800}{\micro\meter}^3$ in volume and only yields \TODO{700} positive merge examples and \TODO{7000} negative ones.
+The Kasthuri dataset represents a region of brain over $\SI[product-units=single]{800}{\micro\meter}^3$ in volume and only yields 640 positive merge examples and 4821 negative ones.
 To avoid overfitting our deep networks, we apply the following augmentations on the training examples.
 During a single batch, we randomly select ten positive and negative examples. 
 With probability 0.5, the example is reflected across the $xy$-plane. 

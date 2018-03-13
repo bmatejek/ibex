@@ -63,18 +63,14 @@ We present additional analysis of the skeletonization parameters in the suppleme
 \begin{table}
 	\centering
 	\small
+	\setlength{\tabcolsep}{0.75em}
 	\begin{tabular}{c c c c} \hline
 		\textbf{Dataset} & \textbf{Segment Adjacency} & \textbf{Skeleton Pruning} & \textbf{Missed Split Errors} \\ \hline
-		Kasthuri Training & 763 / 21,242 & 753 / 3,459 & \\
-		Kasthuri Vol. 2 & 1,010 / 26,073 & 904 / 4,327 & \\
-		FlyEM Vol. 1 & 269 / 14,875 & 262 / 946 & \\
-		FlyEM Vol. 2 & 270 / 16,808 & 285 / 768 & \\ \hline
-		%		Kasthuri Vol. 1 & 763 / 21242 (3.47\%) & 753 / 3459 (17.88\%) \\
-		%		Kasthuri Vol. 2 & 1010 / 26073 (3.73\%) & 904 / 4327 (17.28\%) \\
-		%		FlyEM Vol. 1 & 269 / 14875 (1.78\%) & 262 / 946 (21.69\%) \\
-		%		FlyEM Vol. 2 & 270 / 16808 (1.58\%) & 285 / 768 (27.07\%)\\ \hline
+		Kasthuri &  & & \\
+		FlyEM &  &  & \\
+		FIB-25 &  & & \\ \hline
 	\end{tabular}
-	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 763) compared to total number of edges in the graph (e.g., 21,242) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
+	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., \TODO{XXX}) compared to total number of edges in the graph (e.g., \TODO{XXXXX}) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
 	\label{table:skeletonization}
 \end{table}
 
@@ -94,7 +90,7 @@ There are on average $\TODO{XX}$ such examples in our datasets, corresponding to
 \begin{figure}[t!]
 	\centering
 	\includegraphics[width=0.45\linewidth]{./figures/merge_candidate1.png}		\includegraphics[width=0.45\linewidth]{./figures/merge_candidate2.png}
-	\caption{Two false negative example of our method due to graph pruning. The distance between the endpoints (circled) of the two segments is too far to be flagged as a merge candidate.}
+	\caption{Two example segment pairs that we incorrectly prune from our graph. The distances between the circled endpoints are greater than our thresholds.}
 	\label{fig:skeleton-results}
 \end{figure}
 
@@ -103,7 +99,7 @@ There are on average $\TODO{XX}$ such examples in our datasets, corresponding to
 \subsubsection{Inference Augmentation}
 
 Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d,lee2017superhuman}.
-When computing the probability to merge two segments, we input the initial segment into our CNN as well as \TODO{XX} randomly rotated and flipped examples (in the same manner as training augmentation).
+When computing the probability to merge two segments, we input the initial segment into our CNN as well as 3 randomly rotated and flipped examples (in the same manner as training augmentation).
 This produces some additional increase in overall accuracy (Figure ~\ref{fig:receiver-operating-characteristic}).
 The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
 
@@ -140,6 +136,7 @@ Over the three testing datasets, applying a graph-based partitioning strategy re
 \begin{table}[h]
 	\centering
 	\small
+	\setlength{\tabcolsep}{0.3em}
 	\begin{tabular}{c c c c | c c c} \hline
 		& \multicolumn{3}{c}{\textbf{Multicut}} & \multicolumn{3}{c}{\textbf{Lifted Multicut}} \\ \hline
 		\textbf{Dataset} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} \\ \hline

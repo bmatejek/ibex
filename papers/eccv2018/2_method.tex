@@ -57,7 +57,7 @@ We provide further analysis of this strategy in the supplemental material.
 \end{figure}
 
 A typical approach for generating edges produces one between all adjacent segments. Two segments $l_1$ and $l_2$ are considered adjacent if there is a pair of adjacent voxels with one labeled $l_1$ and the other labeled $l_2$.
-For example, pixel-based agglomeration methods such as mean agglomeration \TODO{CITE} or waterz \TODO{CITE} consider all pairs of adjacent segments for merging.
+For example, pixel-based agglomeration methods such as mean agglomeration~\cite{lee2017superhuman} or waterz~\cite{funke2017deep} consider all pairs of adjacent segments for merging.
 However, this method produces too many edges in the graph for graph-based optimization approaches. 
 We identify a smaller number of pairs of segments to consider as graph edges using the following approach.
 
