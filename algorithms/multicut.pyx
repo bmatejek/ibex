@@ -60,7 +60,7 @@ def Multicut(prefix, candidates, edge_weights, beta, threshold, heuristic):
     PrecisionAndRecall(labels, 1 - maintain_edges)
 
     # collapse the edges returned from multicut
-    output_filename = 'multicuts/{}-{}.results'.format(prefix, beta)
+    output_filename = 'multicuts/{}-{:0.2f}.results'.format(prefix, beta)
     CollapseGraph(segmentation, candidates, maintain_edges, edge_weights, output_filename)
     
 
