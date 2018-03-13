@@ -1,16 +1,13 @@
 % !TEX root =  paper.tex
 \section{Introduction}
 
-\begin{figure}[t]
-	\subfloat[]{
-	\includegraphics[width=.47\linewidth]{figures/schema/pre-multicut-with-arrows.pdf}
-	}
-	\subfloat[]{
-	\includegraphics[width=.47\linewidth]{figures/schema/post-multicut.png}
-	}
-	\caption{Example improvement of neural reconstruction. (a) We extract 3D skeletons from pixel-based segmentation algorithms to create a graph representation. Red arrows highlight errors in the input segmentation. (b) We improve the segmentation accuracy using a graph partitioning algorithm, leveraging both local and global information.}
+\begin{figure}[t!]
+	\centering
+	\includegraphics[width=\linewidth]{./figures/teaser_v2.png}
+	\caption{Our proposed framework uses both local and global biological constraints to improve an input segmentation.}
 	\label{fig:teaser}
 \end{figure}
+
 
 The field of connectomics is concerned with reconstructing the wiring diagram of the brain at nanometer resolutions to enable new insights into the workings of the brain~\cite{haehn2017scalable,kasthuri2015saturated}. 
 Recent advancements in image acquisition using multi-beam serial-section electron microscopy (sSEM) allow researchers to produce terabytes of image data per hour~\cite{hildebrand2017whole}. 
@@ -19,12 +16,12 @@ State-of-the-art automatic reconstruction approaches use pixel-based segmentatio
 These \textit{bottom-up pixel-based} methods produce excellent results but still fall short of acceptable error rates for large volumes.
 
 We present a \textit{top-down graph-based} method that builds on the outputs of bottom-up pixel-based segmentation approaches. 
+Our method imposes both local and global biological constraints onto the output segmentation to match the underlying structure of neuronal processes.
 We first extract skeletons from labels in the input segmentation and generate a simplified graph (Fig.~\ref{fig:teaser}a). 
-Next, a trained CNN classifier detects split errors in the segmentation data. 
-Split errors correspond to neurons which are incorrectly segmented with multiple labels. 
-This classifier produces probabilities that two segments belong to the same neuron.
+Next, we train a CNN classifier to learn biological constraints on the local structural shape of a neuron (Fig.~\ref{fig:teaser}b). 
+This classifier produces probabilities that two segments belong to the same neuron based on the input shapes of the segments.
 These probabilities correspond to edge weights in our graph extracted from the input segmentation.
-We then use a graph optimization algorithm to partition the graph into a final improved reconstruction by enforcing domain-specific global constraints from biology (Fig.~\ref{fig:teaser}b).
+We then use a graph optimization algorithm to partition the graph into a final improved reconstruction by enforcing domain-specific topological constraints from biology (Fig.~\ref{fig:teaser}c).
 
 Our approach operates at a level of abstraction above existing pixel-based methods. 
 This allows us to leverage both local and global information to produce more accurate reconstructions. 
@@ -34,4 +31,4 @@ By removing the dependence of our algorithm on the input images, we greatly redu
 Using the graph induced by the segmentation allows us to enforce global biological constraints on the reconstruction. 
 Our dual approach of assessing local decisions in a global context yields accuracy improvements over existing reconstruction methods.
 
-This work makes the following contributions: (1) a novel top-down framework that extracts graphs from skeletonized 3D networks for improved neural reconstruction of connectomics data; (2) a region-based CNN classifier to detect errors; (3) an empirical evaluation of our method on several connectomics datasets; (4) improved performance over a state-of-the-art pixel-based reconstruction approach on average by \TODO{XX}\% with suitable running times.
+This work makes the following contributions: (1) a novel top-down framework that extracts graphs from skeletonized 3D segmentations for improved neural reconstruction of connectomics data; (2) a region-based CNN classifier to detect errors; (3) an empirical evaluation of our method on several connectomics datasets; (4) improved performance over a state-of-the-art pixel-based reconstruction approach on average by \TODO{XX}\% with suitable running times.

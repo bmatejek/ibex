@@ -2,6 +2,18 @@
 
 \section{Related Work}
 
+\begin{figure}[t]
+	\subfloat[]{
+		\includegraphics[width=.47\linewidth]{figures/schema/pre-multicut-with-arrows.pdf}
+	}
+	\subfloat[]{
+		\includegraphics[width=.47\linewidth]{figures/schema/post-multicut.png}
+	}
+	\caption{Example improvement of neural reconstruction. (a) We extract 3D skeletons from pixel-based segmentation algorithms to create a graph representation. Red arrows highlight errors in the input segmentation. (b) We improve the segmentation accuracy using a graph partitioning algorithm, leveraging both local and global information.}
+	\label{fig:improved-reconstruction}
+\end{figure}
+
+
 \subsubsection{Pixel-based methods}
 A significant amount of connectomics research considers the problem of extracting segmentation information at the pixel (i.e., voxel) level from the raw EM images. 
 Some methods use a random forest populated with hand-designed features based on image characteristics around a given pixel to predict membrane probabilities~\cite{kaynig2015large}.
@@ -16,7 +28,6 @@ Data augmentation in both training and testing can increase the prediction accur
 Lee et al. surpass the estimated human accuracy on the SNEMI3D dataset with a variant of the 3D U-Net architecture~\cite{lee2017superhuman}.
 
 \subsubsection{Region-based methods}
-
 Some early techniques apply computationally expensive graph partitioning algorithms with a single node per superpixel~\cite{andres2012globally}. 
 Several pixel-based approaches generate probabilities that neighboring pixels belong to the same neuron.
 Often a watershed algorithm will then cluster pixels into super-pixels~\cite{zlateski2015image}.

@@ -43,19 +43,17 @@
 
 \newcommand\TODO[1]{\textcolor{red}{#1}}
 
-
 \maketitle
 
 \begin{abstract}
 Advancements in electron microscopy image acquisition have created connectomics datasets terabytes in size making manual reconstruction of neuronal structures infeasible.
 Current state-of-the-art automatic methods classify neural membranes at the pixel level followed by agglomeration methods to create full neuron reconstructions.
-However, these approaches widely neglect global geometric properties that are inherent in the graph structure of neural wiring diagrams.
-In this work, we follow pixel-based reconstruction by a global graph-based method to more accurately approximate neural pathways.
+However, these approaches widely neglect global geometric properties and other biological constraints that are inherent in the graph structure of neural wiring diagrams.
+In this work, we follow pixel-based reconstruction by a biologically-constrained graph-based method to more accurately approximate neural pathways.
 We first generate skeletons in 3D from the neuron labels of the pixel-based segmentation.
 Next, we simplify this skeletonized 3D network into a graph with nodes corresponding to labels from the segmentation and edges identifying potential locations of split errors.
 A CNN classifier produces edge weights for the graph corresponding to the probability of error. 
-We formulate the graph into a multicut partitioning problem to improve the final segmentation.
-Since the 3D graph is small and encodes top-down information our method is efficient and globally improves the neural reconstruction.
+We formulate the graph into a lifted multicut partitioning problem to improve the final segmentation.
 We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average split variation of information improvement of \TODO{XX}\%.
 \keywords{connectomics, skeletonization, deep learning, multicut}
 \end{abstract}
