@@ -89,9 +89,19 @@ There are on average $\TODO{XX}$ such examples in our datasets, corresponding to
 
 \begin{figure}[t!]
 	\centering
-	\includegraphics[width=0.45\linewidth]{./figures/merge_candidate1.png}		\includegraphics[width=0.45\linewidth]{./figures/merge_candidate2.png}
-	\includegraphics[width=0.45\linewidth]{./figures/merge_candidate2.png}
-	\includegraphics[width=0.45\linewidth]{./figures/merge_candidate2.png}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/merge_candidate1.png}	
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}	
+		\includegraphics[width=\linewidth]{./figures/merge_candidate2.png}
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/merge_candidate3.png}
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/merge_candidate4.png}
+	\end{minipage}
 	\caption{The top two examples correspond to segment pairs that we incorrectly prune from the graph. The distance between the circled endpoints is too great. The bottom two examples shows pairs of segments that belong to the same neuron but are not adjacent in the input segmentation.}
 	\label{fig:skeleton-results}
 \end{figure}

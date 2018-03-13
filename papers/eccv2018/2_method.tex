@@ -48,10 +48,20 @@ We provide further analysis of this strategy in the supplemental material.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.45\linewidth]{./figures/skeleton1.png}
-	\includegraphics[width=0.45\linewidth]{./figures/skeleton2.png}
-	\includegraphics[width=0.45\linewidth]{./figures/skeleton3.png}
-	\includegraphics[width=0.45\linewidth]{./figures/skeleton4.png}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton1.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton2.png}		
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton3.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton4.png}		
+	\end{minipage}
 	\caption{Example skeletons (in black) extracted from segments using a variant of the TEASER algorithm.}
 	\label{fig:skeletonization}
 \end{figure}
@@ -94,12 +104,21 @@ The first channel is $0.5$ only if the corresponding voxel has label $l_1$.
 The second channel is $0.5$ only if the corresponding voxel has label $l_2$. 
 The third channel is $0.5$ if the corresponding voxel is either $l_1$ or $l_2$.
 We do not use the raw EM image information to avoid the need to retrain the network on datasets that have been stained differently or imaged at different resolution. 
-This reduces the need for generating costly manually-labeled ground truth. 
+This reduces the needfor generating costly manually-labeled ground truth. 
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.32\linewidth]{./figures/split_error1.png}
-	\includegraphics[width=0.32\linewidth]{./figures/split_error2.png}		\includegraphics[width=0.32\linewidth]{./figures/split_error3.png}
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error1.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error2.png}				
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error3.png}
+	\end{minipage}
 	\caption{Three erroneously split segments.}
 	\label{fig:merge_candidates}
 \end{figure}
