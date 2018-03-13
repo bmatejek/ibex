@@ -35,4 +35,5 @@ def Oracle(prefix, threshold, maximum_distance, endpoint_distance, network_dista
     for iv in range(max_value):
         mapping[iv] = unionfind.Find(union_find[iv]).label
 
+    segmentation = seg2seg.MapLabels(segmentation, mapping)
     comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, mask_segmentation=False, filtersize=filtersize)
