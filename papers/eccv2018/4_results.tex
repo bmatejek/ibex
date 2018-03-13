@@ -56,7 +56,7 @@ This edge pruning is essential for the graph partitioning algorithm, which has a
 The baseline algorithm considers all adjacent regions for merging. 
 Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., \TODO{XXX} compared to \TODO{XXX}). 
 Our pruning heuristic removes at least $\TODO{X}\times$ the number of edges on all datasets, achieving a maximum removal rate of $\TODO{XX}\times$.
-However, there are some adjacent over-segmented labels which are considered. 
+However, there are some adjacent over-segmented labels which are not considered. 
 Table~\ref{table:skeletonization} shows the results for our edge generation including the number of missed neighbors and potential penalty in VI score.
 We present additional analysis of the skeletonization parameters in the supplemental material.
 
@@ -64,13 +64,13 @@ We present additional analysis of the skeletonization parameters in the suppleme
 	\centering
 	\small
 	\setlength{\tabcolsep}{0.75em}
-	\begin{tabular}{c c c c} \hline
-		\textbf{Dataset} & \textbf{Segment Adjacency} & \textbf{Skeleton Pruning} & \textbf{Missed Split Errors} \\ \hline
-		Kasthuri &  & & \\
-		FlyEM &  &  & \\
-		FIB-25 &  & & \\ \hline
+	\begin{tabular}{c c c c c} \hline
+		\textbf{Dataset} & \textbf{Segment Adjacency} & \textbf{Skeleton Pruning} & \textbf{Missed Splits} & \textbf{Gained Edges} \\ \hline
+		Kasthuri & 610 / 23506 & 556 / 4921 & 214 & 160 \\
+		FlyEM & 298 / 17614 & 197 / 4366 & 120 & 19 \\
+		FIB-25 &  & & & \\ \hline
 	\end{tabular}
-	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., \TODO{XXX}) compared to total number of edges in the graph (e.g., \TODO{XXXXX}) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
+	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 610) compared to total number of edges in the graph (e.g., 23506) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
 	\label{table:skeletonization}
 \end{table}
 
@@ -90,7 +90,9 @@ There are on average $\TODO{XX}$ such examples in our datasets, corresponding to
 \begin{figure}[t!]
 	\centering
 	\includegraphics[width=0.45\linewidth]{./figures/merge_candidate1.png}		\includegraphics[width=0.45\linewidth]{./figures/merge_candidate2.png}
-	\caption{Two example segment pairs that we incorrectly prune from our graph. The distances between the circled endpoints are greater than our thresholds.}
+	\includegraphics[width=0.45\linewidth]{./figures/merge_candidate2.png}
+	\includegraphics[width=0.45\linewidth]{./figures/merge_candidate2.png}
+	\caption{The top two examples correspond to segment pairs that we incorrectly prune from the graph. The distance between the circled endpoints is too great. The bottom two examples shows pairs of segments that belong to the same neuron but are not adjacent in the input segmentation.}
 	\label{fig:skeleton-results}
 \end{figure}
 
@@ -140,10 +142,9 @@ Over the three testing datasets, applying a graph-based partitioning strategy re
 	\begin{tabular}{c c c c | c c c} \hline
 		& \multicolumn{3}{c}{\textbf{Multicut}} & \multicolumn{3}{c}{\textbf{Lifted Multicut}} \\ \hline
 		\textbf{Dataset} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} \\ \hline
-		Kasthuri Training & +3.61\% & -0.53\% & +0.60\% & +3.61\% & -0.53\% & +0.60\% \\
-		Kasthuri Vol. 2 & +7.59\% & -1.77\% & +1.38\%  & +7.59\% & -1.77\% & +1.38\% \\
-		FlyEM Vol. 1 & +2.68\% & +0.76\% & +0.66\% & +2.68\% & +0.76\% & +0.66\% \\
-		FlyEM Vol. 2 & +2.22\% & -1.05\% & +0.29\% & +2.22\% & -1.05\% & +0.29\% \\ \hline
+		Kasthuri  &  &  & &  &  & \\
+		FlyEM &  & & &  &  &  \\
+		Fib-25&  & & & & & \\ \hline
 	\end{tabular}
 	\caption{Precision, recall, and accuracy changes between CNN only and CNN paired with graph-optimized reconstructions for the training and three test datasets. The combined method results in better precision and accuracy.}
 	\label{table:multicut}

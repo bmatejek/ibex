@@ -67,9 +67,6 @@ Since this algorithm is non-linear in the number of voxels, we downsample the da
 Empirically, this reduced the running time for skeletonization by $\TODO{XX\%}$, with minimal reduction in skeleton accuracy ($\TODO{XX\%}$ fewer branches). 
 Fig.~\ref{fig:skeletonization} shows three examples of extracted skeletons (in black). 
 These skeletons consist of a sequence of \textit{joints}, i.e., locations that are locally a maximum distance from the segment boundary, with line segments connecting successive joints. 
-We prune the joints that are within $t_{jnt} = \TODO{XX}\SI{}{\nano\meter}$ of each other to reduce unnecessary branching.
-This value is small enough that the skeletons extend into the spines but large enough to keep branching does to a reasonable level.
-Additional analysis is available in the supplemental material.
 We refer to joints that have only one connected neighbor as \textit{endpoints}. 
 We find that approximately \TODO{XX\%} of the segments that are erroneously split have nearby endpoints  (Fig.~\ref{fig:merge_candidates}). 
 We make use of this fact to find merge candidates with the following two-pass pruning algorithm.
