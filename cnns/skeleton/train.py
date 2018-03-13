@@ -160,7 +160,7 @@ def WriteLogfiles(model, model_prefix, parameters):
 
 def SkeletonCandidateGenerator(prefix, network_distance, positive_candidates, negative_candidates, parameters, width):
     # get the number of channels for the data
-
+    nchannels = width[0]
     npositive_candidates = len(positive_candidates)
     nnegative_candidates = len(negative_candidates)
 
