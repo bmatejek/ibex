@@ -33,10 +33,18 @@ Several pixel-based approaches generate probabilities that neighboring pixels be
 Often a watershed algorithm will then cluster pixels into super-pixels~\cite{zlateski2015image}.
 
 \subsubsection{Agglomeration}
-Given the initial segmentation, some methods train random-forest classifiers to produce the final segmentations~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825}.
+\TODO{rule-based method}
 Some methods rely solely on the accuracy of the predicted affinities and agglomerate hierarchically based on the mean affinity between supervoxels~\cite{lee2017superhuman,funke2017deep}.
+
+\TODO{classification-based method}
+Given the initial segmentation, some methods train random-forest classifiers to produce the final segmentations~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825}
+extract different features
+~\cite{jain2011learning,bogovic2013learned}.
+
+\TODO{optimization-based method}
 Pape et al. present a scalable multicut algorithm to partition superpixels~\cite{beier2017multicut}.
-\TODO{add learning-based algorithm} ~\cite{jain2011learning,bogovic2013learned}
+
+In our work, we combine classification and optimization.
 %\subsubsection{Error-correction methods}
 %Additional research builds on top of these region-based methods to correct errors in the segmentation either using human proofreading~\cite{haehn2014design,haehn2017guided,mojo2} or automatic methods~\cite{rolnick2017morphological,error_correction_using_CNN}.
 %However, to our knowledge, our method is the first to extract a 3D graph from an input segmentation for a true top-down\TODO{?} error correction approach. 
