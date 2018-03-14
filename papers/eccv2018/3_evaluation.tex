@@ -94,6 +94,7 @@ To prevent the lifted weights from dominating the objective function we weight e
 We evaluate the performance of the different methods using the split variation of information (VI)~\cite{meila2003comparing}.
 Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over- and under-segmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. 
 Since we are measuring the entropy between two clusterings, lower VI scores are better.
+The sum of these conditional entropies gives the total variation of information.
 
 We use precision and recall to evaluate the convolutional neural network and multicut outputs. 
 Since our method only corrects \textit{split errors}, we define a true positive as a pair of segments that are correctly merged together after our pipeline.
