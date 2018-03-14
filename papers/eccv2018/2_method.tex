@@ -24,7 +24,7 @@ From the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$
 The nodes correspond to labeled segments from the input data with edges between merge candidates.
 We propose the following three steps to formulate and then partition the graph while obeying constraints from the underlying biology.
 First, we only consider merging segments based on a skeletonized representation of the input segmentation (Fig.~\ref{fig:teaser_pipeline}a).
-This is enables us to reduce the number of nodes in the graph based on prior knowledge of the shape of neuronal processes.
+This enables us to reduce the number of nodes in the graph based on prior knowledge on the shape of neuronal processes.
 Second, we train a convolutional neural network that learns biological constraints based on the shapes of the input segmentation (Fig.~\ref{fig:teaser_pipeline}b).
 This network generates probabilities that segments belong to the same neuron based only on the segmentations. 
 An example of one such learned constraint is that neurons have small turning radii (Fig.~\ref{fig:turn-radii}).
@@ -34,8 +34,8 @@ The lifted multicut solution is globally consistent which we then augment to pro
 \subsection{Skeleton-Based Graph Generation}
 %\subsubsection{Node Generation}
 \label{sec:skeletonization}
-Most region merging methods create the region graph by removing small-sized segments and linking each pair of adjacent segments, which can still lead to a large graph size due to the irregular shape of neural structures.
-We here use the skeleton representation of the segmentation and reduce the graph size with the geometric constraints on the connectivity of two adjacent segments to prune edges.
+Most region merging methods create a region graph by removing small-sized segments and linking each pair of adjacent segments, which can still lead to a large graph size due to the irregular shape of neural structures.
+We use a skeleton representation of the segmentation to reduce the graph size with the geometric constraints on the connectivity of two adjacent segments to prune edges.
 % a bit trivial, as everyone is doing this. maybe no need to mention
 % \subsubsection{Node Pruning}
 % %The simplest node generation strategy creates one node for every unique segment label in the input volume. 
@@ -110,7 +110,7 @@ To predict the probabilities that two segments belong to the same neuron, we tra
 
 For the input of the network, we extract a cubic region of interest (ROI) around each endpoint $e$ in $\mathbb{S}_c$ as input to the CNN. 
 The CNN receives three input channels for every voxel in the ROI around segments $l_1$ and $l_2$. 
-The input in all of the channels is in the range $\{-0.5, 0.5\}$. 
+The input in all of the channels is in the set $\{-0.5, 0.5\}$. 
 The first channel is $0.5$ only if the corresponding voxel has label $l_1$. 
 The second channel is $0.5$ only if the corresponding voxel has label $l_2$. 
 The third channel is $0.5$ if the corresponding voxel is either $l_1$ or $l_2$.
@@ -145,7 +145,7 @@ This reduces the need for generating costly manually-labeled ground truth.
 	\label{fig:merge_candidates}
 \end{figure}
 \subsection{Optimization-Based Graph Partition}
-
+\label{sec:optimization}
 After graph construction, we segment the graph in a globally consistent manner while enforcing topological constraints on the output.
 \\~\\
 %\subsubsection{Lifted Multicut}
@@ -175,6 +175,8 @@ Given the probability that the nodes belong to the same neuron is $p_e$, the edg
 w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}},
 \end{align}
 where $\beta$ is a tunable parameter that encourages over- or under-segmentation. 
+Since, there are many more lifted edges than adjacent edges, we scale down the lifted weights proportionally to their total number.  
+~\cite{beier2017multicut}.
 \\~\\
 %\subsubsection{Topological Constraints}
 \noindent\textbf{Topological Constraints}
