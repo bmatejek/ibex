@@ -145,9 +145,9 @@ Since it is more difficult to correct merge errors than split errors, it is ofte
 Over the three testing datasets, applying a graph-based partitioning strategy reduced the number of merge errors by \TODO{XX}\%, \TODO{XX}\% and \TODO{XX}\%, respectively. 
 
 \begin{table}[h]
+	\caption{Precision, recall, and accuracy changes between CNN only and CNN paired with graph-optimized reconstructions for the training and three test datasets. The combined method results in better precision and accuracy.}
 	\centering
-	\small
-	\setlength{\tabcolsep}{0.3em}
+\resizebox{\linewidth}{!}{
 	\begin{tabular}{c c c c | c c c} \hline
 		& \multicolumn{3}{c}{\textbf{Multicut}} & \multicolumn{3}{c}{\textbf{Lifted Multicut}} \\ \hline
 		\textbf{Dataset} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} \\ \hline
@@ -155,7 +155,7 @@ Over the three testing datasets, applying a graph-based partitioning strategy re
 		FlyEM Vol. 1 & 4.50\% & -4.24\% & 0.26\% & -1.52\% & -2.97\% & -0.16\%  \\
 		FlyEM Vol. 2 & 5.54\% & -1.38\% & 0.26\% & -8.65\% & -2.75\% & -0.54\%\\ \hline
 	\end{tabular}
-	\caption{Precision, recall, and accuracy changes between CNN only and CNN paired with graph-optimized reconstructions for the training and three test datasets. The combined method results in better precision and accuracy.}
+}
 	\label{table:multicut}
 \end{table}
 
