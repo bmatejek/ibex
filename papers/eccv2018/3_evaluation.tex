@@ -8,7 +8,7 @@ We evaluate our method by comparing it to a state-of-the-art pixel-based reconst
 
 Our proposed method is designed for very large connectomics datasets. 
 Popular challenge datasets such as CREMI and SNEMI3D are simply too small for any noticeable change. 
-The following three datasets contain from 4 to 40 times more volume than the CREMI datasets. 
+The following datasets contain 4 times more volume than the CREMI datasets. 
 
 %\subsubsection{Kasthuri}
 \noindent\textbf{Kasthuri}
@@ -27,9 +27,9 @@ The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro
 We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$ or $999 \times 999 \times 999$ voxels.
 
 %\subsubsection{Fib-25}
-\noindent\textbf{Fib-25}
-The Fib-25 dataset comes from the visual system of a \textit{Drosophila} fly~\cite{takemura2015synaptic}. This sample is imaged at a resolution of $\SI[product-units=single]{8 x 8 x 8}{\nano\meter}^3$ and has $2588 \times 2108 \times 2876$ voxels representing a volume of $\SI[product-units=single]{23.0 x 16.9 x 23.0}{\micro\meter}^3$. 
-There is currently a reconstruction challenge based on this sample.
+%\noindent\textbf{Fib-25}
+%The Fib-25 dataset comes from the visual system of a \textit{Drosophila} fly~\cite{takemura2015synaptic}. This sample is %imaged at a resolution of $\SI[product-units=single]{8 x 8 x 8}{\nano\meter}^3$ and has $2588 \times 2108 \times 2876$ %voxels representing a volume of $\SI[product-units=single]{23.0 x 16.9 x 23.0}{\micro\meter}^3$. 
+%There is currently a reconstruction challenge based on this sample.
 
 \subsection{Method Configuration}
 \noindent\textbf{Initial Segmentation}
@@ -46,7 +46,7 @@ This segmentation framework learns voxel and supervoxel classifiers with an emph
 The algorithm first computes multi-channel 3-D predictions for membranes, cell interiors, and mitochondria, among other cell features. 
 The membrane prediction channel is used to produce an over-segmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
 We used exactly the same parameters as the publicly available code for this algorithm.
-For the Fib-25 challenge dataset, we use the segmentation from Funke et al. as our input~\cite{funke2017deep}.
+%For the Fib-25 challenge dataset, we use the segmentation from Funke et al. as our input~\cite{funke2017deep}.
 
 \noindent\textbf{Graph Generation}
 The two parameters for the graph pruning algorithm (Sec.~\ref{sec:skeletonization}) are $t_{low}$ and $t_{high}$. 
@@ -61,9 +61,10 @@ During implementation, we use nanometers instead of voxels for these thresholds 
 
 \noindent\textbf{Edge Weight Learning}
 \label{sec:network-parameters}
-We use half of the Kasthuri and FlyEM datasets\footnote{Since the FlyEM datasets have significantly fewer examples, we initialize the network with the weights from the Kasthuri training and have an initial learning rate of $10^{-4}$.} for training and validation. 
+We use half of the Kasthuri dataset for training and validation. 
 We train on 80\% of the potential merge candidates for this volume.
 We validate the CNN classifier on the remaining 20\% of the candidates. 
+Since our input does not require the image data, we can train on the anisotropic Kasthuri data and test on the isotropic FlyEM data.
 
 We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. 
 The supplemental material includes information on the experiments that determined these final parameters. 
@@ -82,7 +83,11 @@ We then rotate the example by a random angle between $0$ and $360$ degrees using
 The supplemental material contains experiments demonstrating the benefits of this augmentation strategy.
 We have 20,000 such examples per epoch.
 
-\noindent\textbf{Graph Partition} \TODO{parameters?}
+\noindent\textbf{Graph Partition}
+We assign the edges in our graph a weight $w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}}$ where $\beta$ is a tunable parameter. 
+Higher values of $\beta$ encourage over-segmentation.
+Figure~\ref{fig:variation-of-information} shows our results for variables $\beta \in [0.5, 0.9]$. 
+For our multicut analysis we consider $\beta = 0.5$. 
 
 \subsection{Error Metrics}
 \label{sec:variation-of-information}
@@ -90,5 +95,5 @@ We evaluate the performance of the different methods using the split variation o
 Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over- and under-segmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. 
 Since we are measuring the entropy between two clusterings, lower VI scores are better.
 
-We use both precision and recall to evaluate the convolutional neural network and multicut outputs. 
+We use precision and recall to evaluate the convolutional neural network and multicut outputs. 
 Since our method attempts to only correct \textit{split errors}, we define a true positive as a pair of segments that are correctly merged together after our pipeline.

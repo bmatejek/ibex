@@ -11,14 +11,15 @@
 \end{figure*}
 
 \subsection{Connectomics Benchmark}
-In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-based reconstructions of the Kasthuri and FlyEM data (Sec.~\ref{sec:neuroproof}) for varying thresholds of agglomeration (green). 
+
+In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-based reconstructions of the Kasthuri and FlyEM data (Sec.~\ref{sec:dataset}) for varying thresholds of agglomeration (green). 
 We use one of these segmentations (green circle) as our input dataset with an agglomeration threshold of 0.3 for all datasets. 
 The results from our method are shown in red for varying the $\beta$ parameter. 
 We show comparisons to an oracle (blue) that correctly partitions the graph from our method based on ground truth.
 
 Our algorithm improves the accuracy of the reconstruction for every dataset, reducing the VI split score on average by \TODO{XX}\% on the three testing datasets. 
 Scores closer to the origin are better for this metric, and in every instance our results are below the green curve.
-We see significant improvements on the Kasthuri datasets (VI split reduction of \TODO{XX}\%) and more modest improvements on the FlyEM dataset (reduction of \TODO{XX}\%) and Fib-25 dataset (reduction of \TODO{XX}\%). 
+We see significant improvements on the Kasthuri datasets (VI split reduction of \TODO{XX}\%) and more modest improvements on the FlyEM datasets (reduction of \TODO{XX}\% and \TODO{XX}\%).
 
 Fig.~\ref{fig:qualitative-results} (left) shows successful merges on the Kasthuri dataset. 
 Several of these examples combine multiple consecutive segments that span the volume.
@@ -49,17 +50,14 @@ We now analyze how each major component of our method contributes to this final 
 \end{figure}
 
 \subsection{Empirical Ablation Studies}
-Below, we analyze various design choiceswe for each step of our pipeline.
 
 \noindent\textbf{Graph Generation.}
 Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. 
-This edge pruning is essential for the graph partitioning algorithm, which has a computational complexity dependence on the number of edges. 
+This edge pruning is essential for the graph partitioning algorithm, which has a non-linear computational complexity dependence on the number of edges. 
 The baseline algorithm considers all adjacent regions for merging. 
-Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., \TODO{XXX} compared to \TODO{XXX}). 
-Our pruning heuristic removes at least $\TODO{X}\times$ the number of edges on all datasets, achieving a maximum removal rate of $\TODO{XX}\times$.
+Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., 556 compared to 610). 
+Our pruning heuristic removes at least $3.5\times$ the number of edges on all datasets, achieving a maximum removal rate of $4.8\times$.
 However, there are some adjacent over-segmented labels which are not considered. 
-Table~\ref{table:skeletonization} shows the results for our edge generation including the number of missed neighbors and potential penalty in VI score.
-We present additional analysis of the skeletonization parameters in the supplemental material.
 
 \begin{table}
 	\centering
@@ -68,8 +66,8 @@ We present additional analysis of the skeletonization parameters in the suppleme
 	\begin{tabular}{c c c c c} \hline
 		\textbf{Dataset} & \textbf{Segment Adjacency} & \textbf{Skeleton Pruning} & \textbf{Missed Splits} & \textbf{Gained Edges} \\ \hline
 		Kasthuri & 610 / 23506 & 556 / 4921 & 214 & 160 \\
-		FlyEM & 298 / 17614 & 197 / 4366 & 120 & 19 \\
-		FIB-25 &  & & & \\ \hline
+		FlyEM Vol. 1 & 304 / 15949 & 212 / 4578 & 105 & 13 \\
+		FlyEM Vol. 2 &  298 / 17614 & 197 / 4366 & 120 & 19 \\ \hline
 	\end{tabular}
 	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 610) compared to total number of edges in the graph (e.g., 23506) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
 	\label{table:skeletonization}
@@ -80,13 +78,13 @@ In particular, we do not enforce the constraint that edges in our graph correspo
 Although neurons are continuous, the EM images often have noisy spots which cause an interruption in the input segmentation.
 We still want to reconstruct these neurons despite the fact that the initial segmentation is non-continuous. 
 The second and fourth examples in Fig.~\ref{fig:qualitative-results} show correctly reconstructed neurons where two of the segments are non-adjacent. 
-On average in our datasets we correctly merge \TODO{XX} number of non-adjacent segments. 
+On average in our datasets we correctly merge \TODO{XX} of the non-adjacent segments. 
 
 There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons.
 Fig.~\ref{fig:skeleton-results} shows two such cases. 
 The endpoints of both segments are circled.
 In this example the small segment is carved from the larger segment in a location where there are no skeleton endpoints. 
-There are on average $\TODO{XX}$ such examples in our datasets, corresponding to $\TODO{XX}$ in the variation of information split score. 
+There are on average 146 such examples in our datasets.
 
 \begin{figure}[t!]
 	\centering
@@ -126,16 +124,14 @@ We believe this is in part because of the differences in the datasets (i.e., iso
 \begin{figure}
 	\centering
 	\includegraphics[width=0.45\linewidth]{./figures/receiver-operating-characteristic.png}		\includegraphics[width=0.45\linewidth]{./figures/precision-and-recall.png}
-	\caption{The receiver operating characteristic (ROC) curves of our classifier on three connectomics datasets. The classifier works best on previously unseen data of the Kasthuri volume. The dashed blue line indicates better performance on the FlyEM datasets with retraining compared to without (solid blue).}
+	\caption{The receiver operating characteristic (ROC) curves of our classifier on three connectomics datasets. The classifier works best on previously unseen data of the Kasthuri volume.}
 	\label{fig:receiver-operating-characteristic}
 \end{figure}
 
 %\subsubsection{Generalization to Other Datasets}
 %\noindent\textbf{Generalization to Other Datasets.}
-We also evaluate the generalization to other datasets.
-Our neural network does not take as input the images or affinities to allow us to transfer network weights from one dataset to the next.
-Table~\TODO{X} shows the result when training on the FlyEM data and inferring on the Kasthuri data and vice versa.
-The classification results are reasonable despite the fact that the datasets vary in resolution and even animal type.
+Our neural network does not take as input the images or affinities so we can transfer network weights from one dataset to the next.
+The classification results are reasonable on the FlyEM datasets despite the fact that the data varies in resolution and even animal type from the training set.
 
 
 %\subsection{Graph Optimization Results}
@@ -155,18 +151,26 @@ Over the three testing datasets, applying a graph-based partitioning strategy re
 	\begin{tabular}{c c c c | c c c} \hline
 		& \multicolumn{3}{c}{\textbf{Multicut}} & \multicolumn{3}{c}{\textbf{Lifted Multicut}} \\ \hline
 		\textbf{Dataset} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} & $\Delta$ \textbf{Precision} & $\Delta$ \textbf{Recall} & $\Delta$ \textbf{Accuracy} \\ \hline
-		Kasthuri  &  &  & &  &  & \\
-		FlyEM &  & & &  &  &  \\
-		Fib-25&  & & & & & \\ \hline
+		Kasthuri  & 7.56\% & -3.83\% & 0.89\% & -5.67\% & -2.15\% & -1.03\% \\
+		FlyEM Vol. 1 & 4.50\% & -4.24\% & 0.26\% & -1.52\% & -2.97\% & -0.16\%  \\
+		FlyEM Vol. 2 & 5.54\% & -1.38\% & 0.26\% & -8.65\% & -2.75\% & -0.54\%\\ \hline
 	\end{tabular}
 	\caption{Precision, recall, and accuracy changes between CNN only and CNN paired with graph-optimized reconstructions for the training and three test datasets. The combined method results in better precision and accuracy.}
 	\label{table:multicut}
 \end{table}
 
-Our post-processing method to agglomerate segments while enforcing the acyclic nature of our graph additionally improves precision by $\TODO{XX}\%$ on average while only costing $\TODO{XX}\%$ in recall. 
+Our post-processing method to agglomerate segments while enforcing the acyclic nature of our graph additionally improves precision by $6.6\%$ on average while only costing $-1.16\%$ in recall. 
 Note that our post-processing strategy by design cannot increase the recall. 
 
 \subsection{Computational Performance}
 %\subsubsection{System} 
 \noindent\textbf{System}
 All performance experiments ran on an Intel Core i7-6800K CPU 3.40 GHz with a Titan X Pascal GPU. All code is written in Python and will be freely available upon paper decision. We use the Keras deep learning library for our neural networks with Theano backend and cuDNN 7 acceleration for CUDA 8.0.
+
+Every step in our framework is fast enough on large connectomics datasets. 
+After downsampling, skeletonization takes less than 1 second per segment on average. 
+On average, each segment was skeletonized in 0.56 seconds on the training half of the Kasthuri data set. 
+There are 4451 such segments resulting in a total running time of 2,492 seconds on an 800 megavoxel volume. 
+From here, it took just over 31 seconds to generate the edges for our graph by considering nearby skeleton endpoints.
+On our hardware, inference on the neural network had a throughput of 30 examples per second. 
+Lastly, on this dataset the multicut algorithm ran for \TODO{XX} seconds while the lifted multicut variant spent \TODO{XX} seconds.

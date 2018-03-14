@@ -55,7 +55,6 @@
 Current state-of-the-art connectome reconstruction pipelines have two major steps: initial pixel-based segmentation with affinity prediction and watershed transform, and refined segmentation with agglomeration.
 %In the past deTraditionally, neuron segmentation from 3D electron microscopy (EM)
 For the agglomeration, most methods neglect geometric and topological constraints that are inherent in the graph structure of neural wiring diagrams.
-
 In this work, we use a biologically-constrained graph-based method to better reconstruct neural pathways.
 Given the initial segmentation, we first create a graph with nodes corresponding to segment labels and edges identifying potential locations of split errors based on the skeleton structure of the segmentation.
 Next, we train a convolutional neural network to capture the geometric properties of segment connections and produce edge weights as the probability of merging two nodes.
