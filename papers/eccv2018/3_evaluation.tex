@@ -9,7 +9,7 @@ We evaluate our method by comparing it to a state-of-the-art pixel-based reconst
 Our proposed method is designed for very large connectomics datasets. 
 Popular challenge datasets such as CREMI and SNEMI3D are simply too small for any noticeable change. 
 The following datasets contain 4 times more volume than the CREMI datasets. \TODO{better to have a table here}
-
+\\~\\
 %\subsubsection{Kasthuri}
 \noindent\textbf{Kasthuri}
 The Kasthuri dataset consists of scanning electron microscope images of the neocortex of a mouse brain~\cite{kasthuri2015saturated}. 
@@ -18,7 +18,7 @@ The resolution of the dataset is $\SI[product-units=single]{3 x 3 x 30}{\nano\me
 We evaluate our methods using the left cylinder of this 3-cylinder dataset. 
 We downsample the dataset in the $x$ and $y$ dimensions to give a final resolution of $\SI[product-units=single]{6 x 6 x 30}{\nano\meter}^3$ per voxel. 
 We divide the dataset into two volumes (Vol. 1 and Vol. 2) along the $x$ dimension, where each volume is $\SI[product-units=single]{8.0 x 10.9 x 10.1}{\micro\meter}^3$ or $1335 \times 1809 \times 338$ voxels.
-
+\\~\\
 %\subsubsection{FlyEM}
 \noindent\textbf{FlyEM}
 The FlyEM dataset comes from the mushroom body of a 5-day old adult male \textit{Drosophila} fly imaged by a focused ion-beam milling scanning electron microscopy~\cite{takemura2017connectome}.
@@ -47,7 +47,7 @@ The algorithm first computes multi-channel 3-D predictions for membranes, cell i
 The membrane prediction channel is used to produce an over-segmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
 We used exactly the same parameters as the publicly available code for this algorithm.
 %For the Fib-25 challenge dataset, we use the segmentation from Funke et al. as our input~\cite{funke2017deep}.
-
+\\~\\
 \noindent\textbf{Graph Generation}
 The two parameters for the graph pruning algorithm (Sec.~\ref{sec:skeletonization}) are $t_{low}$ and $t_{high}$. 
 Ideally, our graph will have an edge for every over-segmented pair of labels with few edges between correctly segmented pairs. 
@@ -56,9 +56,7 @@ We explore these thresholds in greater detail in the supplemental material.
 During implementation, we use nanometers instead of voxels for these thresholds to have uniform units across all datasets.
 % Connectomics datasets often have lower sample resolutions in $z$ because of limitations during sample preparation. 
 % Using nanometers allows us to have uniform units across all of these datasets and calculate the thresholds in voxels at runtime.
-% Although the voxels vary between different datasets, the physical space remains constant. 
-
-
+% Although the voxels vary between different datasets, the physical space remains constant. \\~\\
 \noindent\textbf{Edge Weight Learning}
 \label{sec:network-parameters}
 We use half of the Kasthuri dataset for training and validation. 
@@ -82,7 +80,7 @@ With probability 0.5, the example is reflected across the $xy$-plane.
 We then rotate the example by a random angle between $0$ and $360$ degrees using nearest neighbor interpolation. 
 The supplemental material contains experiments demonstrating the benefits of this augmentation strategy.
 We have 20,000 such examples per epoch.
-
+\\~\\
 \noindent\textbf{Graph Partition}
 %We assign the edges in our graph a weight $w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}}$ where $\beta$ is a tunable parameter. 
 %Higher values of $\beta$ encourage over-segmentation.

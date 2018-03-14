@@ -79,13 +79,6 @@ Although neurons are continuous, the EM images often have noisy spots which caus
 We still want to reconstruct these neurons despite the fact that the initial segmentation is non-continuous. 
 The second and fourth examples in Fig.~\ref{fig:qualitative-results} show correctly reconstructed neurons where two of the segments are non-adjacent. 
 On average in our datasets we correctly merge \TODO{XX} of the non-adjacent segments. 
-
-There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons.
-Fig.~\ref{fig:skeleton-results} shows two such cases. 
-The endpoints of both segments are circled.
-In this example the small segment is carved from the larger segment in a location where there are no skeleton endpoints. 
-There are on average 146 such examples in our datasets.
-
 \begin{figure}[t!]
 	\centering
 	\begin{minipage}{0.45\linewidth}
@@ -104,8 +97,12 @@ There are on average 146 such examples in our datasets.
 	\caption{The top two examples correspond to segment pairs that we incorrectly prune from the graph. The distance between the circled endpoints is too great. The bottom two examples shows pairs of segments that belong to the same neuron but are not adjacent in the input segmentation.}
 	\label{fig:skeleton-results}
 \end{figure}
-
-%\subsection{CNN Classification Results}
+There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons.
+Fig.~\ref{fig:skeleton-results} shows two such cases. 
+The endpoints of both segments are circled.
+In this example the small segment is carved from the larger segment in a location where there are no skeleton endpoints. 
+There are on average 146 such examples in our datasets.
+\\~\\
 \noindent\textbf{Edge Weight Learning}
 We first evaluate the effectiveness of inference augmentation.
 %\subsubsection{Inference Augmentation}
@@ -132,8 +129,7 @@ We believe this is in part because of the differences in the datasets (i.e., iso
 %\noindent\textbf{Generalization to Other Datasets.}
 Our neural network does not take as input the images or affinities so we can transfer network weights from one dataset to the next.
 The classification results are reasonable on the FlyEM datasets despite the fact that the data varies in resolution and even animal type from the training set.
-
-
+\\~\\
 %\subsection{Graph Optimization Results}
 \noindent\textbf{Graph Partition}
 The graph optimization strategy using multicut increases our accuracy over using just the CNN.
@@ -165,7 +161,7 @@ Note that our post-processing strategy by design cannot increase the recall.
 \subsection{Computational Performance}
 %\subsubsection{System} 
 \noindent\textbf{System}
-All performance experiments ran on an Intel Core i7-6800K CPU 3.40 GHz with a Titan X Pascal GPU. All code is written in Python and will be freely available upon paper decision. We use the Keras deep learning library for our neural networks with Theano backend and cuDNN 7 acceleration for CUDA 8.0.
+All performance experiments ran on an Intel Core i7-6800K CPU 3.40 GHz with a Titan X Pascal GPU. All code is written in Python and is freely available (link omitted for review). We use the Keras deep learning library for our neural networks with Theano backend and cuDNN 7 acceleration for CUDA 8.0.
 
 Every step in our framework is fast enough on large connectomics datasets. 
 After downsampling, skeletonization takes less than 1 second per segment on average. 
