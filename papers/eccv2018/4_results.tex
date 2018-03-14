@@ -3,7 +3,7 @@
 
 \begin{figure*}[t!]
 	\centering
-	\includegraphics[width=0.32\linewidth]{./figures/variation_of_information-microns-test-600.png}
+	\includegraphics[width=0.32\linewidth]{./figures/voi-Kasthuri-Luigi-Test.png}
 	\includegraphics[width=0.32\linewidth]{./figures/voi-FlyEM-Vol--1.png}
 	\includegraphics[width=0.32\linewidth]{./figures/voi-FlyEM-Vol--2.png}
 	\caption{VI scores of our method (red) compared to the baseline segmentation (green) and an oracle (blue) that optimally partitions the graph based on ground truth. Lower scores are better. Our method improves the accuracy of the segmentation in all cases.}
@@ -113,9 +113,10 @@ This produces some additional increase in overall accuracy (Figure ~\ref{fig:rec
 The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
 
 Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.
-As shown by the ROC curve, the test results on the Kasthuri data are better than the results for FlyEM.
-We believe this is in part because of the differences in the datasets (i.e., isotropy and $xy$ resolution).
-
+As shown by the ROC curve, the test results on the FlyEM data are better than the results for Kasthuri.
+In part this comes from the disparity in the number of positive to negative merge candidates in the two graphs. 
+The network easily classifies most of the negative examples leaving only a few difficult examples to predict.
+Since there are more negative examples in relation to the positive examples in the FlyEM data, the ROC curve is greater.
 
 
 \begin{figure}
@@ -128,7 +129,7 @@ We believe this is in part because of the differences in the datasets (i.e., iso
 %\subsubsection{Generalization to Other Datasets}
 %\noindent\textbf{Generalization to Other Datasets.}
 Our neural network does not take as input the images or affinities so we can transfer network weights from one dataset to the next.
-The classification results are reasonable on the FlyEM datasets despite the fact that the data varies in resolution and even animal type from the training set.
+The classification results are comparable on the FlyEM datasets despite the fact that the data varies in resolution and even animal type from the training set.
 \\~\\
 %\subsection{Graph Optimization Results}
 \noindent\textbf{Graph Partition}
