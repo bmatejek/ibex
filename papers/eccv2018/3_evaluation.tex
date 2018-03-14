@@ -86,7 +86,8 @@ We have 20,000 such examples per epoch.
 %We assign the edges in our graph a weight $w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}}$ where $\beta$ is a tunable parameter. 
 %Higher values of $\beta$ encourage over-segmentation.
 Figure~\ref{fig:variation-of-information} shows our results for variables $\beta \in [0.5, 0.9]$. 
-For our multicut analysis we consider $\beta = 0.5$. 
+For our multicut analysis we use $\beta = 0.5$. There are many more lifted edges than adjacent edges. 
+To prevent the lifted weights from dominating the objective function we weight each set of edges~\cite{beier2017multicut}.
 
 \subsection{Error Metrics}
 \label{sec:variation-of-information}
@@ -95,4 +96,4 @@ Given a ground truth labeling $GT$ and our automatically reconstructed segmentat
 Since we are measuring the entropy between two clusterings, lower VI scores are better.
 
 We use precision and recall to evaluate the convolutional neural network and multicut outputs. 
-Since our method attempts to only correct \textit{split errors}, we define a true positive as a pair of segments that are correctly merged together after our pipeline.
+Since our method only corrects \textit{split errors}, we define a true positive as a pair of segments that are correctly merged together after our pipeline.

@@ -1,10 +1,5 @@
 % !TEX root =  paper.tex
-\begin{figure}[t!]
-	\centering
-	\includegraphics[width=\linewidth]{./figures/teaser_v4.png}
-	\caption{Our proposed framework uses both geometric and topological biological constraints for region merging. We (a) generate a simplified graph from the skeleton representation of the input segmentation, (b) train a classifier to learn the edge weight based on the shape of the segment connection, and (c) perform graph partitioning with acyclic constraints.}
-	\label{fig:teaser_pipeline}
-\end{figure}
+
 \section{Method}
 %\begin{figure*}[t!]
 %	\begin{center}
@@ -24,7 +19,7 @@
 %Thus, most reconstruction approaches are tuned towards over-segmentation with many more split than merge errors. 
 %The input of our method is the over-segmentation of EM image volumes from state-of-the-art pipelines.
 
-Our pipeline is illustrated in Fig.~\ref{fig:teaser_pipeline}.
+Our method is illustrated in Fig.~\ref{fig:teaser_pipeline}.
 From the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 
 The nodes correspond to labeled segments from the input data with edges between merge candidates.
 We propose the following three steps to formulate and then partition the graph while obeying constraints from the underlying biology.
@@ -68,7 +63,7 @@ We here use the skeleton representation of the segmentation and reduce the graph
 	\begin{minipage}{0.45\linewidth}
 		\includegraphics[width=\linewidth]{./figures/skeleton4.png}		
 	\end{minipage}
-	\caption{Example skeletons (in black) extracted from segments using a variant of the TEASER algorithm.}
+	\caption{Example skeletons (in black) extracted from segments using a variant of the TEASER algorithm~\cite{sato2000teasar}.}
 	\label{fig:skeletonization}
 \end{figure}
 
@@ -80,31 +75,29 @@ Our key observation is that if two segments belong to the same neuronal process,
 To extract the skeleton from each segment, we use a variant~\cite{zhao2014automatic} of the TEASER algorithm~\cite{sato2000teasar}. 
 This skeletonization algorithm repeatedly uses Dijkstra's algorithm to find the farthest voxel from a seed location. 
 Since this algorithm is non-linear in the number of voxels, we downsample the datasets so that there are voxel samples every $\SI{30}{\nano\meter}$ in each dimension.
-Empirically, this reduced the running time for skeletonization by $30\times$, with minimal reduction in skeleton accuracy (${\sim}5\%$ fewer branches). 
+Empirically, this reduced the running time for skeletonization by $30\times$ with minimal reduction in skeleton accuracy (${\sim}5\%$ fewer branches). 
 Fig.~\ref{fig:skeletonization} shows four examples of extracted skeletons (in black). 
 These skeletons consist of a sequence of \textit{joints}, locations that are locally a maximum distance from the segment boundary, with line segments connecting successive joints. 
 We refer to joints that have only one connected neighbor as \textit{endpoints}. 
 We find that approximately 70\% of the segments that are erroneously split have nearby endpoints (Fig.~\ref{fig:merge_candidates}). 
 
 Two segments, $s_1$ and $s_2$, receive a corresponding edge if the two following conditions hold.
-First, a endpoint in either $s_1$ or $s_2$ is with $t_{low}$ nm of any voxel in the other segment.
-Second, there is an endpoint in $s_1$ and an endpoint in $s_2$ that are within $t_{high}$ nm of each other.
+First, endpoints in either $s_1$ or $s_2$ are within $t_{low}$ nm of any voxel in the other segment.
+Second, there are endpoints in $s_1$ and in $s_2$ that are within $t_{high}$ nm of each other.
 We store the midpoints between the two endpoints as the center of the potential merge in the set $\mathbb{S}_c$. 
 This algorithm produces a set of segments to consider for merging. 
 Only these pairs have a corresponding edge in the constructed graph.
-These parameters follow empirically from noise in the skeleton generation process. 
-There are occasionally spurious branches and other artifacts and these thresholds mitigate the influence of these degenerate locations.
-We provide a fuller analysis in the supplemental materials.
+We provide an empirical analysis of these parameters on the structure of the graph in the supplemental materials.
 
 \begin{figure}[t]
-	\begin{minipage}{0.45\linewidth}
+	\begin{minipage}{0.4\linewidth}
 		\includegraphics[width=\linewidth]{./figures/constraint_error.png}
 	\end{minipage}
 	\hfill
-	\begin{minipage}{0.45\linewidth}
+	\begin{minipage}{0.55\linewidth}
 		\includegraphics[width=\linewidth]{./figures/constraint_success.png}
 	\end{minipage}
-	\caption{Two example candidates for merging. The two segments in the left example do not belong to the same neuron as evidenced by the sharp turning radius.}
+	\caption{Two example candidates for merging. The two segments in the left example do not belong to the same neuron as evidenced by the sharp turning radius indicated by the arrow.}
 	\label{fig:turn-radii}
 \end{figure}
 \subsection{Learning-based Edge Weight}
@@ -123,14 +116,7 @@ The second channel is $0.5$ only if the corresponding voxel has label $l_2$.
 The third channel is $0.5$ if the corresponding voxel is either $l_1$ or $l_2$.
 We do not use the raw EM image information to avoid the need to retrain the network on datasets that have been stained differently or imaged at different resolution. 
 This reduces the need for generating costly manually-labeled ground truth. 
-\\~\\
-\noindent\textbf{Edge Weight} Given the probability that the nodes belong to the same neuron is $p_e$, the edge weight $w_e$ is defined as
-%p_e &=\mbox{CNN}(x_1, x_2) \\
-\begin{align}
-w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}},
-\end{align}
-where $\beta$ is a tunable parameter that encourages over- or under-segmentation. 
-This particular weighting scheme allows us to optimize for a Bayesian network defined on the graph~\cite{keuper2015efficient,andres2011probabilistic}.
+
 
 %The first two max pooling layers are anisotropic with pooling only in the $x$ and $y$ dimensions. 
 %The output of this final pooling step is flattened into a 1D vector that is input into . 
@@ -160,7 +146,7 @@ This particular weighting scheme allows us to optimize for a Bayesian network de
 \end{figure}
 \subsection{Optimization-Based Graph Partition}
 
-After graph construction, we segment the graph into a globally consistent manner while enforcing topological constraints on the output.
+After graph construction, we segment the graph in a globally consistent manner while enforcing topological constraints on the output.
 \\~\\
 %\subsubsection{Lifted Multicut}
 \noindent\textbf{Lifted Multicut}
@@ -168,18 +154,27 @@ After constructing the graph we seek to partition it into labels where every lab
 We formulate this graph partitioning problem as a multicut problem.
 There are two primary benefits to using a multicut formulation. 
 First, the number of segments in the final graph is not predetermined but depends on the input. 
-Second, this minimization produces globally consistent solutions (i.e. a boundary remains only if the two corresponding nodes belong to unique segments)~\cite{keuper2015efficient}.
+Second, this minimization produces globally consistent solutions (i.e., a boundary remains only if the two corresponding nodes belong to unique segments)~\cite{keuper2015efficient}.
 
 We apply the algorithms of Keuper et al.~\cite{keuper2015efficient} to produce a feasible solution to the multicut problem using greedy additive edge contraction.
-Following their example, we employ the generalized ``lifted'' multicut formulation.
+Following their example, we employ the generalized lifted multicut formulation.
 Traditional multicut solutions only consider the probabilities that two adjacent nodes belong to the same segment. 
-In the ``lifted'' extension to the problem, we can penalize non-adjacent nodes that belong to different segments. 
-These penalties between non-adjacent nodes are called ``lifted'' edges. 
-Ideally these ``lifted'' weights represent the probability that two nodes belong to the same neuron.
+In the lifted extension to the problem, we can penalize non-adjacent nodes that belong to different segments. 
+These penalties between non-adjacent nodes are called lifted edges. 
+Ideally these lifted weights represent the probability that two nodes belong to the same neuron.
 However, determining such probabilities is computationally expensive.
 We approximate these probabilities by finding the maximal probable path between any two nodes using Dijkstra's algorithm~\cite{keuper2015efficient}.
 This is an underestimate of the probability that two nodes belong to the same neuron since it does not consider all possible paths.
-Since our graphs are sufficiently small, we can generate ``lifted'' edges between all pairs of nodes. 
+Since our graphs are sufficiently small, we can generate lifted edges between all pairs of nodes. 
+\\~\\
+\noindent\textbf{Edge Weight} 
+We need to convert the probabilities into the following weighting scheme to solve the multicut problem with this heuristic~\cite{keuper2015efficient,andres2011probabilistic}.
+Given the probability that the nodes belong to the same neuron is $p_e$, the edge weight $w_e$ is defined as
+%p_e &=\mbox{CNN}(x_1, x_2) \\
+\begin{align}
+w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}},
+\end{align}
+where $\beta$ is a tunable parameter that encourages over- or under-segmentation. 
 \\~\\
 %\subsubsection{Topological Constraints}
 \noindent\textbf{Topological Constraints}

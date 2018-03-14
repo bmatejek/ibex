@@ -31,7 +31,6 @@ Often a watershed algorithm will then cluster these pixels into super-pixels~\ci
 Region merging methods can be categorized by the similarity metric between adjacent segments and the merging strategy.
 For the similarity metric, Lee et al. and Funke et al. rely solely on the accuracy of the predicted affinities and define the metric as the mean affinity between segments~\cite{lee2017superhuman,funke2017deep}.
 Classification-based method predicts the probability to merge two segments from handcrafted~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825,jain2011learning} and learned features~\cite{bogovic2013learned}. 
-
 For the merging stategy, most methods use variants of hierarchical agglomeration methods~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825} to greedily merge a pair of regions at a time.
 Jain et al. formulates the agglomeration as a reinforcement learning problem ~\cite{jain2011learning} and Pape et al. present a scalable multicut algorithm to partition superpixels with global optimization~\cite{beier2017multicut}.
 \\~\\

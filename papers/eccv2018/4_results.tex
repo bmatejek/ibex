@@ -10,8 +10,6 @@
 	\label{fig:variation-of-information}
 \end{figure*}
 
-\subsection{Connectomics Benchmark}
-
 In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-based reconstructions of the Kasthuri and FlyEM data (Sec.~\ref{sec:dataset}) for varying thresholds of agglomeration (green). 
 We use one of these segmentations (green circle) as our input dataset with an agglomeration threshold of 0.3 for all datasets. 
 The results from our method are shown in red for varying the $\beta$ parameter. 
@@ -60,13 +58,13 @@ Our pruning heuristic removes at least $3.5\times$ the number of edges on all da
 However, there are some adjacent over-segmented labels which are not considered. 
 
 \begin{table}
-	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 610) compared to total number of edges in the graph (e.g., 23506) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
+	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 610) compared to total number of edges in the graph (e.g., 23,506) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
 \resizebox{\linewidth}{!}{
 	\begin{tabular}{c c c c c} \hline
 		\textbf{Dataset} & \textbf{Segment Adjacency} & \textbf{Skeleton Pruning} & \textbf{Missed Splits} & \textbf{Gained Edges} \\ \hline
-		Kasthuri & 610 / 23506 & 556 / 4921 & 214 & 160 \\
-		FlyEM Vol. 1 & 304 / 15949 & 212 / 4578 & 105 & 13 \\
-		FlyEM Vol. 2 &  298 / 17614 & 197 / 4366 & 120 & 19 \\ \hline
+		Kasthuri & 610 / 23,506 & 556 / 4,921 & 214 & 160 \\
+		FlyEM Vol. 1 & 304 / 15,949 & 212 / 4,578 & 105 & 13 \\
+		FlyEM Vol. 2 &  298 / 17,614 & 197 / 4,366 & 120 & 19 \\ \hline
 	\end{tabular}
 }
 	\centering
@@ -79,24 +77,8 @@ Although neurons are continuous, the EM images often have noisy spots which caus
 We still want to reconstruct these neurons despite the fact that the initial segmentation is non-continuous. 
 The second and fourth examples in Fig.~\ref{fig:qualitative-results} show correctly reconstructed neurons where two of the segments are non-adjacent. 
 On average in our datasets we correctly merge \TODO{XX} of the non-adjacent segments. 
-\begin{figure}[t!]
-	\centering
-	\begin{minipage}{0.45\linewidth}
-		\includegraphics[width=\linewidth]{./figures/merge_candidate1.png}	
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.45\linewidth}	
-		\includegraphics[width=\linewidth]{./figures/merge_candidate2.png}
-	\end{minipage}
-	\begin{minipage}{0.45\linewidth}
-		\includegraphics[width=\linewidth]{./figures/merge_candidate3.png}
-	\end{minipage}
-	\begin{minipage}{0.45\linewidth}
-		\includegraphics[width=\linewidth]{./figures/merge_candidate4.png}
-	\end{minipage}
-	\caption{The top two examples correspond to segment pairs that we incorrectly prune from the graph. The distance between the circled endpoints is too great. The bottom two examples shows pairs of segments that belong to the same neuron but are not adjacent in the input segmentation.}
-	\label{fig:skeleton-results}
-\end{figure}
+\\~\\
+\noindent\textbf{Failure Cases}
 There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons.
 Fig.~\ref{fig:skeleton-results} shows two such cases. 
 The endpoints of both segments are circled.
@@ -112,6 +94,24 @@ When computing the probability to merge two segments, we input the initial segme
 This produces some additional increase in overall accuracy (Figure ~\ref{fig:receiver-operating-characteristic}).
 The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
 
+\begin{figure}[t!]
+	\centering
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/merge_candidate1.png}	
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}	
+		\includegraphics[width=\linewidth]{./figures/merge_candidate2.png}
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/merge_candidate3.png}
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/merge_candidate4.png}
+	\end{minipage}
+	\caption{\textit{Failure cases.} The top two examples correspond to segment pairs that we incorrectly prune from the graph. The distance between the circled endpoints is too great. The bottom two examples shows pairs of segments that belong to the same neuron but are not adjacent in the input segmentation.}
+	\label{fig:skeleton-results}
+\end{figure}
 Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.
 As shown by the ROC curve, the test results on the FlyEM data are better than the results for Kasthuri.
 In part this comes from the disparity in the number of positive to negative merge candidates in the two graphs. 
