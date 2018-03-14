@@ -18,7 +18,6 @@ def Oracle(prefix, threshold, maximum_distance, endpoint_distance, network_dista
 
     # read in all relevant information
     segmentation = dataIO.ReadSegmentationData(prefix)
-    segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold=threshold)
     gold = dataIO.ReadGoldData(prefix)
 
     seg2gold_mapping = seg2gold.Mapping(segmentation, gold)
