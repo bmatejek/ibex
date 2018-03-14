@@ -128,11 +128,10 @@ The classification results are comparable on the FlyEM datasets despite the fact
 \\~\\
 %\subsection{Graph Optimization Results}
 \noindent\textbf{Graph Partition}
-The graph optimization strategy using multicut increases our accuracy over using just the CNN.
-Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all four datasets compared to the CNN with both the multicut and ``lifted'' multicut formulations.
+The graph optimization strategy using multicut increases accuracy over using just the CNN.
+Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all four datasets compared to the CNN with both the multicut and lifted multicut formulations.
 These results correspond to $\beta = 0.95$ (Sec.~\ref{sec:edge-weights}). 
-The precision increases on each dataset, although the recall decreases on all but one of the datasets.
-The ``lifted'' variant further accentuates this trend of increasing precision and accuracy at the expense of recall. 
+The precision increases on each dataset, although the recall decreases on each datasets.
 Since it is more difficult to correct merge errors than split errors, it is often desirable to sacrifice recall for precision.
 Over the three testing datasets, applying a graph-based partitioning strategy increased the precision by $31.9\%$, $40.9\%$, and $27.8\%$ respectively. 
 
@@ -157,10 +156,9 @@ Over the three testing datasets, applying a graph-based partitioning strategy in
 \noindent\textbf{System}
 All performance experiments ran on an Intel Core i7-6800K CPU 3.40 GHz with a Titan X Pascal GPU. All code is written in Python and is freely available (link omitted for review). We use the Keras deep learning library for our neural networks with Theano backend and cuDNN 7 acceleration for CUDA 8.0.
 
-Every step in our framework is fast enough on large connectomics datasets. 
-After downsampling, skeletonization takes less than 1 second per segment on average. 
-On average, each segment was skeletonized in 0.56 seconds on the training half of the Kasthuri data set. 
+Every step in our framework is fast enough for large connectomics datasets. 
+On our training data, after downsampling, each segment was skeletonized in 0.56 seconds on average.
 There are 4451 such segments resulting in a total running time of 2,492 seconds on an 800 megavoxel volume. 
-From here, it took just over 31 seconds to generate the edges for our graph by considering nearby skeleton endpoints.
-On our hardware, inference on the neural network had a throughput of 30 examples per second. 
-Lastly, on this dataset the multicut algorithm ran for 25.28 seconds while the lifted multicut variant took 36.5 seconds.
+From here, it took just over 31 seconds to generate the edges for our graph.
+On our hardware, inference on the neural network has a throughput of 30 examples per second. 
+Lastly, the multicut algorithm ran for 25.28 seconds while the lifted multicut variant took 36.5 seconds on the graph from this dataset.
