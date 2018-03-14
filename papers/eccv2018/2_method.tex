@@ -63,7 +63,7 @@ We use a skeleton representation of the segmentation to reduce the graph size wi
 	\begin{minipage}{0.45\linewidth}
 		\includegraphics[width=\linewidth]{./figures/skeleton4.png}		
 	\end{minipage}
-	\caption{Example skeletons (in black) extracted from segments using a variant of the TEASER algorithm~\cite{sato2000teasar}.}
+	\caption{Example skeletons (in black) extracted from segments using a variant of the TEASER algorithm~\cite{sato2000teasar}. These skeletons not only well-capture the shape of the segmentation, but also provide end-points useful for region merging proposals.}
 	\label{fig:skeletonization}
 \end{figure}
 
@@ -97,7 +97,7 @@ We provide an empirical analysis of these parameters on the structure of the gra
 	\begin{minipage}{0.55\linewidth}
 		\includegraphics[width=\linewidth]{./figures/constraint_success.png}
 	\end{minipage}
-	\caption{Two example candidates for merging. The two segments in the left example do not belong to the same neuron as evidenced by the sharp turning radius indicated by the arrow.}
+	\caption{Geometric constraints for region merging. We show two region merging proposals. On the left, the segments do not belong to the same neuron, as evidenced by the sharp turning radius; while on the right, the segments should be merged due to the continuity of the 3D shape. Instead of using handcrafted geometric features, we train a convolutional neural networks to automatically learn them from the ground truth labels.}
 	\label{fig:turn-radii}
 \end{figure}
 \subsection{Learning-based Edge Weight}
