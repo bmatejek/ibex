@@ -22,11 +22,10 @@ State-of-the-art automatic 3D reconstruction approaches use pixel-based convolut
 For the region merging, most methods do not use prior biological knowledge of the 3D shape of neural structures.
 Reported on small-sized volumes, a simple threshold-based mean agglomeration method can achieve superhuman result~\cite{lee2017superhuman}.
 However, it is unclear if that is the case for larger volumes.
-\TODO{sth. about figure 1.}
 
 %\TODO{the selling point is to add biological constraint}
 %We present a \textit{top-down graph-based} method that builds on the outputs of bottom-up pixel-based segmentation approaches. 
-We present a new region merging framework that imposes both local and global biological constraints onto the output segmentation to match the underlying structure of neuronal processes.
+We present a new region merging framework that imposes both local and global biological constraints onto the output segmentation to match the underlying structure of neuronal processes (Fig.~\ref{fig:biological_constraints}).
 We first extract skeletons from labels in the input segmentation and generate a simplified graph (Fig.~\ref{fig:teaser_pipeline}a). 
 Next, we train a CNN classifier to learn biological constraints on the local structural shape of a neuron (Fig.~\ref{fig:teaser_pipeline}b).
 This classifier produces probabilities that two segments belong to the same neuron based on the input shapes of the segments.

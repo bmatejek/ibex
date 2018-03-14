@@ -4,8 +4,8 @@
 \begin{figure*}[t!]
 	\centering
 	\includegraphics[width=0.32\linewidth]{./figures/variation_of_information-microns-test-600.png}
-	\includegraphics[width=0.32\linewidth]{./figures/variation_of_information-FlyEM-train-600.png}
-	\includegraphics[width=0.32\linewidth]{./figures/variation_of_information-FlyEM-test-600.png}
+	\includegraphics[width=0.32\linewidth]{./figures/voi-FlyEM-Vol--1.png}
+	\includegraphics[width=0.32\linewidth]{./figures/voi-FlyEM-Vol--2.png}
 	\caption{VI scores of our method (red) compared to the baseline segmentation (green) and an oracle (blue) that optimally partitions the graph based on ground truth. Lower scores are better. Our method improves the accuracy of the segmentation in all cases.}
 	\label{fig:variation-of-information}
 \end{figure*}
@@ -120,7 +120,7 @@ We believe this is in part because of the differences in the datasets (i.e., iso
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.45\linewidth]{./figures/receiver-operating-characteristic.png}		\includegraphics[width=0.45\linewidth]{./figures/precision-and-recall.png}
+	\includegraphics[width=0.45\linewidth]{./figures/receiver-operating-characteristic.png}
 	\caption{The receiver operating characteristic (ROC) curves of our classifier on three connectomics datasets. The classifier works best on previously unseen data of the Kasthuri volume.}
 	\label{fig:receiver-operating-characteristic}
 \end{figure}
