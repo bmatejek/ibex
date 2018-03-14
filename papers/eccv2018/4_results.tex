@@ -22,8 +22,8 @@ Fig.~\ref{fig:qualitative-results} (left) shows successful merges on the Kasthur
 Several of these examples combine multiple consecutive segments that span the volume.
 In the third example on the left we correct the over-segmentation of a dendrite and attached spine-necks.
 Fig.~\ref{fig:qualitative-results} (right) shows typical failure cases of our method (red circles).
-In two of these examples the algorithm correctly predicted several merges before a single error rendered the segment as wrong.
-In the third example (blue circle) a merge error in the initial segmentation propagated to our output.
+In two of these examples the algorithm correctly predicts several merges before a single error renders the segment as wrong.
+In the third example (blue circle) a merge error in the initial segmentation propagates to our output.
 We now analyze how each major component of our method contributes to this final result.
 
 \begin{figure}[t]
@@ -78,18 +78,15 @@ The second and fourth examples in Fig.~\ref{fig:qualitative-results} show correc
 \\~\\
 \noindent\textbf{Failure Cases}
 There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons.
-Fig.~\ref{fig:skeleton-results} shows two such cases. 
-The endpoints of both segments are circled.
-In this example the small segment is carved from the larger segment in a location where there are no skeleton endpoints. 
+Fig.~\ref{fig:skeleton-results} shows two such cases with the closest endpoints circled. 
+In the right example the small segment is carved from the larger segment in a location where there are no skeleton endpoints. 
 There are on average 177 such examples in our datasets.
 \\~\\
 \noindent\textbf{Edge Weight Learning}
-We first evaluate the effectiveness of inference augmentation.
 %\subsubsection{Inference Augmentation}
 %\noindent\textbf{Inference Augmentation.}
-Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d,lee2017superhuman}.
+Data augmentation at test time can improve accuracy results~\cite{lee2017superhuman,zeng2017deepem3d}.
 When computing the probability to merge two segments, we randomly rotate and flip the examples three times (in the same fashion as training augmentation).
-This produces some additional increase in overall accuracy (Figure ~\ref{fig:receiver-operating-characteristic}).
 The supplemental material contains experiments showing the trade-offs between increased accuracy and runtime when using these augmentation strategies.
 
 \begin{figure}[t!]
@@ -107,7 +104,7 @@ The supplemental material contains experiments showing the trade-offs between in
 	\begin{minipage}{0.45\linewidth}
 		\includegraphics[width=\linewidth]{./figures/merge_candidate4.png}
 	\end{minipage}
-	\caption{\textit{Failure cases.} The top two examples correspond to segment pairs that we incorrectly prune from the graph. The distance between the circled endpoints is too great. The bottom two examples shows pairs of segments that belong to the same neuron but are not adjacent in the input segmentation.}
+	\caption{The top two examples correspond to segment pairs that we incorrectly prune from the graph. The distance between the circled endpoints is too great. The bottom two examples show pairs of segments that belong to the same neuron but are not adjacent in the input segmentation. However, we correctly merge these pairs.}
 	\label{fig:skeleton-results}
 \end{figure}
 Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.

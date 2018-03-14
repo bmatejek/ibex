@@ -39,9 +39,9 @@ We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 
 %We learn 3D affinities using MALIS loss with a U-net~\cite{ronneberger2015u,Turaga:2009}. 
 %We apply the z-watershed algorithm with suitable parameters to compute a 3D oversegmentation of the volume. 
 %The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
-The segmentation of the Kasthuri dataset was computed by agglomerating 3D supervoxels produced by the z-watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. 
-A recent study by Funke et al.~\cite{funke2017deep} demonstrated superior performance of such methods over existing ones on anisotropic data. 
-We learn 3D affinities using MALIS loss with a U-net~\cite{ronneberger2015u,Turaga:2009}. 
+The segmentation of the Kasthuri dataset is computed by agglomerating 3D supervoxels produced by the z-watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. 
+A recent study by Funke et al.~\cite{funke2017deep} demonstrates superior performance of such methods over existing ones on anisotropic data. 
+We learn 3D affinities using MALIS loss with a U-Net~\cite{ronneberger2015u,Turaga:2009}. 
 We apply the z-watershed algorithm with suitable parameters to compute a 3D over-segmentation of the volume. 
 The resulting 3D over-segmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
 For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we apply a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. 
@@ -76,12 +76,12 @@ All the parameters are randomly initialized following the Xavier uniform distrib
 Training concluded after 330 epochs.
 
 %\noindent\textbf{Training Augmentation.}
-Since our input is an existing segmentation of the EM images, there are very few training examples compared to per-pixel classifiers that can train on a unique window for each voxel. 
+Since our input is an existing segmentation of the EM images, there are very few training examples compared to per-pixel classifiers that train on a unique window for each voxel. 
 The Kasthuri dataset represents a region of brain over $\SI[product-units=single]{800}{\micro\meter}^3$ in volume and only yields 640 positive merge examples and 4821 negative ones.
 To avoid overfitting our deep networks, we apply the following augmentations on the training examples.
-During a single batch, we randomly select ten positive and negative examples. 
-With probability 0.5, the example is reflected across the $xy$-plane. 
-We then rotate the example by a random angle between $0$ and $360$ degrees using nearest neighbor interpolation. 
+During a single batch, we randomly select ten positive and ten negative examples. 
+With probability 0.5, an example is reflected across the $xy$-plane. 
+We then rotate each example by a random angle between $0$ and $360$ degrees using nearest neighbor interpolation. 
 The supplemental material contains experiments demonstrating the benefits of this augmentation strategy.
 We have 20,000 such examples per epoch.
 \\~\\

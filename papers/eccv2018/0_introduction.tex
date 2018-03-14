@@ -29,7 +29,10 @@ Generally, it is much more difficult to correct merge errors than to correct spl
 Thus, most reconstruction approaches are tuned towards over-segmentation with many more split than merge errors.
 We focus on correcting these split errors in the input segmentation.
 
-Due to their biological nature, these over-segmented regions are connected with specific geomtric and topological properties. For example, L-shape juctions and Arrow-shape junctions are rare in neural structures and these regions do not form cycles. Thus, we can make use and learn these shape prior information to produce more accurate region merging to match the underlying biology (Fig.~\ref{fig:teaser_pipeline}).
+Due to their biological nature, these over-segmented regions are connected with specific geometric and topological properties. 
+For example, L-shaped junctions and arrow-shaped junctions are rare in neural structures.
+Additionally, neurons should not form cycles. 
+Thus, we can both use and learn these shape priors to produce more accurate region merging to match the underlying biology (Fig.~\ref{fig:teaser_pipeline}).
 
 We present a new region merging framework that imposes both local and global biological constraints onto the output segmentation to match the underlying structure of neuronal processes.
 We first extract skeletons from labels in the input segmentation and generate a simplified graph (Fig.~\ref{fig:teaser_pipeline}a). 
