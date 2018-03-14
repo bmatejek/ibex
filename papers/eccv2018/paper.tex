@@ -60,7 +60,7 @@ In this work, we use a biologically-constrained graph-based method to better rec
 Given the initial segmentation, we first create a graph with nodes corresponding to segment labels and edges identifying potential locations of split errors based on the skeleton structure of the segmentation.
 Next, we train a convolutional neural network to capture the geometric properties of segment connections and produce edge weights as the probability of merging two nodes.
 Finally, we formulate the region merging as a lifted multicut partitioning problem with topological constraints to avoid cycles.
-We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average split variation of information improvement of \TODO{XX}\%.
+We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average variation of information improvement of 19.7\%.
 \keywords{connectomics, biological constraints, region merge, skeletonization, deep learning, lifted multicut}
 \end{abstract}
 
