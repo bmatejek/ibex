@@ -24,9 +24,9 @@ The mushroom body in this species is the primary site of associative learning.
 The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro\meter}^3$ volume with a resolution of $\SI[product-units=single]{10 x 10 x 10}{\nano\meter}^3$ per voxel. 
 We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$ or $999 \times 999 \times 999$ voxels.
 
-\subsubsection{Fib-25}
-The Fib-25 dataset comes from the visual system of a \textit{Drosophila} fly~\cite{takemura2015synaptic}. This sample is imaged at a resolution of $\SI[product-units=single]{8 x 8 x 8}{\nano\meter}^3$ and has $2588 \times 2108 \times 2876$ voxels representing a volume of $\SI[product-units=single]{23.0 x 16.9 x 23.0}{\micro\meter}^3$. 
-There is currently a reconstruction challenge based on this sample.
+%\subsubsection{Fib-25}
+%The Fib-25 dataset comes from the visual system of a \textit{Drosophila} fly~\cite{takemura2015synaptic}. This sample is imaged at a resolution of $\SI[product-units=single]{8 x 8 x 8}{\nano\meter}^3$ and has $2588 \times 2108 \times 2876$ voxels representing a volume of $\SI[product-units=single]{23.0 x 16.9 x 23.0}{\micro\meter}^3$. 
+%There is currently a reconstruction challenge based on this sample.
 
 \subsection{Pixel-Based Segmentations}
 \label{sec:neuroproof}
@@ -43,7 +43,7 @@ This segmentation framework learns voxel and supervoxel classifiers with an emph
 The algorithm first computes multi-channel 3-D predictions for membranes, cell interiors, and mitochondria, among other cell features. 
 The membrane prediction channel is used to produce an over-segmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
 We used exactly the same parameters as the publicly available code for this algorithm.
-For the Fib-25 challenge dataset, we use the segmentation from Funke et al. as our input~\cite{funke2017deep}.
+%For the Fib-25 challenge dataset, we use the segmentation from Funke et al. as our input~\cite{funke2017deep}.
 
 \subsection{Graph Pruning Parameters}
 
