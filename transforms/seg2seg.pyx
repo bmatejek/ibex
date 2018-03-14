@@ -7,7 +7,7 @@ import scipy.ndimage
 
 
 cdef extern from 'cpp-seg2seg.h':
-    long *CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
+    void CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
     long *CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long nentries)
     long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
 
@@ -23,11 +23,9 @@ def MapLabels(segmentation, mapping):
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_mapping
     cpp_mapping = np.ascontiguousarray(mapping, dtype=ctypes.c_int64)
 
-    cdef long *mapped_segmentation = CppMapLabels(&(cpp_segmentation[0,0,0]), &(cpp_mapping[0]), nentries)
+    CppMapLabels(&(cpp_segmentation[0,0,0]), &(cpp_mapping[0]), nentries)
 
-    cdef long[:] tmp_segmentation = <long[:segmentation.size]> mapped_segmentation
-
-    return np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))
+    return segmentation
 
 
 

@@ -5,15 +5,11 @@
 
 
 
-long *CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
+void CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
 {
-  long *updated_segmentation = new long[nentries];
-  
   for (unsigned long iv = 0; iv < nentries; ++iv) {
-    updated_segmentation[iv] = mapping[segmentation[iv]];
+    segmentation[iv] = mapping[segmentation[iv]];
   }
-
-  return updated_segmentation;
 }
 
 
