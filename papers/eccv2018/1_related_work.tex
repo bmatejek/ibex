@@ -2,49 +2,47 @@
 
 \section{Related Work}
 
-\begin{figure}[t]
- 	\subfloat[]{
- 		\includegraphics[width=.47\linewidth]{figures/schema/pre-multicut-with-arrows.pdf}
- 	}
- 	\subfloat[]{
- 		\includegraphics[width=.47\linewidth]{figures/schema/post-multicut.png}
- 	}
- 	\caption{Example improvement of neural reconstruction. (a) We extract 3D skeletons from pixel-based segmentation algorithms to create a graph representation. Red arrows highlight errors in the input segmentation. (b) We improve the segmentation accuracy using a graph partitioning algorithm, leveraging both local and global information.}
- 	\label{fig:improved-reconstruction}
-\end{figure}
+% \begin{figure}[t]
+%  	\subfloat[]{
+%  		\includegraphics[width=.47\linewidth]{figures/schema/pre-multicut-with-arrows.pdf}
+%  	}
+%  	\subfloat[]{
+%  		\includegraphics[width=.47\linewidth]{figures/schema/post-multicut.png}
+%  	}
+%  	\caption{Example improvement of neural reconstruction. (a) We extract 3D skeletons from pixel-based segmentation algorithms to create a graph representation. Red arrows highlight errors in the input segmentation. (b) We improve the segmentation accuracy using a graph partitioning algorithm, leveraging both local and global information.}
+%  	\label{fig:improved-reconstruction}
+% \end{figure}
 
+%\noindent\textbf{Pixel-Based Segmentation}
 \subsubsection{Pixel-Based Segmentation}
-A significant amount of connectomics research considers the problem of extracting segmentation information at the voxel level from raw EM images. First, intermediate representations like boundary or affinity maps are generated. Some methods use a random forest populated with hand-designed features based on image characteristics around a given pixel to predict membrane probabilities~\cite{kaynig2015large}.
-Most recent advancements use convolutional neural networks since machine-learned features outperform hand-designed ones~\cite{bogovic2013learned}.
-Originally, networks predicted membrane probabilities per each image slice using 2D convolutions~\cite{seymour2016rhoananet,ronneberger2015u,kaynig2015large,ciresan2012deep,jain2010boundary,amelio_segmentation}.
-More recent research extends these convolutions to include the z-dimension improving performance~\cite{lee2015recursive,parag2017anisotropic,cciccek20163d,turaga2010convolutional}.
-Many of these networks produce probabilities for the affinity between two voxels (i.e., the probability that adjacent voxels belong to the same neuron). 
-The MALIS cost function is specifically designed for generating affinities that produce good segmentations~\cite{briggman2009maximin}. 
-More recently, flood-filling networks produce segmentations by training an end-to-end neural network that goes from EM images directly to label volumes~\cite{januszewski2016flood}. 
-These networks produce impressive accuracies but at a high computational cost.
-Data augmentation in both training and testing can increase the prediction accuracy in boundary detection~\cite{zeng2017deepem3d}.
-Lee et al. surpass the estimated human accuracy on the SNEMI3D dataset with a variant of the 3D U-Net architecture~\cite{lee2017superhuman}.
+A significant amount of connectomics research considers the problem of extracting segmentation information at the voxel level of EM images.
+First, intermediate representations like boundary, affinity or binary segmentation maps are generated from voxels.
+For the boundary probabilities, random forest with hand-designed features~\cite{kaynig2015large}, 2D and 3D convolution networks ~\cite{bogovic2013learned,seymour2016rhoananet,ronneberger2015u,ciresan2012deep,jain2010boundary,amelio_segmentation}.
+Later, the affinity between each voxel and its six neighors are widely used~\cite{lee2015recursive,parag2017anisotropic,cciccek20163d,turaga2010convolutional,lee2017superhuman}. 3D U-Net architecture becomes popular~\cite{cciccek20163d} and MALIS cost function is designed to re-weight affinity prediction by their contribution to the segmentation error~\cite{briggman2009maximin}.
+More recently, flood-filling networks~\cite{januszewski2016flood} produce binary segmentations from raw pixels with a recurrent convolution network at a high computational cost.
+Orthogonal to the representation, model averaging~\cite{zeng2017deepem3d} and data augmentation~\cite{lee2017superhuman} methods can further improve the performance, where Lee et al.~\cite{lee2017superhuman} surpass the estimated human accuracy on the SNEMI3D dataset.
 
-
-
-\subsubsection{Region Agglomeration}
-Next, agglomeration techniques transform these intermediate representations into segmentations.
+Then, clustering techniques transform these intermediate representations into segmentations.
 Some early techniques apply computationally expensive graph partitioning algorithms with a single node per superpixel~\cite{andres2012globally}.
 Several pixel-based approaches generate probabilities that neighboring pixels belong to the same neuron.
 Often a watershed algorithm will then cluster these pixels into super-pixels~\cite{zlateski2015image}.
-Some methods rely solely on the accuracy of the predicted affinities and agglomerate hierarchically based on the mean affinity between supervoxels~\cite{lee2017superhuman,funke2017deep}.
-Given the initial segmentation, others train random-forest classifiers to produce the final segmentations~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825}
-extract different features~\cite{bogovic2013learned,jain2011learning}.
-Pape et al. present a scalable multicut algorithm to partition superpixels~\cite{beier2017multicut}.
-In our work, we combine these last two strategies of classification and optimization.
 
-\subsubsection{Error-correction methods}
-Additional research builds on top of these region-based methods to correct errors in the segmentation either using human proofreading~\cite{haehn2014design,haehn2017guided,mojo2} or automatic methods~\cite{rolnick2017morphological,error_correction_using_CNN}.
-Many segmentation and clustering algorithms use graph partitioning techniques~\cite{andres2012globally} or normalized cuts for traditional image segmentation~\cite{kappes2016higher,shi2000normalized,tatiraju2008image}.
-Even though graph partitioning is an NP-Hard problem~\cite{demaine2006correlation} there are several useful multicut heuristics that provide good approximations with reasonable computational costs~\cite{horvnakova2017analysis}. 
-We extract a 3D graph from an input segmentation for a true top-down error correction approach. 
-This allows us to enforce domain-specific biological constraints while using graph partitioning algorithms. 
-We use the method of Keuper et al.~\cite{keuper2015efficient} to partition the extracted graph into the final neural reconstruction.
+%\noindent\textbf{Region Merging}
+\subsubsection{Region Merging}
+Region merging methods can be categorized by the similairity metric between adjacent segments and the merging strategy.
+For the similarity metric, Lee et al. and Funke et al. rely solely on the accuracy of the predicted affinities and define the metric as the mean affinity between segments~\cite{lee2017superhuman,funke2017deep}.
+Classification-based method predicts the probability to merge two segments from handcrafted~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825,jain2011learning} and learned features~\cite{bogovic2013learned}. 
+
+For the merging stategy, most methods use variants of hierarchical agglomeration methods~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825,bogovic2013learned} to greedily merge a pair of regions at a time.
+Jain et al. formulates the agglomeration as a reinforecement learning problem ~\cite{jain2011learning} and Pape et al. present a scalable multicut algorithm to partition superpixels with global optimization~\cite{beier2017multicut}.
+
+% \subsubsection{Error-correction methods}
+% Additional research builds on top of these region-based methods to correct errors in the segmentation either using human proofreading~\cite{haehn2014design,haehn2017guided,mojo2} or automatic methods~\cite{rolnick2017morphological,error_correction_using_CNN}.
+% Many segmentation and clustering algorithms use graph partitioning techniques~\cite{andres2012globally} or normalized cuts for traditional image segmentation~\cite{kappes2016higher,shi2000normalized,tatiraju2008image}.
+% Even though graph partitioning is an NP-Hard problem~\cite{demaine2006correlation} there are several useful multicut heuristics that provide good approximations with reasonable computational costs~\cite{horvnakova2017analysis}. 
+%We extract a 3D graph from an input segmentation for a true top-down error correction approach. 
+%This allows us to enforce domain-specific biological constraints while using graph partitioning algorithms. 
+%We use the method of Keuper et al.~\cite{keuper2015efficient} to partition the extracted graph into the final neural reconstruction.
 
 %\subsubsection{Error-correction methods}
 %Additional research builds on top of these region-based methods to correct errors in the segmentation either using human proofreading~\cite{haehn2014design,haehn2017guided,mojo2} or automatic methods~\cite{rolnick2017morphological,error_correction_using_CNN}.

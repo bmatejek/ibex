@@ -1,12 +1,11 @@
 % !TEX root =  paper.tex
-\section{Method}
-
 \begin{figure}[t!]
 	\centering
 	\includegraphics[width=\linewidth]{./figures/teaser-image.png}
 	\caption{Our proposed framework uses both local and global biological constraints to improve an input segmentation. We generate a simplified graph from an input segmentation (a), train a classifier to learn neuron shape constraints locally (b), and perform graph partitioning to enforce domain-specific properties globally.\TODO{Is it possible to have the weights next to the lines?}}
 	\label{fig:teaser_pipeline}
 \end{figure}
+\section{Method}
 %\begin{figure*}[t!]
 %	\begin{center}
 %		\subfloat[]{\includegraphics[width=0.24\linewidth]{./figures/methods/multicut_input.png}}
@@ -18,12 +17,12 @@
 % 	\label{fig:overview}
 % \end{figure*}
 
-There are two types of errors that can occur in connectomics segmentations: \textit{split errors} and \textit{merge errors}. 
-In a split error, two segments should have been merged into one neuronal process (Fig.~\ref{fig:improved-reconstruction}). 
-In a merge error, one segment corresponds to more than one neuron.
-Generally, it is much more difficult to correct merge errors than to correct split errors, as the space of possible split proposals grows quickly~\cite{parag2015properties}.
-Thus, most reconstruction approaches are tuned towards over-segmentation with many more split than merge errors. 
-The input of our method is the over-segmentation of EM image volumes from state-of-the-art pipelines.
+%There are two types of errors that can occur in connectomics segmentations: \textit{split errors} and \textit{merge errors}. 
+%In a split error, two segments should have been merged into one neuronal process (Fig.~\ref{fig:improved-reconstruction}). 
+%In a merge error, one segment corresponds to more than one neuron.
+%Generally, it is much more difficult to correct merge errors than to correct split errors, as the space of possible split proposals grows quickly~\cite{parag2015properties}.
+%Thus, most reconstruction approaches are tuned towards over-segmentation with many more split than merge errors. 
+%The input of our method is the over-segmentation of EM image volumes from state-of-the-art pipelines.
 
 Our pipeline is illustrated in Fig.~\ref{fig:teaser_pipeline}.
 From the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 

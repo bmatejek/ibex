@@ -8,7 +8,7 @@ We evaluate our method by comparing it to a state-of-the-art pixel-based reconst
 
 Our proposed method is designed for very large connectomics datasets. 
 Popular challenge datasets such as CREMI and SNEMI3D are simply too small for any noticeable change. 
-The following datasets contain 4 times more volume than the CREMI datasets. 
+The following datasets contain 4 times more volume than the CREMI datasets. \TODO{better to have a table here}
 
 %\subsubsection{Kasthuri}
 \noindent\textbf{Kasthuri}
@@ -84,8 +84,8 @@ The supplemental material contains experiments demonstrating the benefits of thi
 We have 20,000 such examples per epoch.
 
 \noindent\textbf{Graph Partition}
-We assign the edges in our graph a weight $w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}}$ where $\beta$ is a tunable parameter. 
-Higher values of $\beta$ encourage over-segmentation.
+%We assign the edges in our graph a weight $w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}}$ where $\beta$ is a tunable parameter. 
+%Higher values of $\beta$ encourage over-segmentation.
 Figure~\ref{fig:variation-of-information} shows our results for variables $\beta \in [0.5, 0.9]$. 
 For our multicut analysis we consider $\beta = 0.5$. 
 

@@ -37,7 +37,8 @@
 
 \authorrunning{ECCV-18 submission ID \ECCV18SubNumber}
 %\title{Scalable Graph-Based Neural \\ Reconstruction for Connectomics}
-\title{Biologically-Constrained 3D Agglomeration for Connectome Reconstruction}
+%\title{Biologically-Constrained 3D Agglomeration for Connectome Reconstruction}
+\title{Biologically-Constrained Region Merging for Connectome Reconstruction}
 
 \author{Anonymous ECCV submission}
 \institute{Paper ID \ECCV18SubNumber}
@@ -52,15 +53,15 @@
 %In the past decade in Connectomics, much progress has been made to classify neural membranes or affinities from the raw pixel and to watershed transform them into initial segments.
 %Current state-of-the-art automatic methods classify neural membranes or affinities from the raw pixel followed by agglomeration methods to create full neuron reconstructions.
 %An agglomerative segmentation algorithm merges initial pair of clusters.
-Current state-of-the-art connectome reconstruction pipelines have two major steps: initial pixel-based segmentation with affinity prediction and watershed transform, and refined segmentation with agglomeration.
+Current state-of-the-art connectome reconstruction pipelines have two major steps: initial pixel-based segmentation with affinity prediction and watershed transform, and refined segmentation by merging oversegmented regions.
 %In the past deTraditionally, neuron segmentation from 3D electron microscopy (EM)
-For the agglomeration, most methods neglect geometric and topological constraints that are inherent in the graph structure of neural wiring diagrams.
+For the region merging, most methods neglect geometric and topological constraints that are inherent in the graph structure of neural wiring diagrams.
 In this work, we use a biologically-constrained graph-based method to better reconstruct neural pathways.
 Given the initial segmentation, we first create a graph with nodes corresponding to segment labels and edges identifying potential locations of split errors based on the skeleton structure of the segmentation.
 Next, we train a convolutional neural network to capture the geometric properties of segment connections and produce edge weights as the probability of merging two nodes.
-Finally, we formulate the agglomeration as a lifted multicut partitioning problem with topological constraints to avoid cycles.
+Finally, we formulate the region merging as a lifted multicut partitioning problem with topological constraints to avoid cycles.
 We demonstrate the performance of our approach on multiple real-world connectomics datasets with an average split variation of information improvement of \TODO{XX}\%.
-\keywords{connectomics, biological constraints, agglomeration, skeletonization, deep learning, lifted multicut}
+\keywords{connectomics, biological constraints, region merge, skeletonization, deep learning, lifted multicut}
 \end{abstract}
 
 \input{0_introduction}
