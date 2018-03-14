@@ -111,10 +111,9 @@ We provide a fuller analysis in the supplemental materials.
 \label{sec:edge-weights}
 We assign an edge weight $w_e$ to each edge corresponding to the probability that two nodes belong to the same neuronal process.
 We train a 3D CNN model to learn these geometric constraints for valid connection between two segments from labeled volume.
-
+\\~\\
 \noindent\textbf{Edge Probability}
 To predict the probabilities that two segments belong to the same neuron, we train a feed-forward convolutional network with three \textit{VGG-style} convolution blocks~\cite{chatfield2014return} and two fully connected layers before the final sigmoid activation. 
-Each \textit{VGG-style} convolution block consists of two double convolutions with filter size $3\times3\times3$ and LeakyReLU(0.0005), followed by a max pooling with filter size $2\times2\times1$ in the first two blocks and $2\times2\times2$ in the third. 
 
 For the input of the network, we extract a cubic region of interest (ROI) around each endpoint $e$ in $\mathbb{S}_c$ as input to the CNN. 
 The CNN receives three input channels for every voxel in the ROI around segments $l_1$ and $l_2$. 
@@ -124,15 +123,13 @@ The second channel is $0.5$ only if the corresponding voxel has label $l_2$.
 The third channel is $0.5$ if the corresponding voxel is either $l_1$ or $l_2$.
 We do not use the raw EM image information to avoid the need to retrain the network on datasets that have been stained differently or imaged at different resolution. 
 This reduces the need for generating costly manually-labeled ground truth. 
-
-\noindent\textbf{Edge Weight}
-
-Given the probability that the nodes belong to the same neuron is $p_e$, the edge weight $w_e$ is defined as
+\\~\\
+\noindent\textbf{Edge Weight} Given the probability that the nodes belong to the same neuron is $p_e$, the edge weight $w_e$ is defined as
 %p_e &=\mbox{CNN}(x_1, x_2) \\
 \begin{align}
-w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}}
+w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}},
 \end{align}
-, where $\beta$ is a tunable parameter that encourages over- or under-segmentation. 
+where $\beta$ is a tunable parameter that encourages over- or under-segmentation. 
 This particular weighting scheme allows us to optimize for a Bayesian network defined on the graph~\cite{keuper2015efficient,andres2011probabilistic}.
 
 %The first two max pooling layers are anisotropic with pooling only in the $x$ and $y$ dimensions. 
@@ -164,7 +161,7 @@ This particular weighting scheme allows us to optimize for a Bayesian network de
 \subsection{Optimization-Based Graph Partition}
 
 After graph construction, we segment the graph into a globally consistent manner while enforcing topological constraints on the output.
-
+\\~\\
 %\subsubsection{Lifted Multicut}
 \noindent\textbf{Lifted Multicut}
 After constructing the graph we seek to partition it into labels where every label corresponds to a neuronal process. 
@@ -183,7 +180,7 @@ However, determining such probabilities is computationally expensive.
 We approximate these probabilities by finding the maximal probable path between any two nodes using Dijkstra's algorithm~\cite{keuper2015efficient}.
 This is an underestimate of the probability that two nodes belong to the same neuron since it does not consider all possible paths.
 Since our graphs are sufficiently small, we can generate ``lifted'' edges between all pairs of nodes. 
-
+\\~\\
 %\subsubsection{Topological Constraints}
 \noindent\textbf{Topological Constraints}
 By reformulating the segmentation problem as a graph partitioning one, we can enforce some global constraints on our result based on the underlying biology.
