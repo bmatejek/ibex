@@ -10,8 +10,7 @@
 	\label{fig:variation-of-information}
 \end{figure*}
 
-\subsection{Variation of Information Results}
-
+\subsection{Connectomics Benchmark}
 In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-based reconstructions of the Kasthuri and FlyEM data (Sec.~\ref{sec:neuroproof}) for varying thresholds of agglomeration (green). 
 We use one of these segmentations (green circle) as our input dataset with an agglomeration threshold of 0.3 for all datasets. 
 The results from our method are shown in red for varying the $\beta$ parameter. 
@@ -49,8 +48,10 @@ We now analyze how each major component of our method contributes to this final 
 	\label{fig:qualitative-results}
 \end{figure}
 
-\subsection{Graph Pruning Results}
+\subsection{Empirical Ablation Studies}
+Below, we analyze various design choiceswe for each step of our pipeline.
 
+\noindent\textbf{Graph Generation.}
 Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. 
 This edge pruning is essential for the graph partitioning algorithm, which has a computational complexity dependence on the number of edges. 
 The baseline algorithm considers all adjacent regions for merging. 
@@ -106,10 +107,11 @@ There are on average $\TODO{XX}$ such examples in our datasets, corresponding to
 	\label{fig:skeleton-results}
 \end{figure}
 
-\subsection{CNN Classification Results}
-
-\subsubsection{Inference Augmentation}
-
+%\subsection{CNN Classification Results}
+\noindent\textbf{Edge Weight Learning}
+We first evaluate the effectiveness of inference augmentation.
+%\subsubsection{Inference Augmentation}
+%\noindent\textbf{Inference Augmentation.}
 Data augmentation at test time can improve accuracy results~\cite{zeng2017deepem3d,lee2017superhuman}.
 When computing the probability to merge two segments, we input the initial segment into our CNN as well as 3 randomly rotated and flipped examples (in the same manner as training augmentation).
 This produces some additional increase in overall accuracy (Figure ~\ref{fig:receiver-operating-characteristic}).
@@ -128,15 +130,16 @@ We believe this is in part because of the differences in the datasets (i.e., iso
 	\label{fig:receiver-operating-characteristic}
 \end{figure}
 
-\subsubsection{Generalization to Other Datasets}
-
+%\subsubsection{Generalization to Other Datasets}
+%\noindent\textbf{Generalization to Other Datasets.}
+We also evaluate the generalization to other datasets.
 Our neural network does not take as input the images or affinities to allow us to transfer network weights from one dataset to the next.
 Table~\TODO{X} shows the result when training on the FlyEM data and inferring on the Kasthuri data and vice versa.
 The classification results are reasonable despite the fact that the datasets vary in resolution and even animal type.
 
 
-\subsection{Graph Optimization Results}
-
+%\subsection{Graph Optimization Results}
+\noindent\textbf{Graph Partition}
 The graph optimization strategy using multicut increases our accuracy over using just the CNN.
 Table \ref{table:multicut} shows the changes in precision, recall, and accuracy for all four datasets compared to the CNN with both the multicut and ``lifted'' multicut formulations.
 These results correspond to $\beta = 0.5$ (Sec.~\ref{sec:edge-weights}). 
@@ -164,5 +167,6 @@ Our post-processing method to agglomerate segments while enforcing the acyclic n
 Note that our post-processing strategy by design cannot increase the recall. 
 
 \subsection{Computational Performance}
-
-\subsubsection{System} All performance experiments ran on an Intel Core i7-6800K CPU 3.40 GHz with a Titan X Pascal GPU. All code is written in Python and will be freely available upon paper decision. We use the Keras deep learning library for our neural networks with Theano backend and cuDNN 7 acceleration for CUDA 8.0.
+%\subsubsection{System} 
+\noindent\textbf{System}
+All performance experiments ran on an Intel Core i7-6800K CPU 3.40 GHz with a Titan X Pascal GPU. All code is written in Python and will be freely available upon paper decision. We use the Keras deep learning library for our neural networks with Theano backend and cuDNN 7 acceleration for CUDA 8.0.

@@ -13,7 +13,7 @@
 % 	\label{fig:improved-reconstruction}
 % \end{figure}
 
-\subsubsection{Initial Segmentation}
+\subsubsection{Pixel-Based Segmentation}
 A significant amount of connectomics research considers the problem of extracting segmentation information at the voxel level from raw EM images.
 
 First, intermediate representations like boundary or affinity maps are generated. Some methods use a random forest populated with hand-designed features based on image characteristics around a given pixel to predict membrane probabilities~\cite{kaynig2015large}.
@@ -33,15 +33,15 @@ Several pixel-based approaches generate probabilities that neighboring pixels be
 Often a watershed algorithm will then cluster pixels into super-pixels~\cite{zlateski2015image}.
 
 \subsubsection{Agglomeration}
-\TODO{rule-based method}
+\TODO{rule-based}
 Some methods rely solely on the accuracy of the predicted affinities and agglomerate hierarchically based on the mean affinity between supervoxels~\cite{lee2017superhuman,funke2017deep}.
 
-\TODO{classification-based method}
+\TODO{classification-based}
 Given the initial segmentation, some methods train random-forest classifiers to produce the final segmentations~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825}
 extract different features
 ~\cite{jain2011learning,bogovic2013learned}.
 
-\TODO{optimization-based method}
+\TODO{optimization-based}
 Pape et al. present a scalable multicut algorithm to partition superpixels~\cite{beier2017multicut}.
 
 In our work, we combine classification and optimization.

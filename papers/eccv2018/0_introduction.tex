@@ -18,7 +18,7 @@
 The field of connectomics is concerned about reconstructing the wiring diagram of the brain at nanometer resolutions to enable new insights into the workings of the brain~\cite{haehn2017scalable,kasthuri2015saturated}. 
 %Recent advancements in image acquisition using multi-beam serial-section electron microscopy (sSEM) allow researchers to produce terabytes of image data per hour~\cite{hildebrand2017whole}. 
 %It is infeasible for domain experts to manually reconstruct this vast amount of image data~\cite{haehn2014design}. 
-State-of-the-art automatic 3D reconstruction approaches use voxel-based convolutional neural networks (CNNs) and watershed transform to generate initial segmentation, followed by agglomeration steps~\cite{seymour2016rhoananet,lee2015recursive,nunez2014graph,parag2017anisotropic,ronneberger2015u,zlateski2015image}.
+State-of-the-art automatic 3D reconstruction approaches use pixel-based convolutional neural networks (CNNs) and watershed transform to generate initial segmentation, followed by agglomeration steps~\cite{seymour2016rhoananet,lee2015recursive,nunez2014graph,parag2017anisotropic,ronneberger2015u,zlateski2015image}.
 %These \textit{bottom-up pixel-based} methods produce excellent results but still fall short of acceptable error rates for large volumes.
 For the agglomeration, most methods do not make use of the biological knowledge of the 3D shape of neural structures.
 Reported on small-sized volumes, a simple threshold-based mean agglomeration method can achieve superhuman result~\cite{lee2017superhuman}.
