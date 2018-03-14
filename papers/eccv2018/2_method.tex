@@ -39,7 +39,7 @@ The lifted multicut solution is globally consistent which we then augment to pro
 \subsection{Skeleton-Based Graph Generation}
 %\subsubsection{Node Generation}
 \label{sec:skeletonization}
-Most agglomeration methods create the region graph by removing small-sized segments and linking each pair of adjacent segments, which can still lead to a large graph size due to the irregular shape of neural structures.
+Most region merging methods create the region graph by removing small-sized segments and linking each pair of adjacent segments, which can still lead to a large graph size due to the irregular shape of neural structures.
 We here use the skeleton representation of the segmentation and reduce the graph size with the geometric constraints on the connectivity of two adjacent segments to prune edges.
 % a bit trivial, as everyone is doing this. maybe no need to mention
 % \subsubsection{Node Pruning}
