@@ -21,13 +21,12 @@ cdef extern from 'cpp-multicut.h':
 def Multicut(prefix, candidates, edge_weights, beta, threshold, heuristic):
     # read in the segmentation for this prefix
     segmentation = dataIO.ReadSegmentationData(prefix)
-    gold = dataIO.ReadGoldData(prefix)
 
     # get a forward and reverse mapping
     forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
 
     # get the number of vertices and edges
-    nvertices = reverse_mapping.size
+    nvertices = reverse_mapping.size + 1
     nedges = edge_weights.size
 
     # convert the candidate labels to vertices
