@@ -60,16 +60,16 @@ Our pruning heuristic removes at least $3.5\times$ the number of edges on all da
 However, there are some adjacent over-segmented labels which are not considered. 
 
 \begin{table}
-	\centering
-	\small
-	\setlength{\tabcolsep}{0.75em}
+	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 610) compared to total number of edges in the graph (e.g., 23506) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
+\resizebox{\linewidth}{!}{
 	\begin{tabular}{c c c c c} \hline
 		\textbf{Dataset} & \textbf{Segment Adjacency} & \textbf{Skeleton Pruning} & \textbf{Missed Splits} & \textbf{Gained Edges} \\ \hline
 		Kasthuri & 610 / 23506 & 556 / 4921 & 214 & 160 \\
 		FlyEM Vol. 1 & 304 / 15949 & 212 / 4578 & 105 & 13 \\
 		FlyEM Vol. 2 &  298 / 17614 & 197 / 4366 & 120 & 19 \\ \hline
 	\end{tabular}
-	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 610) compared to total number of edges in the graph (e.g., 23506) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
+}
+	\centering
 	\label{table:skeletonization}
 \end{table}
 
