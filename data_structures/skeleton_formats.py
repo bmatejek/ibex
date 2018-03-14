@@ -176,7 +176,7 @@ class SWCSkeleton:
 
         # get the skeleton filename
         filename = 'skeletons/NeuTu/{}/tree_{}.swc'.format(prefix, label)
-
+        
         # open the file and read all of the swc entries
         with open(filename, 'r') as fd:
             for joint in fd.readlines():

@@ -95,7 +95,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     # get all of the skeletons
     if topology: skeletons, endpoints = dataIO.ReadTopologySkeletons(prefix, thresholded_segmentation)
     else: skeletons, _, endpoints = dataIO.ReadSWCSkeletons(prefix, thresholded_segmentation)
-
+    
     # get the set of all considered pairs
     endpoint_candidates = [set() for _ in range(len(endpoints))]
     for ie, endpoint in enumerate(endpoints):
@@ -161,6 +161,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
 
                     midpoints[(label,neighbor_label)] = midpoint
                     midpoints[(neighbor_label,label)] = midpoint
+
 
     # create list of candidates
     positive_candidates = []

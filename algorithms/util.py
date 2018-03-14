@@ -75,8 +75,8 @@ def CollapseGraph(segmentation, candidates, maintain_edges, probabilities, outpu
         for neighbor_label in adjacency_sets[label_one]:
             if neighbor_label == label_two: continue
 
-            if unionfind.Find(union_find[neighbor_label]).label == label_two_union_find: 
-                maintain_edges[ie] = True
+        if unionfind.Find(union_find[neighbor_label]).label == label_two_union_find: 
+            maintain_edges[ie] = True
 
         # skip if the edge is no longer collapsed
         if maintain_edges[ie]: continue

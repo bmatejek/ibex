@@ -60,7 +60,7 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
     negative_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'negative')
     candidates = positive_candidates + negative_candidates
     ncandidates = len(candidates)
-
+    
     # compute augmentations
     probabilities = np.zeros((ncandidates, 1), dtype=np.float64)
     for _ in range(naugmentations):
