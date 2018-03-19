@@ -186,8 +186,8 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
 
         extracted_seg2gold_mapping = seg2gold.Mapping(extracted_segmentation, extracted_gold, match_threshold=0.70, nonzero_threshold=0.40)
 
-        gold_one = extracted_seg2gold_mapping[label_one]
-        gold_two = extracted_seg2gold_mapping[label_two]
+        gold_one = seg2gold_mapping[label_one]
+        gold_two = seg2gold_mapping[label_two]
 
         ground_truth = (gold_one == gold_two)
 
