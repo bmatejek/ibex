@@ -1,6 +1,7 @@
 #include <ctime>
 #include <math.h>
 #include <stdio.h>
+#include <assert.h>
 
 
 
@@ -30,6 +31,7 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
     long nentries = zres * yres * xres;
     long nnonzero = nentries;
 
+
     // start stopwatch
     clock_t t1, t2;
     t1 = clock();
@@ -43,15 +45,21 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
     long max_segment = 0;
     long max_gold = 0;
     for (long iv = 0; iv < nentries; ++iv) {
-        if (segmentation[iv] > max_segment) max_segment = segmentation[iv] + 1;
-        if (gold[iv] > max_gold) max_gold = gold[iv] + 1;
+        if (segmentation[iv] > max_segment) max_segment = segmentation[iv];
+        if (gold[iv] > max_gold) max_gold = gold[iv];
     }
+    ++max_segment;
+    ++max_gold;
 
     // print lowest value of segment
     long min_segment = max_segment;
+    long min_gold = max_gold;
     for (long iv = 0; iv < nentries; ++iv) {
         if (segmentation[iv] < min_segment) min_segment = segmentation[iv];
+        if (gold[iv] < min_gold) min_gold = gold[iv];
     }
+    // make sure that both segment and gold values are greater than zero
+    assert ((min_gold >= 0) and (min_segment >= 0));
 
     // populate values for joint sets
     long **c = new long *[max_segment];
@@ -80,7 +88,6 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
             t[ig] += c[is][ig];
         }
     }
-
 
 
     // calculate the number of true and false positives and negatives

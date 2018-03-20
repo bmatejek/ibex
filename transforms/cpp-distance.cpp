@@ -112,7 +112,6 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
     }
 
 
-
     // go along the x dimension last for every (y, z) coordinate
     for (long iy = 0; iy < resolution[IB_Y]; ++iy) {
         for (long iz = 0; iz < resolution[IB_Z]; ++iz) {

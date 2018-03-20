@@ -14,6 +14,7 @@ cdef extern from 'cpp-comparestacks.h':
 def PrincetonEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0):
     # make sure these elements are the same size
     assert (segmentation.shape == gold.shape)
+    assert (np.amin(segmentation) >= 0 and np.amin(gold) >= 0)
 
     # remove all small connected components
     if filtersize > 0:
@@ -37,15 +38,14 @@ def PrincetonEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_tru
 def CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, mask_segmentation=False, filtersize=0):
     # make sure these elements are the same size
     assert (segmentation.shape == gold.shape)
+    assert (np.amin(segmentation) >= 0 and np.amin(gold) >= 0)
 
     # remove all small connected components
     if filtersize > 0:
         segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, filtersize)
         gold = seg2seg.RemoveSmallConnectedComponents(gold, filtersize)
     if dilate_ground_truth > 0:
-        masked_gold = np.zeros(gold.shape, dtype=gold.dtype)
-        border_mask.create_border_mask(gold, masked_gold, dilate_ground_truth, 0)
-        gold = np.copy(masked_gold)
+        gold = distance.DilateData(gold, 1)
 
     vi_split, vi_merge = voi(segmentation, gold)
     print 'Variation of Information Full: {}'.format(vi_split + vi_merge)
