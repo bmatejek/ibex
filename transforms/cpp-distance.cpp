@@ -65,8 +65,8 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
         for (long ix = 0; ix < resolution[IB_X]; ++ix) {
 
             long k = 0;
-            long *v = new long[resolution[IB_Y]];
-            float *z = new float[resolution[IB_Y]];
+            long *v = new long[resolution[IB_Y] + 1];
+            float *z = new float[resolution[IB_Y] + 1];
 
             v[0] = 0;
             z[0] = -1 * infinity;
@@ -117,8 +117,8 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
         for (long iz = 0; iz < resolution[IB_Z]; ++iz) {
 
             long k = 0;
-            long *v = new long[resolution[IB_X]];
-            float *z = new float[resolution[IB_X]];
+            long *v = new long[resolution[IB_X] + 1];
+            float *z = new float[resolution[IB_X] + 1];
 
             v[0] = 0;
             z[0] = -1 * infinity;

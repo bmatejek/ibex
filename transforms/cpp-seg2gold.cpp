@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "cpp-seg2gold.h"
 #include <map>
 
 
@@ -26,32 +25,32 @@ long *CppMapping(long *segmentation, int *gold, long nentries, double match_thre
     for (long iv = 0; iv < max_segmentation_value; ++iv)
         nvoxels_per_segment[iv] = 0;
     for (long iv = 0; iv < nentries; ++iv)
-      nvoxels_per_segment[segmentation[iv]]++;
+        nvoxels_per_segment[segmentation[iv]]++;
 
-    std::map<long, std::map<long, long> > seg2gold_overlap = std::map<long, std::map<long, long> >();	
+    std::map<long, std::map<long, long> > seg2gold_overlap = std::map<long, std::map<long, long> >();   
     for (long is = 0; is < max_segmentation_value; ++is) {
-      if (nvoxels_per_segment[is]) { seg2gold_overlap.insert(std::pair<long, std::map<long, long> >(is, std::map<long, long>())); }
+        if (nvoxels_per_segment[is]) seg2gold_overlap.insert(std::pair<long, std::map<long, long> >(is, std::map<long, long>()));
     }
     
     for (long iv = 0; iv < nentries; ++iv) {
-      seg2gold_overlap[segmentation[iv]][gold[iv]]++;
+        seg2gold_overlap[segmentation[iv]][gold[iv]]++;
     }
     
     // create the mapping
     long *segmentation_to_gold = new long[max_segmentation_value];
     for (long is = 0; is < max_segmentation_value; ++is) {
         if (!nvoxels_per_segment[is]) { segmentation_to_gold[is] = 0; continue; }
-	long gold_id = 0;
-	long gold_max_value = 0;
+        long gold_id = 0;
+        long gold_max_value = 0;
 
         // only gets label of 0 if the number of non zero voxels is below threshold
-	for (std::map<long, long>::iterator iter = seg2gold_overlap[is].begin(); iter != seg2gold_overlap[is].end(); ++iter) {
-	  if (not iter->first) continue;
-	  if (iter->second > gold_max_value) {
-	    gold_max_value = iter->second;
-	    gold_id = iter->first;
-	  }
-	}
+        for (std::map<long, long>::iterator iter = seg2gold_overlap[is].begin(); iter != seg2gold_overlap[is].end(); ++iter) {
+            if (not iter->first) continue;
+            if (iter->second > gold_max_value) {
+                gold_max_value = iter->second;
+                gold_id = iter->first;
+            }
+        }
 
         // the number of matching gold values divided by the number of non zero pixels must be greater than the match threshold
         if (gold_max_value / (double)(nvoxels_per_segment[is] - seg2gold_overlap[is][0]) < match_threshold) segmentation_to_gold[is] = 0;
