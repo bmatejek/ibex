@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99d (TeX Live 2017)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: paper.aux
+The style file: splncs.bst
+Database file #1: egbib.bib
+Repeated entry---line 152 of file egbib.bib
+ : @article{funke2017deep
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 418 of file egbib.bib
+ : @inproceedings{ronneberger2015u
+ :                                ,
+I'm skipping whatever remains of this entry
+Warning--can't use both volume and number fields in haehn2017scalable
+Warning--empty publisher in Turaga:2009
+You've used 40 entries,
+            2087 wiz_defined-function locations,
+            708 strings with 13525 characters,
+and the built_in function-call counts, 13786 in all, are:
+= -- 1231
+> -- 807
+< -- 27
++ -- 283
+- -- 243
+* -- 1038
+:= -- 1951
+add.period$ -- 53
+call.type$ -- 40
+change.case$ -- 40
+chr.to.int$ -- 0
+cite$ -- 42
+duplicate$ -- 686
+empty$ -- 1181
+format.name$ -- 243
+if$ -- 3257
+int.to.chr$ -- 0
+int.to.str$ -- 40
+missing$ -- 40
+newline$ -- 204
+num.names$ -- 40
+pop$ -- 162
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 460
+stack$ -- 0
+substring$ -- 737
+swap$ -- 356
+text.length$ -- 27
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 2
+while$ -- 104
+width$ -- 42
+write$ -- 449
+(There were 2 error messages)
