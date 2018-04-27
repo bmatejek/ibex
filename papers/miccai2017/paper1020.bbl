@@ -1,0 +1,110 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{aimar2005x264}
+Aimar, L., Merritt, L., Petit, E., et~al.: x264-a free h264/avc encoder (2005)
+
+\bibitem{collet2016smaller}
+Collet, Turner: Smaller and faster data compression with zstandard, url:
+  https://code.facebook.com/posts/1658392934479273/smaller-and-faster-data-compression-with-zstandard/
+  (2016), accessed: 23-October-2016
+
+\bibitem{deutsch1996zlib}
+Deutsch, P., Gailly, J.L.: Zlib compressed data format specification version
+  3.3. Tech. rep. (1996)
+
+\bibitem{pascal-voc-2012}
+Everingham, M., Van~Gool, L., Williams, C.K.I., et~al.: The {PASCAL} {V}isual
+  {O}bject {C}lasses {C}hallenge 2012 {(VOC2012)} {R}esults.
+  http://www.pascal-network.org/challenges/VOC/voc2012/workshop/index.html
+
+\bibitem{fredman1989cell}
+Fredman, M., Saks, M.: The cell probe complexity of dynamic data structures.
+  In: Proceedings of the twenty-first annual ACM symposium on Theory of
+  computing. pp. 345--354. ACM (1989)
+
+\bibitem{google2016brotli}
+Google: Brotli compression format, url: https://github.com/google/brotli
+  (2016), accessed: 11-October-2016
+
+\bibitem{google2016compressed}
+Google: Neuroglancer compression, url: https://github.com/google/neuroglancer/
+  blob/master/src/neuroglancer/sliceview/ compressed\_segmentation/readme.md
+  (2016), accessed: 21-October-2016
+
+\bibitem{haehn_dojo_2014}
+Haehn, D., Knowles-Barley, S., Roberts, M., et~al.: Design and evaluation of
+  interactive proofreading tools for connectomics. IEEE Transactions on
+  Visualization and Computer Graphics (Proc. IEEE SciVis 2014)  20(12),
+  2466--2475 (2014)
+
+\bibitem{he2009fast}
+He, L., Chao, Y., Suzuki, K., Wu, K.: Fast connected-component labeling.
+  Pattern Recognition  42(9),  1977--1987 (2009)
+
+\bibitem{kasthuri2015saturated}
+Kasthuri, N., Hayworth, K.J., Berger, D.R., et~al.: Saturated reconstruction of
+  a volume of neocortex. Cell  162(3),  648--661 (2015)
+
+\bibitem{lehmann2016liblzf}
+Lehmann, M.: Liblzf, url: http://oldhome.schmorp.de/marc/liblzf.html (2016),
+  accessed: 13-October-2016
+
+\bibitem{liu2014modular}
+Liu, T., Jones, C., Seyedhosseini, M., Tasdizen, T.: A modular hierarchical
+  approach to 3d electron microscopy image segmentation. Journal of
+  neuroscience methods  226,  88--102 (2014)
+
+\bibitem{MartinFTM01}
+Martin, D., Fowlkes, C., Tal, D., et~al.: A database of human segmented natural
+  images and its application to evaluating segmentation algorithms and
+  measuring ecological statistics. In: Proc. 8th Int'l Conf. CV. vol.~2, pp.
+  416--423 (July 2001)
+
+\bibitem{GALA2014}
+Nunez-Iglesias, J., Kennedy, R., Plaza, S.M., et~al.: Graph-based active
+  learning of agglomeration (gala): a python library to segment 2d and 3d
+  neuroimages. Frontiers in neuroinformatics  8, ~34 (2014)
+
+\bibitem{oberhumer2005lzo}
+Oberhumer, M.: Lzo real-time data compression library. User manual for LZO
+  version 0.28, url: http://www.infosys.tuwien.ac.at/Staff/lux/marco/lzo.html
+  (February 1997)  (2005)
+
+\bibitem{pavlov2007lzma}
+Pavlov, I.: Lzma sdk (software development kit) (2007)
+
+\bibitem{roelofs1999png}
+Roelofs, G., Koman, R.: PNG: the definitive guide. O'Reilly, Inc. (1999)
+
+\bibitem{ronneberger2015u}
+Ronneberger, O., Fischer, P., Brox, T.: U-net: Convolutional networks for
+  biomedical image segmentation. In: International Conference on Medical Image
+  Computing and Computer-Assisted Intervention. pp. 234--241. Springer (2015)
+
+\bibitem{seward1998bzip2}
+Seward, J.: bzip2 (1998)
+
+\bibitem{skodras2001jpeg}
+Skodras, A., Christopoulos, C., Ebrahimi, T.: The jpeg 2000 still image
+  compression standard. IEEE Signal processing magazine  18(5),  36--58 (2001)
+
+\bibitem{suissapeleg2016}
+Suissa-Peleg, A., Haehn, D., Knowles-Barley, S., et~al.: Automatic neural
+  reconstruction from petavoxel of electron microscopy data. Microscopy and
+  Microanalysis  22(S3),  536--537 (007 2016)
+
+\bibitem{vandevenne2016zopfli}
+Vandevenne, Alakuijala: Zopfli compression algorithm, url:
+  https://github.com/google/zopfli (2016), accessed: 11-October-2016
+
+\bibitem{welch1984technique}
+Welch, T.A.: A technique for high-performance data compression. Computer
+  17(6),  8--19 (1984)
+
+\bibitem{ziv1978compression}
+Ziv, J., Lempel, A.: Compression of individual sequences via variable-rate
+  coding. IEEE transactions on Information Theory  24(5),  530--536 (1978)
+
+\end{thebibliography}

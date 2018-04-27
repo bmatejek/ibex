@@ -1,0 +1,96 @@
+% This is based on the LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+%
+% See http://www.springer.com/computer/lncs/lncs+authors?SGWID=0-40209-0-0-0
+% for the full guidelines.
+%
+\documentclass{llncs}
+
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage[usenames, dvipsnames]{color}
+
+
+%% Use this during review mode
+%\usepackage{review}
+%% Use this for final compiling
+\usepackage[final]{review}
+
+
+\pagestyle{headings} 
+
+
+\hyphenation{Zstandard}
+
+
+\begin{document}
+
+
+% Name of our compression tool. This is subject to change ;)
+\newcommand{\appName}{Compresso\xspace}
+\newcommand{\appUrl}{\url{https://github.com/Rhoana/bockwurst}}
+\newcommand{\squeezeup}{\vspace{-10mm}}
+\newcommand{\shspace}{\vspace{-5mm}}
+
+\newcommand{\floatfootnote}[1]{\ifx\[$\else\footnote{#1}\fi}
+
+\title{\appName: Efficient Compression of Segmentation Data For Connectomics}
+%
+\titlerunning{\appName: Compression of Segmentation Data}  % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{Brian Matejek, Daniel Haehn, Fritz Lekschas, Michael Mitzenmacher, Hanspeter Pfister}
+% index{Matejek, Brian}
+% index{Haehn, Daniel}
+% index{Lekschas, Fritz}
+% index{Mitzenmacher, Michael}
+% index{Pfister, Hanspeter}	
+%
+%\authorrunning{Brian Matejek et al.} % abbreviated author list (for running head)
+%
+%%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{}
+%
+\institute{Harvard University, Cambridge, MA 02138, USA\\
+\email{bmatejek,haehn,lekschas,michaelm,pfister@seas.harvard.edu}}
+
+\maketitle              % typeset the title of the contribution
+
+\shspace
+\begin{abstract}
+\input{sections/abstract}
+\keywords{compression, encoding, segmentation, connectomics}
+\end{abstract}
+\shspace
+
+%
+
+\input{sections/introduction}
+
+%\input{sections/related-work}
+
+\input{sections/methods}
+
+\input{sections/evaluation}
+
+\input{sections/conclusions}
+
+%
+% ---- Bibliography ----
+%
+\bibliographystyle{splncs03}
+\bibliography{paper_references}
+
+%\newpage
+%\input{sections/appendix}
+
+\end{document}

@@ -1,0 +1,110 @@
+\section{Appendix} \label{sec:appendix}
+
+Additional Math:
+
+TEMPORARY:
+
+For example, we analyzed the proportion of windows encoded as a function of the $x$ most frequent values on the AC3 dataset with a window size of $8 \times 8 \times 1$. The most common $V_w$---corresponding to zero boundary pixels---accounts for nearly 75\% of all windows. The top 2,500 and 13,000 most common $V_w$ values include 90\% and 95\% of all windows respectively. If there are $|W|$ windows with $n$ bits each the expected number of unique values for a completely random boundary map (i.e. a pixel $p = 1$ with probability 0.5) is:
+
+CONNECTED COMPONENT RESULTS:
+
+For every image slice, the encoding uses a deterministic connected component algorithm. 
+We define $M$ as the number of connected components $m \in [0, M)$. 
+The identifier values themselves are not confined to this range but rather from $[0, 2^{64})$. 
+We construct a function $g_z(m) \to [0, 2^{64})$ for every slice $z$ that maps a connected component index to its per-pixel identifier. 
+Under this scheme, we transmit $64 * M$ bits per image slice to encode all of the per-pixel identifiers. 
+In run-length encoding, an identifier is transmitted at least once for every x-scanline intersecting a given segment. 
+On the AC3 dataset, using connected components instead of run-length encoding reduced the number of identifiers transmitted from 1,524,280 to 27,280 over 75 slices---a reduction of nearly 5,500\%. 
+
+
+
+
+
+
+
+\begin{equation}
+2^{n}\left[1 - \left(\frac{2^{n} - 1}{2^{n}}\right)^{|W|}\right]
+\end{equation} 
+
+
+Here we present additional plots for the CREMI, AC3 and MRI datasets.
+
+%
+%
+%
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{gfx/cremi_enconly_bytes.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/cremi_enconly_ratio.pdf}%
+\\
+\includegraphics[width=0.5\textwidth]{gfx/cremi_enconly_encodingspeed.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/cremi_enconly_decodingspeed.pdf}%
+\caption{Evaluation of encoding methods on the \textbf{CREMI} dataset. The Bockwurst encoding scheme (black) outperforms Neuroglancer and run-length encoding (RLE) in terms of compression ratio (top right) but decodes much slower (bottom right).}
+\label{fig:cremi_encoding_results}
+\end{figure}
+
+
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{gfx/cremi_compression_bytes.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/cremi_compression_ratios.pdf}%
+\\
+\includegraphics[width=0.5\textwidth]{gfx/cremi_compression_total_comp_speed.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/cremi_compression_total_decomp_speed.pdf}%
+\caption{General-purpose compression methods with different encoding schemes on the \textbf{CREMI} segmentation data. A combination of Bockwurst encoding (red) and LZ78 yields the best performance (top right)---over $2\times$ higher compression ratio than any other method and $1600\times$ smaller than the uncompressed data.}
+\label{fig:cremi_compression_results}
+\end{figure}
+
+%
+%
+%
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{gfx/ac3_enconly_bytes.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/ac3_enconly_ratio.pdf}%
+\\
+\includegraphics[width=0.5\textwidth]{gfx/ac3_enconly_encodingspeed.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/ac3_enconly_decodingspeed.pdf}%
+\caption{Bockwurst performs best among the tested encoding methods on \textbf{AC3} which is also our training dataset (top right). While Bockwurst provides also a reasonable encoding speed (bottom left), the decoding performance is poor (bottom right).}
+\label{fig:ac3_encoding_results}
+\end{figure}
+
+
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{gfx/ac3_compression_bytes.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/ac3_compression_ratios.pdf}%
+\\
+\includegraphics[width=0.5\textwidth]{gfx/ac3_compression_total_comp_speed.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/ac3_compression_total_decomp_speed.pdf}%
+\caption{Performance of general-purpose compression methods combined with run-length encoding (RLE), Neuroglancer and Bockwurst on the \textbf{AC3} connectomics dataset. Bockwurst encoding (red) with LZ78 results in a compression ratio of over $1400\times$. This is better than all other methods but the compression and decompression speeds leave room for optimization.}
+\label{fig:ac3_compression_results}
+\end{figure}
+
+
+\begin{figure}[h]
+\center
+\includegraphics[width=0.5\textwidth]{gfx/mri.png}%
+\caption{One slice of the \textbf{brain MRI} segmentation data with different anatomical parts labeled by a unique identifier and colored using a lookup table.}
+\label{fig:mridata}
+\end{figure}
+
+%
+% 
+%
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{gfx/mri_enconly_bytes.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/mri_enconly_ratio.pdf}%
+\\
+\includegraphics[width=0.5\textwidth]{gfx/mri_enconly_encodingspeed.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/mri_enconly_decodingspeed.pdf}%
+\caption{Evaluation of encoding methods on the labeled \textbf{brain MRI} dataset. Bockwurst encoding (black) yields less encoding performance than Neuroglancer but outperforms run-length encoding (RLE). The MRI data size is approximately 130 MB, resulting in 1-2 seconds encoding time using all methods. Bockwurst, however, is much slower in decoding.}
+\label{fig:mri_encoding_results}
+\end{figure}
+
+
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{gfx/mri_compression_bytes.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/mri_compression_ratios.pdf}%
+\\
+\includegraphics[width=0.5\textwidth]{gfx/mri_compression_total_comp_speed.pdf}%
+\includegraphics[width=0.5\textwidth]{gfx/mri_compression_total_decomp_speed.pdf}%
+\caption{General-purpose compression methods with different encoding schemes on the labeled \textbf{brain MRI} data. A combination of Bockwurst encoding (red) and LZ78 yields the best performance.}
+\label{fig:mri_compression_results}
+\end{figure}
