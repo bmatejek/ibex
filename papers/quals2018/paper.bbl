@@ -1,256 +1,282 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{10}\itemsep=-1pt
 
-\bibitem{haehn2017scalable}
-Haehn, D., Hoffer, J., Matejek, B., Suissa-Peleg, A., Al-Awami, A.K.,
-  Kamentsky, L., Gonda, F., Meng, E., Zhang, W., Schalek, R.,  et~al.:
-\newblock Scalable interactive visualization for connectomics.
-\newblock In: Informatics. Volume~4., Multidisciplinary Digital Publishing
-  Institute (2017) ~29
-
-\bibitem{kasthuri2015saturated}
-Kasthuri, N., Hayworth, K.J., Berger, D.R., Schalek, R.L., Conchello, J.A.,
-  Knowles-Barley, S., Lee, D., V{\'a}zquez-Reina, A., Kaynig, V., Jones, T.R.,
-  et~al.:
-\newblock Saturated reconstruction of a volume of neocortex.
-\newblock Cell \textbf{162}(3) (2015)  648--661
-
-\bibitem{seymour2016rhoananet}
-Knowles-Barley, S., Kaynig, V., Jones, T.R., Wilson, A., Morgan, J., Lee, D.,
-  Berger, D., Kasthuri, N., Lichtman, J.W., Pfister, H.:
-\newblock Rhoananet pipeline: Dense automatic neural annotation.
-\newblock arXiv preprint arXiv:1611.06973 (2016)
-
-\bibitem{lee2015recursive}
-Lee, K., Zlateski, A., Ashwin, V., Seung, H.S.:
-\newblock Recursive training of 2d-3d convolutional networks for neuronal
-  boundary prediction.
-\newblock In: Advances in Neural Information Processing Systems. (2015)
-  3573--3581
-
-\bibitem{nunez2014graph}
-Nunez-Iglesias, J., Kennedy, R., Parag, T., Shi, J., Chklovskii, D.B.:
-\newblock Machine learning of hierarchical clustering to segment 2d and 3d
-  images.
-\newblock PloS one \textbf{8}(8) (2013)  e71715
-
-\bibitem{parag2017anisotropic}
-Parag, T., Tschopp, F., Grisaitis, W., Turaga, S.C., Zhang, X., Matejek, B.,
-  Kamentsky, L., Lichtman, J.W., Pfister, H.:
-\newblock Anisotropic em segmentation by 3d affinity learning and
-  agglomeration.
-\newblock arXiv preprint arXiv:1707.08935 (2017)
-
-\bibitem{ronneberger2015u}
-Ronneberger, O., Fischer, P., Brox, T.:
-\newblock U-net: Convolutional networks for biomedical image segmentation.
-\newblock In: International Conference on Medical image computing and
-  computer-assisted intervention, Springer (2015)  234--241
-
-\bibitem{zlateski2015image}
-Zlateski, A., Seung, H.S.:
-\newblock Image segmentation by size-dependent single linkage clustering of a
-  watershed basin graph.
-\newblock arXiv preprint arXiv:1505.00249 (2015)
-
-\bibitem{lee2017superhuman}
-Lee, K., Zung, J., Li, P., Jain, V., Seung, H.S.:
-\newblock Superhuman accuracy on the snemi3d connectomics challenge.
-\newblock arXiv preprint arXiv:1706.00120 (2017)
-
-\bibitem{parag2015properties}
-Parag, T.:
-\newblock What properties are desirable from an electron microscopy
-  segmentation algorithm.
-\newblock arXiv preprint arXiv:1503.05430 (2015)
-
-\bibitem{briggman2012volume}
-Briggman, K.L., Bock, D.D.:
-\newblock Volume electron microscopy for neuronal circuit reconstruction.
-\newblock Current opinion in neurobiology \textbf{22}(1) (2012)  154--161
-
-\bibitem{kaynig2015large}
-Kaynig, V., Vazquez-Reina, A., Knowles-Barley, S., Roberts, M., Jones, T.R.,
-  Kasthuri, N., Miller, E., Lichtman, J., Pfister, H.:
-\newblock Large-scale automatic reconstruction of neuronal processes from
-  electron microscopy images.
-\newblock Medical image analysis \textbf{22}(1) (2015)  77--88
-
-\bibitem{bogovic2013learned}
-Bogovic, J.A., Huang, G.B., Jain, V.:
-\newblock Learned versus hand-designed feature representations for 3d
-  agglomeration.
-\newblock arXiv preprint arXiv:1312.6159 (2013)
-
-\bibitem{ciresan2012deep}
-Ciresan, D., Giusti, A., Gambardella, L.M., Schmidhuber, J.:
-\newblock Deep neural networks segment neuronal membranes in electron
-  microscopy images.
-\newblock In: Advances in neural information processing systems. (2012)
-  2843--2851
-
-\bibitem{jain2010boundary}
-Jain, V., Bollmann, B., Richardson, M., Berger, D., Helmst{\"a}dter, M.,
-  Briggman, K., Denk, W., Bowden, J., Mendenhall, J., Abraham, W., Harris, K.,
-  Kasthuri, N., Hayworth, K., Schalek, R., Tapia, J., Lichtman, J., Seung, S.:
-\newblock Boundary learning by optimization with topological constraints.
-\newblock In: Proc. IEEE CVPR 2010. (2010)  2488--2495
-
-\bibitem{amelio_segmentation}
-V\'azquez-Reina, A., Gelbart, M., Huang, D., Lichtman, J., Miller, E., Pfister,
-  H.:
-\newblock Segmentation fusion for connectomics.
-\newblock In: Proc. IEEE ICCV. (Nov 2011)  177--184
-
-\bibitem{cciccek20163d}
-{\c{C}}i{\c{c}}ek, {\"O}., Abdulkadir, A., Lienkamp, S.S., Brox, T.,
-  Ronneberger, O.:
-\newblock 3d u-net: learning dense volumetric segmentation from sparse
-  annotation.
-\newblock In: International Conference on Medical Image Computing and
-  Computer-Assisted Intervention, Springer (2016)  424--432
-
-\bibitem{turaga2010convolutional}
-Turaga, S.C., Murray, J.F., Jain, V., Roth, F., Helmstaedter, M., Briggman, K.,
-  Denk, W., Seung, H.S.:
-\newblock Convolutional networks can learn to generate affinity graphs for
-  image segmentation.
-\newblock Neural computation \textbf{22}(2) (2010)  511--538
-
-\bibitem{briggman2009maximin}
-Briggman, K., Denk, W., Seung, S., Helmstaedter, M.N., Turaga, S.C.:
-\newblock Maximin affinity learning of image segmentation.
-\newblock In: Advances in Neural Information Processing Systems. (2009)
-  1865--1873
-
-\bibitem{januszewski2016flood}
-Januszewski, M., Maitin-Shepard, J., Li, P., Kornfeld, J., Denk, W., Jain, V.:
-\newblock Flood-filling networks.
-\newblock arXiv preprint arXiv:1611.00421 (2016)
-
-\bibitem{zeng2017deepem3d}
-Zeng, T., Wu, B., Ji, S.:
-\newblock Deepem3d: approaching human-level performance on 3d anisotropic em
-  image segmentation.
-\newblock Bioinformatics \textbf{33}(16) (2017)  2555--2562
+\bibitem{aimar2005x264}
+L.~Aimar, L.~Merritt, E.~Petit, et~al.
+\newblock x264-a free h264/avc encoder, 2005.
 
 \bibitem{andres2012globally}
-Andres, B., Kroeger, T., Briggman, K.L., Denk, W., Korogod, N., Knott, G.,
-  Koethe, U., Hamprecht, F.A.:
+B.~Andres, T.~Kroeger, K.~L. Briggman, W.~Denk, N.~Korogod, G.~Knott,
+  U.~Koethe, and F.~A. Hamprecht.
 \newblock Globally optimal closed-surface segmentation for connectomics.
-\newblock In: European Conference on Computer Vision, Springer (2012)  778--791
-
-\bibitem{funke2017deep}
-Funke, J., Tschopp, F.D., Grisaitis, W., Singh, C., Saalfeld, S., Turaga, S.C.:
-\newblock A deep structured learning approach towards automating connectome
-  reconstruction from 3d electron micrographs.
-\newblock arXiv preprint arXiv:1709.02974 (2017)
-
-\bibitem{10.1371/journal.pone.0125825}
-Parag, T., Chakraborty, A., Plaza, S., Scheffer, L.:
-\newblock A context-aware delayed agglomeration framework for electron
-  microscopy segmentation.
-\newblock PLOS ONE \textbf{10}(5) (05 2015)  1--19
-
-\bibitem{jain2011learning}
-Jain, V., Turaga, S.C., Briggman, K., Helmstaedter, M.N., Denk, W., Seung,
-  H.S.:
-\newblock Learning to agglomerate superpixel hierarchies.
-\newblock In: Advances in Neural Information Processing Systems. (2011)
-  648--656
+\newblock In {\em European Conference on Computer Vision}, pages 778--791.
+  Springer, 2012.
 
 \bibitem{beier2017multicut}
-Beier, T., Pape, C., Rahaman, N., Prange, T., Berg, S., Bock, D.D., Cardona,
-  A., Knott, G.W., Plaza, S.M., Scheffer, L.K.,  et~al.:
+T.~Beier, C.~Pape, N.~Rahaman, T.~Prange, S.~Berg, D.~D. Bock, A.~Cardona,
+  G.~W. Knott, S.~M. Plaza, L.~K. Scheffer, et~al.
 \newblock Multicut brings automated neurite segmentation closer to human
   performance.
-\newblock Nature methods \textbf{14}(2) (2017)  101
+\newblock {\em Nature methods}, 14(2):101, 2017.
 
-\bibitem{haehn2014design}
-Haehn, D., Knowles-Barley, S., Roberts, M., Beyer, J., Kasthuri, N., Lichtman,
-  J.W., Pfister, H.:
-\newblock Design and evaluation of interactive proofreading tools for
-  connectomics.
-\newblock IEEE Transactions on Visualization and Computer Graphics
-  \textbf{20}(12) (2014)  2466--2475
+\bibitem{bogovic2013learned}
+J.~A. Bogovic, G.~B. Huang, and V.~Jain.
+\newblock Learned versus hand-designed feature representations for 3d
+  agglomeration.
+\newblock {\em arXiv preprint arXiv:1312.6159}, 2013.
+
+\bibitem{briggman2009maximin}
+K.~Briggman, W.~Denk, S.~Seung, M.~N. Helmstaedter, and S.~C. Turaga.
+\newblock Maximin affinity learning of image segmentation.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  1865--1873, 2009.
+
+\bibitem{cciccek20163d}
+{\"O}.~{\c{C}}i{\c{c}}ek, A.~Abdulkadir, S.~S. Lienkamp, T.~Brox, and
+  O.~Ronneberger.
+\newblock 3d u-net: learning dense volumetric segmentation from sparse
+  annotation.
+\newblock In {\em International Conference on Medical Image Computing and
+  Computer-Assisted Intervention}, pages 424--432. Springer, 2016.
+
+\bibitem{ciresan2012deep}
+D.~Ciresan, A.~Giusti, L.~M. Gambardella, and J.~Schmidhuber.
+\newblock Deep neural networks segment neuronal membranes in electron
+  microscopy images.
+\newblock In {\em Advances in neural information processing systems}, pages
+  2843--2851, 2012.
+
+\bibitem{collet2016smaller}
+Collet and Turner.
+\newblock Smaller and faster data compression with zstandard, url:
+  https://code.facebook.com/posts/1658392934479273/smaller-and-faster-data-compression-with-zstandard/,
+  2016.
+\newblock Accessed: 23-October-2016.
+
+\bibitem{deutsch1996zlib}
+P.~Deutsch and J.-L. Gailly.
+\newblock Zlib compressed data format specification version 3.3.
+\newblock Technical report, 1996.
+
+\bibitem{fredman1989cell}
+M.~Fredman and M.~Saks.
+\newblock The cell probe complexity of dynamic data structures.
+\newblock In {\em Proceedings of the twenty-first annual ACM symposium on
+  Theory of computing}, pages 345--354. ACM, 1989.
+
+\bibitem{funke2017deep}
+J.~Funke, F.~D. Tschopp, W.~Grisaitis, C.~Singh, S.~Saalfeld, and S.~C. Turaga.
+\newblock A deep structured learning approach towards automating connectome
+  reconstruction from 3d electron micrographs.
+\newblock {\em arXiv preprint arXiv:1709.02974}, 2017.
+
+\bibitem{google2016brotli}
+Google.
+\newblock Brotli compression format, url: https://github.com/google/brotli,
+  2016.
+\newblock Accessed: 11-October-2016.
+
+\bibitem{google2016compressed}
+Google.
+\newblock Neuroglancer compression, url:
+  https://github.com/google/neuroglancer/
+  blob/master/src/neuroglancer/sliceview/ compressed\_segmentation/readme.md,
+  2016.
+\newblock Accessed: 21-October-2016.
+
+\bibitem{haehn2017scalable}
+D.~Haehn, J.~Hoffer, B.~Matejek, A.~Suissa-Peleg, A.~K. Al-Awami, L.~Kamentsky,
+  F.~Gonda, E.~Meng, W.~Zhang, R.~Schalek, et~al.
+\newblock Scalable interactive visualization for connectomics.
+\newblock In {\em Informatics}, volume~4, page~29. Multidisciplinary Digital
+  Publishing Institute, 2017.
 
 \bibitem{haehn2017guided}
-Haehn, D., Kaynig, V., Tompkin, J., Lichtman, J.W., Pfister, H.:
+D.~Haehn, V.~Kaynig, J.~Tompkin, J.~W. Lichtman, and H.~Pfister.
 \newblock Guided proofreading of automatic segmentations for connectomics.
-\newblock arXiv preprint arXiv:1704.00848 (2017)
+\newblock {\em arXiv preprint arXiv:1704.00848}, 2017.
+
+\bibitem{haehn2014design}
+D.~Haehn, S.~Knowles-Barley, M.~Roberts, J.~Beyer, N.~Kasthuri, J.~W. Lichtman,
+  and H.~Pfister.
+\newblock Design and evaluation of interactive proofreading tools for
+  connectomics.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics},
+  20(12):2466--2475, 2014.
+
+\bibitem{he2009fast}
+L.~He, Y.~Chao, K.~Suzuki, and K.~Wu.
+\newblock Fast connected-component labeling.
+\newblock {\em Pattern Recognition}, 42(9):1977--1987, 2009.
+
+\bibitem{jain2010boundary}
+V.~Jain, B.~Bollmann, M.~Richardson, D.~Berger, M.~Helmst{\"a}dter,
+  K.~Briggman, W.~Denk, J.~Bowden, J.~Mendenhall, W.~Abraham, K.~Harris,
+  N.~Kasthuri, K.~Hayworth, R.~Schalek, J.~Tapia, J.~Lichtman, and S.~Seung.
+\newblock Boundary learning by optimization with topological constraints.
+\newblock In {\em Proc. IEEE CVPR 2010}, pages 2488--2495, 2010.
+
+\bibitem{jain2011learning}
+V.~Jain, S.~C. Turaga, K.~Briggman, M.~N. Helmstaedter, W.~Denk, and H.~S.
+  Seung.
+\newblock Learning to agglomerate superpixel hierarchies.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  648--656, 2011.
+
+\bibitem{januszewski2016flood}
+M.~Januszewski, J.~Maitin-Shepard, P.~Li, J.~Kornfeld, W.~Denk, and V.~Jain.
+\newblock Flood-filling networks.
+\newblock {\em arXiv preprint arXiv:1611.00421}, 2016.
+
+\bibitem{kaynig2015large}
+V.~Kaynig, A.~Vazquez-Reina, S.~Knowles-Barley, M.~Roberts, T.~R. Jones,
+  N.~Kasthuri, E.~Miller, J.~Lichtman, and H.~Pfister.
+\newblock Large-scale automatic reconstruction of neuronal processes from
+  electron microscopy images.
+\newblock {\em Medical image analysis}, 22(1):77--88, 2015.
+
+\bibitem{seymour2016rhoananet}
+S.~Knowles-Barley, V.~Kaynig, T.~R. Jones, A.~Wilson, J.~Morgan, D.~Lee,
+  D.~Berger, N.~Kasthuri, J.~W. Lichtman, and H.~Pfister.
+\newblock Rhoananet pipeline: Dense automatic neural annotation.
+\newblock {\em arXiv preprint arXiv:1611.06973}, 2016.
 
 \bibitem{mojo2}
-Knowles-Barley, S., Roberts, M., Kasthuri, N., Lee, D., Pfister, H., Lichtman,
-  J.W.:
+S.~Knowles-Barley, M.~Roberts, N.~Kasthuri, D.~Lee, H.~Pfister, and J.~W.
+  Lichtman.
 \newblock Mojo 2.0: Connectome annotation tool.
-\newblock Frontiers in Neuroinformatics (60) (2013)
+\newblock {\em Frontiers in Neuroinformatics}, (60), 2013.
+
+\bibitem{lee2015recursive}
+K.~Lee, A.~Zlateski, V.~Ashwin, and H.~S. Seung.
+\newblock Recursive training of 2d-3d convolutional networks for neuronal
+  boundary prediction.
+\newblock In {\em Advances in Neural Information Processing Systems}, pages
+  3573--3581, 2015.
+
+\bibitem{lee2017superhuman}
+K.~Lee, J.~Zung, P.~Li, V.~Jain, and H.~S. Seung.
+\newblock Superhuman accuracy on the snemi3d connectomics challenge.
+\newblock {\em arXiv preprint arXiv:1706.00120}, 2017.
+
+\bibitem{lehmann2016liblzf}
+M.~Lehmann.
+\newblock Liblzf, url: http://oldhome.schmorp.de/marc/liblzf.html, 2016.
+\newblock accessed: 13-October-2016.
+
+\bibitem{nunez2014graph}
+J.~Nunez-Iglesias, R.~Kennedy, T.~Parag, J.~Shi, and D.~B. Chklovskii.
+\newblock Machine learning of hierarchical clustering to segment 2d and 3d
+  images.
+\newblock {\em PloS one}, 8(8):e71715, 2013.
+
+\bibitem{oberhumer2005lzo}
+M.~Oberhumer.
+\newblock Lzo real-time data compression library.
+\newblock {\em User manual for LZO version 0.28, url:
+  http://www.infosys.tuwien.ac.at/Staff/lux/marco/lzo.html (February 1997)},
+  2005.
+
+\bibitem{10.1371/journal.pone.0125825}
+T.~Parag, A.~Chakraborty, S.~Plaza, and L.~Scheffer.
+\newblock A context-aware delayed agglomeration framework for electron
+  microscopy segmentation.
+\newblock {\em PLOS ONE}, 10(5):1--19, 05 2015.
+
+\bibitem{parag2017anisotropic}
+T.~Parag, F.~Tschopp, W.~Grisaitis, S.~C. Turaga, X.~Zhang, B.~Matejek,
+  L.~Kamentsky, J.~W. Lichtman, and H.~Pfister.
+\newblock Anisotropic em segmentation by 3d affinity learning and
+  agglomeration.
+\newblock {\em arXiv preprint arXiv:1707.08935}, 2017.
+
+\bibitem{pavlov2007lzma}
+I.~Pavlov.
+\newblock Lzma sdk (software development kit), 2007.
+
+\bibitem{roelofs1999png}
+G.~Roelofs and R.~Koman.
+\newblock {\em PNG: the definitive guide}.
+\newblock O'Reilly, Inc., 1999.
 
 \bibitem{rolnick2017morphological}
-Rolnick, D., Meirovitch, Y., Parag, T., Pfister, H., Jain, V., Lichtman, J.W.,
-  Boyden, E.S., Shavit, N.:
+D.~Rolnick, Y.~Meirovitch, T.~Parag, H.~Pfister, V.~Jain, J.~W. Lichtman, E.~S.
+  Boyden, and N.~Shavit.
 \newblock Morphological error detection in 3d segmentations.
-\newblock arXiv preprint arXiv:1705.10882 (2017)
+\newblock {\em arXiv preprint arXiv:1705.10882}, 2017.
+
+\bibitem{ronneberger2015u}
+O.~Ronneberger, P.~Fischer, and T.~Brox.
+\newblock U-net: Convolutional networks for biomedical image segmentation.
+\newblock In {\em International Conference on Medical Image Computing and
+  Computer-Assisted Intervention}, pages 234--241. Springer, 2015.
+
+\bibitem{richard2016imaging}
+R.~Schalek, D.~Lee, N.~Kasthuri, A.~Suissa-Peleg, T.~R. Jones, V.~Kaynig,
+  D.~Haehn, H.~Pfister, D.~Cox, and J.~W. Lichtman.
+\newblock Imaging a 1 mm3 volume of rat cortex using a multibeam sem.
+\newblock In {\em Microscopy and Microanalysis}, volume~22, pages 582--583.
+  Cambridge Univ Press, 26 July 2016.
+
+\bibitem{seward1998bzip2}
+J.~Seward.
+\newblock bzip2, 1998.
+
+\bibitem{skodras2001jpeg}
+A.~Skodras, C.~Christopoulos, and T.~Ebrahimi.
+\newblock The jpeg 2000 still image compression standard.
+\newblock {\em IEEE Signal processing magazine}, 18(5):36--58, 2001.
+
+\bibitem{suissa2016automatic}
+A.~Suissa-Peleg, D.~Haehn, S.~Knowles-Barley, V.~Kaynig, T.~R. Jones,
+  A.~Wilson, R.~Schalek, J.~W. Lichtman, and H.~Pfister.
+\newblock Automatic neural reconstruction from petavoxel of electron microscopy
+  data.
+\newblock {\em Microscopy and Microanalysis}, 22:536, 2016.
+
+\bibitem{turaga2010convolutional}
+S.~C. Turaga, J.~F. Murray, V.~Jain, F.~Roth, M.~Helmstaedter, K.~Briggman,
+  W.~Denk, and H.~S. Seung.
+\newblock Convolutional networks can learn to generate affinity graphs for
+  image segmentation.
+\newblock {\em Neural computation}, 22(2):511--538, 2010.
+
+\bibitem{vandevenne2016zopfli}
+Vandevenne and Alakuijala.
+\newblock Zopfli compression algorithm, url: https://github.com/google/zopfli,
+  2016.
+\newblock Accessed: 11-October-2016.
+
+\bibitem{amelio_segmentation}
+A.~V\'azquez-Reina, M.~Gelbart, D.~Huang, J.~Lichtman, E.~Miller, and
+  H.~Pfister.
+\newblock Segmentation fusion for connectomics.
+\newblock In {\em Proc. IEEE ICCV}, pages 177--184, Nov 2011.
+
+\bibitem{welch1984technique}
+T.~A. Welch.
+\newblock A technique for high-performance data compression.
+\newblock {\em Computer}, 17(6):8--19, 1984.
+
+\bibitem{zeng2017deepem3d}
+T.~Zeng, B.~Wu, and S.~Ji.
+\newblock Deepem3d: approaching human-level performance on 3d anisotropic em
+  image segmentation.
+\newblock {\em Bioinformatics}, 33(16):2555--2562, 2017.
+
+\bibitem{ziv1978compression}
+J.~Ziv and A.~Lempel.
+\newblock Compression of individual sequences via variable-rate coding.
+\newblock {\em IEEE transactions on Information Theory}, 24(5):530--536, 1978.
+
+\bibitem{zlateski2015image}
+A.~Zlateski and H.~S. Seung.
+\newblock Image segmentation by size-dependent single linkage clustering of a
+  watershed basin graph.
+\newblock {\em arXiv preprint arXiv:1505.00249}, 2015.
 
 \bibitem{error_correction_using_CNN}
-Zung, J., Tartavull, I., Seung, H.S.:
+J.~Zung, I.~Tartavull, and H.~S. Seung.
 \newblock An error detection and correction framework for connectomics.
-\newblock CoRR \textbf{abs/1708.02599} (2017)
-
-\bibitem{sato2000teasar}
-Sato, M., Bitter, I., Bender, M.A., Kaufman, A.E., Nakajima, M.:
-\newblock Teasar: Tree-structure extraction algorithm for accurate and robust
-  skeletons.
-\newblock In: Computer Graphics and Applications, 2000. Proceedings. The Eighth
-  Pacific Conference on, IEEE (2000)  281--449
-
-\bibitem{zhao2014automatic}
-Zhao, T., Plaza, S.M.:
-\newblock Automatic neuron type identification by neurite localization in the
-  drosophila medulla.
-\newblock arXiv preprint arXiv:1409.1892 (2014)
-
-\bibitem{chatfield2014return}
-Chatfield, K., Simonyan, K., Vedaldi, A., Zisserman, A.:
-\newblock Return of the devil in the details: Delving deep into convolutional
-  nets.
-\newblock arXiv preprint arXiv:1405.3531 (2014)
-
-\bibitem{keuper2015efficient}
-Keuper, M., Levinkov, E., Bonneel, N., Lavou{\'e}, G., Brox, T., Andres, B.:
-\newblock Efficient decomposition of image and mesh graphs by lifted multicuts.
-\newblock In: Proceedings of the IEEE International Conference on Computer
-  Vision. (2015)  1751--1759
-
-\bibitem{andres2011probabilistic}
-Andres, B., Kappes, J.H., Beier, T., K{\"o}the, U., Hamprecht, F.A.:
-\newblock Probabilistic image segmentation with closedness constraints.
-\newblock In: Computer Vision (ICCV), 2011 IEEE International Conference on,
-  IEEE (2011)  2611--2618
-
-\bibitem{takemura2017connectome}
-Takemura, S.y., Aso, Y., Hige, T., Wong, A.M., Lu, Z., Xu, C.S., Rivlin, P.K.,
-  Hess, H.F., Zhao, T., Parag, T., Berg, S., Huang, G., Katz, W.T., Olbris,
-  D.J., Plaza, S.M., Umayam, L.A., Aniceto, R., Chang, L.A., Lauchie, S.,
-  et~al:
-\newblock A connectome of a learning and memory center in the adult drosophila
-  brain.
-\newblock eLife \textbf{6} (2017 Jul 18 2017)  e26975
-
-\bibitem{Turaga:2009}
-Turaga, S., Briggman, K., Helmstaedter, M., Denk, W., Seung, S.:
-\newblock {Maximin affinity learning of image segmentation}.
-\newblock In: Advances in Neural Information Processing Systems 22.
-\newblock (2009)
-
-\bibitem{glorot2010understanding}
-Glorot, X., Bengio, Y.:
-\newblock Understanding the difficulty of training deep feedforward neural
-  networks.
-\newblock In: Proceedings of the Thirteenth International Conference on
-  Artificial Intelligence and Statistics. (2010)  249--256
-
-\bibitem{meila2003comparing}
-Meila, M.:
-\newblock Comparing clusterings by the variation of information.
-\newblock In: Colt. Volume~3., Springer (2003)  173--187
+\newblock {\em CoRR}, abs/1708.02599, 2017.
 
 \end{thebibliography}

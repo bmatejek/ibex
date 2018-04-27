@@ -1,1 +1,17 @@
 \section{Introduction}
+
+The field of connectomics is concerned with the reconstruction of the wiring diagram of the mammalian brain.
+In order to achieve this ambitious goal, we need images at nanometer resolution to see the structure of the neurons and the synaptic connections between them.
+Recent advances in electron microscopy acquisition techniques enable a throughput of a terabyte of image data every hour~\cite{richard2016imaging}.
+Manual reconstruction of this image data is simply infeasible and requires automatic segmentation methods.
+These automatic methods label every voxel of the image with a 64-bit integer value where two voxels have the same label only if they belong to the same neuron.
+As the field progresses, our goal is to reconstruct a cubic millimeter of brain which will result in over 18 petabytes of segmentation data alone~\cite{suissa2016automatic}.
+
+Three major challenges arise as the image datasets scale to a petabyte and more. 
+First, the segmentation methods must be accurate enough to extract the proper connections between neurons.
+In particular, the dendritic spines \TODO{check,CITE} which contain the postsynaptic density can be only \TODO{XX} nanometers thick.
+Second, automatic segmentation must be fast -- ideally matching the throughput of the electron microscope~\cite{haehn2017scalable}.
+The current state-of-the-art automatic reconstruction pipelines are either too slow for such large datasets or too inaccurate at scale.
+Third, the label volumes require $8\times$ the number of bytes as the already massive image volumes.
+Storing such data is expensive and transferring the data is slow. 
+To cut costs and delays, we need compression methods to reduce data sizes.

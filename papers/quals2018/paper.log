@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  27 APR 2018 14:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  27 APR 2018 18:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -717,21 +717,21 @@ File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
 (./paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 41.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 42.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -789,7 +789,7 @@ File: siunitx-abbreviations.cfg 2017/07/23 v2.7i siunitx: Abbreviated units
 )
 \AtBeginShipoutBox=\box56
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 41.
+Package hyperref Info: Link coloring ON on input line 42.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 
@@ -798,24 +798,24 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count314
 )
-LaTeX Info: Redefining \ref on input line 41.
-LaTeX Info: Redefining \pageref on input line 41.
-LaTeX Info: Redefining \nameref on input line 41.
+LaTeX Info: Redefining \ref on input line 42.
+LaTeX Info: Redefining \pageref on input line 42.
+LaTeX Info: Redefining \nameref on input line 42.
 \c__siunitx_mathsf_int=\count315
-LaTeX Font Info:    Try loading font information for U+msa on input line 41.
+LaTeX Font Info:    Try loading font information for U+msa on input line 42.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 41.
+LaTeX Font Info:    Try loading font information for U+msb on input line 42.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 \c__siunitx_mathtt_int=\count316
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 65.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 65.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 66.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 66.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
@@ -823,59 +823,396 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 (./0_introduction.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
-) (./1_related_work.tex) (./2_method.tex) (./3_results.tex) (./4_proposed.tex) 
-(./5_conclusions.tex) (./paper.bbl (./paper.brf)
+) (./1_related_work.tex
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 4.
+)
+Underfull \hbox (badness 2644) in paragraph at lines 27--70
+ []\OT1/ptm/b/n/10 Compression.[] \OT1/ptm/m/n/10 The lit-er-a-ture cur-rently 
+lacks ef-fi-cient
+ []
+
+
+Underfull \vbox (badness 1320) has occurred while \output is active []
+
+ [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+] (./2_method.tex
+<./figures/teaser_v4.png, id=105, 1058.95625pt x 555.07375pt>
+File: ./figures/teaser_v4.png Graphic file (type png)
+<use ./figures/teaser_v4.png>
+Package pdftex.def Info: ./figures/teaser_v4.png  used on input line 4. on inpu
+t line 4.
+Package pdftex.def Info: Requested size: 237.13594pt x 124.29332pt on input lin
+e 4.
+
+Underfull \hbox (badness 10000) in paragraph at lines 11--22
+ []\OT1/ptm/b/n/10 Biologically-Constrained Er-ror Cor-rec-tion[] \OT1/ptm/m/n/
+10 Our
+ []
+
+<./figures/skeleton1.png, id=112, 1396.21625pt x 518.93875pt>
+File: ./figures/skeleton1.png Graphic file (type png)
+<use ./figures/skeleton1.png>
+Package pdftex.def Info: ./figures/skeleton1.png  used on input line 32. on inp
+ut line 32.
+Package pdftex.def Info: Requested size: 106.71045pt x 39.65512pt on input line
+ 32.
+<./figures/skeleton2.png, id=113, 1485.55pt x 334.24875pt>
+File: ./figures/skeleton2.png Graphic file (type png)
+<use ./figures/skeleton2.png>
+Package pdftex.def Info: ./figures/skeleton2.png  used on input line 36. on inp
+ut line 36.
+Package pdftex.def Info: Requested size: 106.71045pt x 24.00671pt on input line
+ 36.
+<./figures/skeleton3.png, id=114, 1432.35126pt x 742.775pt>
+File: ./figures/skeleton3.png Graphic file (type png)
+<use ./figures/skeleton3.png>
+Package pdftex.def Info: ./figures/skeleton3.png  used on input line 39. on inp
+ut line 39.
+Package pdftex.def Info: Requested size: 106.71045pt x 55.3317pt on input line 
+39.
+<./figures/skeleton4.png, id=115, 1161.33875pt x 302.12875pt>
+File: ./figures/skeleton4.png Graphic file (type png)
+<use ./figures/skeleton4.png>
+Package pdftex.def Info: ./figures/skeleton4.png  used on input line 43. on inp
+ut line 43.
+Package pdftex.def Info: Requested size: 106.71045pt x 27.75745pt on input line
+ 43.
+
+LaTeX Warning: Citation `sato2000teasar' on page 2 undefined on input line 45.
+
+
+LaTeX Warning: Citation `sato2000teasar' on page 2 undefined on input line 45.
+
+
+LaTeX Warning: Citation `zhao2014automatic' on page 2 undefined on input line 5
+0.
+
+
+LaTeX Warning: Citation `sato2000teasar' on page 2 undefined on input line 50.
+
+[2 <./figures/teaser_v4.png> <./figures/skeleton1.png> <./figures/skeleton2.png
+> <./figures/skeleton3.png> <./figures/skeleton4.png>]
+<./figures/constraint_error.png, id=148, 871.255pt x 561.09625pt>
+File: ./figures/constraint_error.png Graphic file (type png)
+<use ./figures/constraint_error.png>
+Package pdftex.def Info: ./figures/constraint_error.png  used on input line 69.
+ on input line 69.
+Package pdftex.def Info: Requested size: 94.85292pt x 61.07864pt on input line 
+69.
+<./figures/constraint_success.png, id=149, 1927.2pt x 1084.05pt>
+File: ./figures/constraint_success.png Graphic file (type png)
+<use ./figures/constraint_success.png>
+Package pdftex.def Info: ./figures/constraint_success.png  used on input line 7
+3. on input line 73.
+Package pdftex.def Info: Requested size: 130.42548pt x 73.36044pt on input line
+ 73.
+
+
+LaTeX Warning: Citation `chatfield2014return' on page 3 undefined on input line
+ 84.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--85
+
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 80--85
+\OT1/ptm/b/n/10 Edge Prob-a-bil-ity \OT1/ptm/m/n/10 To pre-dict the prob-a-bil-
+i-ties that
+ []
+
+
+Underfull \hbox (badness 1028) in paragraph at lines 80--85
+\OT1/ptm/m/n/10 two seg-ments be-long to the same neu-ron, we train a
+ []
+
+<./figures/split_error1.png, id=150, 499.56638pt x 150.5625pt>
+File: ./figures/split_error1.png Graphic file (type png)
+<use ./figures/split_error1.png>
+Package pdftex.def Info: ./figures/split_error1.png  used on input line 98. on 
+input line 98.
+Package pdftex.def Info: Requested size: 75.88522pt x 22.87056pt on input line 
+98.
+<./figures/split_error2.png, id=151, 549.85425pt x 93.951pt>
+File: ./figures/split_error2.png Graphic file (type png)
+<use ./figures/split_error2.png>
+Package pdftex.def Info: ./figures/split_error2.png  used on input line 102. on
+ input line 102.
+Package pdftex.def Info: Requested size: 75.88522pt x 12.96524pt on input line 
+102.
+<./figures/split_error3.png, id=152, 578.16pt x 130.38713pt>
+File: ./figures/split_error3.png Graphic file (type png)
+<use ./figures/split_error3.png>
+Package pdftex.def Info: ./figures/split_error3.png  used on input line 106. on
+ input line 106.
+Package pdftex.def Info: Requested size: 75.88522pt x 17.11206pt on input line 
+106.
+
+LaTeX Warning: Citation `keuper2015efficient' on page 3 undefined on input line
+ 121.
+
+
+Underfull \hbox (badness 1028) in paragraph at lines 113--122
+\OT1/ptm/m/n/10 glob-ally con-sis-tent man-ner while en-forc-ing topo-log-i-cal
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 113--122
+
+ []
+
+
+Underfull \hbox (badness 1173) in paragraph at lines 113--122
+\OT1/ptm/m/n/10 glob-ally con-sis-tent so-lu-tions (i.e., a bound-ary re-mains
+ []
+
+
+LaTeX Warning: Citation `keuper2015efficient' on page 3 undefined on input line
+ 123.
+
+
+LaTeX Warning: Citation `keuper2015efficient' on page 3 undefined on input line
+ 130.
+
+
+LaTeX Warning: Citation `keuper2015efficient' on page 3 undefined on input line
+ 135.
+
+
+LaTeX Warning: Citation `andres2011probabilistic' on page 3 undefined on input 
+line 135.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 123--138
+
+ []
+
+
+Underfull \hbox (badness 4060) in paragraph at lines 123--138
+\OT1/ptm/b/n/10 Edge Weight \OT1/ptm/m/n/10 We need to con-vert the prob-a-bil-
+i-ties
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--153
+
+ []
+
+
+Underfull \hbox (badness 6493) in paragraph at lines 140--153
+\OT1/ptm/b/n/10 Topological Con-straints \OT1/ptm/m/n/10 By re-for-mu-lat-ing t
+he seg-
+ []
+
+
+Underfull \hbox (badness 1127) in paragraph at lines 140--153
+\OT1/ptm/m/n/10 straint that neu-rons are tree-structured and should not
+ []
+
+[3 <./figures/constraint_error.png> <./figures/constraint_success.png> <./figur
+es/split_error1.png> <./figures/split_error2.png> <./figures/split_error3.png>]
+<./figures/encoding_diagram_opt.pdf, id=168, pagebox=cropbox, 813.5735pt x 249.
+38069pt>
+File: ./figures/encoding_diagram_opt.pdf Graphic file (type pdf)
+<use ./figures/encoding_diagram_opt.pdf>
+Package pdftex.def Info: ./figures/encoding_diagram_opt.pdf  used on input line
+ 158. on input line 158.
+Package pdftex.def Info: Requested size: 223.58379pt x 68.53232pt on input line
+ 158.
+<./figures/window_values.pdf, id=169, pagebox=cropbox, 1099.09547pt x 236.84932
+pt>
+File: ./figures/window_values.pdf Graphic file (type pdf)
+<use ./figures/window_values.pdf>
+Package pdftex.def Info: ./figures/window_values.pdf  used on input line 160. o
+n input line 160.
+Package pdftex.def Info: Requested size: 223.58379pt x 48.17856pt on input line
+ 160.
+
+LaTeX Warning: Reference `fig:bockwurst-encoding' on page 4 undefined on input 
+line 182.
+
+
+LaTeX Warning: Reference `fig:bockwurst-frequency' on page 4 undefined on input
+ line 188.
+
+
+LaTeX Warning: Reference `fig:bockwurst-encoding' on page 4 undefined on input 
+line 217.
+
+
+LaTeX Warning: Reference `sec:results' on page 4 undefined on input line 225.
+
+[4]) (./3_results.tex) (./4_proposed.tex
+
+LaTeX Warning: Reference `fig:split_errors' on page 5 undefined on input line 1
+2.
+
+
+LaTeX Warning: Reference `fig:proposed-pipeline' on page 5 undefined on input l
+ine 21.
+
+) (./5_conclusions.tex) (./paper.bbl (./paper.brf)
 \tf@brf=\write3
 \openout3 = `paper.brf'.
 
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 16.
-
-Underfull \hbox (badness 3460) in paragraph at lines 35--35
-[]\OT1/ptm/m/n/9 Nunez-Iglesias, J., Kennedy, R., Parag, T., Shi, J.,
+ [5 <./figures/encoding_diagram_opt.pdf> <./figures/window_values.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 54--54
+[]\OT1/ptm/m/n/9 Collet and Turner.  Smaller and faster
  []
 
 
-Underfull \hbox (badness 4391) in paragraph at lines 77--77
-[]\OT1/ptm/m/n/9 Kaynig, V., Vazquez-Reina, A., Knowles-Barley, S.,
+Underfull \hbox (badness 10000) in paragraph at lines 54--54
+\OT1/ptm/m/n/9 data com-pres-sion with zs-tan-dard, url:
  []
 
 
-Underfull \hbox (badness 2293) in paragraph at lines 97--97
-[]\OT1/ptm/m/n/9 Jain, V., Boll-mann, B., Richard-son, M., Berger, D.,
+Overfull \hbox (5.07484pt too wide) in paragraph at lines 54--54
+\OT1/ptm/m/n/9 https://code.facebook.com/posts/1658392934479273/smaller-
  []
 
-[1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+Underfull \hbox (badness 1394) in paragraph at lines 54--54
+\OT1/ptm/m/n/9 and-faster-data-compression-with-zstandard/, 2016.  Ac-
+ []
 
 
-])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 83.
+Underfull \hbox (badness 10000) in paragraph at lines 77--77
+[]\OT1/ptm/m/n/9 Google.  Brotli com-pres-sion for-mat, url:
+ []
 
-[2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 83.
+
+Underfull \hbox (badness 1953) in paragraph at lines 77--77
+\OT1/ptm/m/n/9 https://github.com/google/brotli, 2016.  Ac-cessed: 11-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--85
+[]\OT1/ptm/m/n/9 Google.  Neu-roglancer com-pres-sion,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--85
+\OT1/ptm/m/n/9 url: https://github.com/google/neuroglancer/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--85
+\OT1/ptm/m/n/9 blob/master/src/neuroglancer/sliceview/ com-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--85
+\OT1/ptm/m/n/9 pressed[]segmentation/readme.md, 2016.  Ac-cessed:
+ []
+
+
+Underfull \hbox (badness 2318) in paragraph at lines 105--105
+[]\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
+ []
+
+
+Underfull \hbox (badness 6725) in paragraph at lines 117--117
+[]\OT1/ptm/m/n/9 V. Jain, B. Boll-mann, M. Richard-son, D. Berger,
+ []
+
+
+Underfull \hbox (badness 2088) in paragraph at lines 117--117
+\OT1/ptm/m/n/9 M. Helmst[]adter, K. Brig-gman, W. Denk, J. Bow-den,
+ []
+
+
+Underfull \hbox (badness 1052) in paragraph at lines 129--129
+[]\OT1/ptm/m/n/9 M. Januszewski, J. Maitin-Shepard, P. Li, J. Ko-rn-feld,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--136
+[]\OT1/ptm/m/n/9 V. Kaynig, A. Vazquez-Reina, S. Knowles-Barley,
+ []
+
+
+Underfull \hbox (badness 4366) in paragraph at lines 136--136
+\OT1/ptm/m/n/9 neu-ronal pro-cesses from elec-tron mi-croscopy im-ages.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 165--165
+[]\OT1/ptm/m/n/9 M. Lehmann.  Li-blzf, url:
+ []
+
+
+Underfull \hbox (badness 3919) in paragraph at lines 165--165
+\OT1/ptm/m/n/9 http://oldhome.schmorp.de/marc/liblzf.html, 2016.  ac-
+ []
+
+
+Underfull \hbox (badness 3068) in paragraph at lines 178--178
+[]\OT1/ptm/m/n/9 M. Ober-humer.  Lzo real-time data com-pres-sion li-
+ []
+
+
+Underfull \hbox (badness 6141) in paragraph at lines 178--178
+\OT1/ptm/m/n/9 brary.  \OT1/ptm/m/it/9 User man-ual for LZO ver-sion 0.28, url:
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 178--178
+\OT1/ptm/m/it/9 http://www.infosys.tuwien.ac.at/Staff/lux/marco/lzo.html
+ []
+
+[6])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 84.
+ [7
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 84.
  (./paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 83.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 83.
-Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 83.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 84.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 84.
+
+
+Package rerunfilecheck Warning: File `paper.brf' has changed.
+(rerunfilecheck)                Rerun to get bibliographical references right.
+
+Package rerunfilecheck Info: Checksums for `paper.brf':
+(rerunfilecheck)             Before: 8A3395CAA96CCFC9438EB3405579205B;2528
+(rerunfilecheck)             After:  A70DD767C20C836C454E2E9032436E41;2474.
+
+LaTeX Warning: There were undefined references.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 84.
  ) 
 Here is how much of TeX's memory you used:
- 18913 strings out of 492990
- 362570 string characters out of 6132622
- 408800 words of memory out of 5000000
- 22231 multiletter control sequences out of 15000+600000
- 551506 words of font info for 78 fonts, out of 8000000 for 9000
+ 19072 strings out of 492990
+ 365748 string characters out of 6132622
+ 414924 words of memory out of 5000000
+ 22341 multiletter control sequences out of 15000+600000
+ 557942 words of font info for 89 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,9n,42p,10374b,869s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,9n,42p,10374b,864s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2017/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2
-017/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-
-dist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on paper.pdf (2 pages, 50127 bytes).
+exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
+xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
+live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texli
+ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive
+/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/20
+17/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
+7/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/
+texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
+017/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2017/texm
+f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
+ts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/u
+rw/times/utmri8a.pfb>
+Output written on paper.pdf (7 pages, 1333020 bytes).
 PDF statistics:
- 88 PDF objects out of 1000 (max. 8388607)
- 80 compressed objects within 1 object stream
- 50 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 340 PDF objects out of 1000 (max. 8388607)
+ 289 compressed objects within 3 object streams
+ 80 named destinations out of 1000 (max. 500000)
+ 61 words of extra memory for PDF output out of 10000 (max. 10000000)
 

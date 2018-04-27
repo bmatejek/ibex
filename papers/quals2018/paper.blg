@@ -1,57 +1,87 @@
 This is BibTeX, Version 0.99d (TeX Live 2017)
 Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: paper.aux
-The style file: splncs.bst
-Database file #1: egbib.bib
-Repeated entry---line 152 of file egbib.bib
- : @article{funke2017deep
- :                       ,
+The style file: ieee.bst
+Database file #1: paper.bib
+Repeated entry---line 133 of file paper.bib
+ : @inproceedings{cciccek20163d
+ :                             ,
 I'm skipping whatever remains of this entry
-Repeated entry---line 418 of file egbib.bib
+Repeated entry---line 409 of file paper.bib
+ : @article{nunez2014graph
+ :                        ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 549 of file paper.bib
+ : @article{kaynig2015large
+ :                         ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 560 of file paper.bib
+ : @article{lee2015recursive
+ :                          ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 633 of file paper.bib
+ : @article{mojo2
+ :               ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 961 of file paper.bib
+ : @inproceedings{amelio_segmentation
+ :                                   ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1328 of file paper.bib
+ : @article{Turaga2010Convolutional
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1572 of file paper.bib
  : @inproceedings{ronneberger2015u
  :                                ,
 I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "sato2000teasar"
+Warning--I didn't find a database entry for "zhao2014automatic"
+Warning--I didn't find a database entry for "chatfield2014return"
+Warning--I didn't find a database entry for "keuper2015efficient"
+Warning--I didn't find a database entry for "andres2011probabilistic"
+Warning--empty institution in deutsch1996zlib
 Warning--can't use both volume and number fields in haehn2017scalable
-Warning--empty publisher in Turaga:2009
-You've used 40 entries,
-            2087 wiz_defined-function locations,
-            708 strings with 13525 characters,
-and the built_in function-call counts, 13786 in all, are:
-= -- 1231
-> -- 807
-< -- 27
-+ -- 283
-- -- 243
-* -- 1038
-:= -- 1951
-add.period$ -- 53
-call.type$ -- 40
-change.case$ -- 40
+Warning--there's a number but no volume in mojo2
+You've used 46 entries,
+            2120 wiz_defined-function locations,
+            751 strings with 13400 characters,
+and the built_in function-call counts, 18862 in all, are:
+= -- 1743
+> -- 1271
+< -- 14
++ -- 508
+- -- 456
+* -- 1430
+:= -- 3166
+add.period$ -- 141
+call.type$ -- 46
+change.case$ -- 363
 chr.to.int$ -- 0
-cite$ -- 42
-duplicate$ -- 686
-empty$ -- 1181
-format.name$ -- 243
-if$ -- 3257
+cite$ -- 49
+duplicate$ -- 608
+empty$ -- 1223
+format.name$ -- 456
+if$ -- 3854
 int.to.chr$ -- 0
-int.to.str$ -- 40
-missing$ -- 40
-newline$ -- 204
-num.names$ -- 40
-pop$ -- 162
+int.to.str$ -- 46
+missing$ -- 38
+newline$ -- 230
+num.names$ -- 92
+pop$ -- 413
 preamble$ -- 1
-purify$ -- 0
+purify$ -- 317
 quote$ -- 0
-skip$ -- 460
+skip$ -- 483
 stack$ -- 0
-substring$ -- 737
-swap$ -- 356
-text.length$ -- 27
+substring$ -- 861
+swap$ -- 172
+text.length$ -- 14
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
-warning$ -- 2
-while$ -- 104
-width$ -- 42
-write$ -- 449
-(There were 2 error messages)
+type$ -- 182
+warning$ -- 3
+while$ -- 144
+width$ -- 48
+write$ -- 490
+(There were 8 error messages)
