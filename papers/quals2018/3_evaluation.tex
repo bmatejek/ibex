@@ -1,6 +1,56 @@
 % !TEX root =  paper.tex
 \section{Experiments}
 
+\begin{figure}[t]
+	\centering
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton1.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton2.png}		
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton3.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton4.png}		
+	\end{minipage}
+	\caption{Example skeletons (in black) extracted from segments using a variant of the TEASER algorithm~\cite{sato2000teasar}. These skeletons not only capture the shape of the segmentation, but also provide endpoints useful for region merging proposals.}
+	\label{fig:skeletonization}
+\end{figure}
+
+\begin{figure}[t]
+	\begin{minipage}{0.4\linewidth}
+		\includegraphics[width=\linewidth]{./figures/constraint_error.png}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.55\linewidth}
+		\includegraphics[width=\linewidth]{./figures/constraint_success.png}
+	\end{minipage}
+	\caption{Geometric constraints for region merging. We show two region merging proposals. On the left, the segments do not belong to the same neuron, as evidenced by the sharp turning radius indicated by the arrow; while on the right, the segments should be merged due to the continuity of the 3D shape. Instead of using handcrafted geometric features, we train a convolutional neural networks to automatically learn them from the ground truth labels.}
+	\label{fig:turn-radii}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error1.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error2.png}				
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error3.png}
+	\end{minipage}
+	\caption{Three erroneously split segments.}
+	\label{fig:merge_candidates}
+\end{figure}
+
+
 We evaluate our method by comparing it to a state-of-the-art pixel-based reconstruction approach using datasets from mouse and fly brains.
 
 \subsection{Datasets}
@@ -9,36 +59,18 @@ We evaluate our method by comparing it to a state-of-the-art pixel-based reconst
 Our proposed method is designed for very large connectomics datasets. 
 Popular challenge datasets such as CREMI and SNEMI3D are simply too small for any noticeable change. 
 The following datasets contain 4 times more volume than the CREMI datasets. 
-\\~\\
-%\subsubsection{Kasthuri}
-\noindent\textbf{Kasthuri}
-The Kasthuri dataset consists of scanning electron microscope images of the neocortex of a mouse brain~\cite{kasthuri2015saturated}. 
+The first, which we call the Kasthuri dataset, consists of scanning electron microscope images of the neocortex of a mouse brain~\cite{kasthuri2015saturated}. 
 This dataset is $5342 \times 3618 \times 338$ voxels in size. 
 The resolution of the dataset is $\SI[product-units=single]{3 x 3 x 30}{\nano\meter}^3$ per voxel. 
-We evaluate our methods using the left cylinder of this 3-cylinder dataset. 
-We downsample the dataset in the $x$ and $y$ dimensions to give a final resolution of $\SI[product-units=single]{6 x 6 x 30}{\nano\meter}^3$ per voxel. 
-We divide the dataset into two volumes (Vol. 1 and Vol. 2) along the $x$ dimension, where each volume is $\SI[product-units=single]{8.0 x 10.9 x 10.1}{\micro\meter}^3$ or $1335 \times 1809 \times 338$ voxels.
-\\~\\
-%\subsubsection{FlyEM}
-\noindent\textbf{FlyEM}
-The FlyEM dataset comes from the mushroom body of a 5-day old adult male \textit{Drosophila} fly imaged by a focused ion-beam milling scanning electron microscopy~\cite{takemura2017connectome}.
-The mushroom body in this species is the primary site of associative learning. 
+We divide the dataset into two volumes (Vol. 1 and Vol. 2) along the $x$ dimension, where each volume is $\SI[product-units=single]{8.0 x 10.9 x 10.1}{\micro\meter}^3$.
+We train one of these halves and test on the other.
+Our second dataset, called FlyEM, comes from the mushroom body of a 5-day old adult male \textit{Drosophila} fly imaged by a focused ion-beam milling scanning electron microscopy~\cite{takemura2017connectome}.
 The original dataset contains a $\SI[product-units=single]{40 x 50 x 120}{\micro\meter}^3$ volume with a resolution of $\SI[product-units=single]{10 x 10 x 10}{\nano\meter}^3$ per voxel. 
-We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$ or $999 \times 999 \times 999$ voxels.
+We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 x 10}{\micro\meter}^3$.
 
-%\subsubsection{Fib-25}
-%\noindent\textbf{Fib-25}
-%The Fib-25 dataset comes from the visual system of a \textit{Drosophila} fly~\cite{takemura2015synaptic}. This sample is %imaged at a resolution of $\SI[product-units=single]{8 x 8 x 8}{\nano\meter}^3$ and has $2588 \times 2108 \times 2876$ %voxels representing a volume of $\SI[product-units=single]{23.0 x 16.9 x 23.0}{\micro\meter}^3$. 
-%There is currently a reconstruction challenge based on this sample.
 
 \subsection{Method Configuration}
 \noindent\textbf{Initial Segmentation}
-%\label{sec:neuroproof}
-%The segmentation of the Kasthuri dataset was computed by agglomerating 3D supervoxels produced by the watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. 
-%A recent study by Funke et al.~\cite{funke2017deep} demonstrated superior performance of such methods over existing ones on anisotropic data. 
-%We learn 3D affinities using MALIS loss with a U-net~\cite{ronneberger2015u,Turaga:2009}. 
-%We apply the z-watershed algorithm with suitable parameters to compute a 3D oversegmentation of the volume. 
-%The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
 The segmentation of the Kasthuri dataset is computed by agglomerating 3D supervoxels produced by the z-watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. 
 A recent study by Funke et al.~\cite{funke2017deep} demonstrates superior performance of such methods over existing ones on anisotropic data. 
 We learn 3D affinities using MALIS loss with a U-Net~\cite{ronneberger2015u,Turaga:2009}. 
@@ -68,14 +100,6 @@ We train on 80\% of the potential merge candidates for this volume.
 We validate the CNN classifier on the remaining 20\% of the candidates. 
 Since our input does not require the image data, we can train on the anisotropic Kasthuri data and test on the isotropic FlyEM data.
 
-We consider networks with varying input sizes, optimizers, loss functions, filter sizes, learning rates, and activation functions. 
-The supplemental material includes information on the experiments that determined these final parameters. 
-We provide all parameters of the final network in the supplemental material. 
-There are $11,456,241$ learnable parameters in our final architecture. 
-All the parameters are randomly initialized following the Xavier uniform distribution~\cite{glorot2010understanding}. 
-Training concluded after 330 epochs.
-
-%\noindent\textbf{Training Augmentation.}
 Since our input is an existing segmentation of the EM images, there are very few training examples compared to per-pixel classifiers that train on a unique window for each voxel. 
 The Kasthuri dataset represents a region of brain over $\SI[product-units=single]{800}{\micro\meter}^3$ in volume and only yields 640 positive merge examples and 4821 negative ones.
 To avoid overfitting our deep networks, we apply the following augmentations on the training examples.
@@ -84,12 +108,6 @@ With probability 0.5, an example is reflected across the $xy$-plane.
 We then rotate each example by a random angle between $0$ and $360$ degrees using nearest neighbor interpolation. 
 The supplemental material contains experiments demonstrating the benefits of this augmentation strategy.
 We have 20,000 such examples per epoch.
-\\~\\
-\noindent\textbf{Graph Partition}
-%We assign the edges in our graph a weight $w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}}$ where $\beta$ is a tunable parameter. 
-%Higher values of $\beta$ encourage over-segmentation.
-Figure~\ref{fig:variation-of-information} shows our results for variables $\beta \in [0.5, 0.99]$. 
-For our multicut analysis we use $\beta = 0.95$ (Sec.~\ref{sec:optimization}). 
 
 \subsection{Error Metrics}
 \label{sec:variation-of-information}
