@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <assert.h>
+#include <map>
 
 
 
@@ -51,18 +52,46 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
     ++max_segment;
     ++max_gold;
 
-    // print lowest value of segment
-    long min_segment = max_segment;
-    long min_gold = max_gold;
+    // get an array for segment values that occur
+    bool *segment_exists = new bool[max_segment];
+    bool *gold_exists = new bool[max_gold];
+    for (long is = 0; is < max_segment; ++is)
+        segment_exists[is] = false;
+    for (long ig = 0; ig < max_gold; ++ig)
+        gold_exists[ig] = false;
     for (long iv = 0; iv < nentries; ++iv) {
-        if (segmentation[iv] < min_segment) min_segment = segmentation[iv];
-        if (gold[iv] < min_gold) min_gold = gold[iv];
+        segment_exists[segmentation[iv]] = true;
+        gold_exists[gold[iv]] = true;
     }
-    // make sure that both segment and gold values are greater than zero
-    assert ((min_gold >= 0) and (min_segment >= 0));
-
     // populate values for joint sets
-    long **c = new long *[max_segment];
+    std::map<long, std::map<long, long> > c = std::map<long, std::map<long, long> >();   
+    for (long is = 0; is < max_segment; ++is) {
+        if (segment_exists[is]) {
+            c.insert(std::pair<long, std::map<long, long> >(is, std::map<long, long>()));
+        }
+    }
+    for (long iv = 0; iv < nentries; ++iv)
+        c[segmentation[iv]][gold[iv]]++;
+    std::map<long, long> s = std::map<long, long>();
+    std::map<long, long> t = std::map<long, long>();
+    for (long is = 0; is < max_segment; ++is) {
+        if (not segment_exists[is]) continue;
+        for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
+            if (not gold_exists[ig]) continue;
+            if (not c[is].count(ig)) continue;
+            s[is] += c[is][ig];
+        }
+    }
+    for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
+        if (not gold_exists[ig]) continue;
+        for (long is = 0; is  < max_segment; ++is) {
+            if (not segment_exists[is]) continue;
+            if (not c[is].count(ig)) continue;
+            t[ig] += c[is][ig];
+        }
+    }
+
+    /*long **c = new long *[max_segment];
     for (long is = 0; is < max_segment; ++is) {
         c[is] = new long[max_gold];
         for (long ig = 0; ig < max_gold; ++ig) {
@@ -87,22 +116,27 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
         for (long is = 0; is < max_segment; ++is) {
             t[ig] += c[is][ig];
         }
-    }
+    }*/
 
 
     // calculate the number of true and false positives and negatives
     long TP = 0;
     for (long is = 0; is < max_segment; ++is) {
+        if (not segment_exists[is]) continue;
         for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
+            if (not gold_exists[is]) continue;
+            if (not c[is].count(ig)) continue;
             TP += NChoose2(c[is][ig]);
         }
     }
     long TP_FP = 0;
     for (long is = 0; is < max_segment; ++is) {
+        if (not segment_exists[is]) continue;
         TP_FP += NChoose2(s[is]);
     }
     long TP_FN = 0;
     for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
+        if (not gold_exists[ig]) continue;
         TP_FN += NChoose2(t[ig]);
     }
     long FP = TP_FP - TP;
@@ -119,20 +153,16 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
     double VI_merge = 0.0;
 
     for (long is = 0; is < max_segment; ++is) {
-        if (!s[is]) continue;
+        if (not segment_exists[is]) continue;
         double spi = s[is] / (double)nnonzero;
         for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
-            if (!t[ig] || !c[is][ig]) continue;
+            if (not gold_exists[is]) continue;
+            if (not c[is].count(ig)) continue;
             double tpj = t[ig] / (double)nnonzero;
             double pij = c[is][ig] / (double)nnonzero;
 
             VI_split = VI_split - pij * log(pij / tpj);
             VI_merge = VI_merge - pij * log(pij / spi);
-
-            if ( pij * log(pij / tpj) > 1) {
-                printf("%ld %ld %ld\n", s[is], t[ig], c[is][ig]);
-                printf("%lf %lf\n", pij * log(pij / tpj), pij * log(pij / spi)); 
-            }
         }
     }
 
@@ -141,11 +171,8 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
     printf("Variation of Information Split: %lf\n", VI_split);
 
     // free memory
-    delete[] s;
-    delete[] t;
-    for (long is = 0; is < max_segment; ++is)
-        delete[] c[is];
-    delete[] c;
+    delete[] segment_exists;
+    delete[] gold_exists;
 
     // end stopwatch
     t2 = clock();

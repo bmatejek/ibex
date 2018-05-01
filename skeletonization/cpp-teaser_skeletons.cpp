@@ -16,8 +16,9 @@ static const int IB_NDIMS = 3;
 
 // variables for the rolling sphere
 
-static const double scale = 50.0;
-static const double buffer = 15000.0;
+static const double scale = 1.1;
+static const double buffer = 80;
+static const long min_path_length = 45;
 
 
 
@@ -28,15 +29,18 @@ static long grid_size[3];
 static long nentries;
 static long sheet_size;
 static long row_size;
-static long infinity;
+static double infinity;
+static long inside_voxels = 0;
 
-static long inside_voxels_remaining = 0;
+
+// global arrays
+
 static unsigned char *skeleton = NULL;
-static unsigned char *inside = NULL;
-static long *segmentation = NULL;
+static unsigned char *segmentation = NULL;
 static double *DBF = NULL;
 static double *penalties = NULL;
 static double *PDRF = NULL;
+static unsigned char *inside = NULL;
 
 
 
@@ -50,10 +54,14 @@ static void IndexToIndices(long iv, long &ix, long &iy, long &iz)
     ix = iv % row_size;
 }
 
+
+
 static long IndicesToIndex(long ix, long iy, long iz)
-{
+{   
     return iz * sheet_size + iy * row_size + ix;
 }
+
+
 
 static void ComputeDistanceFromBoundaryField(void)
 {
@@ -62,15 +70,18 @@ static void ComputeDistanceFromBoundaryField(void)
     for (long iz = 0; iz < grid_size[IB_Z]; ++iz) {
         for (long iy = 0; iy < grid_size[IB_Y]; ++iy) {
             for (long ix = 0; ix < grid_size[IB_X]; ++ix) {
-                long label = segmentation[IndicesToIndex(ix, iy, iz)];
+                if (!segmentation[IndicesToIndex(ix, iy, iz)]) {
+                    b[IndicesToIndex(ix, iy, iz)] = 0;
+                    continue;
+                }
 
                 if ((ix == 0 or iy == 0 or iz == 0 or (ix == grid_size[IB_X] - 1) or (iy == grid_size[IB_Y] - 1) or (iz == grid_size[IB_Z] - 1)) ||
-                    (ix > 0 and segmentation[IndicesToIndex(ix - 1, iy, iz)] != label) ||
-                    (iy > 0 and segmentation[IndicesToIndex(ix, iy - 1, iz)] != label) ||
-                    (iz > 0 and segmentation[IndicesToIndex(ix, iy, iz - 1)] != label) ||
-                    (ix < grid_size[IB_X] - 1 and segmentation[IndicesToIndex(ix + 1, iy, iz)] != label) ||
-                    (iy < grid_size[IB_Y] - 1 and segmentation[IndicesToIndex(ix, iy + 1, iz)] != label) ||
-                    (iz < grid_size[IB_Z] - 1 and segmentation[IndicesToIndex(ix, iy, iz + 1)] != label)) {
+                    (ix > 0 and !segmentation[IndicesToIndex(ix - 1, iy, iz)]) ||
+                    (iy > 0 and !segmentation[IndicesToIndex(ix, iy - 1, iz)]) ||
+                    (iz > 0 and !segmentation[IndicesToIndex(ix, iy, iz - 1)]) ||
+                    (ix < grid_size[IB_X] - 1 and !segmentation[IndicesToIndex(ix + 1, iy, iz)]) ||
+                    (iy < grid_size[IB_Y] - 1 and !segmentation[IndicesToIndex(ix, iy + 1, iz)]) ||
+                    (iz < grid_size[IB_Z] - 1 and !segmentation[IndicesToIndex(ix, iy, iz + 1)])) {
                     b[IndicesToIndex(ix, iy, iz)] = 0;
                 }
                 else {
@@ -85,8 +96,8 @@ static void ComputeDistanceFromBoundaryField(void)
         for (long iy = 0; iy < grid_size[IB_Y]; ++iy) {
 
             long k = 0;
-            long *v = new long[grid_size[IB_Z]];
-            double *z = new double[grid_size[IB_Z]];
+            long *v = new long[grid_size[IB_Z] + 1];
+            double *z = new double[grid_size[IB_Z] + 1];
 
             v[0] = 0;
             z[0] = -1 * infinity;
@@ -137,8 +148,8 @@ static void ComputeDistanceFromBoundaryField(void)
         for (long ix = 0; ix < grid_size[IB_X]; ++ix) {
 
             long k = 0;
-            long *v = new long[grid_size[IB_Y]];
-            double *z = new double[grid_size[IB_Y]];
+            long *v = new long[grid_size[IB_Y] + 1];
+            double *z = new double[grid_size[IB_Y] + 1];
 
             v[0] = 0;
             z[0] = -1 * infinity;
@@ -148,7 +159,7 @@ static void ComputeDistanceFromBoundaryField(void)
                 // label for jump statement
                 ylabel:
                 double s = ((b[IndicesToIndex(ix, q, iz)] + world_res[IB_Y] * world_res[IB_Y] * q * q) - (b[IndicesToIndex(ix, v[k], iz)] +  world_res[IB_Y] * world_res[IB_Y] * v[k] * v[k])) / (float)(2 * world_res[IB_Y] * q - 2 * world_res[IB_Y] * v[k]);
-
+                
                 if (s <= z[k]) {
                     --k;
                     goto ylabel;
@@ -165,6 +176,7 @@ static void ComputeDistanceFromBoundaryField(void)
             for (long q = 0; q < grid_size[IB_Y]; ++q) {
                 while (z[k + 1] < q * world_res[IB_Y])
                     ++k;
+            
                 DBF[IndicesToIndex(ix, q, iz)] = world_res[IB_Y] * world_res[IB_Y] * (q - v[k]) * (q - v[k]) + b[IndicesToIndex(ix, v[k], iz)];
             }
 
@@ -190,8 +202,8 @@ static void ComputeDistanceFromBoundaryField(void)
         for (long iz = 0; iz < grid_size[IB_Z]; ++iz) {
 
             long k = 0;
-            long *v = new long[grid_size[IB_X]];
-            double *z = new double[grid_size[IB_X]];
+            long *v = new long[grid_size[IB_X] + 1];
+            double *z = new double[grid_size[IB_X] + 1];
 
             v[0] = 0;
             z[0] = -1 * infinity;
@@ -228,9 +240,14 @@ static void ComputeDistanceFromBoundaryField(void)
         }
     }
 
+    for (long iv = 0; iv < nentries; ++iv) {
+        DBF[iv] = sqrt(DBF[iv]);
+    }
+
     // free memory
     delete[] b;
 }
+
 
 
 struct DijkstraData {
@@ -241,7 +258,9 @@ struct DijkstraData {
     bool visited;
 };
 
-long ComputeDistanceFromVoxelField(long source_index, bool calculate_pdrf, bool skeletonize)
+
+
+long ComputeDistanceFromVoxelField(long source_index)
 {
     DijkstraData *voxel_data = new DijkstraData[nentries];
     if (!voxel_data) exit(-1);
@@ -270,9 +289,6 @@ long ComputeDistanceFromVoxelField(long source_index, bool calculate_pdrf, bool 
         DijkstraData *current = voxel_heap.DeleteMin();
         voxel_index = current->iv;
 
-        // stop when the spine is reached
-        if (skeleton[voxel_index]) break;
-
         // visit all 26 neighbors of this index
         long ix, iy, iz;
         IndexToIndices(voxel_index, ix, iy, iz);
@@ -283,10 +299,14 @@ long ComputeDistanceFromVoxelField(long source_index, bool calculate_pdrf, bool 
                 if (iv < 0 or iv >= grid_size[IB_Y]) continue;
                 for (long iu = ix - 1; iu <= ix + 1; ++iu) {
                     if (iu < 0 or iu >= grid_size[IB_X]) continue;
+                    
                     // get the linear index for this voxel
                     long neighbor_index = IndicesToIndex(iu, iv, iw);
+
                     // skip if background
                     if (!segmentation[neighbor_index]) continue;
+                    
+                    // get the corresponding neighbor data
                     DijkstraData *neighbor_data = &(voxel_data[neighbor_index]);
 
                     // find the distance between these voxels
@@ -294,10 +314,11 @@ long ComputeDistanceFromVoxelField(long source_index, bool calculate_pdrf, bool 
                     long deltay = world_res[IB_Y] * (iv - iy);
                     long deltax = world_res[IB_X] * (iu - ix);
 
+                    // get the distance between (ix, iy, iz) and (iu, iv, iw)
                     double distance = sqrt(deltax * deltax + deltay * deltay + deltaz * deltaz);
 
                     // get the distance to get to this voxel through the current voxel (requires a penalty for visiting this voxel)
-                    double distance_through_current = current->distance + distance + current->voxel_penalty;
+                    double distance_through_current = current->distance + distance + neighbor_data->voxel_penalty;
                     double distance_without_current = neighbor_data->distance;
 
                     if (!neighbor_data->visited) {
@@ -310,61 +331,96 @@ long ComputeDistanceFromVoxelField(long source_index, bool calculate_pdrf, bool 
                         neighbor_data->prev = current;
                         neighbor_data->distance = distance_through_current;
                         voxel_heap.DecreaseKey(neighbor_index, neighbor_data);
-                    }            
+                    }
                 }
             }
         }
     }
 
-    // skeletonize from the starting voxel to the current skeleton
-    if (skeletonize) {
-        DijkstraData *current = &(voxel_data[voxel_index]);
 
-        // save the skeleton
-        while (current != NULL) {
-            skeleton[current->iv] = 1;
-            current = current->prev;
+    // first call to this function needs to return the root
+    if (!PDRF) {
+        // free memory
+        delete[] voxel_data;
+
+        // return the farthest voxel (to get the root voxel)
+        return voxel_index;
+    }
+
+    // save the PDRF (only called when given root voxel)
+    for (long iv = 0; iv < nentries; ++iv) {
+        if (!segmentation[iv]) continue;
+        PDRF[iv] = voxel_data[iv].distance;
+    }
+
+    // continue until there are no more inside voxels
+    while (inside_voxels) {
+        printf("  Remaining inside voxels %d...\n", inside_voxels);
+        double farthest_pdrf = -1;
+        long starting_voxel = -1;
+
+        // find the farthest PDFR that is still inside
+        for (long iv = 0; iv < nentries; ++iv) {
+            if (!inside[iv]) continue;
+
+            if (PDRF[iv] > farthest_pdrf) {
+                farthest_pdrf = PDRF[iv];
+                starting_voxel = iv;
+            }
         }
 
-        // mask out voxels near the skeleton
         for (long iv = 0; iv < nentries; ++iv) {
-            if (not inside[iv]) continue;
+            if (!inside[iv]) continue;
+
             long ix, iy, iz;
             IndexToIndices(iv, ix, iy, iz);
+        
+            // get the skeleton path from this location to the root
+            DijkstraData *current = &(voxel_data[starting_voxel]);
 
-            DijkstraData *current = &(voxel_data[voxel_index]);
-
-            // save the skeleton
-            while (current != NULL) {
-                long skeleton_index = current->iv;
-
+            while (!skeleton[current->iv]) {
                 long ii, ij, ik;
-                IndexToIndices(skeleton_index, ii, ij, ik);
+                IndexToIndices(current->iv, ii, ij, ik);
 
-                double distance = world_res[IB_X] * world_res[IB_X] * (ii - ix) * (ii - ix) + world_res[IB_Y] * world_res[IB_Y] * (ij - iy) * (ij - iy) + world_res[IB_Z] * world_res[IB_Z] * (ik - iz) * (ik - iz);
+                // what is the distance between this skeleton location and the inside location
+                double deltax = world_res[IB_X] * (ii - ix);
+                double deltay = world_res[IB_Y] * (ij - iy);
+                double deltaz = world_res[IB_Z] * (ik - iz);
 
-                if (distance < scale * DBF[skeleton_index] + buffer) {
+                double distance = sqrt(deltax * deltax + deltay * deltay + deltaz * deltaz);
+
+                if (distance < scale * DBF[current->iv] + buffer) {
                     inside[iv] = 0;
-                    inside_voxels_remaining--;
+                    inside_voxels--;
                     break;
                 }
 
+                // update skeleton pointer
+                current = current->prev;
+            }
+        }
+
+        long skeleton_path_length = 0;
+        DijkstraData *current = &(voxel_data[starting_voxel]);
+        while (!skeleton[current->iv]) {
+            skeleton_path_length++;
+            current = current->prev;
+        }
+
+        if (skeleton_path_length > min_path_length) {
+            current = &(voxel_data[starting_voxel]);
+            while (current != NULL) {
+                skeleton[current->iv] = 1;
                 current = current->prev;
             }
         }
     }
 
-    // save the PDRF (only called when given root voxel)
-    if (calculate_pdrf) {
-        for (long iv = 0; iv < nentries; ++iv) 
-            PDRF[iv] = voxel_data[iv].distance;
-    }
-
     // free memory
     delete[] voxel_data;
 
-    // return the farthest voxel (briefly needed)
-    return voxel_index;
+    return -1;
+
 }
 
 
@@ -389,9 +445,9 @@ void ComputePenalties(void)
 
 
 
-unsigned char *CppGenerateTeaserSkeletons(long *input_segmentation, long label, long input_grid_size[3], long input_world_res[3])
+unsigned char *CppGenerateTeaserSkeletons(long *input_segmentation, long input_grid_size[3], long input_world_res[3])
 {
-    // initialize convenient variables for skeletons
+    // initialize convenient variables for skeletonization
     for (int dim = 0; dim < IB_NDIMS; ++dim) {
         grid_size[dim] = input_grid_size[dim];
         world_res[dim] = input_world_res[dim];
@@ -401,120 +457,75 @@ unsigned char *CppGenerateTeaserSkeletons(long *input_segmentation, long label, 
     row_size = grid_size[IB_X];
     infinity = (grid_size[IB_Z] * world_res[IB_Z]) * (grid_size[IB_Z] * world_res[IB_Z]) + (grid_size[IB_Y] * world_res[IB_Y]) * (grid_size[IB_Y] * world_res[IB_Y]) + (grid_size[IB_X] * world_res[IB_X]) * (grid_size[IB_X] * world_res[IB_X]);
 
-    // set point for segmentation
-    segmentation = new long[nentries];
-    for (long iv = 0; iv < nentries; ++iv)
-        segmentation[iv] = input_segmentation[iv];
+    // create global segmentation array
+    skeleton = new unsigned char[nentries];
+    segmentation = new unsigned char[nentries];
+    penalties = new double[nentries];
+    inside = new unsigned char[nentries];
 
     for (long iv = 0; iv < nentries; ++iv) {
-        if (segmentation[iv] != label) segmentation[iv] = 0;
-        else { 
-            segmentation[iv] = 1;
-            inside_voxels_remaining++;
-        }
+        skeleton[iv] = 0;
+        segmentation[iv] = input_segmentation[iv];
+        penalties[iv] = 0;
+        if (segmentation[iv]) { inside[iv] = 1; inside_voxels++; }
+        else { inside[iv] = 0; }
     }
 
-    // initialize useful arrays
+    // initialize array for distance to boundary field
     DBF = new double[nentries];
     if (!DBF) exit(-1);
-    penalties = new double[nentries];
-    if (!penalties) exit(-1);
-    skeleton = new unsigned char[nentries];
-    if (!skeleton) exit(-1);
-    inside = new unsigned char[nentries];
-    if (!inside) exit(-1);
-    PDRF = new double[nentries];
-    if (!PDRF) exit(-1);
-
-    // initialize values to zero
-    for (long iv = 0; iv < nentries; ++iv) {
-        DBF[iv] = 0;
-        penalties[iv] = 0;
-        skeleton[iv] = 0;
-        inside[iv] = segmentation[iv];
-        PDRF[iv] = 0;
-    }
-
 
     clock_t t1, t2;
     t1 = clock();
-    // compute the distance boundary field
     ComputeDistanceFromBoundaryField();
     t2 = clock();
-    printf("\n running time: %lf\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);
+    printf("Computed distance from boundary field in %lf seconds\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);
+
 
     t1 = clock();
-    // comput the distance from any voxel field (choose first voxel)
     long source_voxel = -1;
-    for (long iv = 0; iv < nentries; ++iv) {
-        if (segmentation[iv]) { source_voxel = iv; break; }
+    for (long iv = 0; iv < nentries; ++iv)
+        if (inside[iv]) { source_voxel = iv; break; }
+    if (source_voxel == -1) { 
+        fprintf(stderr, "No voxels with this label...\n"); 
+        delete[] DBF;
+        delete[] penalties;
+        delete[] segmentation;
+        delete[] inside;
+        return skeleton;
     }
-    long root_voxel = ComputeDistanceFromVoxelField(source_voxel, false, false);
-    t2 = clock();
-    printf("\n running time: %lf\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);
-
-    t1 = clock();
-    // calculate penalties
-    ComputePenalties();
-    t2 = clock();
-    printf("\n running time: %lf\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);
-
-    t1 = clock();
-    // compute penalized distance from root voxel field
-    long starting_voxel = ComputeDistanceFromVoxelField(root_voxel, true, false);
-    t2 = clock();
-    printf("\n running time: %lf\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);
-    
-    // set the root voxel, every dijkstra iteration terminates at root
-    // this earlier will cause problems since the algorithm will terminate immediately
+    long root_voxel = ComputeDistanceFromVoxelField(source_voxel);
+    // the root location starts the skeleton
     skeleton[root_voxel] = 1;
-
-    long index = 0;
-    while (inside_voxels_remaining > 0) {
-        t1 = clock();
-        // find the farthest point from this starting value
-        ComputeDistanceFromVoxelField(starting_voxel, false, true);
-        t2 = clock();
-        printf("\n running time: %lf\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);    
-
-        // recompute the starting voxel
-        double maximum_distance = 0.0;
-        for (long iv = 0; iv < nentries; ++iv) {
-            if (inside[iv] and (PDRF[iv] > maximum_distance)) {
-                maximum_distance = PDRF[iv];
-                starting_voxel = iv;
-            }
-        }
-
-        printf("Starting Voxel: %d\n", starting_voxel);
-        printf("Inside Voxels: %d\n", inside_voxels_remaining);
+    inside[root_voxel] = 0;
+    inside_voxels--;
 
 
+    t2 = clock();
+    printf("Computed distance from any voxel field in %lf seconds\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);
 
+    t1 = clock();
+    ComputePenalties();
+    // initialize here so previous call to ComputeDistanceFromVoxelField returns root voxel
+    PDRF = new double[nentries];
+    if (!PDRF) exit(-1);
+    ComputeDistanceFromVoxelField(root_voxel);
+    t2 = clock();
+    printf("Computed penalized distance from root voxel field in %lf seconds\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);
 
-        long actual_inside_voxels_remaining = 0;
-        for (long iv = 0; iv < nentries; ++iv) {
-            if (inside[iv]) actual_inside_voxels_remaining++;
-        }
-
-        if (actual_inside_voxels_remaining !=inside_voxels_remaining) {
-            printf("Mismatch: %d %d\n", actual_inside_voxels_remaining, inside_voxels_remaining);
-            exit(-1);
-        }
-
-        for (long iv = 0; iv < nentries; ++iv) {
-            if (inside[iv] && skeleton[iv]) {
-                printf("Error skeleton labeled as inside: %d\n", iv);
-                exit(-1);
-            }
-        }
-    }
-
+    // free memory
     delete[] DBF;
     delete[] penalties;
-    delete[] inside;
     delete[] PDRF;
     delete[] segmentation;
-    
+    delete[] inside;
+
+    // reset global variables
+    DBF = NULL;
+    penalties = NULL;
+    PDRF = NULL;
+    segmentation = NULL;
+    inside = NULL;
+
     return skeleton;
 }

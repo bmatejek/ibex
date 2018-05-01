@@ -47,6 +47,11 @@ def WriteH5File(data, filename, dataset):
         hf.create_dataset(dataset, data=data)
 
 
+def ReadAffinityData(prefix):
+    filename, dataset = meta_data.MetaData(prefix).AffinityFilename()
+
+    return ReadH5File(filename, dataset).astype(np.float32)
+
 
 def ReadSegmentationData(prefix):
     filename, dataset = meta_data.MetaData(prefix).SegmentationFilename()

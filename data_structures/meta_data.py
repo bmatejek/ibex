@@ -97,3 +97,9 @@ class MetaData:
             return 'rhoana/{}_rhoana.h5'.format(self.prefix), 'main'
         else:
             return self.rhoana_filename.split()[0], self.rhoana_filename.split()[1]
+
+    def AffinityFilename(self):
+        if self.affinity_filename == None:
+            return 'affinities/{}_affinities.h5'.format(self.prefix), 'main'
+        else:
+            return self.affinity_filename.split()[0], self.affinity_filename.split()[1]
