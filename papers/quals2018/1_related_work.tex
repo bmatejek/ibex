@@ -1,6 +1,12 @@
 \section{Related Work}
 
-\paragraph{Automatic Segmentation.}
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[width=0.75\linewidth]{./figures/teaser_v4.png}
+	\caption{Our framework uses both geometric and topological biological constraints for region merging. We (a) generate a simplified graph from the skeleton representation of the input segmentation, (b) train a classifier to learn the edge weight based on the shape of the segment connection, and (c) perform graph partitioning with acyclic constraints.}
+	\label{fig:teaser_pipeline}
+\end{figure*}
+
 A significant amount of connectomics research considers the problem of extracting segmentation information at the voxel level of EM images.
 First, intermediate representations like boundary, affinity or binary segmentation maps are generated from the voxels.
 Random forests with hand-designed features~\cite{kaynig2015large}, or 2D and 3D convolutional networks produce boundary probabilities~\cite{seymour2016rhoananet,ronneberger2015u,bogovic2013learned,ciresan2012deep,jain2010boundary,amelio_segmentation}.
@@ -15,20 +21,10 @@ Several pixel-based approaches generate probabilities that neighboring pixels be
 Often a watershed algorithm will then cluster these pixels into super-pixels~\cite{zlateski2015image}.
 
 Region merging methods can be categorized by the similarity metric between adjacent segments and the merging strategy.
-For the similarity metric, Lee et al. and Funke et al. rely solely on the accuracy of the predicted affinities and define the metric as the mean affinity between segments~\cite{lee2017superhuman,funke2017deep}.
-Classification-based methods generate the probability to merge two segments from handcrafted~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825,jain2011learning} and learned features~\cite{bogovic2013learned}. 
-For the merging strategy, most methods use variants of hierarchical agglomeration ~\cite{seymour2016rhoananet,nunez2014graph,parag2017anisotropic,zlateski2015image,10.1371/journal.pone.0125825} to greedily merge a pair of regions at a time.
+For the similarity metric, Lee et al. and Funke et al. rely solely on the accuracy of the predicted affinities and define the metric as the mean affinity between segments~\cite{funke2017deep,lee2017superhuman}.
+Classification-based methods generate the probability to merge two segments from handcrafted~\cite{jain2011learning,seymour2016rhoananet,nunez2014graph,10.1371/journal.pone.0125825,parag2017anisotropic,zlateski2015image} and learned features~\cite{bogovic2013learned}. 
+For the merging strategy, most methods use variants of hierarchical agglomeration ~\cite{seymour2016rhoananet,nunez2014graph,10.1371/journal.pone.0125825,parag2017anisotropic,zlateski2015image} to greedily merge a pair of regions at a time.
 Jain et al. formulates the agglomeration problem as a reinforcement learning problem ~\cite{jain2011learning} and Pape et al. present a scalable multicut algorithm to partition superpixels with global optimization~\cite{beier2017multicut}.
 
-Additional research builds on top of these region-based methods to correct errors in the segmentation. This can be done either using human proofreading~\cite{haehn2014design,haehn2017guided,mojo2} or automatically~\cite{rolnick2017morphological,error_correction_using_CNN}. In both cases, available methods are pixel-based and do not include global biological constraints into the decision making process. Our method can be used as input to any existing error correction framework.
+Additional research builds on top of these region-based methods to correct errors in the segmentation. This can be done either using human proofreading~\cite{haehn2017guided,haehn2014design,mojo2} or automatically~\cite{rolnick2017morphological,error_correction_using_CNN}. In both cases, available methods are pixel-based and do not include global biological constraints into the decision making process. Our method can be used as input to any existing error correction framework.
 
-\paragraph{Compression.}
-
-The literature currently lacks efficient compression of label volumes. 
-General-purpose compression schemes~\cite{deutsch1996zlib,ziv1978compression,lehmann2016liblzf,oberhumer2005lzo,welch1984technique,seward1998bzip2,pavlov2007lzma,vandevenne2016zopfli,google2016brotli,collet2016smaller} are not optimized for this data.
-In this paper, we exploit the typical characteristics of label volumes such as large invariant regions without natural relationship between label values. 
-These properties render 2D image compression schemes inadequate since they rely on frequency reduction (using e.g., wavelet or discrete cosine transform) and value prediction of pixels based on local context (differential pulse-code modulation)~\cite{roelofs1999png,skodras2001jpeg}. 
-Color space optimization strategies in video codecs~\cite{aimar2005x264} also have no effect on label volumes, even though the spatial properties of a segmentation stack (\textit{z}-axis) are similar to the temporal properties of video data (time-axis). 
-A compression scheme designed specifically for label volumes is part of the visualization software Neuroglancer~\cite{google2016compressed}. 
-This method exploits segmentation homogeneity by creating small blocks with $N$ labels and reducing local entropy to $\log_2{N}$ per pixel. 
-Lookup tables then decode the values $[0,N)$ to the original 64-bit labels. We compare the Neuroglancer scheme with our method.
