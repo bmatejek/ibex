@@ -1,29 +1,38 @@
 % !TEX root =  paper.tex
 \section{Introduction}
 
-One of the critical components of connectomics---the field concerned with reconstructing the wiring diagram of the brain at nanometer resolution---is automatic segmentation of electron microscopy (EM) images of the brain.
-With recent advances in EM acquisition techniques, neuroscientists can now generate a terabyte of image data every hour~\cite{richard2016imaging}.
+One of the critical components of connectomics---the field concerned with reconstructing the wiring diagram of the brain at nanometer resolution---is automatic segmentation of electron microscopy (EM) images.
+With recent advancements in EM acquisition techniques, neuroscientists can now generate a terabyte of image data every hour~\cite{richard2016imaging}.
 These images are typically anisotropic with $4$nm resolution in the $xy$ plane and \numrange{30}{40}nm between slices. 
 At this resolution, we can see the axon terminals and dendritic spines, and the synaptic connections between them.
-Accurate reconstruction of every neuron paired with synapse detection will allow us to create a true graphical representation of the brain and further our understanding of the underlying circuitry.
-These segmentation, or label, volumes assign a 32- or 64-bit integer label to every voxel where voxels have the same label only if they belong to the same neuron.
+Neuroscientists hope to further their understanding of the brain's underlying circuitry with accurate reconstructions of every neuron in these volumes and classification of the synaptic connections.
+
 
 An ambitious manual reconstruction effort in the 1980s resulted in the first complete connectome of any animal, the \textit{Caenorhabditis elegans} worm~\cite{white1986structure}. 
 This species has 302 neurons and manual labeling required several years.
 More recent studies focus on \textit{Drosophila} flies~\cite{jovanic2016competitive,takemura2015synaptic},  rodents~\cite{richard2016imaging}, and even humans~\cite{sporns2005human}. 
 With an EM throughput of one terabyte per hour, neuroscientists can image a cubic millimeter of data (two petabytes) in six months~\cite{suissa2016automatic}. 
 At this scale, the manual reconstruction techniques of the 80s are simply infeasible.
-Thus, researchers rely on deep learning methods to segment these massive datasets.
+Thus, researchers rely on machine learning methods to segment these massive datasets.
 
 Automatic reconstruction produces label volumes that, uncompressed, are much larger in size than the already massive image datasets.
+These label volumes assign a 32- or 64-bit integer to every voxel where voxels have the same label only if they belong to the same neuron.
 In our paper published in \textit{MICCAI 2017}, we explore the effectiveness of existing general-purpose, image, and video compression techniques on the segmentation datasets.
 We find that these existing techniques fail to adequately exploit the typical properties of our label volumes.
 Thus, we propose \textit{Compresso}, a new compression algorithm specifically tailored for large label volumes that far exceeds existing strategies.
 
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{./figures/proposal-header.png}
+	\caption{From an EM image stack, 3D CNNs generate affinities between voxels (left). These affinities are agglomerated into superpixels which in turn are merged to form a complete segmentation (center). Oftentimes these methods produce errors and thus require error correction to improve the accuracy (right).}
+	\label{fig:overview}
+\end{figure}
+
+
 Automatic reconstruction techniques need to be fast, scalable, and accurate.
 Ideally, image acquisition is the bottleneck of the connectomics pipeline so reconstruction occurs at a rate of one terabyte per hour~\cite{haehn2017scalable}.
 We can achieve this throughput with parallelization among several GPUs with existing techniques~\cite{funke2017deep,parag2017anisotropic}.
-However, these automatic methods typically only rely on local context for decision making and are agnostic about the underlying biological systems.
+However, these automatic methods typically rely on local context for decision making and are agnostic about the underlying biological systems.
 Thus, they often make errors at scale and currently require human proofreading or other error correction techniques~\cite{haehn2017guided,error_correction_using_CNN}. 
 
 We propose a novel region merging framework that takes as input an oversegmentation of an EM volume (under review, \textit{ECCV 2018}).

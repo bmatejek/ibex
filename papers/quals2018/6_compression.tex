@@ -1,14 +1,28 @@
 % !TEX root =  paper.tex
 \section{Compression of Label Volumes}
 
-
+\begin{figure*}[t]
+	\begin{center}
+		\begin{minipage}{0.45\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{./figures/encoding_diagram_opt.pdf}
+		\end{minipage}
+		\hspace{0.08\linewidth}
+		\begin{minipage}{0.45\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{./figures/window_values.pdf}
+		\end{minipage}
+	\end{center}	
+	\caption{Compresso works by dividing up the segmentation data into small blocks. On the left we show the intersection of three segments in a $4\times4\times1$ window. We extract a boundary map from this segmentation to transform the window into an integral value between $0$ and $2^{16} - 1$. The location $i$ requires some additional bookkeeping. On the right are the $100$ most common $8 \times 8 \times 1$ windows accounting for $\sim82\%$ of the volume on a representative dataset.}
+	\label{fig:compression}
+\end{figure*}
 
 An often overlooked aspect of these segmentation datasets is how to efficiently store the label volumes.
 These label volumes are often 32- or 64-bit to account for the massive number of neurons that interweave through a cubic millimeter.
-Uncompressed, a cubic millimeter of segmentation data is nearly 20 petabytes and oftentimes there are a series of saved interim segmentations.
-Simply put, compression techniques are needed for fast transmission and cost-efficient storage.
+Uncompressed, a cubic millimeter of segmentation data is nearly 20 petabytes.
+Thus, compression techniques are needed for fast transmission and cost-efficient storage.
 
-
+Published in MICCAI 2017, we proposed Compresso which is specifically designed for compression of EM label volumes.
 Compresso works by decoupling the two important components across the image stack: per-segment shape and per-pixel label.
 To encode the segment shapes, we consider the boundary pixels between two segments. 
 Removing the per-pixel labels, we produce a boundary map for each slice where a pixel $(x, y, z)$ is 1 if either pixel at $(x + 1, y, z)$ or $(x, y + 1, z)$ belongs to a different segment (Fig~\ref{fig:compression}, left). 
@@ -30,6 +44,7 @@ These 100 frequently occurring windows account for approximately 82\% of the ove
 Nearly all of these windows correspond to simple lines traversing through the window. 
 For contrast, we also provide 5 randomly generated windows that never occur in the dataset.
 
+
 We define $N$ as the number of distinct $V_w$ representing all of the windows in an image stack. 
 We construct an invertible function $f(V_w) \to [0, N)$ to transform the window values into a smaller set of integers. 
 For all real-world segmentations $N \ll 2^n$; however, we assume no constraint on $N$ in order to guarantee lossless compression. 
@@ -46,7 +61,7 @@ The algorithm labels all pixels clustered within a component $m$ from $M$ sectio
 Thus far, we have assumed the boundaries provide enough information to reconstruct the entire segmentation.
 Pixels not on a segment boundary are easily relabeled.
 However, more care is needed for pixels on the segment boundaries. 
-Consider Figure~\ref{fig:compression}, left, which depicts a difficult boundary to decode. 
+Consider figure~\ref{fig:compression}, left, which depicts a difficult boundary to decode. 
 If a boundary pixel has a non-boundary neighbor to the left or above, then that pixel merely takes on the value of that neighbor. 
 However, pixel $i$ requires more care since its relevant neighbors are both boundary pixels. 
 We simply just store the label values for indeterminate pixels like $i$.

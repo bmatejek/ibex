@@ -1,15 +1,10 @@
 % !TEX root =  paper.tex
 \section{Related Work}
 
-\begin{figure*}[t]
-	\begin{center}
-		\includegraphics[width=0.45\linewidth]{./figures/encoding_diagram_opt.pdf}
-		\hspace{0.08\linewidth}
-		\includegraphics[width=0.45\linewidth]{./figures/window_values.pdf}
-	\end{center}	
-	\caption{Compresso works by dividing up the segmentation data into small blocks. On the left we show the intersection of three segments in a $4\times4\times1$ window. We extract a boundary map from this segmentation to transform the window into an integral value between $0$ and $2^{16} - 1$. The location $i$ requires some additional bookkeeping. On the right are the $100$ most common $8 \times 8 \times 1$ windows accounting for $\sim82\%$ of the volume on a representative dataset.}
-	\label{fig:compression}
-\end{figure*}
+
+Large scale image datasets requires fast automatic segmentation methods to match the throughput of the microscope.
+Thus, compressing the data in an efficient manner and accurately constructing the volumes at reasonable speeds become important problems.
+Here we provide a brief overview of existing compression methods and reconstruction techniques for these label volumes.
 
 General-purpose compression schemes~\cite{collet2016smaller,deutsch1996zlib,google2016brotli,lehmann2016liblzf,oberhumer2005lzo,pavlov2007lzma,seward1998bzip2,vandevenne2016zopfli,welch1984technique,ziv1978compression} are not optimized for this data.
 With Compresso, an algorithm published in MICCAI 2017, we exploit the typical characteristics of label volumes such as large invariant regions without natural relationship between label values. 
@@ -38,7 +33,11 @@ Classification-based methods generate the probability to merge two segments from
 For the merging strategy, most methods use variants of hierarchical agglomeration ~\cite{seymour2016rhoananet,nunez2014graph,10.1371/journal.pone.0125825,parag2017anisotropic,zlateski2015image} to greedily merge a pair of regions at a time.
 Jain et al. formulates the agglomeration problem as a reinforcement learning problem ~\cite{jain2011learning} and Pape et al. present a scalable multicut algorithm to partition superpixels with global optimization~\cite{beier2017multicut}.
 
-Additional research builds on top of these region-based methods to correct errors in the segmentation. This can be done either using human proofreading~\cite{haehn2017guided,haehn2014design,mojo2} or automatically~\cite{rolnick2017morphological,error_correction_using_CNN}. 
+Additional research builds on top of these region-based methods to correct errors in the segmentation. 
+These input segmentations can contain two types of errors.
+In a \textit{split error}, one neurons contains multiple labels.
+In a \textit{merge error}, two or more neurons receive the same label.
+This can be done either using human proofreading~\cite{haehn2017guided,haehn2014design,mojo2} or automatically~\cite{rolnick2017morphological,error_correction_using_CNN}. 
 In both cases, available methods are pixel-based and do not include global biological constraints into the decision making process. 
 Our method can take as input any existing segmentation pipeline.
 

@@ -6,17 +6,18 @@ Once we improve our synaptic classifiers, we can ensure that we do not merge den
 By stipulating that a segment on one side of the cell body can only have either pre- or post-synaptic connections, we will prevent undersegmentation that merges multiple neurons together.
 Additionally, once we have a classifier to label each neuron as inhibitory or excitatory, we can prevent the merging of two different types of neurons.
 Both of these additional constraints will help with the current problem associated with large-scale reconstruction.
-Namely, that a small percentage of merge errors results in a tangled mess of multiple neurons per segment.
+That is, a small percentage of merge errors results in a tangled mess of multiple neurons per segment.
 
-To further prevent this problem, we will augment our work to correct split errors as well.
-We will generate locations from splits with the following algorithm.
-First, we will locate places where a single skeleton joint has three immediate neighbors (Fig~\ref{fig:split_errors}).
-We will choose two of the neighbors as seed locations for a watershed algorithm that will run on the affinities constrained to the segment.
-This will generate a potential split location between the two seeds.
-We will then extract a region of interest around this split and use that cube as input into our previously trained merge classifier.
-If the classifier says that the two segments should not merge, we will accept the split as is and divide the segment.
-Otherwise we will ignore this split candidate and keep the segment intact.
+To further prevent this problem of undersegmentation, we will augment our current work to correct merge errors as well.
+Generally, correcting merge errors is more difficult than correcting split errors because the space of possible split candidates grows quickly~\cite{parag2015properties}. 
+However, we plan to prune these candidates more efficiently using a skeleton based method that considers the underlying biology.
+Consider Figure~\ref{fig:proposal} that shows an incorrectly merged segment consisting a few neurons.
+We can extract a coarser skeleton from this segment that does not hit every spine but still gets the general shape.
+In particular, it shows three main paths in this one segment.
 
-A benefit of this approach is that we will have one CNN to determine both merge and split decisions.
-This allows us to better tune our parameters with the scarce number of training examples from error correction.
-Figure~\ref{fig:proposed-pipeline} shows our proposed framework that corrects both merge and split errors.
+Once locating these potentially erroneous segments, we will run a watershed algorithm on the affinities that forces the voxels into two segments.
+The surface separating the two segments is our ``split'' candidate.
+We will extract a cubic region of interest around this candidate and input the region into our previously discussed merge classifier.
+If the classifier suggests that the segments belong to one neuron, we will ignore the split candidate.
+Otherwise we will divide this segment based on the candidate.
+With a synaptic classifier, we can further constrain the watershed algorithm to only propose splits where pre- or post-synaptic connections occur on one side.

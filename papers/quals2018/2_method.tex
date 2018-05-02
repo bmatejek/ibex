@@ -1,15 +1,41 @@
 % !TEX root =  paper.tex
-\section{Biologically-Constrained Error Correction}
+\section{Biologically-Constrained Region Merging}
 
 \begin{figure*}[t!]
 	\centering
-	\includegraphics[width=0.75\linewidth]{./figures/teaser_v4.png}
+	\includegraphics[width=0.65\linewidth]{./figures/teaser_v4.png}
 	\caption{Our framework uses both geometric and topological biological constraints for region merging. We (a) generate a simplified graph from the skeleton representation of the input segmentation, (b) train a classifier to learn the edge weight based on the shape of the segment connection, and (c) perform graph partitioning with acyclic constraints.}
 	\label{fig:teaser_pipeline}
 \end{figure*}
 
-Our method is illustrated in Fig.~\ref{fig:teaser_pipeline}.
-From the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 
+
+\begin{figure}[t]
+	\centering
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton1.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton2.png}		
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton3.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}
+		\includegraphics[width=\linewidth]{./figures/skeleton4.png}		
+	\end{minipage}
+	\caption{Example skeletons (in black) extracted from segments using a variant of the TEASER algorithm~\cite{sato2000teasar}. These skeletons not only capture the shape of the segmentation, but also provide endpoints useful for region merging proposals.}
+	\label{fig:skeletonization}
+\end{figure}
+
+Automatic reconstruction methods need to be fast enough to scale to petabyte datasets while still maintaining a high-level of accuracy.
+The most accurate methods, like flood-filling networks~\cite{januszewski2016flood}, are too slow to scale. 
+Unfortunately, methods that can scale to petabyte datasets typically rely on only local context and can produce errors at scale~\cite{haehn2017scalable}. 
+Therefore, it is necessary to employ error correction strategies on the segmentations from current reconstruction pipelines.
+We propose a biologically-constrained region merging algorithm to correct \textit{split errors} in the initial segmentation.
+
+For our proposed method (Fig.~\ref{fig:teaser_pipeline}), from the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 
 The nodes correspond to labeled segments from the input data with edges between merge candidates.
 We propose the following three steps to formulate and then partition the graph while obeying constraints from the underlying biology.
 First, we only consider merging segments based on a skeletonized representation of the input segmentation (Fig.~\ref{fig:teaser_pipeline}a).
@@ -43,11 +69,38 @@ Only these pairs have a corresponding edge in the constructed graph.
 \label{sec:edge-weights}
 
 To predict the probabilities that two segments belong to the same neuron, we train a feed-forward convolutional network with three \textit{VGG-style} convolution blocks~\cite{chatfield2014return} and two fully connected layers before the final sigmoid activation. 
-For the input of the network, we extract a cubic region of interest (ROI) around each endpoint $e$ in $\mathbb{S}_c$ as input to the CNN. 
+For the input of the network, we extract a cubic region of interest (ROI) around each midpoint in $\mathbb{S}_c$ as input to the CNN. 
 There are three channels corresponding to voxels belonging to label one, label two, or either label.
 We do not use the raw EM image information to avoid the need to retrain the network on datasets that have been stained differently or imaged at different resolution. 
 This reduces the need for generating costly manually-labeled ground truth. 
+\begin{figure}[t]
+	\begin{minipage}{0.4\linewidth}
+		\includegraphics[width=\linewidth]{./figures/constraint_error.png}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.55\linewidth}
+		\includegraphics[width=\linewidth]{./figures/constraint_success.png}
+	\end{minipage}
+	\caption{Geometric constraints for region merging. We show two region merging proposals. On the left, the segments do not belong to the same neuron, as evidenced by the sharp turning radius indicated by the arrow; while on the right, the segments should be merged due to the continuity of the 3D shape. Instead of using handcrafted geometric features, we train a convolutional neural networks to automatically learn them from the ground truth labels.}
+	\label{fig:turn-radii}
+\end{figure}
 
+\begin{figure}[t]
+	\centering
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error1.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error2.png}				
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error3.png}
+	\end{minipage}
+	\caption{Three erroneously split segments.}
+	\label{fig:merge_candidates}
+\end{figure}
 \subsection{Optimization-Based Graph Partition}
 
 \label{sec:optimization}
@@ -69,7 +122,7 @@ We approximate these probabilities by finding the maximal probable path between 
 This is an underestimate of the probability that two nodes belong to the same neuron since it does not consider all possible paths.
 Since our graphs are sufficiently small, we can generate lifted edges between all pairs of nodes. 
 
-We need to convert the probabilities into the following weighting scheme to solve the multicut problem with this heuristic~\cite{andres2011probabilistic,keuper2015efficient}.
+We need to convert the probabilities into the following weighting scheme to solve the multicut problem with the greedy-edge heuristic~\cite{andres2011probabilistic,keuper2015efficient}.
 Given the probability that the nodes belong to the same neuron is $p_e$, the edge weight $w_e$ is defined as
 %p_e &=\mbox{CNN}(x_1, x_2) \\
 \begin{align}
@@ -85,3 +138,14 @@ We enforce a global constraint that neurons are tree-structured and should not c
 The multicut problems returns a series of ``collapsed'' edges between nodes that belong to the same neuron.
 We iterate over these edges in order of the probability of merge generated by our CNN. 
 We ``collapse'' an edge only if it does not create a cycle in the graph.
+
+
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf}
+	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-FlyEM-Vol--1.pdf}
+	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-FlyEM-Vol--2.pdf}
+	\caption{Segmentation benchmark results on three volumes. We compare our method (red) to the baseline segmentation (green) and an oracle (blue) that optimally partitions our constructed graph from our method. Lower VI scores are better. Our method improves the segmentation accuracy over the baseline in all cases.
+		Note that our model is only trained on the Kasthuri training volume and it generalizes well to the FlyEM dataset.}
+	\label{fig:variation-of-information}
+\end{figure*}

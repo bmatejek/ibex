@@ -1,21 +1,10 @@
 % !TEX root =  paper.tex
 \section{Results}
 
-\begin{figure*}[t!]
-	\centering
-	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf}
-	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-FlyEM-Vol--1.pdf}
-	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-FlyEM-Vol--2.pdf}
-	\caption{Segmentation benchmark results on three volumes. We compare our method (red) to the baseline segmentation (green) and an oracle (blue) that optimally partitions our constructed graph from our method. Lower VI scores are better. Our method improves the segmentation accuracy over the baseline in all cases.
-	Note that our model is only trained on the Kasthuri training volume and it generalizes well to the FlyEM dataset.}
-	\label{fig:variation-of-information}
-\end{figure*}
 
 In Fig.~\ref{fig:variation-of-information}, we show the VI results of the pixel-based reconstructions of the Kasthuri and FlyEM data (Sec.~\ref{sec:dataset}) for varying thresholds of agglomeration (green). 
-We use one of these segmentations (green circle) as our input dataset with an agglomeration threshold of 0.3 for all datasets. 
 We show comparisons to an oracle (blue) that correctly partitions the graph from our method based on ground truth.
-
-Scores closer to the origin are better for this metric, and in every instance our results are below the green curve.
+Scores closer to the origin are better for this metric, and in every instance our results (red) are below the green curve.
 We see improvements on each data with a reduction in total VI score of $10.4\%$ on the Kasthuri data and $8.9\%$ and $5.4\%$ on the FlyEM datasets.
 
 Fig.~\ref{fig:qualitative-results} (left) shows successful merges on the Kasthuri dataset. 

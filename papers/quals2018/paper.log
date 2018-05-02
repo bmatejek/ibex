@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  1 MAY 2018 16:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  1 MAY 2018 20:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -823,296 +823,206 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 (./0_introduction.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
+<./figures/proposal-header.png, id=11, 1366.10374pt x 529.98pt>
+File: ./figures/proposal-header.png Graphic file (type png)
+<use ./figures/proposal-header.png>
+Package pdftex.def Info: ./figures/proposal-header.png  used on input line 26. 
+on input line 26.
+Package pdftex.def Info: Requested size: 237.13594pt x 91.9958pt on input line 
+26.
 ) (./1_related_work.tex
-<./figures/encoding_diagram_opt.pdf, id=17, pagebox=cropbox, 813.5735pt x 249.3
-8069pt>
-File: ./figures/encoding_diagram_opt.pdf Graphic file (type pdf)
-<use ./figures/encoding_diagram_opt.pdf>
-Package pdftex.def Info: ./figures/encoding_diagram_opt.pdf  used on input line
- 6. on input line 6.
-Package pdftex.def Info: Requested size: 223.58379pt x 68.53232pt on input line
- 6.
-<./figures/window_values.pdf, id=18, pagebox=cropbox, 1099.09547pt x 236.84932p
-t>
-File: ./figures/window_values.pdf Graphic file (type pdf)
-<use ./figures/window_values.pdf>
-Package pdftex.def Info: ./figures/window_values.pdf  used on input line 8. on 
-input line 8.
-Package pdftex.def Info: Requested size: 223.58379pt x 48.17856pt on input line
- 8.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
-]
-Underfull \vbox (badness 1194) has occurred while \output is active []
+ <./figures/proposal-header.png>]) (./6_compression.tex
+<./figures/encoding_diagram_opt.pdf, id=100, pagebox=cropbox, 813.5735pt x 249.
+38069pt>
+File: ./figures/encoding_diagram_opt.pdf Graphic file (type pdf)
+<use ./figures/encoding_diagram_opt.pdf>
+Package pdftex.def Info: ./figures/encoding_diagram_opt.pdf  used on input line
+ 8. on input line 8.
+Package pdftex.def Info: Requested size: 223.58379pt x 68.53232pt on input line
+ 8.
+<./figures/window_values.pdf, id=101, pagebox=cropbox, 1099.09547pt x 236.84932
+pt>
+File: ./figures/window_values.pdf Graphic file (type pdf)
+<use ./figures/window_values.pdf>
+Package pdftex.def Info: ./figures/window_values.pdf  used on input line 13. on
+ input line 13.
+Package pdftex.def Info: Requested size: 223.58379pt x 48.17856pt on input line
+ 13.
 
-)
-(./6_compression.tex
-Underfull \hbox (badness 2334) in paragraph at lines 6--10
+Underfull \hbox (badness 2334) in paragraph at lines 20--24
 []\OT1/ptm/m/n/10 An of-ten over-looked as-pect of these seg-men-ta-tion
  []
 
-[2 <./figures/encoding_diagram_opt.pdf> <./figures/window_values.pdf>])
-(./2_method.tex
-<./figures/teaser_v4.png, id=182, 1058.95625pt x 555.07375pt>
+[2]) (./2_method.tex
+<./figures/teaser_v4.png, id=159, 1058.95625pt x 555.07375pt>
 File: ./figures/teaser_v4.png Graphic file (type png)
 <use ./figures/teaser_v4.png>
 Package pdftex.def Info: ./figures/teaser_v4.png  used on input line 6. on inpu
 t line 6.
-Package pdftex.def Info: Requested size: 372.64218pt x 195.32896pt on input lin
+Package pdftex.def Info: Requested size: 322.95352pt x 169.28453pt on input lin
 e 6.
- [3]) [4 <./figures/teaser_v4.png>] (./3_evaluation.tex
-<./figures/skeleton1.png, id=225, 1396.21625pt x 518.93875pt>
+<./figures/skeleton1.png, id=160, 1396.21625pt x 518.93875pt>
 File: ./figures/skeleton1.png Graphic file (type png)
 <use ./figures/skeleton1.png>
-Package pdftex.def Info: ./figures/skeleton1.png  used on input line 7. on inpu
-t line 7.
+Package pdftex.def Info: ./figures/skeleton1.png  used on input line 15. on inp
+ut line 15.
 Package pdftex.def Info: Requested size: 106.71045pt x 39.65512pt on input line
- 7.
-<./figures/skeleton2.png, id=226, 1485.55pt x 334.24875pt>
+ 15.
+<./figures/skeleton2.png, id=161, 1485.55pt x 334.24875pt>
 File: ./figures/skeleton2.png Graphic file (type png)
 <use ./figures/skeleton2.png>
-Package pdftex.def Info: ./figures/skeleton2.png  used on input line 11. on inp
-ut line 11.
+Package pdftex.def Info: ./figures/skeleton2.png  used on input line 19. on inp
+ut line 19.
 Package pdftex.def Info: Requested size: 106.71045pt x 24.00671pt on input line
- 11.
-<./figures/skeleton3.png, id=227, 1432.35126pt x 742.775pt>
+ 19.
+<./figures/skeleton3.png, id=162, 1432.35126pt x 742.775pt>
 File: ./figures/skeleton3.png Graphic file (type png)
 <use ./figures/skeleton3.png>
-Package pdftex.def Info: ./figures/skeleton3.png  used on input line 14. on inp
-ut line 14.
+Package pdftex.def Info: ./figures/skeleton3.png  used on input line 22. on inp
+ut line 22.
 Package pdftex.def Info: Requested size: 106.71045pt x 55.3317pt on input line 
-14.
-<./figures/skeleton4.png, id=228, 1161.33875pt x 302.12875pt>
+22.
+<./figures/skeleton4.png, id=163, 1161.33875pt x 302.12875pt>
 File: ./figures/skeleton4.png Graphic file (type png)
 <use ./figures/skeleton4.png>
-Package pdftex.def Info: ./figures/skeleton4.png  used on input line 18. on inp
-ut line 18.
+Package pdftex.def Info: ./figures/skeleton4.png  used on input line 26. on inp
+ut line 26.
 Package pdftex.def Info: Requested size: 106.71045pt x 27.75745pt on input line
- 18.
-<./figures/constraint_error.png, id=231, 871.255pt x 561.09625pt>
+ 26.
+
+Underfull \hbox (badness 2512) in paragraph at lines 32--37
+[]\OT1/ptm/m/n/10 Automatic re-con-struc-tion meth-ods need to be fast
+ []
+
+[3 <./figures/encoding_diagram_opt.pdf> <./figures/window_values.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+<./figures/constraint_error.png, id=213, 871.255pt x 561.09625pt>
 File: ./figures/constraint_error.png Graphic file (type png)
 <use ./figures/constraint_error.png>
-Package pdftex.def Info: ./figures/constraint_error.png  used on input line 26.
- on input line 26.
+Package pdftex.def Info: ./figures/constraint_error.png  used on input line 78.
+ on input line 78.
 Package pdftex.def Info: Requested size: 94.85292pt x 61.07864pt on input line 
-26.
-<./figures/constraint_success.png, id=232, 1927.2pt x 1084.05pt>
+78.
+<./figures/constraint_success.png, id=214, 1927.2pt x 1084.05pt>
 File: ./figures/constraint_success.png Graphic file (type png)
 <use ./figures/constraint_success.png>
-Package pdftex.def Info: ./figures/constraint_success.png  used on input line 3
-0. on input line 30.
+Package pdftex.def Info: ./figures/constraint_success.png  used on input line 8
+2. on input line 82.
 Package pdftex.def Info: Requested size: 130.42548pt x 73.36044pt on input line
- 30.
-<./figures/split_error1.png, id=233, 499.56638pt x 150.5625pt>
+ 82.
+ [4 <./figures/teaser_v4.png> <./figures/skeleton1.png> <./figures/skeleton2.pn
+g> <./figures/skeleton3.png> <./figures/skeleton4.png>]
+<./figures/split_error1.png, id=227, 499.56638pt x 150.5625pt>
 File: ./figures/split_error1.png Graphic file (type png)
 <use ./figures/split_error1.png>
-Package pdftex.def Info: ./figures/split_error1.png  used on input line 39. on 
-input line 39.
+Package pdftex.def Info: ./figures/split_error1.png  used on input line 91. on 
+input line 91.
 Package pdftex.def Info: Requested size: 75.88522pt x 22.87056pt on input line 
-39.
-<./figures/split_error2.png, id=234, 549.85425pt x 93.951pt>
+91.
+<./figures/split_error2.png, id=228, 549.85425pt x 93.951pt>
 File: ./figures/split_error2.png Graphic file (type png)
 <use ./figures/split_error2.png>
-Package pdftex.def Info: ./figures/split_error2.png  used on input line 43. on 
-input line 43.
+Package pdftex.def Info: ./figures/split_error2.png  used on input line 95. on 
+input line 95.
 Package pdftex.def Info: Requested size: 75.88522pt x 12.96524pt on input line 
-43.
-<./figures/split_error3.png, id=235, 578.16pt x 130.38713pt>
+95.
+<./figures/split_error3.png, id=229, 578.16pt x 130.38713pt>
 File: ./figures/split_error3.png Graphic file (type png)
 <use ./figures/split_error3.png>
-Package pdftex.def Info: ./figures/split_error3.png  used on input line 47. on 
-input line 47.
+Package pdftex.def Info: ./figures/split_error3.png  used on input line 99. on 
+input line 99.
 Package pdftex.def Info: Requested size: 75.88522pt x 17.11206pt on input line 
-47.
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 65.
+99.
+<./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf, id=236, pagebox=cropbox, 230.
+8625pt x 230.8625pt>
+File: ./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf Graphic file (type pdf)
+<use ./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf>
+Package pdftex.def Info: ./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf  used 
+on input line 145. on input line 145.
+Package pdftex.def Info: Requested size: 158.99763pt x 158.99937pt on input lin
+e 145.
+<./figures/benchmark/voi-FlyEM-Vol--1.pdf, id=237, pagebox=cropbox, 230.8625pt 
+x 230.8625pt>
+File: ./figures/benchmark/voi-FlyEM-Vol--1.pdf Graphic file (type pdf)
+<use ./figures/benchmark/voi-FlyEM-Vol--1.pdf>
+Package pdftex.def Info: ./figures/benchmark/voi-FlyEM-Vol--1.pdf  used on inpu
+t line 146. on input line 146.
+Package pdftex.def Info: Requested size: 158.99763pt x 158.99937pt on input lin
+e 146.
+<./figures/benchmark/voi-FlyEM-Vol--2.pdf, id=238, pagebox=cropbox, 230.8625pt 
+x 230.8625pt>
+File: ./figures/benchmark/voi-FlyEM-Vol--2.pdf Graphic file (type pdf)
+<use ./figures/benchmark/voi-FlyEM-Vol--2.pdf>
+Package pdftex.def Info: ./figures/benchmark/voi-FlyEM-Vol--2.pdf  used on inpu
+t line 147. on input line 147.
+Package pdftex.def Info: Requested size: 158.99763pt x 158.99937pt on input lin
+e 147.
+) (./3_evaluation.tex
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 15.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 73.
-
-Underfull \hbox (badness 1242) in paragraph at lines 73--102
-\OT1/ptm/m/n/10 dataset is com-puted by ag-glom-er-at-ing 3D su-per-vox-els
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 24.
+ [5 <./figures/constraint_error.png> <./figures/constraint_success.png> <./figu
+res/split_error1.png> <./figures/split_error2.png> <./figures/split_error3.png>
+]
+Underfull \hbox (badness 1383) in paragraph at lines 30--58
+\OT1/ptm/m/n/10 tion. This seg-men-ta-tion frame-work learns voxel and
  []
 
 
-Underfull \hbox (badness 1057) in paragraph at lines 73--102
-\OT1/ptm/m/n/10 per-for-mance on this dataset over the pipeline used in
+Underfull \hbox (badness 3396) in paragraph at lines 30--58
+\OT1/ptm/m/n/10 su-per-voxel clas-si-fiers with an em-pha-sis to min-i-mize
  []
 
 
-Underfull \hbox (badness 1092) in paragraph at lines 73--102
+Underfull \hbox (badness 1701) in paragraph at lines 30--58
+\OT1/ptm/m/n/10 multi-channel 3D pre-dic-tions for mem-branes, cell in-
+ []
+
+
+Underfull \hbox (badness 2229) in paragraph at lines 30--58
+\OT1/ptm/m/n/10 te-ri-ors, and mi-to-chon-dria, among other cell fea-tures.
+ []
+
+
+Underfull \hbox (badness 1092) in paragraph at lines 30--58
 \OT1/ptm/m/n/10 ag-glom-er-ated hi-er-ar-chi-cally up to a cer-tain con-fi-denc
 e
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 73--102
+Underfull \hbox (badness 10000) in paragraph at lines 30--58
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 73--102
+Underfull \hbox (badness 10000) in paragraph at lines 30--58
 
  []
 
 
-Underfull \hbox (badness 1371) in paragraph at lines 73--102
-\OT1/ptm/b/n/10 Edge Weight Learn-ing []\OT1/ptm/m/n/10 We use half of the Kast
-huri
- []
-
-[5 <./figures/skeleton1.png> <./figures/skeleton2.png> <./figures/skeleton3.png
-> <./figures/skeleton4.png> <./figures/constraint_error.png> <./figures/constra
-int_success.png> <./figures/split_error1.png> <./figures/split_error2.png> <./f
-igures/split_error3.png>]) (./4_results.tex
-<./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf, id=262, pagebox=cropbox, 230.
-8625pt x 230.8625pt>
-File: ./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf Graphic file (type pdf)
-<use ./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf>
-Package pdftex.def Info: ./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf  used 
-on input line 6. on input line 6.
-Package pdftex.def Info: Requested size: 158.99763pt x 158.99937pt on input lin
-e 6.
-<./figures/benchmark/voi-FlyEM-Vol--1.pdf, id=263, pagebox=cropbox, 230.8625pt 
-x 230.8625pt>
-File: ./figures/benchmark/voi-FlyEM-Vol--1.pdf Graphic file (type pdf)
-<use ./figures/benchmark/voi-FlyEM-Vol--1.pdf>
-Package pdftex.def Info: ./figures/benchmark/voi-FlyEM-Vol--1.pdf  used on inpu
-t line 7. on input line 7.
-Package pdftex.def Info: Requested size: 158.99763pt x 158.99937pt on input lin
-e 7.
-<./figures/benchmark/voi-FlyEM-Vol--2.pdf, id=264, pagebox=cropbox, 230.8625pt 
-x 230.8625pt>
-File: ./figures/benchmark/voi-FlyEM-Vol--2.pdf Graphic file (type pdf)
-<use ./figures/benchmark/voi-FlyEM-Vol--2.pdf>
-Package pdftex.def Info: ./figures/benchmark/voi-FlyEM-Vol--2.pdf  used on inpu
-t line 8. on input line 8.
-Package pdftex.def Info: Requested size: 158.99763pt x 158.99937pt on input lin
-e 8.
-<./figures/VI-results/multicut-correct1.png, id=269, 578.16pt x 90.63863pt>
-File: ./figures/VI-results/multicut-correct1.png Graphic file (type png)
-<use ./figures/VI-results/multicut-correct1.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-correct1.png  used on in
-put line 32. on input line 32.
-Package pdftex.def Info: Requested size: 90.70453pt x 14.21895pt on input line 
-32.
-<./figures/VI-results/multicut-correct2.png, id=270, 538.11038pt x 317.68687pt>
-
-File: ./figures/VI-results/multicut-correct2.png Graphic file (type png)
-<use ./figures/VI-results/multicut-correct2.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-correct2.png  used on in
-put line 33. on input line 33.
-Package pdftex.def Info: Requested size: 90.70453pt x 53.55038pt on input line 
-33.
-<./figures/VI-results/multicut-correct3.png, id=271, 545.33737pt x 284.86424pt>
-
-File: ./figures/VI-results/multicut-correct3.png Graphic file (type png)
-<use ./figures/VI-results/multicut-correct3.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-correct3.png  used on in
-put line 34. on input line 34.
-Package pdftex.def Info: Requested size: 90.70453pt x 47.37872pt on input line 
-34.
-<./figures/VI-results/multicut-correct4.png, id=272, 578.16pt x 86.724pt>
-File: ./figures/VI-results/multicut-correct4.png Graphic file (type png)
-<use ./figures/VI-results/multicut-correct4.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-correct4.png  used on in
-put line 35. on input line 35.
-Package pdftex.def Info: Requested size: 90.70453pt x 13.60484pt on input line 
-35.
-<./figures/VI-results/multicut-correct5.png, id=273, 578.16pt x 124.96687pt>
-File: ./figures/VI-results/multicut-correct5.png Graphic file (type png)
-<use ./figures/VI-results/multicut-correct5.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-correct5.png  used on in
-put line 36. on input line 36.
-Package pdftex.def Info: Requested size: 90.70453pt x 19.6042pt on input line 3
-6.
-<./figures/VI-results/multicut-incorrect1.png, id=274, 952.55875pt x 212.795pt>
-
-File: ./figures/VI-results/multicut-incorrect1.png Graphic file (type png)
-<use ./figures/VI-results/multicut-incorrect1.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-incorrect1.png  used on 
-input line 40. on input line 40.
-Package pdftex.def Info: Requested size: 90.70453pt x 20.26118pt on input line 
-40.
-<./figures/VI-results/multicut-incorrect2.png, id=275, 931.48pt x 306.14375pt>
-File: ./figures/VI-results/multicut-incorrect2.png Graphic file (type png)
-<use ./figures/VI-results/multicut-incorrect2.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-incorrect2.png  used on 
-input line 41. on input line 41.
-Package pdftex.def Info: Requested size: 90.70453pt x 29.80801pt on input line 
-41.
-<./figures/VI-results/multicut-incorrect3.png, id=276, 949.5475pt x 532.99126pt
->
-File: ./figures/VI-results/multicut-incorrect3.png Graphic file (type png)
-<use ./figures/VI-results/multicut-incorrect3.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-incorrect3.png  used on 
-input line 42. on input line 42.
-Package pdftex.def Info: Requested size: 90.70453pt x 50.91121pt on input line 
-42.
-<./figures/VI-results/multicut-incorrect4.png, id=277, 946.53625pt x 307.1475pt
->
-File: ./figures/VI-results/multicut-incorrect4.png Graphic file (type png)
-<use ./figures/VI-results/multicut-incorrect4.png>
-Package pdftex.def Info: ./figures/VI-results/multicut-incorrect4.png  used on 
-input line 43. on input line 43.
-Package pdftex.def Info: Requested size: 90.70453pt x 29.43239pt on input line 
-43.
-
-Underfull \hbox (badness 10000) in paragraph at lines 73--95
+Underfull \hbox (badness 10000) in paragraph at lines 30--58
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 73--95
-
+Underfull \hbox (badness 1082) in paragraph at lines 30--58
+\OT1/ptm/m/n/10 we ap-ply the fol-low-ing aug-men-ta-tions on the train-ing
  []
 
-[6]
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
-<./figures/merge_candidate1.png, id=297, 838.63312pt x 309.40594pt>
-File: ./figures/merge_candidate1.png Graphic file (type png)
-<use ./figures/merge_candidate1.png>
-Package pdftex.def Info: ./figures/merge_candidate1.png  used on input line 99.
- on input line 99.
-Package pdftex.def Info: Requested size: 106.71045pt x 39.36964pt on input line
- 99.
-<./figures/merge_candidate2.png, id=298, 876.27374pt x 264.99pt>
-File: ./figures/merge_candidate2.png Graphic file (type png)
-<use ./figures/merge_candidate2.png>
-Package pdftex.def Info: ./figures/merge_candidate2.png  used on input line 103
-. on input line 103.
-Package pdftex.def Info: Requested size: 106.71045pt x 32.26646pt on input line
- 103.
-<./figures/merge_candidate3.png, id=299, 1718.42pt x 423.5825pt>
-File: ./figures/merge_candidate3.png Graphic file (type png)
-<use ./figures/merge_candidate3.png>
-Package pdftex.def Info: ./figures/merge_candidate3.png  used on input line 106
-. on input line 106.
-Package pdftex.def Info: Requested size: 106.71045pt x 26.29932pt on input line
- 106.
-<./figures/merge_candidate4.png, id=300, 902.37125pt x 339.2675pt>
-File: ./figures/merge_candidate4.png Graphic file (type png)
-<use ./figures/merge_candidate4.png>
-Package pdftex.def Info: ./figures/merge_candidate4.png  used on input line 109
-. on input line 109.
-Package pdftex.def Info: Requested size: 106.71045pt x 40.12018pt on input line
- 109.
-<./figures/receiver-operating-characteristic.png, id=301, 462.528pt x 346.896pt
->
-File: ./figures/receiver-operating-characteristic.png Graphic file (type png)
-<use ./figures/receiver-operating-characteristic.png>
-Package pdftex.def Info: ./figures/receiver-operating-characteristic.png  used 
-on input line 117. on input line 117.
-Package pdftex.def Info: Requested size: 213.4209pt x 160.06636pt on input line
- 117.
+Underfull \vbox (badness 1057) has occurred while \output is active []
 
-Underfull \vbox (badness 5431) has occurred while \output is active []
-
- [7 <./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf> <./figures/benchmark/voi-
+ [6 <./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf> <./figures/benchmark/voi-
 FlyEM-Vol--1.pdf
 
 pdfTeX warning: /usr/local/texlive/2017/bin/x86_64-linux/pdflatex (file ./figur
@@ -1123,31 +1033,141 @@ p included in a single page
 pdfTeX warning: /usr/local/texlive/2017/bin/x86_64-linux/pdflatex (file ./figur
 es/benchmark/voi-FlyEM-Vol--2.pdf): PDF inclusion: multiple pdfs with page grou
 p included in a single page
-> <./figures/VI-results/multicut-correct1.png> <./figures/VI-results/multicut-c
-orrect2.png> <./figures/VI-results/multicut-correct3.png> <./figures/VI-results
-/multicut-correct4.png> <./figures/VI-results/multicut-correct5.png> <./figures
-/VI-results/multicut-incorrect1.png (PNG copy)> <./figures/VI-results/multicut-
-incorrect2.png (PNG copy)> <./figures/VI-results/multicut-incorrect3.png (PNG c
-opy)> <./figures/VI-results/multicut-incorrect4.png (PNG copy)> <./figures/merg
-e_candidate1.png> <./figures/merge_candidate2.png> <./figures/merge_candidate3.
-png> <./figures/merge_candidate4.png>]
+>]) (./4_results.tex
+<./figures/VI-results/multicut-correct1.png, id=327, 578.16pt x 90.63863pt>
+File: ./figures/VI-results/multicut-correct1.png Graphic file (type png)
+<use ./figures/VI-results/multicut-correct1.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct1.png  used on in
+put line 21. on input line 21.
+Package pdftex.def Info: Requested size: 90.70453pt x 14.21895pt on input line 
+21.
+<./figures/VI-results/multicut-correct2.png, id=328, 538.11038pt x 317.68687pt>
+
+File: ./figures/VI-results/multicut-correct2.png Graphic file (type png)
+<use ./figures/VI-results/multicut-correct2.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct2.png  used on in
+put line 22. on input line 22.
+Package pdftex.def Info: Requested size: 90.70453pt x 53.55038pt on input line 
+22.
+<./figures/VI-results/multicut-correct3.png, id=329, 545.33737pt x 284.86424pt>
+
+File: ./figures/VI-results/multicut-correct3.png Graphic file (type png)
+<use ./figures/VI-results/multicut-correct3.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct3.png  used on in
+put line 23. on input line 23.
+Package pdftex.def Info: Requested size: 90.70453pt x 47.37872pt on input line 
+23.
+<./figures/VI-results/multicut-correct4.png, id=330, 578.16pt x 86.724pt>
+File: ./figures/VI-results/multicut-correct4.png Graphic file (type png)
+<use ./figures/VI-results/multicut-correct4.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct4.png  used on in
+put line 24. on input line 24.
+Package pdftex.def Info: Requested size: 90.70453pt x 13.60484pt on input line 
+24.
+<./figures/VI-results/multicut-correct5.png, id=331, 578.16pt x 124.96687pt>
+File: ./figures/VI-results/multicut-correct5.png Graphic file (type png)
+<use ./figures/VI-results/multicut-correct5.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-correct5.png  used on in
+put line 25. on input line 25.
+Package pdftex.def Info: Requested size: 90.70453pt x 19.6042pt on input line 2
+5.
+<./figures/VI-results/multicut-incorrect1.png, id=332, 952.55875pt x 212.795pt>
+
+File: ./figures/VI-results/multicut-incorrect1.png Graphic file (type png)
+<use ./figures/VI-results/multicut-incorrect1.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-incorrect1.png  used on 
+input line 29. on input line 29.
+Package pdftex.def Info: Requested size: 90.70453pt x 20.26118pt on input line 
+29.
+<./figures/VI-results/multicut-incorrect2.png, id=333, 931.48pt x 306.14375pt>
+File: ./figures/VI-results/multicut-incorrect2.png Graphic file (type png)
+<use ./figures/VI-results/multicut-incorrect2.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-incorrect2.png  used on 
+input line 30. on input line 30.
+Package pdftex.def Info: Requested size: 90.70453pt x 29.80801pt on input line 
+30.
+<./figures/VI-results/multicut-incorrect3.png, id=334, 949.5475pt x 532.99126pt
+>
+File: ./figures/VI-results/multicut-incorrect3.png Graphic file (type png)
+<use ./figures/VI-results/multicut-incorrect3.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-incorrect3.png  used on 
+input line 31. on input line 31.
+Package pdftex.def Info: Requested size: 90.70453pt x 50.91121pt on input line 
+31.
+<./figures/VI-results/multicut-incorrect4.png, id=335, 946.53625pt x 307.1475pt
+>
+File: ./figures/VI-results/multicut-incorrect4.png Graphic file (type png)
+<use ./figures/VI-results/multicut-incorrect4.png>
+Package pdftex.def Info: ./figures/VI-results/multicut-incorrect4.png  used on 
+input line 32. on input line 32.
+Package pdftex.def Info: Requested size: 90.70453pt x 29.43239pt on input line 
+32.
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--84
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--84
+
+ []
+
+<./figures/merge_candidate1.png, id=343, 838.63312pt x 309.40594pt>
+File: ./figures/merge_candidate1.png Graphic file (type png)
+<use ./figures/merge_candidate1.png>
+Package pdftex.def Info: ./figures/merge_candidate1.png  used on input line 88.
+ on input line 88.
+Package pdftex.def Info: Requested size: 106.71045pt x 39.36964pt on input line
+ 88.
+<./figures/merge_candidate2.png, id=344, 876.27374pt x 264.99pt>
+File: ./figures/merge_candidate2.png Graphic file (type png)
+<use ./figures/merge_candidate2.png>
+Package pdftex.def Info: ./figures/merge_candidate2.png  used on input line 92.
+ on input line 92.
+Package pdftex.def Info: Requested size: 106.71045pt x 32.26646pt on input line
+ 92.
+<./figures/merge_candidate3.png, id=345, 1718.42pt x 423.5825pt>
+File: ./figures/merge_candidate3.png Graphic file (type png)
+<use ./figures/merge_candidate3.png>
+Package pdftex.def Info: ./figures/merge_candidate3.png  used on input line 95.
+ on input line 95.
+Package pdftex.def Info: Requested size: 106.71045pt x 26.29932pt on input line
+ 95.
+<./figures/merge_candidate4.png, id=346, 902.37125pt x 339.2675pt>
+File: ./figures/merge_candidate4.png Graphic file (type png)
+<use ./figures/merge_candidate4.png>
+Package pdftex.def Info: ./figures/merge_candidate4.png  used on input line 98.
+ on input line 98.
+Package pdftex.def Info: Requested size: 106.71045pt x 40.12018pt on input line
+ 98.
+<./figures/receiver-operating-characteristic.png, id=347, 462.528pt x 346.896pt
+>
+File: ./figures/receiver-operating-characteristic.png Graphic file (type png)
+<use ./figures/receiver-operating-characteristic.png>
+Package pdftex.def Info: ./figures/receiver-operating-characteristic.png  used 
+on input line 106. on input line 106.
+Package pdftex.def Info: Requested size: 213.4209pt x 160.06636pt on input line
+ 106.
+[7 <./figures/VI-results/multicut-correct1.png> <./figures/VI-results/multicut-
+correct2.png> <./figures/VI-results/multicut-correct3.png> <./figures/VI-result
+s/multicut-correct4.png> <./figures/VI-results/multicut-correct5.png> <./figure
+s/VI-results/multicut-incorrect1.png (PNG copy)> <./figures/VI-results/multicut
+-incorrect2.png (PNG copy)> <./figures/VI-results/multicut-incorrect3.png (PNG 
+copy)> <./figures/VI-results/multicut-incorrect4.png (PNG copy)>]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 ) (./5_proposed.tex
 
-LaTeX Warning: Reference `fig:split_errors' on page 8 undefined on input line 1
-3.
+LaTeX Warning: Reference `fig:proposal' on page 8 undefined on input line 14.
 
-
-LaTeX Warning: Reference `fig:proposed-pipeline' on page 8 undefined on input l
-ine 22.
-
-) (./7_conclusions.tex) (./paper.bbl (./paper.brf)
+) (./7_conclusions.tex [8 <./figures/merge_candidate1.png> <./figures/merge_can
+didate2.png> <./figures/merge_candidate3.png> <./figures/merge_candidate4.png> 
+<./figures/receiver-operating-characteristic.png>]) (./paper.bbl (./paper.brf)
 \tf@brf=\write3
 \openout3 = `paper.brf'.
 
- [8 <./figures/receiver-operating-characteristic.png>]
+
 Underfull \hbox (badness 10000) in paragraph at lines 71--71
 []\OT1/ptm/m/n/9 Collet and Turner.  Smaller and faster
  []
@@ -1197,7 +1217,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 96--96
 \OT1/ptm/m/n/9 pressed[]segmentation/readme.md, 2016.  Ac-cessed:
  []
 
-
+[9]
 Underfull \hbox (badness 2318) in paragraph at lines 116--116
 []\OT1/ptm/m/n/9 D. Haehn, S. Knowles-Barley, M. Roberts, J. Beyer,
  []
@@ -1227,7 +1247,7 @@ Underfull \hbox (badness 4366) in paragraph at lines 159--159
 \OT1/ptm/m/n/9 neu-ronal pro-cesses from elec-tron mi-croscopy im-ages.
  []
 
-[9]
+
 Underfull \hbox (badness 10000) in paragraph at lines 192--192
 []\OT1/ptm/m/n/9 M. Lehmann.  Li-blzf, url:
  []
@@ -1263,7 +1283,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 87.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 87.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 87.
 Package rerunfilecheck Info: File `paper.brf' has not changed.
-(rerunfilecheck)             Checksum: 3F96E9D6CA395A896EB7449B90755E82;3641.
+(rerunfilecheck)             Checksum: 58D3BF1384D48A0E4FEC78D23F60F447;3622.
 
 
 LaTeX Warning: There were undefined references.
@@ -1271,13 +1291,13 @@ LaTeX Warning: There were undefined references.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 87.
  ) 
 Here is how much of TeX's memory you used:
- 19261 strings out of 492990
- 371326 string characters out of 6132622
- 418550 words of memory out of 5000000
- 22482 multiletter control sequences out of 15000+600000
+ 19272 strings out of 492990
+ 371598 string characters out of 6132622
+ 417924 words of memory out of 5000000
+ 22490 multiletter control sequences out of 15000+600000
  557937 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,10n,45p,10374b,863s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,10n,45p,10374b,865s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
@@ -1291,10 +1311,10 @@ texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
 f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
 ts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on paper.pdf (11 pages, 3846889 bytes).
+Output written on paper.pdf (11 pages, 4224764 bytes).
 PDF statistics:
- 520 PDF objects out of 1000 (max. 8388607)
- 418 compressed objects within 5 object streams
- 100 named destinations out of 1000 (max. 500000)
- 146 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 528 PDF objects out of 1000 (max. 8388607)
+ 424 compressed objects within 5 object streams
+ 102 named destinations out of 1000 (max. 500000)
+ 151 words of extra memory for PDF output out of 10000 (max. 10000000)
 
