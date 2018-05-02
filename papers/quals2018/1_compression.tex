@@ -35,7 +35,7 @@ Lookup tables then decode the values $[0,N)$ to the original 64-bit labels.
 \end{figure*}
 
 
-Published in MICCAI 2017, we proposed Compresso which is specifically designed for compression of EM label volumes.
+Published in MICCAI 2017, we proposed Compresso which is specifically designed for compression of EM label volumes~\cite{matejek2017compresso}.
 Compresso works by decoupling the two important components across the image stack: per-segment shape and per-pixel label.
 To encode the segment shapes, we consider the boundary pixels between two segments. 
 Removing the per-pixel labels, we produce a boundary map for each slice where a pixel $(x, y, z)$ is 1 if either pixel at $(x + 1, y, z)$ or $(x, y + 1, z)$ belongs to a different segment (Fig~\ref{fig:compression}, left). 
@@ -89,5 +89,7 @@ If both relevant neighbors are boundaries (i.e., like pixel $i$ in Fig.~\ref{fig
 \subsection{Results}
 
 Our compression scheme outperforms all existing methods.
-We follow our scheme with LZMA which uses sophisticated probabilistic bit prediction strategies and achieve ratios of $700\times$ on average.
+We follow our scheme with LZMA which uses sophisticated probabilistic bit prediction strategies and together they achieve ratios of $920\times$ on average.
+This outperforms existing strategies by over 80\%.
+The fundamental principles guiding Compresso are valid for a diverse set of segmentation datasets and we improve on existing methods for MRI and image segmentation datasets. 
 We compressed an 18 terabyte label volume of 100 microns cubed to 26.2 gigabytes, a ratio of $\sim687\times$. 
