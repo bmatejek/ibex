@@ -193,7 +193,7 @@ We use two cubes (Vol. 1 and Vol. 2) of size $\SI[product-units=single]{10 x 10 
 
 \subsubsection{Method Configuration}
 
-\noindent\textbf{Input Segmentation.}
+\noindent\textbf{Input Segmentation}
 The segmentation of the Kasthuri dataset is computed by agglomerating 3D supervoxels produced by the z-watershed algorithm from 3D affinity predictions~\cite{zlateski2015image}. 
 We learn 3D affinities using MALIS loss with a U-Net~\cite{ronneberger2015u,Turaga:2009}. 
 We apply the z-watershed algorithm with suitable parameters to compute a 3D over-segmentation of the volume. 
@@ -205,20 +205,20 @@ The algorithm first computes multi-channel 3D predictions for membranes, cell in
 The membrane prediction channel is used to produce an oversegmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
 We used exactly the same parameters as the publicly available code for this algorithm.
 \\~\\
-\noindent\textbf{Graph Generation.}
+\noindent\textbf{Graph Generation}
 The two parameters for the graph pruning algorithm (Sec.~\ref{sec:skeletonization}) are $t_{low}$ and $t_{high}$. 
 Ideally, our graph will have an edge for every oversegmented pair of labels with few edges between correctly segmented pairs. 
 After considering various thresholds, we find that $t_{low} = \SI{210}{\nano\meter}$ and $t_{high} = \SI{300}{\nano\meter}$ produce expressive graphs with a scalable number of nodes and edges.
 During implementation, we use nanometers instead of voxels to standardize units across all datasets.
 \\~\\
-\noindent\textbf{Edge Weight Learning.}
+\noindent\textbf{Edge Weight Learning}
 \label{sec:network-parameters}
 We use half of the Kasthuri dataset for training and validation. 
 We train on 80\% of the potential merge candidates for this volume.
 We validate the CNN classifier on the remaining 20\% of the candidates. 
 Since our input does not require the image data, we can train on the anisotropic Kasthuri data and test on the isotropic FlyEM data.
 
-\noindent\textbf{Training Augmentation.}
+\noindent\textbf{Training Augmentation}
 Since our input is an existing segmentation of the EM images, there are very few training examples compared to per-pixel classifiers that train on a unique window for each voxel. 
 The Kasthuri dataset represents a region of brain over $\SI[product-units=single]{800}{\micro\meter}^3$ in volume and only yields 640 positive merge examples and 4821 negative ones.
 To avoid overfitting our deep networks, we apply the following augmentations on the training examples.
@@ -268,7 +268,7 @@ We now analyze how each major component of our method contributes to this final 
 
 \subsubsection{Empirical Ablation Studies}
 
-\noindent\textbf{Graph Generation.}
+\noindent\textbf{Graph Generation}
 Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. 
 This edge pruning is essential for the graph partitioning algorithm, which has a non-linear computational complexity dependence on the number of edges. 
 The baseline algorithm considers all adjacent regions for merging. 
@@ -316,13 +316,13 @@ Although neurons are continuous, the EM images often have noisy spots which caus
 We still want to reconstruct these neurons despite the fact that the initial segmentation is non-continuous. 
 The second and fourth examples in Fig.~\ref{fig:qualitative-results} show correctly reconstructed neurons where two of the segments are non-adjacent. 
 \\~\\
-\noindent\textbf{Failure Cases.}
+\noindent\textbf{Failure Cases}
 There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons.
 Fig.~\ref{fig:skeleton-results}, top, shows two such cases with the closest endpoints circled. 
 In the right example the small segment is carved from the larger segment in a location where there are no skeleton endpoints. 
 There are on average 177 such examples in our datasets.
 \\~\\
-\noindent\textbf{Edge Weight Learning.}
+\noindent\textbf{Edge Weight Learning}
 Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.
 As shown by the ROC curve, the test results on the FlyEM data are better than the results for Kasthuri.
 In part this comes from the disparity in the number of positive to negative merge candidates in the two graphs. 

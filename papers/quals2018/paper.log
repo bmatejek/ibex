@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  2 MAY 2018 16:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  2 MAY 2018 17:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -957,6 +957,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 202--220
 
  []
 
+
+Underfull \hbox (badness 1371) in paragraph at lines 202--220
+\OT1/ptm/b/n/10 Edge Weight Learn-ing []\OT1/ptm/m/n/10 We use half of the Kast
+huri
+ []
+
 <./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf, id=271, pagebox=cropbox, 230.
 8625pt x 230.8625pt>
 File: ./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf Graphic file (type pdf)
@@ -1056,20 +1062,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 313--331
  []
 
 
-Underfull \hbox (badness 2582) in paragraph at lines 313--331
-\OT1/ptm/b/n/10 Failure Cases. \OT1/ptm/m/n/10 There are some pairs of seg-ment
-s
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 313--331
 
  []
 
 
-Underfull \hbox (badness 1168) in paragraph at lines 313--331
-\OT1/ptm/b/n/10 Edge Weight Learn-ing. \OT1/ptm/m/n/10 Fig. [][]10[][] shows th
-e re-ceiver
+Underfull \hbox (badness 3271) in paragraph at lines 313--331
+\OT1/ptm/b/n/10 Edge Weight Learn-ing \OT1/ptm/m/n/10 Fig. [][]10[][] shows the
+ re-ceiver
  []
 
 <./figures/merge_candidate1.png, id=304, 838.63312pt x 309.40594pt>
@@ -1101,7 +1101,7 @@ Package pdftex.def Info: ./figures/merge_candidate4.png  used on input line 345
 Package pdftex.def Info: Requested size: 106.71045pt x 40.12018pt on input line
  345.
 
-Underfull \vbox (badness 6477) has occurred while \output is active []
+Underfull \vbox (badness 1917) has occurred while \output is active []
 
  [7 <./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf> <./figures/benchmark/voi-
 FlyEM-Vol--1.pdf
@@ -1285,7 +1285,7 @@ texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
 f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
 ts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on paper.pdf (11 pages, 4314742 bytes).
+Output written on paper.pdf (11 pages, 4314751 bytes).
 PDF statistics:
  537 PDF objects out of 1000 (max. 8388607)
  431 compressed objects within 5 object streams
