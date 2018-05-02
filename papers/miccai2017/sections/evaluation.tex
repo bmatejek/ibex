@@ -94,7 +94,7 @@ MRI} & \makecell[l]{$512\times512\times119$ vx\\($0.277\times0.277\times1~\text{
 
 The fundamental principles guiding \appName are valid for a diverse set of segmentation datasets (Fig.~\ref{fig:compression_ratios}, right). We evaluate the performance of our compression scheme on three MRI and two image segmentation datasets to demonstrate additional potential use cases. \appName followed by LZMA compresses the MRI datasets reasonably well, particularly on the SPL Knee Atlas which contains highly redundant boundary segments.
 %\appName followed by LZMA compresses the SPL Brain Atlas data by nearly a factor of 640x. 
-The Berkeley Segmentation and PASCAL Visual Object Class datasets are two very common benchmarks in image segmentation~\cite{MartinFTM01,pascal-voc-2012}. Currently these datasets use GZIP and PNG compression but \appName with LZMA can improve on them by a factor of over 10x and 5x respectively. 
+The Berkeley Segmentation and PASCAL Visual Object Class datasets are two very common benchmarks in image segmentation~\cite{pascal-voc-2012,MartinFTM01}. Currently these datasets use GZIP and PNG compression but \appName with LZMA can improve on them by a factor of over 10x and 5x respectively. 
 
 In terms of speed, \appName is on par with Neuroglancer across all datasets and achieves throughput of 112.16 megabytes per second ($SD = 18.62$ MB/s) for compression and 222.85 megabytes per second ($SD = 32.14$ MB/s) for decompression. All experiments ran on a single core of a Intel Xeon 2.3GHz CPU.
 

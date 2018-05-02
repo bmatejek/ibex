@@ -1,6 +1,6 @@
 \section{Introduction} \label{sec:i}
 
-Connectomics---reconstructing the wiring diagram of a mammalian brain at nanometer resolution---results in datasets at the scale of petabytes~\cite{suissapeleg2016,haehn_dojo_2014}. Machine learning methods find cell membranes and create cell body labelings for every neuron~\cite{ronneberger2015u,liu2014modular,GALA2014} (Fig.~\ref{fig:data}).
+Connectomics---reconstructing the wiring diagram of a mammalian brain at nanometer resolution---results in datasets at the scale of petabytes~\cite{haehn_dojo_2014,suissapeleg2016}. Machine learning methods find cell membranes and create cell body labelings for every neuron~\cite{liu2014modular,GALA2014,ronneberger2015u} (Fig.~\ref{fig:data}).
 %aims to reconstruct the wiring diagram of a mammalian brain at nanometer resolution. This results in datasets at the scale of petabytes~\cite{suissapeleg2016}. 
 %These shear amounts of data require sophisticated methods of compression to enable efficient storage and transfer. 
 These segmentations are stored as label volumes that are typically encoded in 32 bits or 64 bits per voxel to support labeling of millions of different nerve cells (neurons).  Storing such data is expensive and transferring the data is slow. To cut costs and delays, we need compression methods to reduce data sizes.
@@ -32,7 +32,7 @@ These segmentations are stored as label volumes that are typically encoded in 32
 %Currently, the complete dataset is stored on disk and only a subset is transferred depending on individual use cases. This works well; however, recent progress in automatic sample preparation and EM acquisition techniques increases connectomics data to terabytes in size~\cite{RonnebergerFB15,GALA2014}. Storage and transmission of such massive datasets is hard and expensive, and access can be slow. Therefore, we need compression methods to reduce data sizes.
 
 The literature currently lacks efficient compression of label volumes. 
-General-purpose compression schemes~\cite{deutsch1996zlib,ziv1978compression,lehmann2016liblzf,oberhumer2005lzo,welch1984technique,seward1998bzip2,pavlov2007lzma,vandevenne2016zopfli,google2016brotli,collet2016smaller} are not optimized for this data.
+General-purpose compression schemes~\cite{collet2016smaller,deutsch1996zlib,google2016brotli,lehmann2016liblzf,oberhumer2005lzo,pavlov2007lzma,seward1998bzip2,vandevenne2016zopfli,welch1984technique,ziv1978compression} are not optimized for this data.
 In this paper, we exploit the typical characteristics of label volumes such as large invariant regions without natural relationship between label values. 
 These properties render 2D image compression schemes inadequate since they rely on frequency reduction (using e.g., wavelet or discrete cosine transform) and value prediction of pixels based on local context (differential pulse-code modulation)~\cite{roelofs1999png,skodras2001jpeg}. 
 Color space optimization strategies in video codecs~\cite{aimar2005x264} also have no effect on label volumes, even though the spatial properties of a segmentation stack (\textit{z}-axis) are similar to the temporal properties of video data (time-axis). 
