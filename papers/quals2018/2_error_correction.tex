@@ -2,7 +2,7 @@
 \section{Biologically-Constrained Region Merging}
 
 Automatic reconstruction methods need to be fast enough to scale to petabyte datasets while still maintaining a high-level of accuracy.
-The most accurate methods, like flood-filling networks~\cite{januszewski2016flood}, are too slow to scale. 
+The most accurate methods, like flood-filling networks~\cite{januszewski2016flood}, are currently far too slow.
 Unfortunately, methods that can scale to petabyte datasets typically rely on only local context and can produce errors at scale~\cite{haehn2017scalable}. 
 Therefore, it is necessary to employ error correction strategies on the segmentations from current reconstruction pipelines.
 We propose a biologically-constrained region merging algorithm to correct \textit{split errors} in the initial segmentation.
@@ -30,7 +30,7 @@ Jain et al. formulates the agglomeration problem as a reinforcement learning pro
 
 Additional research builds on top of these region-based methods to correct errors in the segmentation. 
 These input segmentations can contain two types of errors.
-In a \textit{split error}, one neurons contains multiple labels.
+In a \textit{split error}, one neuron contains multiple labels.
 In a \textit{merge error}, two or more neurons receive the same label.
 This can be done either using human proofreading~\cite{haehn2017guided,haehn2014design,mojo2} or automatically~\cite{rolnick2017morphological,error_correction_using_CNN}. 
 In both cases, available methods are pixel-based and do not include global biological constraints into the decision making process. 
@@ -44,6 +44,18 @@ Our method can take as input any existing segmentation pipeline.
 	\caption{Our framework uses both geometric and topological biological constraints for region merging. We (a) generate a simplified graph from the skeleton representation of the input segmentation, (b) train a classifier to learn the edge weight based on the shape of the segment connection, and (c) perform graph partitioning with acyclic constraints.}
 	\label{fig:teaser_pipeline}
 \end{figure*}
+
+
+For our proposed method (Fig.~\ref{fig:teaser_pipeline}), from the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 
+The nodes correspond to labeled segments from the input data with edges between merge candidates.
+We propose the following three steps to formulate and then partition the graph while obeying constraints from the underlying biology.
+First, we only consider merging segments based on a skeletonized representation of the input segmentation (Fig.~\ref{fig:teaser_pipeline}a).
+This enables us to reduce the number of edges in the graph based on prior knowledge on the shape of neuronal processes.
+Second, we train a convolutional neural network that learns biological constraints based on the shapes of the input segmentation (Fig.~\ref{fig:teaser_pipeline}b).
+This network generates probabilities that segments belong to the same neuron based only on the segmentations. 
+An example of one such learned constraint is that neurons have small turning radii (Fig.~\ref{fig:turn-radii}).
+Third, we partition the graph using a lifted multicut formulation with additional acyclic constraints to enforce global biological constraints (Fig.~\ref{fig:teaser_pipeline}c).
+The lifted multicut solution is globally consistent which we then augment to produce a tree-structured graph.
 
 
 \begin{figure}[t]
@@ -66,20 +78,9 @@ Our method can take as input any existing segmentation pipeline.
 	\label{fig:skeletonization}
 \end{figure}
 
-
-For our proposed method (Fig.~\ref{fig:teaser_pipeline}), from the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$ with weights $w_e$. 
-The nodes correspond to labeled segments from the input data with edges between merge candidates.
-We propose the following three steps to formulate and then partition the graph while obeying constraints from the underlying biology.
-First, we only consider merging segments based on a skeletonized representation of the input segmentation (Fig.~\ref{fig:teaser_pipeline}a).
-This enables us to reduce the number of edges in the graph based on prior knowledge on the shape of neuronal processes.
-Second, we train a convolutional neural network that learns biological constraints based on the shapes of the input segmentation (Fig.~\ref{fig:teaser_pipeline}b).
-This network generates probabilities that segments belong to the same neuron based only on the segmentations. 
-An example of one such learned constraint is that neurons have small turning radii (Fig.~\ref{fig:turn-radii}).
-Third, we partition the graph using a lifted multicut formulation with additional acyclic constraints to enforce global biological constraints (Fig.~\ref{fig:teaser_pipeline}c).
-The lifted multicut solution is globally consistent which we then augment to produce a tree-structured graph.
-
 \subsubsection{Skeleton-Based Graph Generation}
 \label{sec:skeletonization}
+
 Most region merging methods create a region graph by removing small-sized segments and linking each pair of adjacent segments, which can still lead to a large graph size due to the irregular shape of neural structures.
 We use a skeleton representation of the segmentation to reduce the graph size with geometric constraints on the connectivity of two adjacent segments to prune edges.
 
@@ -117,22 +118,6 @@ This reduces the need for generating costly manually-labeled ground truth.
 	\label{fig:turn-radii}
 \end{figure}
 
-\begin{figure}[t]
-	\centering
-	\begin{minipage}{0.32\linewidth}
-		\includegraphics[width=\linewidth]{./figures/split_error1.png}		
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.32\linewidth}
-		\includegraphics[width=\linewidth]{./figures/split_error2.png}				
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.32\linewidth}
-		\includegraphics[width=\linewidth]{./figures/split_error3.png}
-	\end{minipage}
-	\caption{Three erroneously split segments.}
-	\label{fig:merge_candidates}
-\end{figure}
 \subsubsection{Optimization-Based Graph Partition}
 
 \label{sec:optimization}
@@ -160,7 +145,7 @@ Given the probability that the nodes belong to the same neuron is $p_e$, the edg
 \begin{align}
 w_e = \log{\frac{p_e}{1 - p_e}} + \log{\frac{1 - \beta}{\beta}},
 \end{align}
-where $\beta$ is a tunable parameter that encourages over- or under-segmentation. 
+where $\beta$ is a tunable parameter that encourages over or undersegmentation. 
 Since, there are many more lifted edges than adjacent edges, we scale down the lifted weights proportionally to their total number  
 ~\cite{beier2017multicut}.
 
@@ -171,16 +156,22 @@ The multicut problems returns a series of ``collapsed'' edges between nodes that
 We iterate over these edges in order of the probability of merge generated by our CNN. 
 We ``collapse'' an edge only if it does not create a cycle in the graph.
 
-
-\begin{figure*}[t!]
+\begin{figure}[t]
 	\centering
-	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf}
-	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-FlyEM-Vol--1.pdf}
-	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-FlyEM-Vol--2.pdf}
-	\caption{Segmentation benchmark results on three volumes. We compare our method (red) to the baseline segmentation (green) and an oracle (blue) that optimally partitions our constructed graph from our method. Lower VI scores are better. Our method improves the segmentation accuracy over the baseline in all cases.
-		Note that our model is only trained on the Kasthuri training volume and it generalizes well to the FlyEM dataset.}
-	\label{fig:variation-of-information}
-\end{figure*}
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error1.png}		
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error2.png}				
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.32\linewidth}
+		\includegraphics[width=\linewidth]{./figures/split_error3.png}
+	\end{minipage}
+	\caption{Three erroneously split segments. In each instance, the skeletons for each segment have nearby endpoints indicating a split error.}
+	\label{fig:merge_candidates}
+\end{figure}
 
 
 \subsection{Experiments}
@@ -209,16 +200,16 @@ We apply the z-watershed algorithm with suitable parameters to compute a 3D over
 The resulting 3D oversegmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
 
 For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we apply a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. 
-This segmentation framework learns voxel and supervoxel classifiers with an emphasis to minimize under-segmentation error. 
+This segmentation framework learns voxel and supervoxel classifiers with an emphasis to minimize undersegmentation error. 
 The algorithm first computes multi-channel 3D predictions for membranes, cell interiors, and mitochondria, among other cell features. 
 The membrane prediction channel is used to produce an oversegmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
 We used exactly the same parameters as the publicly available code for this algorithm.
 \\~\\
 \noindent\textbf{Graph Generation.}
 The two parameters for the graph pruning algorithm (Sec.~\ref{sec:skeletonization}) are $t_{low}$ and $t_{high}$. 
-Ideally, our graph will have an edge for every over-segmented pair of labels with few edges between correctly segmented pairs. 
+Ideally, our graph will have an edge for every oversegmented pair of labels with few edges between correctly segmented pairs. 
 After considering various thresholds, we find that $t_{low} = \SI{210}{\nano\meter}$ and $t_{high} = \SI{300}{\nano\meter}$ produce expressive graphs with a scalable number of nodes and edges.
-During implementation, we use nanometers instead of voxels for these thresholds to have uniform units across all datasets.
+During implementation, we use nanometers instead of voxels to standardize units across all datasets.
 \\~\\
 \noindent\textbf{Edge Weight Learning.}
 \label{sec:network-parameters}
@@ -226,7 +217,7 @@ We use half of the Kasthuri dataset for training and validation.
 We train on 80\% of the potential merge candidates for this volume.
 We validate the CNN classifier on the remaining 20\% of the candidates. 
 Since our input does not require the image data, we can train on the anisotropic Kasthuri data and test on the isotropic FlyEM data.
-\\~\\
+
 \noindent\textbf{Training Augmentation.}
 Since our input is an existing segmentation of the EM images, there are very few training examples compared to per-pixel classifiers that train on a unique window for each voxel. 
 The Kasthuri dataset represents a region of brain over $\SI[product-units=single]{800}{\micro\meter}^3$ in volume and only yields 640 positive merge examples and 4821 negative ones.
@@ -234,18 +225,30 @@ To avoid overfitting our deep networks, we apply the following augmentations on 
 During a single batch, we randomly select ten positive and ten negative examples. 
 With probability 0.5, an example is reflected across the $xy$-plane. 
 We then rotate each example by a random angle between $0$ and $360$ degrees using nearest neighbor interpolation. 
-The supplemental material contains experiments demonstrating the benefits of this augmentation strategy.
 We have 20,000 such examples per epoch.
 
 \subsubsection{Error Metrics}
 \label{sec:variation-of-information}
-We evaluate the performance of the different methods using the split variation of information (VI)~\cite{meila2003comparing}.
-Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over- and under-segmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. 
+We evaluate the performance of the different methods using the split variation of information (VI) score~\cite{meila2003comparing}.
+Given a ground truth labeling $GT$ and our automatically reconstructed segmentation $SG$, over and undersegmentation are quantified by the conditional entropies $H(GT | SG)$ and $H(SG | GT)$, respectively. 
 Since we are measuring the entropy between two clusterings, lower VI scores are better.
 The sum of these conditional entropies gives the total variation of information.
 
 We use precision and recall to evaluate the convolutional neural network and multicut outputs. 
 Since our method only corrects \textit{split errors}, we define a true positive as a pair of segments that are correctly merged together after our pipeline.
+
+
+
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-Kasthuri-Luigi-Test.pdf}
+	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-FlyEM-Vol--1.pdf}
+	\includegraphics[width=0.32\linewidth]{./figures/benchmark/voi-FlyEM-Vol--2.pdf}
+	\caption{Segmentation benchmark results on three volumes. We compare our method (red) to the baseline segmentation (green) and an oracle (blue) that optimally partitions our constructed graph from our method. Lower VI scores are better. Our method improves the segmentation accuracy over the baseline in all cases.
+		Note that our model is only trained on the Kasthuri training volume and it generalizes well to the FlyEM datasets.}
+	\label{fig:variation-of-information}
+\end{figure*}
+
 
 \subsection{Results}
 
@@ -262,6 +265,30 @@ Fig.~\ref{fig:qualitative-results} (right) shows typical failure cases of our me
 In two of these examples the algorithm correctly predicts several merges before a single error renders the segment as wrong.
 In the third example (blue circle) a merge error in the initial segmentation propagates to our output.
 We now analyze how each major component of our method contributes to this final result.
+
+\subsubsection{Empirical Ablation Studies}
+
+\noindent\textbf{Graph Generation.}
+Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. 
+This edge pruning is essential for the graph partitioning algorithm, which has a non-linear computational complexity dependence on the number of edges. 
+The baseline algorithm considers all adjacent regions for merging. 
+Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., 764 compared to 974). 
+Our pruning heuristic removes at least $3.5\times$ the number of edges on all datasets, achieving a maximum removal rate of $4.15\times$.
+However, there are some adjacent oversegmented labels which are not considered. 
+
+\begin{table*}
+	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 974) compared to total number of edges in the graph (e.g., 25,798) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
+	\resizebox{0.75\linewidth}{!}{
+		\begin{tabular}{c c c c c} \hline
+			\textbf{Dataset} & \textbf{Segment Adjacency} & \textbf{Skeleton Pruning} & \textbf{Missed Splits} & \textbf{Gained Edges} \\ \hline
+			Kasthuri & 974 / 25,798 & 764 / 6,218 & 307 & 97 \\
+			FlyEM Vol. 1 & 304 / 15,949 & 212 / 4,578 & 105 & 13 \\
+			FlyEM Vol. 2 &  298 / 17,614 & 197 / 4,366 & 120 & 19 \\ \hline
+		\end{tabular}
+	}
+	\centering
+	\label{table:skeletonization}
+\end{table*}
 
 \begin{figure}[t]
 	\begin{minipage}{0.45\linewidth}
@@ -283,47 +310,19 @@ We now analyze how each major component of our method contributes to this final 
 	\label{fig:qualitative-results}
 \end{figure}
 
-\subsubsection{Empirical Ablation Studies}
-
-\noindent\textbf{Graph Generation.}
-Table \ref{table:skeletonization} shows the results of pruning the skeleton graph using the algorithm discussed in Sec.~\ref{sec:skeletonization}. 
-This edge pruning is essential for the graph partitioning algorithm, which has a non-linear computational complexity dependence on the number of edges. 
-The baseline algorithm considers all adjacent regions for merging. 
-Our method removes a significant portion of these candidates while maintaining a large number of the true merge locations (e.g., 764 compared to 974). 
-Our pruning heuristic removes at least $3.5\times$ the number of edges on all datasets, achieving a maximum removal rate of $4.15\times$.
-However, there are some adjacent over-segmented labels which are not considered. 
-
-\begin{table*}
-	\caption{The results of our graph pruning approach compared to the baseline graph with all adjacent regions. We show the number of true merge locations (e.g., 974) compared to total number of edges in the graph (e.g., 25,798) for each case. The number of missed splits corresponds to the number of split errors that our method misses compared to an adjacency matrix.}
-	\resizebox{0.75\linewidth}{!}{
-		\begin{tabular}{c c c c c} \hline
-			\textbf{Dataset} & \textbf{Segment Adjacency} & \textbf{Skeleton Pruning} & \textbf{Missed Splits} & \textbf{Gained Edges} \\ \hline
-			Kasthuri & 974 / 25,798 & 764 / 6,218 & 307 & 97 \\
-			FlyEM Vol. 1 & 304 / 15,949 & 212 / 4,578 & 105 & 13 \\
-			FlyEM Vol. 2 &  298 / 17,614 & 197 / 4,366 & 120 & 19 \\ \hline
-		\end{tabular}
-	}
-	\centering
-	\label{table:skeletonization}
-\end{table*}
-
 We generate edges in our graph by using information from the skeletons. 
 In particular, we do not enforce the constraint that edges in our graph correspond to adjacent segments.
 Although neurons are continuous, the EM images often have noisy spots which cause an interruption in the input segmentation.
 We still want to reconstruct these neurons despite the fact that the initial segmentation is non-continuous. 
 The second and fourth examples in Fig.~\ref{fig:qualitative-results} show correctly reconstructed neurons where two of the segments are non-adjacent. 
 \\~\\
-\noindent\textbf{Failure Cases}
+\noindent\textbf{Failure Cases.}
 There are some pairs of segments which we do not consider for merging because of our reliance on the skeletons.
-Fig.~\ref{fig:skeleton-results} shows two such cases with the closest endpoints circled. 
+Fig.~\ref{fig:skeleton-results}, top, shows two such cases with the closest endpoints circled. 
 In the right example the small segment is carved from the larger segment in a location where there are no skeleton endpoints. 
 There are on average 177 such examples in our datasets.
 \\~\\
-\noindent\textbf{Edge Weight Learning}
-%\subsubsection{Inference Augmentation}
-%\noindent\textbf{Inference Augmentation.}
-Data augmentation at test time can improve accuracy results~\cite{lee2017superhuman,zeng2017deepem3d}.
-When computing the probability to merge two segments, we randomly rotate and flip the examples three times (in the same fashion as training augmentation).
+\noindent\textbf{Edge Weight Learning.}
 Fig.~\ref{fig:receiver-operating-characteristic} shows the receiver operating characteristic (ROC) curve of our CNN classifier for all test datasets.
 As shown by the ROC curve, the test results on the FlyEM data are better than the results for Kasthuri.
 In part this comes from the disparity in the number of positive to negative merge candidates in the two graphs. 
@@ -349,12 +348,6 @@ Since there are more negative examples in relation to the positive examples in t
 	\label{fig:skeleton-results}
 \end{figure}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.9\linewidth]{./figures/receiver-operating-characteristic.png}
-	\caption{The receiver operating characteristic (ROC) curves of our classifier on three connectomics datasets. The classifier works best on previously unseen data of the Kasthuri volume.}
-	\label{fig:receiver-operating-characteristic}
-\end{figure}
 
 %\subsection{Graph Optimization Results}
 \noindent\textbf{Graph Partition}
@@ -363,6 +356,13 @@ Table \ref{table:multicut} shows the changes in precision, recall, and accuracy 
 The precision increases on each dataset, although the recall decreases on each datasets.
 Since it is more difficult to correct merge errors than split errors, it is often desirable to sacrifice recall for precision.
 Over the three testing datasets, applying a graph-based partitioning strategy increased the precision by $31.9\%$, $40.9\%$, and $27.8\%$ respectively. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{./figures/receiver-operating-characteristic.png}
+	\caption{The receiver operating characteristic (ROC) curves of our classifier on three connectomics datasets. The classifier works best on previously unseen data of the Kasthuri volume.}
+	\label{fig:receiver-operating-characteristic}
+\end{figure}
 
 \begin{table*}[h]
 	\caption{Precision, recall, and accuracy changes between CNN only and CNN paired with graph-optimized reconstructions for the training and three test datasets. The combined method results in better precision and accuracy. The lifted multicut extension provides very slight improvements in recall and accuracy over these three datasets.}
