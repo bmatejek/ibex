@@ -24,7 +24,7 @@ From the input segmentation we generate a graph $G$ with nodes $N$ and edges $E$
 The nodes correspond to labeled segments from the input data with edges between merge candidates.
 We propose the following three steps to formulate and then partition the graph while obeying constraints from the underlying biology.
 First, we only consider merging segments based on a skeletonized representation of the input segmentation (Fig.~\ref{fig:teaser_pipeline}a).
-This enables us to reduce the number of nodes in the graph based on prior knowledge on the shape of neuronal processes.
+This enables us to reduce the number of edges in the graph based on prior knowledge on the shape of neuronal processes.
 Second, we train a convolutional neural network that learns biological constraints based on the shapes of the input segmentation (Fig.~\ref{fig:teaser_pipeline}b).
 This network generates probabilities that segments belong to the same neuron based only on the segmentations. 
 An example of one such learned constraint is that neurons have small turning radii (Fig.~\ref{fig:turn-radii}).
@@ -108,7 +108,7 @@ We train a 3D CNN model to learn these geometric constraints for valid connectio
 \noindent\textbf{Edge Probability}
 To predict the probabilities that two segments belong to the same neuron, we train a feed-forward convolutional network with three \textit{VGG-style} convolution blocks~\cite{chatfield2014return} and two fully connected layers before the final sigmoid activation. 
 
-For the input of the network, we extract a cubic region of interest (ROI) around each endpoint $e$ in $\mathbb{S}_c$ as input to the CNN. 
+For the input of the network, we extract a cubic region of interest (ROI) around each midpoint $e$ in $\mathbb{S}_c$ as input to the CNN. 
 The CNN receives three input channels for every voxel in the ROI around segments $l_1$ and $l_2$. 
 The input in all of the channels is in the set $\{-0.5, 0.5\}$. 
 The first channel is $0.5$ only if the corresponding voxel has label $l_1$. 

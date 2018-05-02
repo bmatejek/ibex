@@ -46,7 +46,7 @@ We apply the z-watershed algorithm with suitable parameters to compute a 3D over
 The resulting 3D over-segmentation is then agglomerated using the technique of context-aware delayed agglomeration to generate the final segmentation~\cite{10.1371/journal.pone.0125825}.
 For the FlyEM data, based on the authors' suggestion~\cite{takemura2017connectome}, we apply a context-aware delayed agglomeration algorithm~\cite{10.1371/journal.pone.0125825} that shows improved performance on this dataset over the pipeline used in the original publication. 
 This segmentation framework learns voxel and supervoxel classifiers with an emphasis to minimize under-segmentation error. 
-The algorithm first computes multi-channel 3-D predictions for membranes, cell interiors, and mitochondria, among other cell features. 
+The algorithm first computes multi-channel 3D predictions for membranes, cell interiors, and mitochondria, among other cell features. 
 The membrane prediction channel is used to produce an over-segmented volume using 3D watershed, which is then agglomerated hierarchically up to a certain confidence threshold. 
 We used exactly the same parameters as the publicly available code for this algorithm.
 %For the Fib-25 challenge dataset, we use the segmentation from Funke et al. as our input~\cite{funke2017deep}.
