@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  2 MAY 2018 16:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.8.2)  2 MAY 2018 16:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1237,7 +1237,7 @@ Underfull \hbox (badness 3919) in paragraph at lines 192--192
 \OT1/ptm/m/n/9 http://oldhome.schmorp.de/marc/liblzf.html, 2016.  ac-
  []
 
-
+[10]
 Underfull \hbox (badness 3068) in paragraph at lines 217--217
 []\OT1/ptm/m/n/9 M. Ober-humer.  Lzo real-time data com-pres-sion li-
  []
@@ -1253,7 +1253,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 217--217
 \OT1/ptm/m/it/9 http://www.infosys.tuwien.ac.at/Staff/lux/marco/lzo.html
  []
 
-[10])
+)
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 81.
  [11]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 81.
@@ -1271,7 +1271,7 @@ Here is how much of TeX's memory you used:
  22499 multiletter control sequences out of 15000+600000
  557937 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,10n,45p,10374b,862s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,10n,45p,10374b,864s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
@@ -1285,7 +1285,7 @@ texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
 f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
 ts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on paper.pdf (11 pages, 4314584 bytes).
+Output written on paper.pdf (11 pages, 4314742 bytes).
 PDF statistics:
  537 PDF objects out of 1000 (max. 8388607)
  431 compressed objects within 5 object streams

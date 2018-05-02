@@ -1,15 +1,17 @@
 % !TEX root =  paper.tex
 \section{Conclusions}
 
-Several challenges arise as acquisition speeds of EM images improve. 
-First, the data must be quickly reconstructed using automatic techniques.
-These datasets are often 4 or 8 times the size of the already substantial image volumes requiring dedicated compression schemes.
-We propose Compresso, which increases compression ratio significantly over existing strategies.
-Second, errors in the initial segmentation need to be corrected.
-Algorithms that are fast enough to scale to petabyte datasets often rely only on local context and ignore the underlying biology.
-Unfortunately these restrictions significantly reduce the accuracy at scale.
+Several challenges arise as the acquisition speeds for EM images improve and enable image stacks petabytes in size.
+Currently, automatic reconstruction techniques segment these image stacks into label volumes where each individual neuron receives a unique label.
+However, these label volumes are larger than the input image data because of the number of unique neurons in volumes of this size.
+Thus, one major challenge is how to efficiently store these large label volumes.
+We propose Compresso, which exploits properties unique to these datasets, and outperforms existing methods in terms of compression ratio.
 
-We present a novel method for improved neuronal reconstruction in connectomics that extends existing pixel-based reconstruction strategies using skeletonized 3D networks. 
+Current state-of-the-art reconstruction algorithms that are fast enough to scale often rely on local context for merging and are agnostic to the underlying biology.
+We introduce a novel region merging algorithm that uses biological constraints at the local and global level to improve oversegmentations of these image stacks.
+We extract a graph from the oversegmentation and rely on a geometric prior on the shape of neuronal processes to prune the edges in the graph.
+A CNN learns edge weights based on the local region around two segments.
+We produce an improved segmentation from this graph by reformulating the partitioning problem as a multicut one and applying global constraints to the solution.
 We show significant accuracy improvements on datasets from two different species. 
 The main benefits of our approach are that it enforces domain-specific constraints at the global graph level while incorporating pixel-based classification information.
 
@@ -17,7 +19,5 @@ In the future, these methods can be adjusted to apply additional domain constrai
 We can augment the graph with more information from the image data, such as synaptic connections, cell morphology, and locations of mitochondria. 
 This would allow us to match other biological constraints during graph partitioning. 
 For example, we could then enforce the constraint that a given segment only has post- or pre-synaptic connections. 
-
 An augmented graph would be helpful for splitting improperly merged segments by adding additional terms to the partitioning cost function. 
 Using skeletons we can apply biological constraints on the topology for neurons that are improperly merged.
-Finally, we believe that the benefits of top-down enhancements from graph optimization can extend beyond connectomics to other domains, such as medical image segmentation.
