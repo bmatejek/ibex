@@ -16,7 +16,7 @@ static const int IB_NDIMS = 3;
 
 // variables for the rolling sphere
 
-static const double scale = 1.1;
+static const double scale = 5.1;
 static const double buffer = 80;
 static const long min_path_length = 45;
 

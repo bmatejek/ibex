@@ -51,7 +51,7 @@ def GenerateTeaserSkeletons(prefix):
         # skip the zero label if it occurs
         if not label: continue
 
-        if (label > 130): continue
+        if not label == 19: continue
 
         # perform preprocessing on the segment
         start_time = time.time()

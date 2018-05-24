@@ -77,10 +77,35 @@ def ExtractFeature(segmentation, candidate, width, radii, augment=True):
     # get the data in a more convenient form
     zradius, yradius, xradius = radii
     zpoint, ypoint, xpoint = candidate.location
-    labels = candidate.labels
+    labels = list(candidate.labels)
+    random.shuffle(labels)
+    zres, yres, xres = segmentation.shape
 
-    # extract the small window from this segment
-    example = segmentation[zpoint-zradius:zpoint+zradius+1,ypoint-yradius:ypoint+yradius+1,xpoint-xradius:xpoint+xradius+1]
+    # get the min and max locations
+    zmin = max(0, zpoint - zradius)
+    ymin = max(0, ypoint - yradius)
+    xmin = max(0, xpoint - xradius)
+    zmax = min(zres - 1, zpoint + zradius + 1)
+    ymax = min(yres - 1, ypoint + yradius + 1)
+    xmax = min(xres - 1, xpoint + xradius + 1)
+
+    example = np.zeros((2 * zradius + 1, 2 * yradius + 1, 2 * xradius + 1), dtype=np.int32)
+    segment = segmentation[zmin:zmax,ymin:ymax,xmin:xmax]
+
+    if example.shape == segment.shape:
+        example = segment
+    else:
+        if zmin == 0: zstart = zradius - zpoint
+        else: zstart = 0
+
+        if ymin == 0: ystart = yradius - ypoint
+        else: ystart = 0
+
+        if xmin == 0: xstart = xradius - xpoint
+        else: xstart = 0
+
+        example[zstart:zstart+segment.shape[IB_Z],ystart:ystart+segment.shape[IB_Y],xstart:xstart+segment.shape[IB_X]] = segment
+
 
     # rescale the segment
     example = ScaleSegment(example, width, labels)

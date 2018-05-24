@@ -4,7 +4,8 @@ import numpy as np
 from ibex.data_structures import meta_data, skeleton_formats
 from ibex.utilities.constants import *
 from PIL import Image
-#import imageio
+import imageio
+import tifffile
 
 
 def GetWorldBBox(prefix):
@@ -125,5 +126,22 @@ def ReadImage(filename):
     return np.array(Image.open(filename))
 
 
-#def WriteImage(filename, image):
-#    imageio.imwrite(filename, image)
+def WriteImage(filename, image):
+   imageio.imwrite(filename, image)
+
+
+def H52Tiff(stack, output_prefix):
+    zres, _, _ = stack.shape
+
+    for iz in range(zres):
+        image = stack[iz,:,:]
+        tifffile.imsave('{}-{:05d}.tif'.format(output_prefix, iz), image)
+
+
+def H52PNG(stack, output_prefix):
+    zres, _, _ = stack.shape
+
+    for iz in range(zres):
+        image = stack[iz,:,:]
+        im = Image.fromarray(image)
+        im.save('{}-{:05d}.png'.format(output_prefix, iz))
