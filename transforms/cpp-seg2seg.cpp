@@ -1,7 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include <assert.h>
 #include <queue>
 #include <set>
+#include <map>
+
+
+
+#define IB_Z 0
+#define IB_Y 1
+#define IB_X 2
 
 
 
@@ -76,9 +85,9 @@ long IndiciesToIndex(long ix, long iy, long iz)
 long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
 {
   // create the new components array
-  unsigned long nentries = zres * yres * xres;
+  long nentries = zres * yres * xres;
   long *components = new long[nentries];
-  for (unsigned long iv = 0; iv < nentries; ++iv)
+  for (long iv = 0; iv < nentries; ++iv)
     components[iv] = 0;
 
   // set global variables
@@ -131,7 +140,7 @@ long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
   // create a list of mappings
   long max_segment = 0;
   long max_component = 0;
-  for (unsigned long iv = 0; iv < nentries; ++iv) {
+  for (long iv = 0; iv < nentries; ++iv) {
     if (segmentation[iv] > max_segment) max_segment = segmentation[iv];
     if (components[iv] > max_component) max_component = components[iv];
   }
@@ -149,7 +158,7 @@ long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
 
   long overflow = max_segment;
   long *comp2seg = new long[max_component];
-  for (unsigned long iv = 1; iv < max_segment; ++iv) {
+  for (long iv = 1; iv < max_segment; ++iv) {
     if (seg2comp[iv].size() == 1) {
       // get the component for this segment
       long component = *(seg2comp[iv].begin());
@@ -172,7 +181,7 @@ long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
   }
 
   // update the segmentation
-  for (unsigned long iv = 0; iv < nentries; ++iv) {
+  for (long iv = 0; iv < nentries; ++iv) {
     if (!segmentation[iv]) components[iv] = 0;
     else components[iv] = comp2seg[components[iv]];
   }
@@ -182,4 +191,180 @@ long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
   delete[] comp2seg;
 
   return components;
+}
+
+
+
+void CppTopologicalDownsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres)
+{
+  // get the number of entries 
+  long nentries = input_zres * input_yres * input_xres;
+  
+  // get downsample ratios
+  float zdown = ((float) output_resolution[IB_Z]) / input_resolution[IB_Z];
+  float ydown = ((float) output_resolution[IB_Y]) / input_resolution[IB_Y];
+  float xdown = ((float) output_resolution[IB_X]) / input_resolution[IB_X];
+
+  // get the output resolution size
+  long output_zres = (long) ceil(input_zres / zdown);
+  long output_yres = (long) ceil(input_yres / ydown);
+  long output_xres = (long) ceil(input_xres / xdown);
+  long output_sheet_size = output_yres * output_xres;
+  long output_row_size = output_xres;
+
+  long max_segment = 0;
+  for (long iv = 0; iv < nentries; ++iv)
+    if (segmentation[iv] > max_segment) max_segment = segmentation[iv];
+  max_segment++;
+
+  std::set<long> *downsample_sets = new std::set<long>[max_segment];
+  for (long iv = 0; iv < max_segment; ++iv)
+    downsample_sets[iv] = std::set<long>();
+
+  long index = 0;
+  for (long iz = 0; iz < input_zres; ++iz) {
+    for (long iy = 0; iy < input_yres; ++iy) {
+      for (long ix = 0; ix < input_xres; ++ix, ++index) {
+        long segment = segmentation[index];
+
+        long iw = (long) (iz / zdown + 0.5);
+        long iv = (long) (iy / ydown + 0.5);
+        long iu = (long) (ix / xdown + 0.5);
+
+        long downsample_index = iw * output_sheet_size + iv * output_row_size + iu;
+        downsample_sets[segment].insert(downsample_index);
+      }
+    }
+  }
+
+  char output_filename[4096];
+  sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+
+  // open the output file
+  FILE *fp = fopen(output_filename, "wb");
+  if (!fp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
+
+  // write the number of segments
+  fwrite(&output_zres, sizeof(long), 1, fp);
+  fwrite(&output_yres, sizeof(long), 1, fp);
+  fwrite(&output_xres, sizeof(long), 1, fp);
+  fwrite(&max_segment, sizeof(long), 1, fp);
+
+  // output values for downsampling
+  for (long iv = 0; iv < max_segment; ++iv) {
+    // write the size for this set
+    long nelements = downsample_sets[iv].size();
+    fwrite(&nelements, sizeof(long), 1, fp);
+    for (std::set<long>::iterator it = downsample_sets[iv].begin(); it != downsample_sets[iv].end(); ++it) {
+      long element = *it;
+      fwrite(&element, sizeof(long), 1, fp);
+    }
+  }
+
+  // close the file
+  fclose(fp);
+
+  // free memory
+  delete[] downsample_sets;
+}
+
+
+
+void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres)
+{
+  // get downsample ratios
+  float zdown = ((float) output_resolution[IB_Z]) / input_resolution[IB_Z];
+  float ydown = ((float) output_resolution[IB_Y]) / input_resolution[IB_Y];
+  float xdown = ((float) output_resolution[IB_X]) / input_resolution[IB_X];
+
+  // get the output resolution size
+  long output_zres = (long) ceil(input_zres / zdown);
+  long output_yres = (long) ceil(input_yres / ydown);
+  long output_xres = (long) ceil(input_xres / xdown);
+  long output_nentries = output_zres * output_yres * output_xres;
+  long output_sheet_size = output_yres * output_xres;
+  long output_row_size = output_xres;
+
+  std::map<long, long> *meanx = new std::map<long, long>[output_nentries];
+  std::map<long, long> *meany = new std::map<long, long>[output_nentries];
+  std::map<long, long> *meanz = new std::map<long, long>[output_nentries];
+  std::map<long, long> *ndownsampled_voxels = new std::map<long, long>[output_nentries];
+  for (long iv = 0; iv < output_nentries; ++iv) {
+    meanx[iv] = std::map<long, long>();
+    meany[iv] = std::map<long, long>();
+    meanz[iv] = std::map<long, long>();
+    ndownsampled_voxels[iv] = std::map<long, long>();
+  }
+  
+  long index = 0;
+  for (long iz = 0; iz < input_zres; ++iz) {
+    for (long iy = 0; iy < input_yres; ++iy) {
+      for (long ix = 0; ix < input_xres; ++ix, ++index) {
+	long segment = segmentation[index];
+
+	long iw = (long) (iz / zdown + 0.5);
+	long iv = (long) (iy / ydown + 0.5);
+	long iu = (long) (ix / xdown + 0.5);
+
+	long downsample_index = iw * output_sheet_size + iv * output_row_size + iu;
+
+	// update the mean values
+	meanz[downsample_index][segment] += iz;
+	meany[downsample_index][segment] += iy;
+	meanx[downsample_index][segment] += ix;
+	ndownsampled_voxels[downsample_index][segment]++;
+      }
+    }
+  }
+
+  char input_filename[4096];
+  sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+
+  // open the input file
+  FILE *rfp = fopen(input_filename, "rb");
+  if (!rfp) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+
+  char output_filename[4096];
+  sprintf(output_filename, "topological/%s-topological-upsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+
+  // open the output file
+  FILE *wfp = fopen(output_filename, "wb");
+  if (!wfp) { fprintf(stderr, "Failed to write %s\n", output_filename); exit(-1); }
+
+  // write the number of segments
+  long read_zres, read_yres, read_xres, max_segment;
+  if (fread(&read_zres, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+  assert (read_zres == output_zres);
+  if (fread(&read_yres, sizeof(long), 1, rfp) != 1)  { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+  assert (read_yres == output_yres);
+  if (fread(&read_xres, sizeof(long), 1, rfp) != 1)  { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+  assert (read_xres == output_xres);
+  if (fread(&max_segment, sizeof(long), 1, rfp) != 1)  { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+
+  // write the output file size of the upsample version
+  fwrite(&input_zres, sizeof(long), 1, wfp);
+  fwrite(&input_yres, sizeof(long), 1, wfp);
+  fwrite(&input_xres, sizeof(long), 1, wfp);
+  fwrite(&max_segment, sizeof(long), 1, wfp);
+
+  // go through all the segments and write the upsampled location
+  for (long label = 0; label < max_segment; ++label) {
+    long nelements;
+    if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+    fwrite(&nelements, sizeof(long), 1, wfp);
+    for (long ie = 0; ie < nelements; ++ie) {
+      long element;
+      if (fread(&element, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+      long upsamplez = meanz[element][label] / ndownsampled_voxels[element][label];
+      long upsampley = meany[element][label] / ndownsampled_voxels[element][label];
+      long upsamplex = meanx[element][label] / ndownsampled_voxels[element][label];
+
+      long upsample_index = upsamplez * input_xres * input_yres + upsampley * input_xres + upsamplex;
+      fwrite(&upsample_index, sizeof(long), 1, wfp);
+    }
+  }
+  
+  // close the files
+  fclose(rfp);
+  fclose(wfp);
 }
