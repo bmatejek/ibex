@@ -16,9 +16,9 @@ static const int IB_NDIMS = 3;
 
 // variables for the rolling sphere
 
-static const double scale = 5.1;
-static const double buffer = 80;
-static const long min_path_length = 45;
+static const double scale = 2;
+static const double buffer = 5;
+static const long min_path_length = 2;
 
 
 
@@ -337,7 +337,6 @@ long ComputeDistanceFromVoxelField(long source_index)
         }
     }
 
-
     // first call to this function needs to return the root
     if (!PDRF) {
         // free memory
@@ -358,11 +357,9 @@ long ComputeDistanceFromVoxelField(long source_index)
         printf("  Remaining inside voxels %d...\n", inside_voxels);
         double farthest_pdrf = -1;
         long starting_voxel = -1;
-
         // find the farthest PDFR that is still inside
         for (long iv = 0; iv < nentries; ++iv) {
             if (!inside[iv]) continue;
-
             if (PDRF[iv] > farthest_pdrf) {
                 farthest_pdrf = PDRF[iv];
                 starting_voxel = iv;
@@ -371,17 +368,14 @@ long ComputeDistanceFromVoxelField(long source_index)
 
         for (long iv = 0; iv < nentries; ++iv) {
             if (!inside[iv]) continue;
-
             long ix, iy, iz;
             IndexToIndices(iv, ix, iy, iz);
         
             // get the skeleton path from this location to the root
             DijkstraData *current = &(voxel_data[starting_voxel]);
-
             while (!skeleton[current->iv]) {
                 long ii, ij, ik;
                 IndexToIndices(current->iv, ii, ij, ik);
-
                 // what is the distance between this skeleton location and the inside location
                 double deltax = world_res[IB_X] * (ii - ix);
                 double deltay = world_res[IB_Y] * (ij - iy);
@@ -394,7 +388,6 @@ long ComputeDistanceFromVoxelField(long source_index)
                     inside_voxels--;
                     break;
                 }
-
                 // update skeleton pointer
                 current = current->prev;
             }
@@ -438,7 +431,8 @@ void ComputePenalties(void)
     // choose 5000 so that 3000 length voxel paths have correct floating point precision
     const double pdrf_scale = 5000;
     for (long iv = 0; iv < nentries; ++iv) {
-        penalties[iv] = pdrf_scale * pow(1 - DBF[iv] / M, 16);
+        if (M == 0) penalties[iv] = 0;
+        else penalties[iv] = pdrf_scale * pow(1 - DBF[iv] / M, 16);
     }
 }
 
