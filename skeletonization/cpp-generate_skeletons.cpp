@@ -517,7 +517,7 @@ static bool IsEndpoint(long ix, long iy, long iz)
 
 
 
-void CppGenerateSkeletons(const char *prefix, long resolution[3], const char *lookup_table_directory)
+void CppTopologicalThinning(const char *prefix, long resolution[3], const char *lookup_table_directory)
 {
     // make sure that the output directory is set
     if (!set_directory) { fprintf(stderr, "Failed to set the output dierctory!\n"); exit(-1); }
