@@ -5,15 +5,8 @@ import numpy as np
 extensions = [
     Extension(
         name='generate_skeletons',
-        include_dirs=[np.get_include()],
-        sources=['generate_skeletons.pyx', 'cpp-generate_skeletons.cpp'],
-        extra_compile_args=['-O4', '-std=c++0x'],
-        language='c++'
-    ),
-    Extension(
-        name='teaser_skeletons',
-        include_dirs=[np.get_include()],
-        sources=['teaser_skeletons.pyx', 'cpp-teaser_skeletons.cpp', 'cpp-MinBinaryHeap.cpp'],
+        include_dirs=[np.get_include(), 'cpp-MinBinaryHeap.h'],
+        sources=['generate_skeletons.pyx', 'cpp-generate_skeletons.cpp', 'cpp-MinBinaryHeap.cpp'],
         extra_compile_args=['-O4', '-std=c++0x'],
         language='c++'
     )
