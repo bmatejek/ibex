@@ -26,7 +26,7 @@ static const int IB_NDIMS = 3;
 
 
 
-static int print_verbose = 1;
+static int print_verbose = 0;
 
 
 
@@ -250,14 +250,7 @@ static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
 
 static long IndicesToIndex(long ix, long iy, long iz)
 {
-    long iv =iz * sheet_size + iy * row_size + ix;
-    if (iv < 0 or iv >= nentries) {
-        printf("%d %d %d\n", ix, iy, iz);
-        printf("%d %d %d\n", xres, yres, zres);
-        printf("Error!!\n");
-        exit(-1); 
-    }
-    return iv;
+    return iz * sheet_size + iy * row_size + ix;
 }
 
 
@@ -532,14 +525,15 @@ static bool IsEndpoint(long ix, long iy, long iz)
 
 
 
-void CppTopologicalThinning(const char *prefix, long resolution[3], const char *lookup_table_directory)
+void CppTopologicalThinning(const char *prefix, long resolution[3], const char *lookup_table_directory, bool benchmark)
 {
     // initialize all of the lookup tables
     InitializeLookupTables(lookup_table_directory);
 
     // read the topologically downsampled file
     char input_filename[4096];
-    sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    if (benchmark) sprintf(input_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
 
     // open the input file
     FILE *rfp = fopen(input_filename, "rb");
@@ -562,7 +556,8 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
 
     // open the output filename
     char output_filename[4096];
-    sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    if (benchmark) sprintf(output_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
 
     FILE *wfp = fopen(output_filename, "wb");
     if (!wfp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -594,7 +589,7 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
             segmentation[element] = 1;
         }
 
-        printf("Number of points in original image for label %ld: %ld", label, num);
+        if (print_verbose) printf("Number of points in original image for label %ld: %ld", label, num);
 
         // call the sequential thinning algorithm
         SequentialThinning();
@@ -606,7 +601,7 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
             num++;
             LE = (ListElement *)LE->next;
         }
-        printf("\nRemaining points for label %ld: %ld\n", label, num);
+        if (print_verbose) printf("\nRemaining points for label %ld: %ld\n", label, num);
 
         // write the number of elements
         if (fwrite(&num, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -866,7 +861,7 @@ long ComputeDistanceFromVoxelField(long source_index)
     voxel_heap.Insert(source_index, &(voxel_data[source_index]));
 
     // visit all vertices
-    long voxel_index;
+    long voxel_index = 0;
     while (!voxel_heap.IsEmpty()) {
         DijkstraData *current = voxel_heap.DeleteMin();
         voxel_index = current->iv;
@@ -932,7 +927,7 @@ long ComputeDistanceFromVoxelField(long source_index)
 
     // continue until there are no more inside voxels
     while (inside_voxels) {
-        printf("  Remaining inside voxels %d...\n", inside_voxels);
+        if (print_verbose) printf("  Remaining inside voxels %ld...\n", inside_voxels);
         double farthest_pdrf = -1;
         long starting_voxel = -1;
 
@@ -1006,15 +1001,12 @@ void ComputePenalties(void)
 
 
 
-
-
-
-
-void CppTeaserSkeletonization(const char *prefix, long resolution[3])
+void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool benchmark)
 {
         // read the topologically downsampled file
     char input_filename[4096];
-    sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    if (benchmark) sprintf(input_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
 
     // open the input file
     FILE *rfp = fopen(input_filename, "rb");
@@ -1038,7 +1030,8 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3])
 
     // open the output filename
     char output_filename[4096];
-    sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    if (benchmark) sprintf(output_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
 
     FILE *wfp = fopen(output_filename, "wb");
     if (!wfp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -1086,7 +1079,7 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3])
             inside_voxels++;
         }
 
-        printf("Number of points in original image for label %ld: %ld\n", label, num);
+        if (print_verbose) printf("Number of points in original image for label %ld: %ld\n", label, num);
 
         ComputeDistanceFromBoundaryField();
 
