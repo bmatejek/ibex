@@ -1,6 +1,7 @@
 cimport cython
 cimport numpy as np
 import ctypes
+from libcpp cimport bool
 import numpy as np
 import scipy.ndimage
 import time
@@ -12,8 +13,8 @@ cdef extern from 'cpp-seg2seg.h':
     void CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
     long *CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long nentries)
     long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
-    void CppTopologicalDownsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres)
-    void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres)
+    void CppTopologicalDownsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres, bool benchmark)
+    void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres, bool benchmark)
     
 
 
@@ -104,10 +105,40 @@ def ForceConnectivity(segmentation):
 
 
 
-def TopologicalDownsample(prefix, output_resolution=(100,100,100)):
+def TopologicalDownsample(prefix, output_resolution=(100,100,100), benchmark=False):
+    # benchmark data uses gold
+    if benchmark: segmentation = dataIO.ReadGoldData(prefix)
+    else: segmentation = dataIO.ReadSegmentationData(prefix)
+
+    # ignore time to read data
     start_time = time.time()
 
-    segmentation = dataIO.ReadSegmentationData(prefix)
+    input_resolution = np.array(dataIO.Resolution(prefix), dtype=np.int64)
+
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
+    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_resolution
+    cpp_input_resolution = np.ascontiguousarray(input_resolution, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution
+    cpp_output_resolution = np.ascontiguousarray(output_resolution, dtype=ctypes.c_int64)
+
+    input_zres, input_yres, input_xres = segmentation.shape
+
+    # call c++ function
+    CppTopologicalDownsample(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), input_zres, input_yres, input_xres, benchmark)
+
+    print 'Topological downsampling to resolution {} in {} seconds'.format(output_resolution, time.time() - start_time)
+
+
+
+def TopologicalUpsample(prefix, output_resolution=(100,100,100), benchmark=False):
+    # benchmark dataset uses gold
+    if benchmark: segmentation = dataIO.ReadGoldData(prefix)
+    else: segmentation = dataIO.ReadSegmentationData(prefix)
+
+    # ignore time to read data
+    start_time = time.time()
+
     input_resolution = np.array(dataIO.Resolution(prefix), dtype=np.int64)
     output_resolution = np.array(output_resolution, dtype=np.int64)
 
@@ -121,29 +152,6 @@ def TopologicalDownsample(prefix, output_resolution=(100,100,100)):
     input_zres, input_yres, input_xres = segmentation.shape
 
     # call c++ function
-    CppTopologicalDownsample(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), input_zres, input_yres, input_xres)
-
-    print time.time() - start_time
-
-
-
-def TopologicalUpsample(prefix, output_resolution=(100,100,100)):
-    start_time = time.time()
-
-    segmentation = dataIO.ReadSegmentationData(prefix)
-    input_resolution = np.array(dataIO.Resolution(prefix), dtype=np.int64)
-    output_resolution = np.array(output_resolution, dtype=np.int64)
-
-    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
-    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
-    cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_resolution
-    cpp_input_resolution = np.ascontiguousarray(input_resolution, dtype=ctypes.c_int64)
-    cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution
-    cpp_output_resolution = np.ascontiguousarray(output_resolution, dtype=ctypes.c_int64)
-
-    input_zres, input_yres, input_xres = segmentation.shape
-
-    # call c++ function
-    CppTopologicalUpsample(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), input_zres, input_yres, input_xres)
+    CppTopologicalUpsample(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), input_zres, input_yres, input_xres, benchmark)
     
-    print time.time() - start_time
+    print 'Topological upsampling to resolution {} in {} seconds'.format(output_resolution, time.time() - start_time)

@@ -195,7 +195,7 @@ long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
 
 
 
-void CppTopologicalDownsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres)
+void CppTopologicalDownsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres, bool benchmark)
 {
   // get the number of entries 
   long nentries = input_zres * input_yres * input_xres;
@@ -226,6 +226,7 @@ void CppTopologicalDownsample(const char *prefix, long *segmentation, long input
     for (long iy = 0; iy < input_yres; ++iy) {
       for (long ix = 0; ix < input_xres; ++ix, ++index) {
         long segment = segmentation[index];
+        if (!segment) continue;
 
         long iw = (long) (iz / zdown + 0.5);
         long iv = (long) (iy / ydown + 0.5);
@@ -238,7 +239,8 @@ void CppTopologicalDownsample(const char *prefix, long *segmentation, long input
   }
 
   char output_filename[4096];
-  sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  if (benchmark) sprintf(output_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  else sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
 
   // open the output file
   FILE *fp = fopen(output_filename, "wb");
@@ -270,7 +272,7 @@ void CppTopologicalDownsample(const char *prefix, long *segmentation, long input
 
 
 
-void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres)
+void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres, bool benchmark)
 {
   // get downsample ratios
   float zdown = ((float) output_resolution[IB_Z]) / input_resolution[IB_Z];
@@ -300,32 +302,34 @@ void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_r
   for (long iz = 0; iz < input_zres; ++iz) {
     for (long iy = 0; iy < input_yres; ++iy) {
       for (long ix = 0; ix < input_xres; ++ix, ++index) {
-	long segment = segmentation[index];
+        long segment = segmentation[index];
 
-	long iw = (long) (iz / zdown + 0.5);
-	long iv = (long) (iy / ydown + 0.5);
-	long iu = (long) (ix / xdown + 0.5);
+        long iw = (long) (iz / zdown + 0.5);
+        long iv = (long) (iy / ydown + 0.5);
+        long iu = (long) (ix / xdown + 0.5);
 
-	long downsample_index = iw * output_sheet_size + iv * output_row_size + iu;
+        long downsample_index = iw * output_sheet_size + iv * output_row_size + iu;
 
-	// update the mean values
-	meanz[downsample_index][segment] += iz;
-	meany[downsample_index][segment] += iy;
-	meanx[downsample_index][segment] += ix;
-	ndownsampled_voxels[downsample_index][segment]++;
+        // update the mean values
+        meanz[downsample_index][segment] += iz;
+        meany[downsample_index][segment] += iy;
+        meanx[downsample_index][segment] += ix;
+        ndownsampled_voxels[downsample_index][segment]++;
       }
     }
   }
 
   char input_filename[4096];
-  sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  if (benchmark) sprintf(input_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  else sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
 
   // open the input file
   FILE *rfp = fopen(input_filename, "rb");
   if (!rfp) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
 
   char output_filename[4096];
-  sprintf(output_filename, "topological/%s-topological-upsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  if (benchmark) sprintf(output_filename, "topological/benchmarks/%s-topological-upsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  else sprintf(output_filename, "topological/%s-topological-upsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
 
   // open the output file
   FILE *wfp = fopen(output_filename, "wb");
