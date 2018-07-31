@@ -1657,6 +1657,7 @@ static const char __pyx_k_morphology[] = "morphology";
 static const char __pyx_k_resolution[] = "resolution";
 static const char __pyx_k_start_time[] = "start_time";
 static const char __pyx_k_ImportError[] = "ImportError";
+static const char __pyx_k_ReadGoldData[] = "ReadGoldData";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
 static const char __pyx_k_segmentation[] = "segmentation";
 static const char __pyx_k_return_counts[] = "return_counts";
@@ -1670,7 +1671,6 @@ static const char __pyx_k_ascontiguousarray[] = "ascontiguousarray";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_skimage_morphology[] = "skimage.morphology";
 static const char __pyx_k_TopologicalThinning[] = "TopologicalThinning";
-static const char __pyx_k_ReadSegmentationData[] = "ReadSegmentationData";
 static const char __pyx_k_TeaserSkeletonization[] = "TeaserSkeletonization";
 static const char __pyx_k_generate_skeletons_pyx[] = "generate_skeletons.pyx";
 static const char __pyx_k_ibex_utilities_constants[] = "ibex.utilities.constants";
@@ -1700,7 +1700,7 @@ static PyObject *__pyx_n_s_ImportError;
 static PyObject *__pyx_n_s_MedialAxis;
 static PyObject *__pyx_kp_s_Medial_axis_thinning_time_for;
 static PyObject *__pyx_kp_u_Non_native_byte_order_not_suppor;
-static PyObject *__pyx_n_s_ReadSegmentationData;
+static PyObject *__pyx_n_s_ReadGoldData;
 static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_n_s_SkeletonBenchmark;
 static PyObject *__pyx_kp_s_TEASER_skeletonization_time_for;
@@ -4692,7 +4692,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_4TeaserSk
  * 
  * # find skeleton benchmark information
  * def SkeletonBenchmark(prefix, cutoff=500):             # <<<<<<<<<<<<<<
- *     gold = dataIO.ReadSegmentationData(prefix)
+ *     gold = dataIO.ReadGoldData(prefix)
  * 
  */
 
@@ -4797,13 +4797,13 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
   /* "ibex/skeletonization/generate_skeletons.pyx":95
  * # find skeleton benchmark information
  * def SkeletonBenchmark(prefix, cutoff=500):
- *     gold = dataIO.ReadSegmentationData(prefix)             # <<<<<<<<<<<<<<
+ *     gold = dataIO.ReadGoldData(prefix)             # <<<<<<<<<<<<<<
  * 
  *     labels, counts = np.unique(gold, return_counts=True)
  */
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_dataIO); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_ReadSegmentationData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_ReadGoldData); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -4853,11 +4853,11 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
   __pyx_t_1 = 0;
 
   /* "ibex/skeletonization/generate_skeletons.pyx":97
- *     gold = dataIO.ReadSegmentationData(prefix)
+ *     gold = dataIO.ReadGoldData(prefix)
  * 
  *     labels, counts = np.unique(gold, return_counts=True)             # <<<<<<<<<<<<<<
- * 
- *     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
+ *     print labels
+ *     print counts
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -4932,14 +4932,32 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
   __pyx_v_counts = __pyx_t_1;
   __pyx_t_1 = 0;
 
+  /* "ibex/skeletonization/generate_skeletons.pyx":98
+ * 
+ *     labels, counts = np.unique(gold, return_counts=True)
+ *     print labels             # <<<<<<<<<<<<<<
+ *     print counts
+ *     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
+ */
+  if (__Pyx_PrintOne(0, __pyx_v_labels) < 0) __PYX_ERR(0, 98, __pyx_L1_error)
+
   /* "ibex/skeletonization/generate_skeletons.pyx":99
  *     labels, counts = np.unique(gold, return_counts=True)
- * 
+ *     print labels
+ *     print counts             # <<<<<<<<<<<<<<
+ *     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
+ *     with open(filename, 'wb') as fd:
+ */
+  if (__Pyx_PrintOne(0, __pyx_v_counts) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
+
+  /* "ibex/skeletonization/generate_skeletons.pyx":100
+ *     print labels
+ *     print counts
  *     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)             # <<<<<<<<<<<<<<
  *     with open(filename, 'wb') as fd:
  *         fd.write(struct.pack('q', cutoff))
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_skeletons_benchmarks_skeleton_be, __pyx_n_s_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_skeletons_benchmarks_skeleton_be, __pyx_n_s_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -4952,13 +4970,13 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_prefix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_prefix); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_prefix};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -4966,19 +4984,19 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_prefix};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_v_prefix);
       __Pyx_GIVEREF(__pyx_v_prefix);
       PyTuple_SET_ITEM(__pyx_t_3, 0+1, __pyx_v_prefix);
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
@@ -4987,15 +5005,15 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
   __pyx_v_filename = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "ibex/skeletonization/generate_skeletons.pyx":100
- * 
+  /* "ibex/skeletonization/generate_skeletons.pyx":101
+ *     print counts
  *     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
  *     with open(filename, 'wb') as fd:             # <<<<<<<<<<<<<<
  *         fd.write(struct.pack('q', cutoff))
  *         for ie, (count, label) in enumerate(sorted(zip(counts, labels), reverse=True)):
  */
   /*with:*/ {
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_v_filename);
     __Pyx_GIVEREF(__pyx_v_filename);
@@ -5003,12 +5021,12 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
     __Pyx_INCREF(__pyx_n_s_wb);
     __Pyx_GIVEREF(__pyx_n_s_wb);
     PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_wb);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L5_error)
+    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -5021,10 +5039,10 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
       }
     }
     if (__pyx_t_4) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L5_error)
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else {
-      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L5_error)
+      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L5_error)
     }
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -5043,18 +5061,18 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
           __pyx_v_fd = __pyx_t_3;
           __pyx_t_3 = 0;
 
-          /* "ibex/skeletonization/generate_skeletons.pyx":101
+          /* "ibex/skeletonization/generate_skeletons.pyx":102
  *     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
  *     with open(filename, 'wb') as fd:
  *         fd.write(struct.pack('q', cutoff))             # <<<<<<<<<<<<<<
  *         for ie, (count, label) in enumerate(sorted(zip(counts, labels), reverse=True)):
  *             # don't include more than cutoff examples
  */
-          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_fd, __pyx_n_s_write); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L9_error)
+          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_fd, __pyx_n_s_write); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_struct); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L9_error)
+          __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_struct); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_pack); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 101, __pyx_L9_error)
+          __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_pack); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 102, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __pyx_t_4 = NULL;
@@ -5072,7 +5090,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
           #if CYTHON_FAST_PYCALL
           if (PyFunction_Check(__pyx_t_10)) {
             PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_n_s_q, __pyx_v_cutoff};
-            __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L9_error)
+            __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L9_error)
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
             __Pyx_GOTREF(__pyx_t_2);
           } else
@@ -5080,13 +5098,13 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
           #if CYTHON_FAST_PYCCALL
           if (__Pyx_PyFastCFunction_Check(__pyx_t_10)) {
             PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_n_s_q, __pyx_v_cutoff};
-            __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L9_error)
+            __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L9_error)
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
             __Pyx_GOTREF(__pyx_t_2);
           } else
           #endif
           {
-            __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 101, __pyx_L9_error)
+            __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 102, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_12);
             if (__pyx_t_4) {
               __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -5097,7 +5115,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             __Pyx_INCREF(__pyx_v_cutoff);
             __Pyx_GIVEREF(__pyx_v_cutoff);
             PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_v_cutoff);
-            __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L9_error)
+            __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_12, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
           }
@@ -5113,14 +5131,14 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             }
           }
           if (!__pyx_t_10) {
-            __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L9_error)
+            __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L9_error)
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             __Pyx_GOTREF(__pyx_t_3);
           } else {
             #if CYTHON_FAST_PYCALL
             if (PyFunction_Check(__pyx_t_1)) {
               PyObject *__pyx_temp[2] = {__pyx_t_10, __pyx_t_2};
-              __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L9_error)
+              __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L9_error)
               __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
               __Pyx_GOTREF(__pyx_t_3);
               __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5129,20 +5147,20 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             #if CYTHON_FAST_PYCCALL
             if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
               PyObject *__pyx_temp[2] = {__pyx_t_10, __pyx_t_2};
-              __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L9_error)
+              __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L9_error)
               __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
               __Pyx_GOTREF(__pyx_t_3);
               __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             } else
             #endif
             {
-              __pyx_t_12 = PyTuple_New(1+1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 101, __pyx_L9_error)
+              __pyx_t_12 = PyTuple_New(1+1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 102, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_12);
               __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_10); __pyx_t_10 = NULL;
               __Pyx_GIVEREF(__pyx_t_2);
               PyTuple_SET_ITEM(__pyx_t_12, 0+1, __pyx_t_2);
               __pyx_t_2 = 0;
-              __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_12, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L9_error)
+              __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_12, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_3);
               __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
             }
@@ -5150,7 +5168,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-          /* "ibex/skeletonization/generate_skeletons.pyx":102
+          /* "ibex/skeletonization/generate_skeletons.pyx":103
  *     with open(filename, 'wb') as fd:
  *         fd.write(struct.pack('q', cutoff))
  *         for ie, (count, label) in enumerate(sorted(zip(counts, labels), reverse=True)):             # <<<<<<<<<<<<<<
@@ -5159,7 +5177,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
  */
           __Pyx_INCREF(__pyx_int_0);
           __pyx_t_3 = __pyx_int_0;
-          __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L9_error)
+          __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_INCREF(__pyx_v_counts);
           __Pyx_GIVEREF(__pyx_v_counts);
@@ -5167,18 +5185,18 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
           __Pyx_INCREF(__pyx_v_labels);
           __Pyx_GIVEREF(__pyx_v_labels);
           PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_labels);
-          __pyx_t_12 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 102, __pyx_L9_error)
+          __pyx_t_12 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 103, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_12);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L9_error)
+          __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_GIVEREF(__pyx_t_12);
           PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_12);
           __pyx_t_12 = 0;
-          __pyx_t_12 = PyDict_New(); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 102, __pyx_L9_error)
+          __pyx_t_12 = PyDict_New(); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 103, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_12);
-          if (PyDict_SetItem(__pyx_t_12, __pyx_n_s_reverse, Py_True) < 0) __PYX_ERR(0, 102, __pyx_L9_error)
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_sorted, __pyx_t_1, __pyx_t_12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L9_error)
+          if (PyDict_SetItem(__pyx_t_12, __pyx_n_s_reverse, Py_True) < 0) __PYX_ERR(0, 103, __pyx_L9_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_sorted, __pyx_t_1, __pyx_t_12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
@@ -5186,9 +5204,9 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             __pyx_t_12 = __pyx_t_2; __Pyx_INCREF(__pyx_t_12); __pyx_t_13 = 0;
             __pyx_t_14 = NULL;
           } else {
-            __pyx_t_13 = -1; __pyx_t_12 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 102, __pyx_L9_error)
+            __pyx_t_13 = -1; __pyx_t_12 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 103, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_12);
-            __pyx_t_14 = Py_TYPE(__pyx_t_12)->tp_iternext; if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 102, __pyx_L9_error)
+            __pyx_t_14 = Py_TYPE(__pyx_t_12)->tp_iternext; if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 103, __pyx_L9_error)
           }
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           for (;;) {
@@ -5196,17 +5214,17 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
               if (likely(PyList_CheckExact(__pyx_t_12))) {
                 if (__pyx_t_13 >= PyList_GET_SIZE(__pyx_t_12)) break;
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_2 = PyList_GET_ITEM(__pyx_t_12, __pyx_t_13); __Pyx_INCREF(__pyx_t_2); __pyx_t_13++; if (unlikely(0 < 0)) __PYX_ERR(0, 102, __pyx_L9_error)
+                __pyx_t_2 = PyList_GET_ITEM(__pyx_t_12, __pyx_t_13); __Pyx_INCREF(__pyx_t_2); __pyx_t_13++; if (unlikely(0 < 0)) __PYX_ERR(0, 103, __pyx_L9_error)
                 #else
-                __pyx_t_2 = PySequence_ITEM(__pyx_t_12, __pyx_t_13); __pyx_t_13++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L9_error)
+                __pyx_t_2 = PySequence_ITEM(__pyx_t_12, __pyx_t_13); __pyx_t_13++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L9_error)
                 __Pyx_GOTREF(__pyx_t_2);
                 #endif
               } else {
                 if (__pyx_t_13 >= PyTuple_GET_SIZE(__pyx_t_12)) break;
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_12, __pyx_t_13); __Pyx_INCREF(__pyx_t_2); __pyx_t_13++; if (unlikely(0 < 0)) __PYX_ERR(0, 102, __pyx_L9_error)
+                __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_12, __pyx_t_13); __Pyx_INCREF(__pyx_t_2); __pyx_t_13++; if (unlikely(0 < 0)) __PYX_ERR(0, 103, __pyx_L9_error)
                 #else
-                __pyx_t_2 = PySequence_ITEM(__pyx_t_12, __pyx_t_13); __pyx_t_13++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L9_error)
+                __pyx_t_2 = PySequence_ITEM(__pyx_t_12, __pyx_t_13); __pyx_t_13++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L9_error)
                 __Pyx_GOTREF(__pyx_t_2);
                 #endif
               }
@@ -5216,7 +5234,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
                   if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                  else __PYX_ERR(0, 102, __pyx_L9_error)
+                  else __PYX_ERR(0, 103, __pyx_L9_error)
                 }
                 break;
               }
@@ -5232,7 +5250,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
               if (unlikely(size != 2)) {
                 if (size > 2) __Pyx_RaiseTooManyValuesError(2);
                 else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-                __PYX_ERR(0, 102, __pyx_L9_error)
+                __PYX_ERR(0, 103, __pyx_L9_error)
               }
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
               if (likely(PyTuple_CheckExact(sequence))) {
@@ -5245,15 +5263,15 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
               __Pyx_INCREF(__pyx_t_1);
               __Pyx_INCREF(__pyx_t_10);
               #else
-              __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L9_error)
+              __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_1);
-              __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 102, __pyx_L9_error)
+              __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 103, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_10);
               #endif
               __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             } else {
               Py_ssize_t index = -1;
-              __pyx_t_4 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L9_error)
+              __pyx_t_4 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_4);
               __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
               __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext;
@@ -5261,7 +5279,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
               __Pyx_GOTREF(__pyx_t_1);
               index = 1; __pyx_t_10 = __pyx_t_5(__pyx_t_4); if (unlikely(!__pyx_t_10)) goto __pyx_L17_unpacking_failed;
               __Pyx_GOTREF(__pyx_t_10);
-              if (__Pyx_IternextUnpackEndCheck(__pyx_t_5(__pyx_t_4), 2) < 0) __PYX_ERR(0, 102, __pyx_L9_error)
+              if (__Pyx_IternextUnpackEndCheck(__pyx_t_5(__pyx_t_4), 2) < 0) __PYX_ERR(0, 103, __pyx_L9_error)
               __pyx_t_5 = NULL;
               __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
               goto __pyx_L18_unpacking_done;
@@ -5269,7 +5287,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
               __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
               __pyx_t_5 = NULL;
               if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-              __PYX_ERR(0, 102, __pyx_L9_error)
+              __PYX_ERR(0, 103, __pyx_L9_error)
               __pyx_L18_unpacking_done:;
             }
             __Pyx_XDECREF_SET(__pyx_v_count, __pyx_t_1);
@@ -5278,35 +5296,35 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             __pyx_t_10 = 0;
             __Pyx_INCREF(__pyx_t_3);
             __Pyx_XDECREF_SET(__pyx_v_ie, __pyx_t_3);
-            __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 102, __pyx_L9_error)
+            __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_DECREF(__pyx_t_3);
             __pyx_t_3 = __pyx_t_2;
             __pyx_t_2 = 0;
 
-            /* "ibex/skeletonization/generate_skeletons.pyx":104
+            /* "ibex/skeletonization/generate_skeletons.pyx":105
  *         for ie, (count, label) in enumerate(sorted(zip(counts, labels), reverse=True)):
  *             # don't include more than cutoff examples
  *             if ie == cutoff: break             # <<<<<<<<<<<<<<
  *             fd.write(struct.pack('q', label))
  */
-            __pyx_t_2 = PyObject_RichCompare(__pyx_v_ie, __pyx_v_cutoff, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L9_error)
-            __pyx_t_15 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 104, __pyx_L9_error)
+            __pyx_t_2 = PyObject_RichCompare(__pyx_v_ie, __pyx_v_cutoff, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L9_error)
+            __pyx_t_15 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_15 < 0)) __PYX_ERR(0, 105, __pyx_L9_error)
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             if (__pyx_t_15) {
               goto __pyx_L16_break;
             }
 
-            /* "ibex/skeletonization/generate_skeletons.pyx":105
+            /* "ibex/skeletonization/generate_skeletons.pyx":106
  *             # don't include more than cutoff examples
  *             if ie == cutoff: break
  *             fd.write(struct.pack('q', label))             # <<<<<<<<<<<<<<
  */
-            __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_fd, __pyx_n_s_write); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 105, __pyx_L9_error)
+            __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_fd, __pyx_n_s_write); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 106, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_10);
-            __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_struct); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L9_error)
+            __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_struct); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_pack); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 105, __pyx_L9_error)
+            __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_pack); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 106, __pyx_L9_error)
             __Pyx_GOTREF(__pyx_t_16);
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
             __pyx_t_4 = NULL;
@@ -5324,7 +5342,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             #if CYTHON_FAST_PYCALL
             if (PyFunction_Check(__pyx_t_16)) {
               PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_n_s_q, __pyx_v_label};
-              __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_16, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L9_error)
+              __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_16, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L9_error)
               __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
               __Pyx_GOTREF(__pyx_t_1);
             } else
@@ -5332,13 +5350,13 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             #if CYTHON_FAST_PYCCALL
             if (__Pyx_PyFastCFunction_Check(__pyx_t_16)) {
               PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_n_s_q, __pyx_v_label};
-              __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_16, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L9_error)
+              __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_16, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L9_error)
               __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
               __Pyx_GOTREF(__pyx_t_1);
             } else
             #endif
             {
-              __pyx_t_17 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 105, __pyx_L9_error)
+              __pyx_t_17 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 106, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_17);
               if (__pyx_t_4) {
                 __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -5349,7 +5367,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
               __Pyx_INCREF(__pyx_v_label);
               __Pyx_GIVEREF(__pyx_v_label);
               PyTuple_SET_ITEM(__pyx_t_17, 1+__pyx_t_11, __pyx_v_label);
-              __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_16, __pyx_t_17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L9_error)
+              __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_16, __pyx_t_17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L9_error)
               __Pyx_GOTREF(__pyx_t_1);
               __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
             }
@@ -5365,14 +5383,14 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
               }
             }
             if (!__pyx_t_16) {
-              __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L9_error)
+              __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L9_error)
               __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
               __Pyx_GOTREF(__pyx_t_2);
             } else {
               #if CYTHON_FAST_PYCALL
               if (PyFunction_Check(__pyx_t_10)) {
                 PyObject *__pyx_temp[2] = {__pyx_t_16, __pyx_t_1};
-                __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L9_error)
+                __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L9_error)
                 __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
                 __Pyx_GOTREF(__pyx_t_2);
                 __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -5381,20 +5399,20 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
               #if CYTHON_FAST_PYCCALL
               if (__Pyx_PyFastCFunction_Check(__pyx_t_10)) {
                 PyObject *__pyx_temp[2] = {__pyx_t_16, __pyx_t_1};
-                __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L9_error)
+                __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L9_error)
                 __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
                 __Pyx_GOTREF(__pyx_t_2);
                 __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
               } else
               #endif
               {
-                __pyx_t_17 = PyTuple_New(1+1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 105, __pyx_L9_error)
+                __pyx_t_17 = PyTuple_New(1+1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 106, __pyx_L9_error)
                 __Pyx_GOTREF(__pyx_t_17);
                 __Pyx_GIVEREF(__pyx_t_16); PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_16); __pyx_t_16 = NULL;
                 __Pyx_GIVEREF(__pyx_t_1);
                 PyTuple_SET_ITEM(__pyx_t_17, 0+1, __pyx_t_1);
                 __pyx_t_1 = 0;
-                __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_17, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L9_error)
+                __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_17, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L9_error)
                 __Pyx_GOTREF(__pyx_t_2);
                 __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
               }
@@ -5402,7 +5420,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-            /* "ibex/skeletonization/generate_skeletons.pyx":102
+            /* "ibex/skeletonization/generate_skeletons.pyx":103
  *     with open(filename, 'wb') as fd:
  *         fd.write(struct.pack('q', cutoff))
  *         for ie, (count, label) in enumerate(sorted(zip(counts, labels), reverse=True)):             # <<<<<<<<<<<<<<
@@ -5414,8 +5432,8 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-          /* "ibex/skeletonization/generate_skeletons.pyx":100
- * 
+          /* "ibex/skeletonization/generate_skeletons.pyx":101
+ *     print counts
  *     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
  *     with open(filename, 'wb') as fd:             # <<<<<<<<<<<<<<
  *         fd.write(struct.pack('q', cutoff))
@@ -5438,20 +5456,20 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
         __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("ibex.skeletonization.generate_skeletons.SkeletonBenchmark", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_3, &__pyx_t_12, &__pyx_t_2) < 0) __PYX_ERR(0, 100, __pyx_L11_except_error)
+          if (__Pyx_GetException(&__pyx_t_3, &__pyx_t_12, &__pyx_t_2) < 0) __PYX_ERR(0, 101, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_GOTREF(__pyx_t_12);
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_10 = PyTuple_Pack(3, __pyx_t_3, __pyx_t_12, __pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 100, __pyx_L11_except_error)
+          __pyx_t_10 = PyTuple_Pack(3, __pyx_t_3, __pyx_t_12, __pyx_t_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 101, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_10);
           __pyx_t_18 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_10, NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 100, __pyx_L11_except_error)
+          if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 101, __pyx_L11_except_error)
           __Pyx_GOTREF(__pyx_t_18);
           __pyx_t_15 = __Pyx_PyObject_IsTrue(__pyx_t_18);
           __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-          if (__pyx_t_15 < 0) __PYX_ERR(0, 100, __pyx_L11_except_error)
+          if (__pyx_t_15 < 0) __PYX_ERR(0, 101, __pyx_L11_except_error)
           __pyx_t_19 = ((!(__pyx_t_15 != 0)) != 0);
           if (__pyx_t_19) {
             __Pyx_GIVEREF(__pyx_t_3);
@@ -5459,7 +5477,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
             __Pyx_XGIVEREF(__pyx_t_2);
             __Pyx_ErrRestoreWithState(__pyx_t_3, __pyx_t_12, __pyx_t_2);
             __pyx_t_3 = 0; __pyx_t_12 = 0; __pyx_t_2 = 0; 
-            __PYX_ERR(0, 100, __pyx_L11_except_error)
+            __PYX_ERR(0, 101, __pyx_L11_except_error)
           }
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
@@ -5487,7 +5505,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
         if (__pyx_t_6) {
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__9, NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 100, __pyx_L1_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 101, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
@@ -5506,7 +5524,7 @@ static PyObject *__pyx_pf_4ibex_15skeletonization_18generate_skeletons_6Skeleton
  * 
  * # find skeleton benchmark information
  * def SkeletonBenchmark(prefix, cutoff=500):             # <<<<<<<<<<<<<<
- *     gold = dataIO.ReadSegmentationData(prefix)
+ *     gold = dataIO.ReadGoldData(prefix)
  * 
  */
 
@@ -8344,7 +8362,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_MedialAxis, __pyx_k_MedialAxis, sizeof(__pyx_k_MedialAxis), 0, 0, 1, 1},
   {&__pyx_kp_s_Medial_axis_thinning_time_for, __pyx_k_Medial_axis_thinning_time_for, sizeof(__pyx_k_Medial_axis_thinning_time_for), 0, 0, 1, 0},
   {&__pyx_kp_u_Non_native_byte_order_not_suppor, __pyx_k_Non_native_byte_order_not_suppor, sizeof(__pyx_k_Non_native_byte_order_not_suppor), 0, 1, 0, 0},
-  {&__pyx_n_s_ReadSegmentationData, __pyx_k_ReadSegmentationData, sizeof(__pyx_k_ReadSegmentationData), 0, 0, 1, 1},
+  {&__pyx_n_s_ReadGoldData, __pyx_k_ReadGoldData, sizeof(__pyx_k_ReadGoldData), 0, 0, 1, 1},
   {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
   {&__pyx_n_s_SkeletonBenchmark, __pyx_k_SkeletonBenchmark, sizeof(__pyx_k_SkeletonBenchmark), 0, 0, 1, 1},
   {&__pyx_kp_s_TEASER_skeletonization_time_for, __pyx_k_TEASER_skeletonization_time_for, sizeof(__pyx_k_TEASER_skeletonization_time_for), 0, 0, 1, 0},
@@ -8450,9 +8468,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_n_s_open); if (!__pyx_builtin_open) __PYX_ERR(0, 44, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 53, __pyx_L1_error)
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 102, __pyx_L1_error)
-  __pyx_builtin_sorted = __Pyx_GetBuiltinName(__pyx_n_s_sorted); if (!__pyx_builtin_sorted) __PYX_ERR(0, 102, __pyx_L1_error)
-  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_builtin_sorted = __Pyx_GetBuiltinName(__pyx_n_s_sorted); if (!__pyx_builtin_sorted) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 103, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 218, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 799, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 989, __pyx_L1_error)
@@ -8553,14 +8571,14 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "ibex/skeletonization/generate_skeletons.pyx":100
- * 
+  /* "ibex/skeletonization/generate_skeletons.pyx":101
+ *     print counts
  *     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
  *     with open(filename, 'wb') as fd:             # <<<<<<<<<<<<<<
  *         fd.write(struct.pack('q', cutoff))
  *         for ie, (count, label) in enumerate(sorted(zip(counts, labels), reverse=True)):
  */
-  __pyx_tuple__9 = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
@@ -8701,7 +8719,7 @@ static int __Pyx_InitCachedConstants(void) {
  * 
  * # find skeleton benchmark information
  * def SkeletonBenchmark(prefix, cutoff=500):             # <<<<<<<<<<<<<<
- *     gold = dataIO.ReadSegmentationData(prefix)
+ *     gold = dataIO.ReadGoldData(prefix)
  * 
  */
   __pyx_tuple__27 = PyTuple_Pack(10, __pyx_n_s_prefix, __pyx_n_s_cutoff, __pyx_n_s_gold, __pyx_n_s_labels, __pyx_n_s_counts, __pyx_n_s_filename, __pyx_n_s_fd, __pyx_n_s_ie, __pyx_n_s_count, __pyx_n_s_label); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 94, __pyx_L1_error)
@@ -8994,7 +9012,7 @@ PyMODINIT_FUNC PyInit_generate_skeletons(void)
  * 
  * # find skeleton benchmark information
  * def SkeletonBenchmark(prefix, cutoff=500):             # <<<<<<<<<<<<<<
- *     gold = dataIO.ReadSegmentationData(prefix)
+ *     gold = dataIO.ReadGoldData(prefix)
  * 
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4ibex_15skeletonization_18generate_skeletons_7SkeletonBenchmark, NULL, __pyx_n_s_ibex_skeletonization_generate_sk); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)

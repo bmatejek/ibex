@@ -228,9 +228,9 @@ void CppTopologicalDownsample(const char *prefix, long *segmentation, long input
         long segment = segmentation[index];
         if (!segment) continue;
 
-        long iw = (long) (iz / zdown + 0.5);
-        long iv = (long) (iy / ydown + 0.5);
-        long iu = (long) (ix / xdown + 0.5);
+        long iw = (long) (iz / zdown);
+        long iv = (long) (iy / ydown);
+        long iu = (long) (ix / xdown);
 
         long downsample_index = iw * output_sheet_size + iv * output_row_size + iu;
         downsample_sets[segment].insert(downsample_index);
@@ -297,16 +297,16 @@ void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_r
     meanz[iv] = std::map<long, long>();
     ndownsampled_voxels[iv] = std::map<long, long>();
   }
-  
+
   long index = 0;
   for (long iz = 0; iz < input_zres; ++iz) {
     for (long iy = 0; iy < input_yres; ++iy) {
       for (long ix = 0; ix < input_xres; ++ix, ++index) {
         long segment = segmentation[index];
 
-        long iw = (long) (iz / zdown + 0.5);
-        long iv = (long) (iy / ydown + 0.5);
-        long iu = (long) (ix / xdown + 0.5);
+        long iw = (long) (iz / zdown);
+        long iv = (long) (iy / ydown);
+        long iu = (long) (ix / xdown);
 
         long downsample_index = iw * output_sheet_size + iv * output_row_size + iu;
 

@@ -92,10 +92,11 @@ def TeaserSkeletonization(prefix, resolution=(100, 100, 100), benchmark=False):
 
 # find skeleton benchmark information
 def SkeletonBenchmark(prefix, cutoff=500):
-    gold = dataIO.ReadSegmentationData(prefix)
+    gold = dataIO.ReadGoldData(prefix)
 
     labels, counts = np.unique(gold, return_counts=True)
-
+    print labels
+    print counts
     filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
     with open(filename, 'wb') as fd:
         fd.write(struct.pack('q', cutoff))

@@ -154,4 +154,4 @@ def TopologicalUpsample(prefix, output_resolution=(100,100,100), benchmark=False
     # call c++ function
     CppTopologicalUpsample(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), input_zres, input_yres, input_xres, benchmark)
     
-    print 'Topological upsampling to resolution {} in {} seconds'.format(output_resolution, time.time() - start_time)
+    print 'Topological upsampling to resolution {} in {} seconds'.format((output_resolution[0], output_resolution[1], output_resolution[2]), time.time() - start_time)
