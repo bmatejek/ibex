@@ -166,7 +166,7 @@ def PNG2H5(directory, filename, dataset, dtype=np.int32):
 
         # add this element
         if len(im.shape) == 3 and dtype == np.int32: h5output[iz,:,:] = 65536 * im[:,:,0] + 256 * im[:,:,1] + im[:,:,2]
-        elif len(im.shape) == 3 and dtype == np.uint8: h5output[iz,:,:] = im[:,:,0] + im[:,:,1] + im[:,:,2]
+        elif len(im.shape) == 3 and dtype == np.uint8: h5output[iz,:,:] = (im[:,:,0] + im[:,:,1] + im[:,:,2]) / 3
         else: h5output[iz,:,:] = im[:,:]
 
     WriteH5File(h5output, filename, dataset)
