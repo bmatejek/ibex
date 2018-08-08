@@ -162,7 +162,7 @@ def PNG2H5(directory, filename, dataset):
             if len(im.shape) == 2: yres, xres = im.shape
             else: yres, xres, _ = im.shape
             
-            h5output = np.zeros((zres, yres, xres), dtype=np.int64)
+            h5output = np.zeros((zres, yres, xres), dtype=np.int32)
 
         # add this element
         if len(im.shape) == 3: h5output[iz,:,:] = 65536 * im[:,:,0] + 256 * im[:,:,1] + im[:,:,2]
