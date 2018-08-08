@@ -145,3 +145,27 @@ def H52PNG(stack, output_prefix):
         image = stack[iz,:,:]
         im = Image.fromarray(image)
         im.save('{}-{:05d}.png'.format(output_prefix, iz))
+
+
+
+def PNG2H5(directory, filename, dataset):
+    # get all of the png files
+    png_files = sorted(os.listdir(directory))
+
+    # what is the size of the output file
+    zres = len(png_files)
+    for iz, png_filename in enumerate(png_files):
+        im = np.array(Image.open('{}/{}'.format(directory, png_filename)))
+
+        # create the output if this is the first slice
+        if not iz:
+            if len(im.shape) == 2: yres, xres = im.shape
+            else: yres, xres, _ = im.shape
+            
+            h5output = np.zeros((zres, yres, xres), dtype=np.int64)
+
+        # add this element
+        if len(im.shape) == 3: h5output[iz,:,:] = 65536 * im[:,:,0] + 256 * im[:,:,1] + im[:,:,2]
+        else: h5output[iz,:,:] = im[:,:]
+
+    WriteH5File(h5output, filename, dataset)
