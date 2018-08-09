@@ -17,7 +17,7 @@ class MetaData:
         self.synapse = None
 
         # open the meta data txt file
-        filename = 'meta_data/{}.meta'.format(prefix)
+        filename = 'meta/{}.meta'.format(prefix)
         with open(filename, 'r') as fd:
             lines = fd.readlines()
 
