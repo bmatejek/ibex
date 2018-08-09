@@ -39,13 +39,13 @@ def MedialAxis(prefix, resolution=(100, 100, 100), benchmark=False):
     start_time = time.time()
 
     # read the downsampled filename
-    if benchmark: input_filename = 'topological/benchmarks/{}-topological-downsample-{}x{}x{}.bytes'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z])
-    else: input_filename = 'topological/{}-topological-downsample-{}x{}x{}.bytes'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z])
+    if benchmark: input_filename = 'benchmarks/skeleton/{}-topological-downsample-{}x{}x{}.bytes'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z])
+    else: input_filename = 'skeletons/{}/topological-downsample-{}x{}x{}.bytes'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z])
     with open(input_filename, 'rb') as rfd:
         zres, yres, xres, max_label = struct.unpack('qqqq', rfd.read(32))
 
-        if benchmark: output_filename = 'topological/benchmarks/{}-topological-downsample-{}x{}x{}-medial-axis-skeleton.pts'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z])
-        else: output_filename = 'topological/{}-topological-downsample-{}x{}x{}-medial-axis-skeleton.pts'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]) 
+        if benchmark: output_filename = 'benchmarks/skeleton/{}-topological-downsample-{}x{}x{}-medial-axis-skeleton.pts'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z])
+        else: output_filename = 'skeletons/{}/topological-downsample-{}x{}x{}-medial-axis-skeleton.pts'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]) 
         with open(output_filename, 'wb') as wfd:
             wfd.write(struct.pack('q', max_label))
 
@@ -90,17 +90,3 @@ def TeaserSkeletonization(prefix, resolution=(100, 100, 100), benchmark=False):
 
 
 
-# find skeleton benchmark information
-def SkeletonBenchmark(prefix, cutoff=500):
-    gold = dataIO.ReadGoldData(prefix)
-
-    labels, counts = np.unique(gold, return_counts=True)
-    print labels
-    print counts
-    filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
-    with open(filename, 'wb') as fd:
-        fd.write(struct.pack('q', cutoff))
-        for ie, (count, label) in enumerate(sorted(zip(counts, labels), reverse=True)):
-            # don't include more than cutoff examples
-            if ie == cutoff: break
-            fd.write(struct.pack('q', label))

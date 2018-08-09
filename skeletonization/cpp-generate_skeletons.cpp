@@ -505,26 +505,6 @@ static void SequentialThinning(void)
 
 
 
-static bool IsEndpoint(long ix, long iy, long iz)
-{
-    long nneighbors = 0;
-    for (long iw = iz - 1; iw <= iz + 1; ++iw) {
-        for (long iv = iy - 1; iv <= iy + 1; ++iv) {
-            for (long iu = ix - 1; iu <= ix + 1; ++iu) {
-                long linear_index = IndicesToIndex(iu, iv, iw);
-                if (segmentation[linear_index]) {
-                    nneighbors++;
-                }
-            }
-        }
-    }
-
-    if (nneighbors == 2) return true;
-    else return false;
-}
-
-
-
 void CppTopologicalThinning(const char *prefix, long resolution[3], const char *lookup_table_directory, bool benchmark)
 {
     // initialize all of the lookup tables
@@ -532,8 +512,8 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
 
     // read the topologically downsampled file
     char input_filename[4096];
-    if (benchmark) sprintf(input_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
-    else sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(input_filename, "skeletons/%s/topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
 
     // open the input file
     FILE *rfp = fopen(input_filename, "rb");
@@ -556,8 +536,8 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
 
     // open the output filename
     char output_filename[4096];
-    if (benchmark) sprintf(output_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
-    else sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(output_filename, "skeletons/%s/topological-downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
 
     FILE *wfp = fopen(output_filename, "wb");
     if (!wfp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -1005,8 +985,8 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
 {
         // read the topologically downsampled file
     char input_filename[4096];
-    if (benchmark) sprintf(input_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
-    else sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(input_filename, "skeletons/%s/topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
 
     // open the input file
     FILE *rfp = fopen(input_filename, "rb");
@@ -1030,8 +1010,8 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
 
     // open the output filename
     char output_filename[4096];
-    if (benchmark) sprintf(output_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
-    else sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(output_filename, "skeletons/%s/topological-downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
 
     FILE *wfp = fopen(output_filename, "wb");
     if (!wfp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
