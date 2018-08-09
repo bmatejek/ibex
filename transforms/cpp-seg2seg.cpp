@@ -239,8 +239,8 @@ void CppTopologicalDownsample(const char *prefix, long *segmentation, long input
   }
 
   char output_filename[4096];
-  if (benchmark) sprintf(output_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
-  else sprintf(output_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  else sprintf(output_filename, "skeletons/%s/topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
 
   // open the output file
   FILE *fp = fopen(output_filename, "wb");
@@ -303,6 +303,7 @@ void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_r
     for (long iy = 0; iy < input_yres; ++iy) {
       for (long ix = 0; ix < input_xres; ++ix, ++index) {
         long segment = segmentation[index];
+        if (!segment) continue;
 
         long iw = (long) (iz / zdown);
         long iv = (long) (iy / ydown);
@@ -320,16 +321,16 @@ void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_r
   }
 
   char input_filename[4096];
-  if (benchmark) sprintf(input_filename, "topological/benchmarks/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
-  else sprintf(input_filename, "topological/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  else sprintf(input_filename, "skeletons/%s/topological-downsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
 
   // open the input file
   FILE *rfp = fopen(input_filename, "rb");
   if (!rfp) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
 
   char output_filename[4096];
-  if (benchmark) sprintf(output_filename, "topological/benchmarks/%s-topological-upsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
-  else sprintf(output_filename, "topological/%s-topological-upsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-topological-upsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
+  else sprintf(output_filename, "skeletons/%s/topological-upsample-%ldx%ldx%ld.bytes", prefix, output_resolution[IB_X], output_resolution[IB_Y], output_resolution[IB_Z]);
 
   // open the output file
   FILE *wfp = fopen(output_filename, "wb");
