@@ -30,7 +30,7 @@ def TopologicalThinning(prefix, resolution=(100, 100, 100), benchmark=False):
     # call the topological skeleton algorithm
     CppTopologicalThinning(prefix, &(cpp_resolution[0]), '/home/bmatejek/ibex/skeletonization', benchmark)
 
-    print '\nTopological thinning time for {}: {}'.format((resolution[0], resolution[1], resolution[2]), time.time() - start_time)
+    print 'Topological thinning time for {}: {}'.format((resolution[0], resolution[1], resolution[2]), time.time() - start_time)
 
 
 
