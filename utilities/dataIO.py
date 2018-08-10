@@ -1,7 +1,7 @@
 import os
 import h5py
 import numpy as np
-from ibex.data_structures import meta_data, skeleton_formats
+from ibex.data_structures import meta_data, skeleton
 from ibex.utilities.constants import *
 from PIL import Image
 import imageio
@@ -75,50 +75,10 @@ def ReadImageData(prefix):
 
 
 
-def ReadSWCSkeletons(prefix, data):
-    # read in all of the skeletons
-    skeletons = []
-    joints = []
-    endpoints = []
+def ReadSkeletons(prefix, skeleton_algorithm='thinning', downsample_resolution=(100, 100, 100)):
+    skeletons = Skeletons(prefix, skeleton_algorithm, downsample_resolution)
 
-    labels = np.unique(data)
-    for label in labels:
-        # read the skeleton
-        skeleton = skeleton_formats.SWCSkeleton(prefix, label)
-
-        skeletons.append(skeleton)
-
-        # add all joints for this skeleton
-        for ij in range(skeleton.NJoints()):
-            joints.append(skeleton.Joint(ij))
-        # add all endpoints for this skeleton
-        for ip in range(skeleton.NEndPoints()):
-            endpoints.append(skeleton.EndPoint(ip))
-
-    # return all of the skeletons
-    return skeletons, joints, endpoints
-
-
-
-def ReadTopologySkeletons(prefix, data):
-    # read in all of the skeletons
-    skeletons = []
-    endpoints = []
-
-    labels = np.unique(data)
-    for label in labels:
-        # read the skeleton
-        skeleton = skeleton_formats.TopologySkeleton(prefix, label, data.shape)
-
-        skeletons.append(skeleton)
-
-        # add all endpoints for this skeleton
-        for ip in range(skeleton.NEndPoints()):
-            endpoints.append(skeleton.EndPoint(ip));
-
-
-    # return all of the skeletons
-    return skeletons, endpoints
+    return skeletons
 
 
 
@@ -126,8 +86,10 @@ def ReadImage(filename):
     return np.array(Image.open(filename))
 
 
+
 def WriteImage(filename, image):
    imageio.imwrite(filename, image)
+
 
 
 def H52Tiff(stack, output_prefix):
@@ -136,6 +98,7 @@ def H52Tiff(stack, output_prefix):
     for iz in range(zres):
         image = stack[iz,:,:]
         tifffile.imsave('{}-{:05d}.tif'.format(output_prefix, iz), image)
+
 
 
 def H52PNG(stack, output_prefix):
