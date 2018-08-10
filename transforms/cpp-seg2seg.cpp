@@ -355,6 +355,7 @@ void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_r
   // go through all the segments and write the upsampled location
   for (long label = 0; label < max_segment; ++label) {
     long nelements;
+
     if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
     fwrite(&nelements, sizeof(long), 1, wfp);
     for (long ie = 0; ie < nelements; ++ie) {

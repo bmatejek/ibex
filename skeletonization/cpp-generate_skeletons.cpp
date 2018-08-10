@@ -5,6 +5,7 @@
 #include <time.h>
 #include <math.h>
 #include <set>
+#include <map>
 #include <assert.h>
 #include "cpp-MinBinaryHeap.h"
 
@@ -109,6 +110,109 @@ static long inside_voxels = 0;
 static const double scale = 1.1;
 static const double buffer = 2;
 static const long min_path_length = 2;
+
+
+
+// operation that takes skeletons and 
+void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const char *skeleton_algorithm, bool benchmark)
+{
+    // get the downsample filename
+    char downsample_filename[4096];
+    if (benchmark) sprintf(downsample_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(downsample_filename, "skeletons/%s/topological-downsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+
+    FILE *dfp = fopen(downsample_filename, "rb"); 
+    if (!dfp) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
+
+    // get the upsample filename
+    char upsample_filename[4096];
+    if (benchmark) sprintf(upsample_filename, "benchmarks/skeleton/%s-topological-upsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+    else sprintf(upsample_filename, "skeletons/%s/topological-upsample-%ldx%ldx%ld.bytes", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]);
+
+    FILE *ufp = fopen(upsample_filename, "rb");
+    if (!ufp) { fprintf(stderr, "Failed to read %s\n", upsample_filename); return; }
+
+    // read downsample header
+    long down_zres, down_yres, down_xres, down_max_segment;
+    if (fread(&down_zres, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
+    if (fread(&down_yres, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
+    if (fread(&down_xres, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
+    if (fread(&down_max_segment, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
+
+    // read upsample header
+    long up_zres, up_yres, up_xres, up_max_segment;
+    if (fread(&up_zres, sizeof(long), 1, ufp) != 1) { fprintf(stderr, "Failed to read %s\n", upsample_filename); return; }
+    if (fread(&up_yres, sizeof(long), 1, ufp) != 1) { fprintf(stderr, "Failed to read %s\n", upsample_filename); return; }
+    if (fread(&up_xres, sizeof(long), 1, ufp) != 1) { fprintf(stderr, "Failed to read %s\n", upsample_filename); return; }
+    if (fread(&up_max_segment, sizeof(long), 1, ufp) != 1) { fprintf(stderr, "Failed to read %s\n", upsample_filename); return; }
+    assert (up_max_segment == down_max_segment);
+
+    std::map<long, long> *down_to_up = new std::map<long, long>[up_max_segment];
+    for (long label = 0; label < up_max_segment; ++label) {
+        down_to_up[label] = std::map<long, long>();
+
+        long down_nelements, up_nelements;
+        if (fread(&down_nelements, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
+        if (fread(&up_nelements, sizeof(long), 1, ufp) != 1) { fprintf(stderr, "Failed to read %s\n", upsample_filename); return; }
+        assert (down_nelements == up_nelements);
+
+        for (long ie = 0; ie < down_nelements; ++ie) {
+            long down_element, up_element;
+            if (fread(&down_element, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
+            if (fread(&up_element, sizeof(long), 1, ufp) != 1) { fprintf(stderr, "Failed to read %s\n", upsample_filename); return; }
+
+            down_to_up[label][down_element] = up_element;
+        }
+    }
+
+    // close the files
+    fclose(dfp);
+    fclose(ufp);
+
+    // read the skeletons
+    char input_filename[4096];
+    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
+    else sprintf(input_filename, "skeletons/%s/topological-downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
+
+    FILE *rfp = fopen(input_filename, "rb");
+    if (!rfp) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+
+    // file for writing upsample locations
+    char output_filename[4096];
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-topological-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
+    else sprintf(output_filename, "skeletons/%s/topological-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
+
+    FILE *wfp = fopen(output_filename, "wb"); 
+    if (!wfp) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+    long max_label;
+    if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+    for (long label = 0; label < max_label; ++label) {
+        long nelements;
+        if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+        if (fwrite(&nelements, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+        // convert all of the elements
+        for (long ie = 0; ie < nelements; ++ie) {
+            long down_element;
+            if (fread(&down_element, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+
+            bool endpoint = false;
+            if (down_element < 0) { endpoint = true; down_element = -1 * down_element; }
+
+            long up_element = down_to_up[label][down_element];
+
+            if (endpoint) up_element = -1 * up_element;
+            if (fwrite(&up_element, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+        }
+    }
+
+    // close files
+    fclose(rfp);
+    fclose(wfp);
+}
 
 
 
@@ -251,6 +355,28 @@ static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
 static long IndicesToIndex(long ix, long iy, long iz)
 {
     return iz * sheet_size + iy * row_size + ix;
+}
+
+
+
+static bool IsEndpoint(long iv)
+{
+    long ix, iy, iz;
+    IndexToIndicies(iv, ix, iy, iz);
+
+    short nnneighbors = 0;
+    for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+        for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+            for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                long linear_index = IndicesToIndex(iu, iv, iw);
+                if (segmentation[linear_index]) nnneighbors++;
+            }
+        }
+    }
+
+    // return if there is one neighbor (other than iv) that is 1
+    if (nnneighbors == 2) return true;
+    else return false;
 }
 
 
@@ -596,6 +722,9 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
             long ix = LE->ix - 1;
             long iv = iz * (xres - 2) * (yres - 2) + iy * (xres - 2) + ix;
 
+            // endpoints are written as negatives
+            if (IsEndpoint(LE->iv)) iv = -1 * iv;
+
             if (fwrite(&iv, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
 
             // remove this voxel
@@ -616,6 +745,8 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
     
     delete[] lut_simple;
     delete[] lut_isthmus;
+
+    CppApplyUpsampleOperation(prefix, resolution, "thinning", benchmark);
 }
 
 
@@ -1083,6 +1214,10 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
             if (skeleton[iv]) num++;
         }
 
+        // delete segmentation and point to skeleton to find which indices are endpoints
+        delete[] segmentation;
+        segmentation = skeleton;
+
         // write the number of elements
         if (fwrite(&num, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
 
@@ -1094,11 +1229,13 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
             --ix; --iy; --iz;
 
             long element = iz * (xres - 2) * (yres - 2) + iy * (xres - 2) + ix;
+
+            // endpoints get a negative value
+            if (IsEndpoint(iv)) element = -1 * element;
             if (fwrite(&element, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
         }
 
         // free memory
-        delete[] segmentation;
         delete[] skeleton;
         delete[] penalties;
         delete[] PDRF;
@@ -1117,4 +1254,6 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
     // close the files
     fclose(rfp);
     fclose(wfp);
+
+    CppApplyUpsampleOperation(prefix, resolution, "teaser", benchmark);
 }

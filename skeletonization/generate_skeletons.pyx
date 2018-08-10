@@ -17,6 +17,7 @@ from ibex.utilities.constants import *
 cdef extern from 'cpp-generate_skeletons.h':
     void CppTopologicalThinning(const char *prefix, long resolution[3], const char *lookup_table_directory, bool benchmark)
     void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool benchmark)
+    void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const char *skeleton_algorithm, bool benchmark)
 
 
 # generate skeletons for this volume
@@ -70,6 +71,11 @@ def MedialAxis(prefix, resolution=(100, 100, 100), benchmark=False):
                 for element in skeleton:
                     wfd.write(struct.pack('q', element))
 
+    # upsample these skeletons
+    resolution = np.array(resolution, dtype=np.int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_resolution = np.ascontiguousarray(resolution, dtype=ctypes.c_int64)
+
+    CppApplyUpsampleOperation(prefix, &(cpp_resolution[0]), "medial-axis", benchmark)
 
     print 'Medial axis thinning time for {}: {}'.format(resolution, time.time() - start_time)
 
@@ -87,6 +93,3 @@ def TeaserSkeletonization(prefix, resolution=(100, 100, 100), benchmark=False):
     CppTeaserSkeletonization(prefix, &(cpp_resolution[0]), benchmark)
 
     print 'TEASER skeletonization time for {}: {}'.format((resolution[0], resolution[1], resolution[2]), time.time() - start_time)
-
-
-
