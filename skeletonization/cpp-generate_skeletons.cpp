@@ -1152,7 +1152,6 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
     if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
     if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
     for (long label = 0; label < max_label; ++label) {
-
         // find the number of elements in this segment
         long num;
         if (fread(&num, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }

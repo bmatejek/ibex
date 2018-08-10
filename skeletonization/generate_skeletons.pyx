@@ -2,6 +2,8 @@ import math
 import time
 import os
 import struct
+import inspect
+
 
 cimport cython
 cimport numpy as np
@@ -28,6 +30,8 @@ def TopologicalThinning(prefix, resolution=(100, 100, 100), benchmark=False):
     # convert to numpy array for c++ call
     resolution = np.array(resolution, dtype=np.int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_resolution = np.ascontiguousarray(resolution, dtype=ctypes.c_int64)
+
+    print inspect.stack()[0][1]
 
     # call the topological skeleton algorithm
     CppTopologicalThinning(prefix, &(cpp_resolution[0]), '/home/bmatejek/ibex/skeletonization', benchmark)
@@ -67,6 +71,7 @@ def MedialAxis(prefix, resolution=(100, 100, 100), benchmark=False):
                     segmentation[iz,iy,ix] = 1
 
                 skeleton = PostProcess(skimage.morphology.skeletonize_3d(segmentation))
+
                 nelements = len(skeleton)
                 wfd.write(struct.pack('q', nelements))
                 for element in skeleton:
@@ -78,7 +83,7 @@ def MedialAxis(prefix, resolution=(100, 100, 100), benchmark=False):
 
     CppApplyUpsampleOperation(prefix, &(cpp_resolution[0]), "medial-axis", benchmark)
 
-    print 'Medial axis thinning time for {}: {}'.format(resolution, time.time() - start_time)
+    print 'Medial axis thinning time for {}: {}'.format((resolution[0], resolution[1], resolution[2]), time.time() - start_time)
 
 
 
