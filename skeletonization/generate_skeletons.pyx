@@ -12,6 +12,7 @@ import skimage.morphology
 
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
+from medial_axis_util import PostProcess
 
 
 cdef extern from 'cpp-generate_skeletons.h':
@@ -65,7 +66,7 @@ def MedialAxis(prefix, resolution=(100, 100, 100), benchmark=False):
 
                     segmentation[iz,iy,ix] = 1
 
-                skeleton = np.nonzero(skimage.morphology.skeletonize_3d(segmentation).flatten())[0]
+                skeleton = PostProcess(skimage.morphology.skeletonize_3d(segmentation))
                 nelements = len(skeleton)
                 wfd.write(struct.pack('q', nelements))
                 for element in skeleton:

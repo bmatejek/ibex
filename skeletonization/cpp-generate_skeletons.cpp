@@ -375,7 +375,7 @@ static bool IsEndpoint(long iv)
     }
 
     // return if there is one neighbor (other than iv) that is 1
-    if (nnneighbors == 2) return true;
+    if (nnneighbors <= 2) return true;
     else return false;
 }
 
