@@ -15,11 +15,12 @@ class Skeleton:
 
 
 class Skeletons:
-    def __init__(self, prefix, skeleton_algorithm, downsample_resolution=(100, 100, 100)):
+    def __init__(self, prefix, skeleton_algorithm='thinning', downsample_resolution=(100, 100, 100), benchmark=False):
         self.skeletons = []
 
         # read in all of the skeleton points
-        filename = 'skeletons/{}/topological-{}x{}x{}-{}-skeleton.pts'.format(prefix, downsample_resolution[IB_X], downsample_resolution[IB_Y], downsample_resolution[IB_Z], skeleton_algorithm)
+        if benchmark: filename = 'benchmarks/skeleton/{}-topological-{}x{}x{}-{}-skeleton.pts'.format(prefix, downsample_resolution[IB_X], downsample_resolution[IB_Y], downsample_resolution[IB_Z], skeleton_algorithm)
+        else: filename = 'skeletons/{}/topological-{}x{}x{}-{}-skeleton.pts'.format(prefix, downsample_resolution[IB_X], downsample_resolution[IB_Y], downsample_resolution[IB_Z], skeleton_algorithm)
 
         with open(filename, 'rb') as fd:
             zres, yres, xres, max_label, = struct.unpack('qqqq', fd.read(32))

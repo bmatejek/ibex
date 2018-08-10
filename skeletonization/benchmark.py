@@ -29,7 +29,13 @@ def SkeletonGroundTruth(prefix, cutoff=500):
 
 # evaluate the methods
 def EvaluateSkeletons(prefix, cutoff=500, resolution=(100, 100, 100)):
-    SkeletonGroundTruth(prefix, cutoff)
+    # read all of the skeletons
+    medial_skeletons = dataIO.ReadSkeletons(prefix, skeleton_algorithm='medial-axis', benchmark=True)
+    teaser_skeletons = dataIO.ReadSkeletons(prefix, skeleton_algorithm='teaser',  benchmark=True)
+    thinning_skeletons = dataIO.ReadSkeletons(prefix, skeleton_algorithm='thinning', benchmark=True)
+
+    ground_truth = SkeletonGroundTruth(prefix, cutoff)
+
 
 
 
