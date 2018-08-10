@@ -31,10 +31,11 @@ def TopologicalThinning(prefix, resolution=(100, 100, 100), benchmark=False):
     resolution = np.array(resolution, dtype=np.int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_resolution = np.ascontiguousarray(resolution, dtype=ctypes.c_int64)
 
-    print inspect.stack()[0][1]
+    # the lookup table are in this folder
+    lut_directory = os.path.dirname(__file__)
 
     # call the topological skeleton algorithm
-    CppTopologicalThinning(prefix, &(cpp_resolution[0]), '/home/bmatejek/ibex/skeletonization', benchmark)
+    CppTopologicalThinning(prefix, &(cpp_resolution[0]), lut_directory, benchmark)
 
     print 'Topological thinning time for {}: {}'.format((resolution[0], resolution[1], resolution[2]), time.time() - start_time)
 
@@ -53,6 +54,9 @@ def MedialAxis(prefix, resolution=(100, 100, 100), benchmark=False):
         if benchmark: output_filename = 'benchmarks/skeleton/{}-topological-downsample-{}x{}x{}-medial-axis-skeleton.pts'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z])
         else: output_filename = 'skeletons/{}/topological-downsample-{}x{}x{}-medial-axis-skeleton.pts'.format(prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z]) 
         with open(output_filename, 'wb') as wfd:
+            wfd.write(struct.pack('q', zres))
+            wfd.write(struct.pack('q', yres))
+            wfd.write(struct.pack('q', xres))
             wfd.write(struct.pack('q', max_label))
 
             # go through all labels

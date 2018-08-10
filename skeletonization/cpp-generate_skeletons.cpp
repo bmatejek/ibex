@@ -186,7 +186,18 @@ void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const cha
     if (!wfp) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
 
     long max_label;
+    long input_zres, input_yres, input_xres;
+    
+    // read header
+    if (fread(&input_zres, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fread(&input_yres, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fread(&input_xres, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
     if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    assert (down_zres == input_zres and down_yres == input_yres and down_xres == input_xres);
+
+    if (fwrite(&up_zres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+    if (fwrite(&up_yres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+    if (fwrite(&up_xres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
     if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
 
     for (long label = 0; label < max_label; ++label) {
@@ -671,7 +682,13 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
     // go through all labels
     long max_label;
     if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+
+    // write the header for the output file
+    if (fwrite(&zres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
+    if (fwrite(&yres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
+    if (fwrite(&xres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
     if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
+
     for (long label = 0; label < max_label; ++label) {
         segmentation = new unsigned char[nentries];
         for (long iv = 0; iv < nentries; ++iv) 
@@ -1150,7 +1167,13 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
     // go through all labels
     long max_label;
     if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
+    
+    // write header for the skeleton file
+    if (fwrite(&zres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
+    if (fwrite(&yres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
+    if (fwrite(&xres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
     if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
+
     for (long label = 0; label < max_label; ++label) {
         // find the number of elements in this segment
         long num;

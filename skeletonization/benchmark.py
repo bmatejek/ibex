@@ -8,7 +8,7 @@ from ibex.utilities import dataIO
 
 # read ground truth
 def SkeletonGroundTruth(prefix, cutoff=500):
-    directory = 'skeletons/benchmarks/{}'.format(prefix)
+    directory = 'benchmarks/skeleton/{}'.format(prefix)
 
     for iv in range(cutoff):
         filename = '{}/example-{}.pts'.format(directory, iv)
@@ -35,12 +35,12 @@ def EvaluateSkeletons(prefix, cutoff=500, resolution=(100, 100, 100)):
 
 
 # find skeleton benchmark information
-def SkeletonBenchmark(prefix, cutoff=500):
+def GenerateExamples(prefix, cutoff=500):
     gold = dataIO.ReadGoldData(prefix)
     labels, counts = np.unique(gold, return_counts=True)
     if labels[0] == 0: cutoff += 1
 
-    filename = 'skeletons/benchmarks/{}-skeleton-benchmark-examples.bin'.format(prefix)
+    filename = 'benchmarks/skeleton/{}-skeleton-benchmark-examples.bin'.format(prefix)
     with open(filename, 'wb') as fd:
         fd.write(struct.pack('q', cutoff))
         for ie, (count, label) in enumerate(sorted(zip(counts, labels), reverse=True)):
