@@ -12,6 +12,14 @@ class Skeleton:
         self.joints = joints
         self.endpoints = endpoints
 
+    def Endpoints2Array(self):
+        nendpoints = len(self.endpoints)
+
+        array = np.zeros((nendpoints, 3), dtype=np.int64)
+        for ie in range(nendpoints):
+            array[ie] = self.endpoints[ie]
+
+        return array
 
 
 class Skeletons:
@@ -44,6 +52,6 @@ class Skeletons:
                     ix = iv % xres
 
                     if endpoint: endpoints.append((iz, iy, ix))
-                    else: endpoints.append((iz, iy, ix))
+                    else: joints.append((iz, iy, ix))
 
-                skeletons.append(Skeleton(label, joints, endpoints))
+                self.skeletons.append(Skeleton(label, joints, endpoints))
