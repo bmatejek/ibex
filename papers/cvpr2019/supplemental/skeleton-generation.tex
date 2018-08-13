@@ -1,0 +1,46 @@
+% !TEX root =  supplemental.tex
+\section{Skeletonization}
+
+There are three steps in our skeleton generation pipeline: downsampling, skeletonization, and upsampling. 
+Here we explore the advantages and disadvantages of each step both qualitatively by visualing inspecting results and quantitatively by publishing a novel ``Skeleton Benchmark''. 
+Lastly, we compare three widely used skeletonization algorithms against our benchmark to determine the relative efficiencies and accuracies on segmented neuronal data.
+
+\subsection{Skeleton Pipeline}
+
+First, we downsample the original image to a resolution of $t_{res}\si{\nm^3}$ where $t_{res}$ is a tunable parameter. 
+We experiment with values of $t_{res}$ ranging from $30$ to $200$ and display the results in Sec.~\ref{skeleton-results}.
+In general, topologically preserving downsampling is impossible~\cite{kraus2001topology} as holes can collapse when the width of a gap is smaller than the downsampling ratio.
+This is particularly common on dendrites where multiple spines protrude closely. 
+
+There are two major benefits to downsampling the data before running the skeletonization algorithm.
+First, the overall skeletonization running time greatly decreases as a function of downsample resolution.
+Two of our baseline skeleton algorithms have running times linear in the number of voxels in the input segmentation.
+The third uses Dijkstra's algorithm to find globally distance voxels to form branches of the skeleton ``tree''.
+Therefore, the computational complexity is $\mathcal{O}(n \log{n})$ since the number of edges in a structured voxel grid is $\mathcal{O}(n)$.
+Sec.~\ref{skeleton-results} further explores the running time of the skeleton algorithms as a function of downsample rate.
+Second, downsampling reduces the number of spurious endpoints.
+Our input segmentations often have noisy boundaries with small spikes protruding from the surface that do not represent larger dendritic spines.
+Downsampling the input segmentations has a smoothing effect that eliminates these small bumps while 
+
+The second step is to run the actual skeletonization algorithm 
+
+The last step of the algorithm ``upsamples'' the skeleton to the resolution of the original image.
+If we downsample in $x$, $y$, and $z$ by $down_x$, $down_y$, and $down_z$ respectively, we cannot merely take a skeleton joint at $(u, v, w)$ and identify $(down_x * u, down_y * v, down_z * w)$ as the upsampled joint since this point may not fall within the original label boundary.
+It is during this process that we also identify which skeleton joints are also endpoints.
+
+
+\subsection{Skeleton Benchmark}
+
+We created a skeleton benchmark to evaluate three different skeletonization approaches with varying downsampling parameters.
+
+
+\subsection{Skeleton Results}
+\label{skeleton-results}
+
+\paragraph{Endpoint Accuracy.}
+
+\paragraph{Running Times.}
+
+
+
+
