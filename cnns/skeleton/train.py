@@ -136,7 +136,7 @@ def SkeletonNetwork(parameters, width):
     DenseLayer(model, 1, 0.5, 'sigmoid', False)
 
     if optimizer == 'adam': opt = Adam(lr=initial_learning_rate, decay=decay_rate, beta_1=betas[0], beta_2=betas[1], epsilon=1e-08)
-    elif optimizer == 'nesterov': opt = SGD(lr=initial_learning_rate, decay=decay_rate, momentum=0.9, nesterov=True)
+    elif optimizer == 'nesterov': opt = SGD(lr=initial_learning_rate, decay=decay_rate, momentum=0.99, nesterov=True)
     model.compile(loss=loss_function, optimizer=opt, metrics=['mean_squared_error', 'accuracy'])
     
     return model
@@ -282,7 +282,7 @@ def Train(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, 
     history = model.fit_generator(SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[:positive_cutoff], negative_candidates[:negative_cutoff], parameters, width),\
                     (examples_per_epoch / batch_size), epochs=2500, verbose=1, class_weight=weights, callbacks=callbacks,\
                     validation_data=SkeletonCandidateGenerator(prefix, network_distance, positive_candidates[positive_cutoff:], negative_candidates[negative_cutoff:], parameters, width), \
-                    validation_steps=(examples_per_epoch / batch_size), initial_epoch=starting_epoch)
+                    validation_steps=(examples_per_epoch / batch_size) / 10, initial_epoch=starting_epoch)
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))

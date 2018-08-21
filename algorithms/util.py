@@ -5,15 +5,16 @@ import ibex.cnns.skeleton.util
 from ibex.evaluation.classification import *
 from ibex.data_structures import unionfind
 from ibex.transforms import seg2seg
-
-
+from ibex.utilities import dataIO
+from ibex.evaluation import comparestacks
 
 def RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance):
     # get all of the candidates for this brain
     positive_candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'positive')
     negative_candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'negative')
-
-    candidates = positive_candidates + negative_candidates
+    undetermined_candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'undetermined')
+    
+    candidates = positive_candidates + negative_candidates + undetermined_candidates
     ncandidates = len(candidates)
 
     # read the probabilities foor this candidate
@@ -26,11 +27,11 @@ def RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoi
             edge_weights[iv], = struct.unpack('d', fd.read(8))
 
     # print the statistics
-    print '\nCNN Precision and Recall\n'
-    labels = np.zeros(ncandidates, dtype=np.uint8)
-    for ie, candidate in enumerate(candidates):
-        labels[ie] = candidate.ground_truth
-    PrecisionAndRecall(labels, Prob2Pred(edge_weights))
+    #print '\nCNN Precision and Recall\n'
+    #labels = np.zeros(ncandidates, dtype=np.uint8)
+    #for ie, candidate in enumerate(candidates):
+    #    labels[ie] = candidate.ground_truth
+    #PrecisionAndRecall(labels, Prob2Pred(edge_weights))
 
     return candidates, edge_weights
 
@@ -90,3 +91,11 @@ def CollapseGraph(segmentation, candidates, maintain_edges, probabilities, outpu
         fd.write(struct.pack('q', ncandidates))
         for ie in range(ncandidates):
             fd.write(struct.pack('?', maintain_edges[ie]))
+
+    mapping = np.zeros(max_value, dtype=np.int64)
+    for iv in range(max_value):
+        mapping[iv] = unionfind.Find(union_find[iv]).label
+
+    segmentation = seg2seg.MapLabels(segmentation, mapping)
+    gold = dataIO.ReadGoldData('SNEMI3D_train')
+    print comparestacks.adapted_rand(segmentation, gold, all_stats=False, dilate_ground_truth=2, filtersize=0)

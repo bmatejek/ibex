@@ -39,14 +39,13 @@ def SaveCandidates(output_filename, candidates):
 
 
 @jit(nopython=True)
-def FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distance, network_distance, world_res):
+def FindNeighboringCandidates(segmentation, centroid, candidates, maximum_distance, world_res):
     # useful variables
     zres, yres, xres = segmentation.shape
     max_label = np.amax(segmentation) + 1
 
     # get the radii and label for this centroid
     radii = np.int64((maximum_distance / world_res[IB_Z], maximum_distance / world_res[IB_Y], maximum_distance / world_res[IB_X]))
-    network_radii = np.int64((network_distance / world_res[IB_Z], network_distance / world_res[IB_Y], network_distance / world_res[IB_X]))
     label = segmentation[centroid[IB_Z],centroid[IB_Y],centroid[IB_X]]
 
     # iterate through all the pixels close to the centroid
@@ -106,7 +105,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
         # find the candidates near this endpoint
         candidates = set()
         candidates.add(0)
-        FindNeighboringCandidates(thresholded_segmentation, centroid, candidates, maximum_distance, network_distance, world_res)
+        FindNeighboringCandidates(thresholded_segmentation, centroid, candidates, maximum_distance, world_res)
 
         for candidate in candidates:
             # skip extracellular
@@ -145,15 +144,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
                 if distance < smallest_distances[(label, neighbor_label)]:
                     midpoint = (endpoint.GridPoint() + neighbor_endpoint.GridPoint()) / 2
 
-                    ## FOR CREMI REMOVE THE VALID LOCATION REQUIREMENT
-
-                    # make sure the bounding box fits
-                    # valid_location = True
-                    # for dim in range(NDIMS):
-                    #     if midpoint[dim]-network_radii[dim] < 0: valid_location = False
-                    #     if midpoint[dim]+network_radii[dim] > grid_size[dim]: valid_location = False
-                    # if not valid_location: continue
-
+                    # find the closest pair of endpoints
                     smallest_distances[(label,neighbor_label)] = distance
                     smallest_distances[(neighbor_label,label)] = distance
 
@@ -171,7 +162,7 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     undetermined_candidates = []
 
     for ie, match in enumerate(endpoint_pairs):
-        if (ie % 1 == 0): print '{}/{}'.format(ie, len(endpoint_pairs))
+        print '{}/{}'.format(ie, len(endpoint_pairs))
         endpoint_one = endpoint_pairs[match][0]
         endpoint_two = endpoint_pairs[match][1]
 
@@ -222,19 +213,19 @@ def GenerateFeatures(prefix, threshold, maximum_distance, network_distance, endp
     print 'Negative candidates: {}'.format(len(negative_candidates))
     print 'Undetermined candidates: {}'.format(len(undetermined_candidates))
 
-    # # perform some tests to see how well this method can do
-    # max_value = np.amax(segmentation) + 1
-    # union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
+    # perform some tests to see how well this method can do
+    #max_value = np.amax(segmentation) + 1
+    #union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
     
-    # # iterate over all collapsed edges
-    # for candidate in positive_candidates:
-    #     label_one, label_two = candidate.labels
-    #     unionfind.Union(union_find[label_one], union_find[label_two])
+    # iterate over all collapsed edges
+    #for candidate in positive_candidates:
+    #    label_one, label_two = candidate.labels
+    #    unionfind.Union(union_find[label_one], union_find[label_two])
     
-    # # create a mapping for the labels
-    # mapping = np.zeros(max_value, dtype=np.int64)
-    # for iv in range(max_value):
-    #     mapping[iv] = unionfind.Find(union_find[iv]).label
+    # create a mapping for the labels
+    #mapping = np.zeros(max_value, dtype=np.int64)
+    #for iv in range(max_value):
+    #    mapping[iv] = unionfind.Find(union_find[iv]).label
    
-    # segmentation = seg2seg.MapLabels(segmentation, mapping)
-    # comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)
+    #segmentation = seg2seg.MapLabels(segmentation, mapping)
+    #comparestacks.CremiEvaluate(segmentation, gold, dilate_ground_truth=1, mask_ground_truth=True, filtersize=0)

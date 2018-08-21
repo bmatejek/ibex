@@ -12,6 +12,7 @@ We experiment with values of $t_{res}$ ranging from $30$ to $200$ and display th
 In general, topologically preserving downsampling is impossible~\cite{kraus2001topology} as holes can collapse when the width of a gap is smaller than the downsampling ratio.
 This is particularly common on dendrites where multiple spines protrude closely. 
 
+
 There are two major benefits to downsampling the data before running the skeletonization algorithm.
 First, the overall skeletonization running time greatly decreases as a function of downsample resolution.
 Two of our baseline skeleton algorithms have running times linear in the number of voxels in the input segmentation.
@@ -22,7 +23,14 @@ Second, downsampling reduces the number of spurious endpoints.
 Our input segmentations often have noisy boundaries with small spikes protruding from the surface that do not represent larger dendritic spines.
 Downsampling the input segmentations has a smoothing effect that eliminates these small bumps while 
 
-The second step is to run the actual skeletonization algorithm 
+The second step is to run the skeletonization algorithm.
+We test three different algorithms.
+As a baseline we use the built in \texttt{scipy:skeletonize\_3d} function that implements the medial surface/axis thinning algorithm of Lee et al.~\cite{lee1994building}.
+This thinning algorithm preserves the topology and uses various post-processing techniques to reduce noise.
+Second, we implement the TEASER skeletonization algorithm from Sato et al.~\cite{sato2000teasar}. 
+This algorithm does not preserve topology but has shown promising results on various biomedical segmentations and variants of the strategy have been used on connectomics label volumes before~\cite{konstantin2018efficient,zhao2014automatic}.
+Lastly, we implement, with the help of the author, a sequential curve-thinning algorithm based on isthmuses~\cite{palagyi2014sequential}.
+This fast algorithm preserves topology and uses efficient lookup tables to reduce unnecessary computation.
 
 The last step of the algorithm ``upsamples'' the skeleton to the resolution of the original image.
 If we downsample in $x$, $y$, and $z$ by $down_x$, $down_y$, and $down_z$ respectively, we cannot merely take a skeleton joint at $(u, v, w)$ and identify $(down_x * u, down_y * v, down_z * w)$ as the upsampled joint since this point may not fall within the original label boundary.
@@ -31,7 +39,8 @@ It is during this process that we also identify which skeleton joints are also e
 
 \subsection{Skeleton Benchmark}
 
-We created a skeleton benchmark to evaluate three different skeletonization approaches with varying downsampling parameters.
+We created a skeleton benchmark to evaluate the three different skeletonization approaches with varying downsampling parameters.
+We identify all of the endpoint locations
 
 
 \subsection{Skeleton Results}

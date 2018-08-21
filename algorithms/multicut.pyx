@@ -50,13 +50,13 @@ def Multicut(prefix, candidates, edge_weights, beta, threshold, heuristic):
     maintain_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
     
     ncandidates = len(candidates)
-    labels = np.zeros(ncandidates, dtype=np.uint8)
-    for ie, candidate in enumerate(candidates):
-        labels[ie] = candidate.ground_truth
+    #labels = np.zeros(ncandidates, dtype=np.uint8)
+    #for ie, candidate in enumerate(candidates):
+    #    labels[ie] = candidate.ground_truth
 
-    print '\nAfter Multicut\n'
+    #print '\nAfter Multicut\n'
 
-    PrecisionAndRecall(labels, 1 - maintain_edges)
+    #PrecisionAndRecall(labels, 1 - maintain_edges)
 
     # collapse the edges returned from multicut
     output_filename = 'multicuts/{}-{:0.2f}.results'.format(prefix, beta)
@@ -70,6 +70,6 @@ def Multicut(prefix, candidates, edge_weights, beta, threshold, heuristic):
 def RunMulticut(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, beta, heuristic=1):
     # read the candidates
     candidates, edge_weights = RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance)
-
+    
     # run the multicut algorithm
     Multicut(prefix, candidates, edge_weights, beta, threshold, heuristic)

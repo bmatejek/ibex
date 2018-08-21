@@ -63,7 +63,7 @@ class Architecture:
 
 
 def ParseResults(filename):
-    prefix = filename.split('/')[-1].strip('skeleton-').replace('.results', '').split('-')[0]
+    prefix = '-'.join(filename.split('skeleton-')[1].split('-')[:-4])
 
     # open the results filename
     with open(filename, 'r') as fd:

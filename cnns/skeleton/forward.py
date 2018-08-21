@@ -58,7 +58,8 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
     # get the candidate locations 
     positive_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'positive')
     negative_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'negative')
-    candidates = positive_candidates + negative_candidates
+    undetermined_candidates = FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'undetermined')
+    candidates = positive_candidates + negative_candidates + undetermined_candidates
     ncandidates = len(candidates)
     
     # compute augmentations
@@ -68,21 +69,23 @@ def Forward(prefix, model_prefix, threshold, maximum_distance, endpoint_distance
     probabilities /= (naugmentations)
     predictions = Prob2Pred(np.squeeze(probabilities))
 
-    # create an array of labels
-    labels = np.zeros(ncandidates, dtype=np.uint8)
-    for ie, candidate in enumerate(candidates):
-        labels[ie] = candidate.ground_truth
-
-    # write the precision and recall values
-    output_filename = '{}-{}-{}-{}nm-{}nm-{}nm.results'.format(model_prefix, prefix, threshold, maximum_distance, endpoint_distance, network_distance)
-    PrecisionAndRecall(labels, predictions, output_filename)
-
+    
     output_filename = '{}-{}-{}-{}nm-{}nm-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance, endpoint_distance, network_distance)
     with open(output_filename, 'wb') as fd:
         fd.write(struct.pack('i', ncandidates))
         for probability in probabilities:
             fd.write(struct.pack('d', probability))
 
+    # create an array of labels
+    candidates = positive_candidates + negative_candidates
+    ncandidates = len(candidates)
+    labels = np.zeros(ncandidates, dtype=np.uint8)
+    for ie, candidate in enumerate(candidates):
+        labels[ie] = candidate.ground_truth
+
+    # write the precision and recall values
+    output_filename = '{}-{}-{}-{}nm-{}nm-{}nm.results'.format(model_prefix, prefix, threshold, maximum_distance, endpoint_distance, network_distance)
+    PrecisionAndRecall(labels, predictions[:ncandidates], output_filename)
 
         
 def AnalyzeAugmentation(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, width, max_augmentations):
