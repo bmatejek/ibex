@@ -6,6 +6,7 @@
 #include <math.h>
 #include <set>
 #include <map>
+#include <stack>
 #include <assert.h>
 #include "cpp-MinBinaryHeap.h"
 
@@ -113,8 +114,143 @@ static const long min_path_length = 2;
 
 
 
+
+// helper functions
+
+static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
+{
+    iz = iv / sheet_size;
+    iy = (iv - iz * sheet_size) / row_size;
+    ix = iv % row_size;
+}
+
+
+
+static long IndicesToIndex(long ix, long iy, long iz)
+{
+    return iz * sheet_size + iy * row_size + ix;
+}
+
+
+
+// find if a path exists between a source and target node
+static bool HasConnectedPath(long *input_segmentation, std::map<long, long> &down_to_up, long label, long source_index, long target_index, long up_zres, long up_yres, long up_xres)
+{
+    // get the ratio between the high resolution and the low resolution
+    float ratioz = (float)(up_zres) / zres;
+    float ratioy = (float)(up_yres) / yres;
+    float ratiox = (float)(up_xres) / xres;
+
+    // get the downsampled location of the source vertex
+    long iz = source_index / (yres * xres);
+    long iy = (source_index - iz * yres * xres) / xres;
+    long ix = source_index % xres;
+
+    // get the downsampled location of the target vertex
+    long ik = target_index / (yres * xres);
+    long ij = (target_index - ik * yres * xres) / xres;
+    long ii = target_index % xres;
+
+    // create upsampled bounds in which to find a path 
+    long zmin = (long) (ratioz * std::min(iz, ik) + 0.5);
+    long ymin = (long) (ratioy * std::min(iy, ij) + 0.5);
+    long xmin = (long) (ratiox * std::min(ix, ii) + 0.5);
+
+    long zmax = (long) (ratioz * (std::max(iz, ik) + 1) + 0.5);
+    long ymax = (long) (ratioy * (std::max(iy, ij) + 1) + 0.5);
+    long xmax = (long) (ratiox * (std::max(ix, ii) + 1) + 0.5);
+/*
+    printf("%ld %ld %ld\n", iz, iy, ix);
+    printf("%ld %ld %ld\n", ik, ij, ii);
+
+    printf("%ld %ld %ld\n", zmin, ymin, xmin);
+    printf("%ld %ld %ld\n", zmax, ymax, xmax);
+*/
+    // upsample the source and target indices
+    source_index = down_to_up[source_index];
+    target_index = down_to_up[target_index];
+
+    // add the source to a list of discovered nodes
+    std::stack<long> dfs_stack = std::stack<long>();
+    dfs_stack.push(source_index);
+    std::set<long> dfs_discovered = std::set<long>();
+
+    while (dfs_stack.size()) {
+        // get the top element and remove it
+        long iv = dfs_stack.top();
+        dfs_stack.pop();
+
+        if (iv == target_index) return true;
+
+        if (dfs_discovered.find(iv) == dfs_discovered.end()) {
+            dfs_discovered.insert(iv);
+
+            // go through all the neighbors of iv
+            long iz = iv / (up_yres * up_xres);
+            long iy = (iv - iz * up_yres * up_xres) / up_xres;
+            long ix = iv % up_xres;
+
+            for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+                if (iw < zmin or iw > zmax - 1) continue;
+                for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+                    if (iv < ymin or iv > ymax - 1) continue;
+                    for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                        if (iu < xmin or iu > xmax - 1) continue;
+
+                        // get the linear index
+                        long linear_index = iw * up_yres * up_xres + iv * up_xres + iu;
+                        if (!input_segmentation[linear_index]) continue;
+
+                        dfs_stack.push(linear_index);
+                    }
+                }
+            }
+        }
+    }
+
+    // there is no path between the source index and the target index
+    return false;
+}
+
+
+
+
+static bool IsEndpoint(long source_index, long label, long *input_segmentation, std::map<long, long> &down_to_up, long up_zres, long up_yres, long up_xres)
+{
+    long ix, iy, iz;
+    IndexToIndicies(source_index, ix, iy, iz);
+
+    short nneighbors = 0;
+    for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+        if (iw < 0 or iw > zres - 1) continue;
+        for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+            if (iv < 0 or iv > yres - 1) continue;
+            for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                if (iu < 0 or iu > xres - 1) continue;
+                // get the target index
+                long target_index = IndicesToIndex(iu, iv, iw);
+                if (target_index == source_index) continue;
+
+                // equivalent to seeing if this belongs to the skeleton and check if these elements are really adjacent in the upsampled image
+                if (segmentation[target_index] and HasConnectedPath(input_segmentation, down_to_up, label, source_index, target_index, up_zres, up_yres, up_xres)) nneighbors++;
+            }
+        }
+    }
+
+    // return if there is one neighbor (other than iv) that is 1
+    if (nneighbors < 2) return true;
+    else return false;
+}
+
+
+
+
+
+
+
+
 // operation that takes skeletons and 
-void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const char *skeleton_algorithm, bool benchmark)
+void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, long resolution[3], const char *skeleton_algorithm, bool benchmark)
 {
     // get the downsample filename
     char downsample_filename[4096];
@@ -138,6 +274,14 @@ void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const cha
     if (fread(&down_yres, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
     if (fread(&down_xres, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
     if (fread(&down_max_segment, sizeof(long), 1, dfp) != 1) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return; }
+
+    // as a sanity check update the global variables
+    zres = down_zres;
+    yres = down_yres;
+    xres = down_xres;
+    nentries = zres * yres * xres;
+    sheet_size = yres * xres;
+    row_size = xres;
 
     // read upsample header
     long up_zres, up_yres, up_xres, up_max_segment;
@@ -169,6 +313,8 @@ void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const cha
     fclose(dfp);
     fclose(ufp);
 
+
+
     // read the skeletons
     char input_filename[4096];
     if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-topological-downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
@@ -176,14 +322,6 @@ void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const cha
 
     FILE *rfp = fopen(input_filename, "rb");
     if (!rfp) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-
-    // file for writing upsample locations
-    char output_filename[4096];
-    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-topological-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
-    else sprintf(output_filename, "skeletons/%s/topological-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
-
-    FILE *wfp = fopen(output_filename, "wb"); 
-    if (!wfp) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
 
     long max_label;
     long input_zres, input_yres, input_xres;
@@ -193,7 +331,14 @@ void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const cha
     if (fread(&input_yres, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
     if (fread(&input_xres, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
     if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-    assert (down_zres == input_zres and down_yres == input_yres and down_xres == input_xres);
+
+    // open file for writing skeletons
+    char output_filename[4096];
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-topological-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
+    else sprintf(output_filename, "skeletons/%s/topological-%ldx%ldx%ld-%s-skeleton.pts", prefix, resolution[IB_X], resolution[IB_Y], resolution[IB_Z], skeleton_algorithm);
+
+    FILE *wfp = fopen(output_filename, "wb");
+    if (!wfp) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
 
     if (fwrite(&up_zres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
     if (fwrite(&up_yres, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
@@ -201,26 +346,37 @@ void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const cha
     if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
 
     for (long label = 0; label < max_label; ++label) {
+        printf("%ld\n", label);
         long nelements;
         if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
         if (fwrite(&nelements, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
 
-        // convert all of the elements
+        segmentation = new unsigned char[nentries];
+        for (long iv = 0; iv < nentries; ++iv) segmentation[iv] = 0;
+
+        // find all of the downsampled elements
         for (long ie = 0; ie < nelements; ++ie) {
             long down_element;
             if (fread(&down_element, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-
-            bool endpoint = false;
-            if (down_element < 0) { endpoint = true; down_element = -1 * down_element; }
-
-            long up_element = down_to_up[label][down_element];
-
-            if (endpoint) up_element = -1 * up_element;
-            if (fwrite(&up_element, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+            segmentation[down_element] = 1;
         }
+
+        for (long ie = 0; ie < nentries; ++ie) {
+            if (!segmentation[ie]) continue;
+
+            bool endpoint = IsEndpoint(ie, label, input_segmentation, down_to_up[label], up_zres, up_yres, up_xres);
+
+            long up_element = down_to_up[label][ie];
+            if (endpoint) up_element = -1 * up_element;
+
+            if (fwrite(&up_element, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", input_filename); return; }
+        }
+
+        // free memory
+        delete[] segmentation;
     }
 
-    // close files
+    // close the files
     fclose(rfp);
     fclose(wfp);
 }
@@ -348,46 +504,6 @@ static Voxel GetFromList(PointList *s, ListElement **ptr)
 static void DestroyPointList(PointList *s) {
     ListElement *ptr;
     while (s->length) GetFromList(s, &ptr);
-}
-
-
-
-// helper functions
-
-static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
-{
-    iz = iv / sheet_size;
-    iy = (iv - iz * sheet_size) / row_size;
-    ix = iv % row_size;
-}
-
-
-
-static long IndicesToIndex(long ix, long iy, long iz)
-{
-    return iz * sheet_size + iy * row_size + ix;
-}
-
-
-
-static bool IsEndpoint(long iv)
-{
-    long ix, iy, iz;
-    IndexToIndicies(iv, ix, iy, iz);
-
-    short nnneighbors = 0;
-    for (long iw = iz - 1; iw <= iz + 1; ++iw) {
-        for (long iv = iy - 1; iv <= iy + 1; ++iv) {
-            for (long iu = ix - 1; iu <= ix + 1; ++iu) {
-                long linear_index = IndicesToIndex(iu, iv, iw);
-                if (segmentation[linear_index]) nnneighbors++;
-            }
-        }
-    }
-
-    // return if there is one neighbor (other than iv) that is 1
-    if (nnneighbors <= 2) return true;
-    else return false;
 }
 
 
@@ -740,8 +856,6 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
             long iv = iz * (xres - 2) * (yres - 2) + iy * (xres - 2) + ix;
 
             // endpoints are written as negatives
-            if (IsEndpoint(LE->iv)) iv = -1 * iv;
-
             if (fwrite(&iv, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
 
             // remove this voxel
@@ -762,8 +876,6 @@ void CppTopologicalThinning(const char *prefix, long resolution[3], const char *
     
     delete[] lut_simple;
     delete[] lut_isthmus;
-
-    CppApplyUpsampleOperation(prefix, resolution, "thinning", benchmark);
 }
 
 
@@ -1253,7 +1365,6 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
             long element = iz * (xres - 2) * (yres - 2) + iy * (xres - 2) + ix;
 
             // endpoints get a negative value
-            if (IsEndpoint(iv)) element = -1 * element;
             if (fwrite(&element, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
         }
 
@@ -1276,6 +1387,4 @@ void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool bench
     // close the files
     fclose(rfp);
     fclose(wfp);
-
-    CppApplyUpsampleOperation(prefix, resolution, "teaser", benchmark);
 }

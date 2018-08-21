@@ -20,11 +20,14 @@ from medial_axis_util import PostProcess
 cdef extern from 'cpp-generate_skeletons.h':
     void CppTopologicalThinning(const char *prefix, long resolution[3], const char *lookup_table_directory, bool benchmark)
     void CppTeaserSkeletonization(const char *prefix, long resolution[3], bool benchmark)
-    void CppApplyUpsampleOperation(const char *prefix, long resolution[3], const char *skeleton_algorithm, bool benchmark)
+    void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, long resolution[3], const char *skeleton_algorithm, bool benchmark)
 
 
 # generate skeletons for this volume
 def TopologicalThinning(prefix, resolution=(100, 100, 100), benchmark=False):
+    if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
+    else: input_segmentation = dataIO.ReadSegmentationData(prefix)
+
     start_time = time.time()
 
     # convert to numpy array for c++ call
@@ -36,6 +39,10 @@ def TopologicalThinning(prefix, resolution=(100, 100, 100), benchmark=False):
 
     # call the topological skeleton algorithm
     CppTopologicalThinning(prefix, &(cpp_resolution[0]), lut_directory, benchmark)
+
+    # call the upsampling operation
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_input_segmentation = np.ascontiguousarray(input_segmentation, dtype=ctypes.c_int64)
+    CppApplyUpsampleOperation(prefix, &(cpp_input_segmentation[0,0,0]), &(cpp_resolution[0]), 'thinning', benchmark)
 
     print 'Topological thinning time for {}: {}'.format((resolution[0], resolution[1], resolution[2]), time.time() - start_time)
 
@@ -85,7 +92,7 @@ def MedialAxis(prefix, resolution=(100, 100, 100), benchmark=False):
     resolution = np.array(resolution, dtype=np.int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_resolution = np.ascontiguousarray(resolution, dtype=ctypes.c_int64)
 
-    CppApplyUpsampleOperation(prefix, &(cpp_resolution[0]), "medial-axis", benchmark)
+    #CppApplyUpsampleOperation(prefix, &(cpp_resolution[0]), "medial-axis", benchmark)
 
     print 'Medial axis thinning time for {}: {}'.format((resolution[0], resolution[1], resolution[2]), time.time() - start_time)
 
