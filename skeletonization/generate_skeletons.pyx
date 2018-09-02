@@ -107,7 +107,7 @@ def MedialAxis(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, nai
        with open(running_times_filename, 'wb') as fd:
         fd.write(struct.pack('q', max_label))
         for label in range(max_label):
-            fd.write(struct.pack('d', times[label]))
+            fd.write(struct.pack('d', running_times[label]))
 
     # call the upsampling operation
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_skeleton_resolution = np.ascontiguousarray(skeleton_resolution, dtype=ctypes.c_int64)
