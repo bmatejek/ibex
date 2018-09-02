@@ -513,6 +513,27 @@ static void SequentialThinning(void)
 }
 
 
+static bool IsEndpoint(long iv)
+{
+    long ix, iy, iz;
+    IndexToIndicies(iv, ix, iy, iz);
+
+    short nnneighbors = 0;
+    for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+        for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+            for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                long linear_index = IndicesToIndex(iu, iv, iw);
+                if (segmentation[linear_index]) nnneighbors++;
+            }
+        }
+    }
+
+    // return if there is one neighbor (other than iv) that is 1
+    if (nnneighbors <= 2) return true;
+    else return false;
+}
+
+
 
 void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], const char *lookup_table_directory, bool benchmark)
 {
@@ -562,7 +583,12 @@ void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], con
     row_size = grid_size[IB_X];
     PopulateOffsets();
 
+    double *running_times = new double[max_label];
+
     for (long label = 0; label < max_label; ++label) {
+        clock_t t1, t2;
+        t1 = clock();
+
         // get the number of points for this label
         long num;
         if (fread(&num, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
@@ -614,6 +640,7 @@ void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], con
             long iv = iz * (grid_size[IB_X] - 2) * (grid_size[IB_Y] - 2) + iy * (grid_size[IB_X] - 2) + ix;
 
             // endpoints are written as negatives
+            if (IsEndpoint(LE->iv)) iv = -1 * iv;
             if (fwrite(&iv, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
 
             // remove this voxel
@@ -625,12 +652,33 @@ void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], con
 
         // reset global variables
         segmentation = NULL;
+
+        t2 = clock();
+
+        running_times[label] = (double)(t2 - t1) / CLOCKS_PER_SEC;
     }
 
     // close the I/O files
     fclose(rfp);
     fclose(wfp);
-    
+        
+    // save running time information
+    if (benchmark) {
+        char running_times_filename[4096];
+        sprintf(running_times_filename, "benchmarks/skeleton/running-times/skeleton-times/%s-%ldx%ldx%ld-thinning.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+
+        FILE *running_times_fp = fopen(running_times_filename, "wb");
+        if (!running_times_fp) exit(-1);
+       
+        if (fwrite(&max_label, sizeof(long), 1, running_times_fp) != 1) { fprintf(stderr, "Failed to write to %s\n", running_times_filename); }
+        if (fwrite(running_times, sizeof(double), max_label, running_times_fp) != (unsigned long) max_label) { fprintf(stderr, "Failed to write to %s\n", running_times_filename); }
+
+        fclose(running_times_fp);
+    }
+
+    delete[] running_times;
+
+
     delete[] lut_simple;
     delete[] lut_isthmus;
 }

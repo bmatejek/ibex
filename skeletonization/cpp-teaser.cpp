@@ -27,8 +27,8 @@ static unsigned char *inside = NULL;
 
 
 static long inside_voxels = 0;
-static const double scale = 1.1;
-static const double buffer = 2;
+static double scale = 1.3;
+static long buffer = 2;
 static const long min_path_length = 2;
 
 
@@ -45,6 +45,20 @@ static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
 static long IndicesToIndex(long ix, long iy, long iz)
 {
     return iz * sheet_size + iy * row_size + ix;
+}
+
+
+
+void CppTeaserSetScale(double input_scale)
+{
+    scale = input_scale;
+}
+
+
+
+void CppTeaserSetBuffer(long input_buffer)
+{
+    buffer = input_buffer;
 }
 
 
@@ -409,6 +423,28 @@ void ComputePenalties(void)
 
 
 
+static bool IsEndpoint(long iv)
+{
+    long ix, iy, iz;
+    IndexToIndicies(iv, ix, iy, iz);
+
+    short nnneighbors = 0;
+    for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+        for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+            for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                long linear_index = IndicesToIndex(iu, iv, iw);
+                if (segmentation[linear_index]) nnneighbors++;
+            }
+        }
+    }
+
+    // return if there is one neighbor (other than iv) that is 1
+    if (nnneighbors <= 2) return true;
+    else return false;
+}
+
+
+
 void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], bool benchmark) 
 {
     // read the topologically downsampled file
@@ -427,8 +463,8 @@ void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], b
 
     // open the output filename
     char output_filename[4096];
-    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
-    else sprintf(output_filename, "skeletons/%s/downsample-%ldx%ldx%ld-teaser-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-teaser-skeleton-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
+    else sprintf(output_filename, "skeletons/%s/downsample-%ldx%ldx%ld-teaser-skeleton-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
 
     FILE *wfp = fopen(output_filename, "wb");
     if (!wfp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -454,7 +490,12 @@ void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], b
     row_size = grid_size[IB_X];
     infinity = grid_size[IB_Z] * grid_size[IB_Z] + grid_size[IB_Y] * grid_size[IB_Y] + grid_size[IB_X] * grid_size[IB_X];
 
+    double *running_times = new double[max_label];
+
     for (long label = 0; label < max_label; ++label) {
+        clock_t t1, t2;
+        t1 = clock();
+
         // find the number of elements in this segment
         long num;
         if (fread(&num, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); exit(-1); }
@@ -529,6 +570,7 @@ void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], b
             --ix; --iy; --iz;
 
             long element = iz * (grid_size[IB_X] - 2) * (grid_size[IB_Y] - 2) + iy * (grid_size[IB_X] - 2) + ix;
+            if (IsEndpoint(iv)) element = -1 * element;
 
             // endpoints get a negative value
             if (fwrite(&element, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -548,9 +590,30 @@ void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], b
         PDRF = NULL;
         inside = NULL;
         DBF = NULL;
+
+        t2 = clock();
+
+        running_times[label] = (double)(t2 - t1) / CLOCKS_PER_SEC;
     }
 
     // close the files
     fclose(rfp);
     fclose(wfp);
+
+    // save running time information
+    if (benchmark) {
+        char running_times_filename[4096];
+        sprintf(running_times_filename, "benchmarks/skeleton/running-times/skeleton-times/%s-%ldx%ldx%ld-teaser-%02ld-%02ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
+
+        FILE *running_times_fp = fopen(running_times_filename, "wb");
+        if (!running_times_fp) exit(-1);
+       
+        if (fwrite(&max_label, sizeof(long), 1, running_times_fp) != 1) { fprintf(stderr, "Failed to write to %s\n", running_times_filename); }
+        if (fwrite(running_times, sizeof(double), max_label, running_times_fp) != (unsigned long) max_label) { fprintf(stderr, "Failed to write to %s\n", running_times_filename); }
+
+        fclose(running_times_fp);
+    }
+
+
+    delete[] running_times;
 }

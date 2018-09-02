@@ -4,6 +4,7 @@
 #include <map>
 #include <queue>
 #include <set>
+#include <string.h>
 #include "cpp-generate_skeletons.h"
 
 
@@ -14,7 +15,7 @@ static std::map<long, long> *down_to_up;
 static long *segmentation;
 static unsigned char *skeleton;
 static std::set<std::pair<long, long> > connected_joints;
-
+static double max_expansion = 1.5;
 
 
 // convenient variables for moving between high and low resolutions
@@ -71,6 +72,12 @@ static void PopulateOffsets(void)
 
 
 
+void CppAStarSetMaxExpansion(double input_max_expansion)
+{
+    max_expansion = input_max_expansion;
+}
+
+
 
 
 // struct definitions for finding any path between two joints
@@ -117,9 +124,8 @@ static bool HasConnectedPath(long label, long source_index, long target_index)
     target_index = down_to_up[label][target_index];
 
     // don't allow the path to be max_expansion times the first h
-    static const double max_expansion = 2;
     long h = hscore(source_index, target_index);
-    long max_distance = max_expansion * h;
+    double max_distance = max_expansion * h;
 
     // add the source to the node list
     AStarNode source_node = AStarNode(source_index, h, 0, h);
@@ -306,8 +312,141 @@ void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, lon
     else sprintf(input_filename, "skeletons/%s/downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
 
     char output_filename[4096];
-    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
-    else sprintf(output_filename, "skeletons/%s/%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%ldx%ldx%ld-%s-%02ld-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * max_expansion));
+    else sprintf(output_filename, "skeletons/%s/%ldx%ldx%ld-%s-%02ld-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * max_expansion));
+
+    // open files for read/write
+    FILE *rfp = fopen(input_filename, "rb");
+    if (!rfp) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+
+    FILE *wfp = fopen(output_filename, "wb");
+    if (!wfp) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+    // read header
+    long max_label;
+    long input_grid_size[3];
+    if (fread(&(input_grid_size[IB_Z]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fread(&(input_grid_size[IB_Y]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fread(&(input_grid_size[IB_X]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    
+    // write the header
+    if (fwrite(&(up_grid_size[IB_Z]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+    if (fwrite(&(up_grid_size[IB_Y]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+    if (fwrite(&(up_grid_size[IB_X]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+    if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+    double *running_times = new double[max_label];
+
+    // go through all skeletons
+    for (long label = 0; label < max_label; ++label) {
+        clock_t t1, t2;
+        t1 = clock();
+
+        long nelements;
+        if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+        if (fwrite(&nelements, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+        //create an empty array for this skeleton
+        skeleton = new unsigned char[down_nentries];
+        for (long iv = 0; iv < down_nentries; ++iv) skeleton[iv] = 0;
+
+        // find all of the downsampled elements
+        long *down_elements = new long[nelements];
+        if (fread(down_elements, sizeof(long), nelements, rfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+        for (long ie = 0; ie < nelements; ++ie) {
+            if (down_elements[ie] < 0) down_elements[ie] = -1 * down_elements[ie];
+            skeleton[down_elements[ie]] = 1;
+        }
+
+        // find all skeleton pairs that need to be checked as neighbors
+        for (long ie = 0; ie < nelements; ++ie) {
+            long source_index = down_elements[ie];
+            for (long iv = 13; iv < 26; ++iv) {
+                long target_index = source_index + offsets[iv];
+                if (target_index > down_nentries - 1) continue;
+                if (!skeleton[target_index]) continue;
+
+                if (HasConnectedPath(label, source_index, target_index)) {
+                    connected_joints.insert(std::pair<long, long>(source_index, target_index));
+                }
+            }
+        }
+
+        // find the upsampled elements
+        long *up_elements = new long[nelements];
+        for (long ie = 0; ie < nelements; ++ie) {
+            long down_index = down_elements[ie];
+
+            // see if this skeleton location is actually an endpoint
+            up_elements[ie] = down_to_up[label][down_index];
+            if (IsEndpoint(down_index, label)) up_elements[ie] = -1 * up_elements[ie];
+        }
+
+        if (fwrite(up_elements, sizeof(long), nelements, wfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+        // clear the set of connected joints
+        connected_joints.clear();
+
+        // free memory
+        delete[] skeleton;
+        delete[] down_elements;
+        delete[] up_elements;
+
+        t2 = clock();
+        running_times[label] = (double)(t2 - t1) / CLOCKS_PER_SEC;
+    }
+
+    // free memory
+    delete[] down_to_up;
+
+    // close the files
+    fclose(rfp);
+    fclose(wfp);
+
+    if (benchmark) {
+        char running_times_filename[4096];
+        sprintf(running_times_filename, "benchmarks/skeleton/running-times/upsampling-times/%s-%ldx%ldx%ld-%s-%02ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * max_expansion));
+
+        FILE *running_times_fp = fopen(running_times_filename, "wb");
+        if (!running_times_fp) exit(-1);
+       
+        if (fwrite(&max_label, sizeof(long), 1, running_times_fp) != 1) { fprintf(stderr, "Failed to write to %s\n", running_times_filename); }
+        if (fwrite(running_times, sizeof(double), max_label, running_times_fp) != (unsigned long) max_label) { fprintf(stderr, "Failed to write to %s\n", running_times_filename); }
+
+        fclose(running_times_fp);
+    }
+
+    delete[] running_times;
+}
+
+
+
+// operation that takes skeletons and 
+void CppNaiveUpsampleOperation(const char *prefix, long skeleton_resolution[3], const char *skeleton_algorithm, bool benchmark, double scale, long buffer)
+{
+    // get the mapping from downsampled locations to upsampled ones
+    if (!MapDown2Up(prefix, skeleton_resolution, benchmark)) return;
+
+    // I/O filenames
+    char input_filename[4096];
+    char output_filename[4096];
+    if (!strcmp(skeleton_algorithm, "teaser")) {
+        if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-%s-skeleton-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * scale), buffer);
+        else sprintf(input_filename, "skeletons/%s/downsample-%ldx%ldx%ld-%s-skeleton-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * scale), buffer);
+
+        if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%ldx%ldx%ld-%s-skeleton-naive-upsample-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * scale), buffer);
+        else sprintf(output_filename, "skeletons/%s/%ldx%ldx%ld-%s-skeleton-naive-upsample-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * scale), buffer);
+    }
+    else {
+        if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
+        else sprintf(input_filename, "skeletons/%s/downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
+
+        if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%ldx%ldx%ld-%s-skeleton-naive-upsample.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
+        else sprintf(output_filename, "skeletons/%s/%ldx%ldx%ld-%s-skeleton-naive-upsample.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
+    }
+
+    
 
     // open files for read/write
     FILE *rfp = fopen(input_filename, "rb");
@@ -338,43 +477,26 @@ void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, lon
         if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
         if (fwrite(&nelements, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
 
-        //create an empty array for this skeleton
-        skeleton = new unsigned char[down_nentries];
-        for (long iv = 0; iv < down_nentries; ++iv) skeleton[iv] = 0;
-
         // find all of the downsampled elements
         long *down_elements = new long[nelements];
         if (fread(down_elements, sizeof(long), nelements, rfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-        for (long ie = 0; ie < nelements; ++ie) skeleton[down_elements[ie]] = 1;
-
-        // find all skeleton pairs that need to be checked as neighbors
-        for (long ie = 0; ie < nelements; ++ie) {
-            long source_index = down_elements[ie];
-            for (long iv = 13; iv < 26; ++iv) {
-                long target_index = source_index + offsets[iv];
-                if (target_index > down_nentries - 1) continue;
-                if (!skeleton[target_index]) continue;
-
-                if (HasConnectedPath(label, source_index, target_index)) {
-                    connected_joints.insert(std::pair<long, long>(source_index, target_index));
-                }
-            }
-        }
 
         // find the upsampled elements
         long *up_elements = new long[nelements];
         for (long ie = 0; ie < nelements; ++ie) {
             long down_index = down_elements[ie];
-
+            
             // see if this skeleton location is actually an endpoint
-            up_elements[ie] = down_to_up[label][down_index];
-            if (IsEndpoint(down_index, label)) up_elements[ie] = -1 * up_elements[ie];
+            if (down_index < 0) {
+                down_index = -1 * down_index;
+                up_elements[ie] = -1 * down_to_up[label][down_index];
+            }
+            else {
+                up_elements[ie] = down_to_up[label][down_index];
+            }
         }
 
         if (fwrite(up_elements, sizeof(long), nelements, wfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
-
-        // clear the set of connected joints
-        connected_joints.clear();
 
         // free memory
         delete[] skeleton;
