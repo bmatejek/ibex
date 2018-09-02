@@ -46,7 +46,7 @@ def TopologicalThinning(prefix, skeleton_resolution=(100, 100, 100), benchmark=F
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution = np.ascontiguousarray(dataIO.Resolution(prefix), dtype=ctypes.c_int64)
     
     CppNaiveUpsampleOperation(prefix, &(cpp_skeleton_resolution[0]), 'thinning', benchmark, -1, -1)
-    for astart_max_expansion in [1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]:
+    for astar_max_expansion in [1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]:
         CppAStarSetMaxExpansion(astar_max_expansion) 
         CppApplyUpsampleOperation(prefix, &(cpp_input_segmentation[0,0,0]), &(cpp_skeleton_resolution[0]), &(cpp_output_resolution[0]), 'thinning', benchmark)
 
@@ -114,7 +114,7 @@ def MedialAxis(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, nai
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_input_segmentation = np.ascontiguousarray(input_segmentation, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution = np.ascontiguousarray(dataIO.Resolution(prefix), dtype=ctypes.c_int64)
     CppNaiveUpsampleOperation(prefix, &(cpp_skeleton_resolution[0]), 'medial-axis', benchmark, -1, -1)
-    for astart_max_expansion in [1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]:
+    for astar_max_expansion in [1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]:
         CppAStarSetMaxExpansion(astar_max_expansion) 
         CppApplyUpsampleOperation(prefix, &(cpp_input_segmentation[0,0,0]), &(cpp_skeleton_resolution[0]), &(cpp_output_resolution[0]), 'medial-axis', benchmark)
 
