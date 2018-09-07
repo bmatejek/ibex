@@ -12,22 +12,18 @@ from ibex.utilities import dataIO
 cdef extern from 'cpp-seg2seg.h':
     void CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
     long *CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long nentries)
-    long *CppForceConnectivity(long *segmentation, long zres, long yres, long xres)
-    void CppTopologicalDownsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres, bool benchmark)
-    void CppTopologicalUpsample(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_zres, long input_yres, long input_xres, bool benchmark)
+    long *CppForceConnectivity(long *segmentation, long grid_size[3])
+    void CppDownsampleMapping(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_grid_size[3], bool benchmark)
     
 
 
 # map the labels from this segmentation
 def MapLabels(segmentation, mapping):
     # get the size of the data
-    zres, yres, xres = segmentation.shape
     nentries = segmentation.size
 
-    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
-    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
-    cdef np.ndarray[long, ndim=1, mode='c'] cpp_mapping
-    cpp_mapping = np.ascontiguousarray(mapping, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_mapping = np.ascontiguousarray(mapping, dtype=ctypes.c_int64)
 
     CppMapLabels(&(cpp_segmentation[0,0,0]), &(cpp_mapping[0]), nentries)
 
@@ -40,19 +36,13 @@ def RemoveSmallConnectedComponents(segmentation, threshold=64):
     if threshold == 0: return segmentation
 
     nentries = segmentation.size
-    zres, yres, xres = segmentation.shape
-
-    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
-    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation= np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
     
     # call the c++ function
-    cdef long *updated_segmentation = CppRemoveSmallConnectedComponents(&(cpp_segmentation[0,0,0]), threshold, nentries)
-
-    # turn into python numpy array
-    cdef long[:] tmp_segmentation = <long[:segmentation.size]> updated_segmentation
+    cdef long[:] updated_segmentation = <long[:segmentation.size]> CppRemoveSmallConnectedComponents(&(cpp_segmentation[0,0,0]), threshold, nentries)
 
     # reshape the array to the original shape
-    thresholded_segmentation = np.reshape(np.asarray(tmp_segmentation), (zres, yres, xres))	
+    thresholded_segmentation = np.reshape(np.asarray(updated_segmentation), segmentation.shape)	
     return np.copy(thresholded_segmentation)
 
 
@@ -87,25 +77,21 @@ def ReduceLabels(segmentation):
 
 def ForceConnectivity(segmentation):
     # transform into c array
-    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
-    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
-    zres, yres, xres = segmentation.shape
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_grid_size = np.ascontiguousarray(segmentation.shape, dtype=ctypes.c_int64)
 
     # call the c++ function
-    cdef long *cpp_components = CppForceConnectivity(&(cpp_segmentation[0,0,0]), zres, yres, xres)
+    cdef long[:] cpp_components = <long[:segmentation.size]> CppForceConnectivity(&(cpp_segmentation[0,0,0]), &(cpp_grid_size[0]))
 
-    # turn into python numpy array
-    cdef long[:] tmp_components = <long[:zres*yres*xres]> cpp_components
-    
     # reshape the array to the original shape
-    components = np.reshape(np.asarray(tmp_components), (zres, yres, xres)).astype(np.int32)
+    components = np.reshape(np.asarray(cpp_components), segmentation.shape).astype(np.int32)
 
     # find which segments have multiple components
     return components
 
 
 
-def TopologicalDownsample(prefix, output_resolution=(100,100,100), benchmark=False):
+def DownsampleMapping(prefix, output_resolution=(100,100,100), benchmark=False):
     # benchmark data uses gold
     if benchmark: segmentation = dataIO.ReadGoldData(prefix)
     else: segmentation = dataIO.ReadSegmentationData(prefix)
@@ -113,45 +99,15 @@ def TopologicalDownsample(prefix, output_resolution=(100,100,100), benchmark=Fal
     # ignore time to read data
     start_time = time.time()
 
-    input_resolution = np.array(dataIO.Resolution(prefix), dtype=np.int64)
+    input_resolution = dataIO.Resolution(prefix)
 
-    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
-    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
-    cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_resolution
-    cpp_input_resolution = np.ascontiguousarray(input_resolution, dtype=ctypes.c_int64)
-    cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution
-    cpp_output_resolution = np.ascontiguousarray(output_resolution, dtype=ctypes.c_int64)
-
-    input_zres, input_yres, input_xres = segmentation.shape
+    # convert numpy arrays to c++ format
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_resolution = np.ascontiguousarray(input_resolution, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution = np.ascontiguousarray(output_resolution, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_grid_size = np.ascontiguousarray(segmentation.shape, dtype=ctypes.c_int64)
 
     # call c++ function
-    CppTopologicalDownsample(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), input_zres, input_yres, input_xres, benchmark)
+    CppDownsampleMapping(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), &(cpp_input_grid_size[0]), benchmark)
 
-    print 'Topological downsampling to resolution {} in {} seconds'.format(output_resolution, time.time() - start_time)
-
-
-
-def TopologicalUpsample(prefix, output_resolution=(100,100,100), benchmark=False):
-    # benchmark dataset uses gold
-    if benchmark: segmentation = dataIO.ReadGoldData(prefix)
-    else: segmentation = dataIO.ReadSegmentationData(prefix)
-
-    # ignore time to read data
-    start_time = time.time()
-
-    input_resolution = np.array(dataIO.Resolution(prefix), dtype=np.int64)
-    output_resolution = np.array(output_resolution, dtype=np.int64)
-
-    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
-    cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
-    cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_resolution
-    cpp_input_resolution = np.ascontiguousarray(input_resolution, dtype=ctypes.c_int64)
-    cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution
-    cpp_output_resolution = np.ascontiguousarray(output_resolution, dtype=ctypes.c_int64)
-
-    input_zres, input_yres, input_xres = segmentation.shape
-
-    # call c++ function
-    CppTopologicalUpsample(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), input_zres, input_yres, input_xres, benchmark)
-    
-    print 'Topological upsampling to resolution {} in {} seconds'.format((output_resolution[0], output_resolution[1], output_resolution[2]), time.time() - start_time)
+    print 'Downsampling to resolution {} in {} seconds'.format(output_resolution, time.time() - start_time)

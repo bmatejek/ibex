@@ -19,16 +19,12 @@ from medial_axis_util import PostProcess
 
 cdef extern from 'cpp-generate_skeletons.h':
     void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], const char *lookup_table_directory, bool benchmark)
-    void CppTeaserSetScale(double input_scale)
-    void CppTeaserSetBuffer(long input_buffer)
-    void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], bool benchmark)
-    void CppAStarSetMaxExpansion(double input_max_expansion)
-    void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, long skeleton_resolution[3], long output_resolution[3], const char *skeleton_algorithm, bool benchmark)
-    void CppNaiveUpsampleOperation(const char *prefix, long skeleton_resolution[3], const char *skeleton_algorithm, bool benchmark, double scale, long buffer)
+    void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], bool benchmark, double input_scale, long input_buffer)
+    void CppApplyUpsampleOperation(const char *prefix, const char *params, long *input_segmentation, long skeleton_resolution[3], long output_resolution[3], const char *skeleton_algorithm, double astar_exspanion, bool benchmark)
 
 
 # generate skeletons for this volume
-def TopologicalThinning(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, naive=False, astar_max_expansion=1.5):
+def TopologicalThinning(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, astar_expansion=1.5):
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
 
@@ -44,34 +40,33 @@ def TopologicalThinning(prefix, skeleton_resolution=(100, 100, 100), benchmark=F
     # call the upsampling operation
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_input_segmentation = np.ascontiguousarray(input_segmentation, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution = np.ascontiguousarray(dataIO.Resolution(prefix), dtype=ctypes.c_int64)
-    
-    CppNaiveUpsampleOperation(prefix, &(cpp_skeleton_resolution[0]), 'thinning', benchmark, -1, -1)
-    for astar_max_expansion in [1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]:
-        CppAStarSetMaxExpansion(astar_max_expansion) 
-        CppApplyUpsampleOperation(prefix, &(cpp_input_segmentation[0,0,0]), &(cpp_skeleton_resolution[0]), &(cpp_output_resolution[0]), 'thinning', benchmark)
+    params = ""
 
+    CppApplyUpsampleOperation(prefix, params, &(cpp_input_segmentation[0,0,0]), &(cpp_skeleton_resolution[0]), &(cpp_output_resolution[0]), 'thinning', astar_expansion, benchmark)
 
-    #print 'Topological thinning time for {}: {}'.format((skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2]), time.time() - start_time)
+    print 'Topological thinning time for {}: {}'.format((skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2]), time.time() - start_time)
 
 
 
 # use scipy skeletonization for thinning
-def MedialAxis(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, naive=False, astar_max_expansion=1.5):
+def MedialAxis(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, astar_expansion=1.5):
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
 
     start_time = time.time()
 
     # read the downsampled filename
-    if benchmark: input_filename = 'benchmarks/skeleton/{}-downsample-{}x{}x{}.bytes'.format(prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z])
-    else: input_filename = 'skeletons/{}/downsample-{}x{}x{}.bytes'.format(prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z])
+    if benchmark: input_filename = 'benchmarks/skeleton/{}-downsample-{:03d}x{:03d}x{:03d}.bytes'.format(prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z])
+    else: input_filename = 'skeletons/{}/downsample-{:03d}x{:03d}x{:03d}.bytes'.format(prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z])
+
     with open(input_filename, 'rb') as rfd:
         zres, yres, xres, max_label = struct.unpack('qqqq', rfd.read(32))
 
         running_times = []
 
-        if benchmark: output_filename = 'benchmarks/skeleton/{}-downsample-{}x{}x{}-medial-axis-skeleton.pts'.format(prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z])
-        else: output_filename = 'skeletons/{}/downsample-{}x{}x{}-medial-axis-skeleton.pts'.format(prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]) 
+        if benchmark: output_filename = 'benchmarks/skeleton/{}-medial-axis-{:03d}x{:03d}x{:03d}-downsample-skeleton.pts'.format(prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z])
+        else: output_filename = 'skeletons/{}/medial-axis-{:03d}x{:03d}x{:03d}-downsample-skeleton.pts'.format(prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]) 
+
         with open(output_filename, 'wb') as wfd:
             wfd.write(struct.pack('q', zres))
             wfd.write(struct.pack('q', yres))
@@ -103,7 +98,7 @@ def MedialAxis(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, nai
                 running_times.append(time.time() - label_time)
 
     if benchmark:
-       running_times_filename = 'benchmarks/skeleton/running-times/skeleton-times/{}-{}x{}x{}-medial-axis.bytes'.format(prefix, skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2])
+       running_times_filename = 'benchmarks/skeleton/running-times/skeleton-times/{}-medial-axis-{:03d}x{:03d}x{:03d}.bytes'.format(prefix, skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2])
        with open(running_times_filename, 'wb') as fd:
         fd.write(struct.pack('q', max_label))
         for label in range(max_label):
@@ -113,17 +108,16 @@ def MedialAxis(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, nai
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_skeleton_resolution = np.ascontiguousarray(skeleton_resolution, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_input_segmentation = np.ascontiguousarray(input_segmentation, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution = np.ascontiguousarray(dataIO.Resolution(prefix), dtype=ctypes.c_int64)
-    CppNaiveUpsampleOperation(prefix, &(cpp_skeleton_resolution[0]), 'medial-axis', benchmark, -1, -1)
-    for astar_max_expansion in [1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]:
-        CppAStarSetMaxExpansion(astar_max_expansion) 
-        CppApplyUpsampleOperation(prefix, &(cpp_input_segmentation[0,0,0]), &(cpp_skeleton_resolution[0]), &(cpp_output_resolution[0]), 'medial-axis', benchmark)
+    params = ""
 
-    #print 'Medial axis thinning time for {}: {}'.format((skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2]), time.time() - start_time)
+    CppApplyUpsampleOperation(prefix, params, &(cpp_input_segmentation[0,0,0]), &(cpp_skeleton_resolution[0]), &(cpp_output_resolution[0]), 'medial-axis', astar_expansion, benchmark)
+
+    print 'Medial axis thinning time for {}: {}'.format((skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2]), time.time() - start_time)
 
 
 
 # use TEASER algorithm to generate skeletons
-def TEASER(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, teaser_scale=1.3, teaser_buffer=2):
+def TEASER(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, teaser_scale=1.3, teaser_buffer=2, astar_expansion=0):
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
 
@@ -133,14 +127,13 @@ def TEASER(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, teaser_
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_skeleton_resolution = np.ascontiguousarray(skeleton_resolution, dtype=ctypes.c_int64)
 
     # call the teaser skeletonization algorithm
-    CppTeaserSetScale(teaser_scale)
-    CppTeaserSetBuffer(teaser_buffer)
-    CppTeaserSkeletonization(prefix, &(cpp_skeleton_resolution[0]), benchmark)
+    CppTeaserSkeletonization(prefix, &(cpp_skeleton_resolution[0]), benchmark, teaser_scale, teaser_buffer)
 
     # call the upsampling operation
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_input_segmentation = np.ascontiguousarray(input_segmentation, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution = np.ascontiguousarray(dataIO.Resolution(prefix), dtype=ctypes.c_int64)
-    
-    CppNaiveUpsampleOperation(prefix, &(cpp_skeleton_resolution[0]), 'teaser', benchmark, teaser_scale, teaser_buffer)
+    params = "{:02d}-{:02d}".format(long(10 * teaser_scale), teaser_buffer)
 
-    #print 'TEASER skeletonization time for {}: {}'.format((skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2]), time.time() - start_time)
+    CppApplyUpsampleOperation(prefix, params, &(cpp_input_segmentation[0,0,0]), &(cpp_skeleton_resolution[0]), &(cpp_output_resolution[0]), 'teaser', astar_expansion, benchmark)
+
+    print 'TEASER skeletonization time for {}: {}'.format((skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2]), time.time() - start_time)

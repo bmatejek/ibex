@@ -49,20 +49,6 @@ static long IndicesToIndex(long ix, long iy, long iz)
 
 
 
-void CppTeaserSetScale(double input_scale)
-{
-    scale = input_scale;
-}
-
-
-
-void CppTeaserSetBuffer(long input_buffer)
-{
-    buffer = input_buffer;
-}
-
-
-
 static void ComputeDistanceFromBoundaryField(void)
 {
     // allocate memory for bounday map and distance transform
@@ -445,12 +431,16 @@ static bool IsEndpoint(long iv)
 
 
 
-void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], bool benchmark) 
+void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], bool benchmark, double input_scale, long input_buffer) 
 {
+    // set global variables
+    scale = input_scale;
+    buffer = input_buffer;
+
     // read the topologically downsampled file
     char input_filename[4096];
-    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
-    else sprintf(input_filename, "skeletons/%s/downsample-%ldx%ldx%ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    else sprintf(input_filename, "skeletons/%s/downsample-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
 
     // open the input file
     FILE *rfp = fopen(input_filename, "rb");
@@ -463,8 +453,8 @@ void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], b
 
     // open the output filename
     char output_filename[4096];
-    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-teaser-skeleton-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
-    else sprintf(output_filename, "skeletons/%s/downsample-%ldx%ldx%ld-teaser-skeleton-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-teaser-%03ldx%03ldx%03ld-downsample-%02ld-%02ld-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
+    else sprintf(output_filename, "skeletons/%s/teaser-%03ldx%03ldx%03ld-downsample-%02ld-%02ld-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
 
     FILE *wfp = fopen(output_filename, "wb");
     if (!wfp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -603,7 +593,7 @@ void CppTeaserSkeletonization(const char *prefix, long skeleton_resolution[3], b
     // save running time information
     if (benchmark) {
         char running_times_filename[4096];
-        sprintf(running_times_filename, "benchmarks/skeleton/running-times/skeleton-times/%s-%ldx%ldx%ld-teaser-%02ld-%02ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
+        sprintf(running_times_filename, "benchmarks/skeleton/running-times/skeleton-times/%s-teaser-%03ldx%03ldx%03ld-%02ld-%02ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], (long)(10 * scale), buffer);
 
         FILE *running_times_fp = fopen(running_times_filename, "wb");
         if (!running_times_fp) exit(-1);

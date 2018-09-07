@@ -542,8 +542,8 @@ void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], con
 
     // read the topologically downsampled file
     char input_filename[4096];
-    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
-    else sprintf(input_filename, "skeletons/%s/downsample-%ldx%ldx%ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    else sprintf(input_filename, "skeletons/%s/downsample-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
 
     // open the input file
     FILE *rfp = fopen(input_filename, "rb");
@@ -556,8 +556,8 @@ void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], con
 
     // open the output filename
     char output_filename[4096];
-    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
-    else sprintf(output_filename, "skeletons/%s/downsample-%ldx%ldx%ld-thinning-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-thinning-%03ldx%03ldx%03ld-downsample-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    else sprintf(output_filename, "skeletons/%s/thinning-%03ldx%03ldx%03ld-downsample-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
 
     FILE *wfp = fopen(output_filename, "wb");
     if (!wfp) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
@@ -665,7 +665,7 @@ void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], con
     // save running time information
     if (benchmark) {
         char running_times_filename[4096];
-        sprintf(running_times_filename, "benchmarks/skeleton/running-times/skeleton-times/%s-%ldx%ldx%ld-thinning.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+        sprintf(running_times_filename, "benchmarks/skeleton/running-times/skeleton-times/%s-thinning-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
 
         FILE *running_times_fp = fopen(running_times_filename, "wb");
         if (!running_times_fp) exit(-1);

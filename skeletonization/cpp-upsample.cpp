@@ -226,16 +226,16 @@ static int MapDown2Up(const char *prefix, long skeleton_resolution[3], bool benc
 {
     // get the downsample filename
     char downsample_filename[4096];
-    if (benchmark) sprintf(downsample_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
-    else sprintf(downsample_filename, "skeletons/%s/downsample-%ldx%ldx%ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    if (benchmark) sprintf(downsample_filename, "benchmarks/skeleton/%s-downsample-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    else sprintf(downsample_filename, "skeletons/%s/downsample-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
 
     FILE *dfp = fopen(downsample_filename, "rb"); 
     if (!dfp) { fprintf(stderr, "Failed to read %s\n", downsample_filename); return 0; }
 
     // get the upsample filename
     char upsample_filename[4096];
-    if (benchmark) sprintf(upsample_filename, "benchmarks/skeleton/%s-upsample-%ldx%ldx%ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
-    else sprintf(upsample_filename, "skeletons/%s/upsample-%ldx%ldx%ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    if (benchmark) sprintf(upsample_filename, "benchmarks/skeleton/%s-upsample-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    else sprintf(upsample_filename, "skeletons/%s/upsample-%03ldx%03ldx%03ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
 
     FILE *ufp = fopen(upsample_filename, "rb");
     if (!ufp) { fprintf(stderr, "Failed to read %s\n", upsample_filename); return 0; }
@@ -280,7 +280,7 @@ static int MapDown2Up(const char *prefix, long skeleton_resolution[3], bool benc
 
 
 // operation that takes skeletons and 
-void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, long skeleton_resolution[3], long output_resolution[3], const char *skeleton_algorithm, bool benchmark)
+void CppApplyUpsampleOperation(const char *prefix, const char *params, long *input_segmentation, long skeleton_resolution[3], long output_resolution[3], const char *skeleton_algorithm, double astar_expansion, bool benchmark)
 {
     // get the mapping from downsampled locations to upsampled ones
     if (!MapDown2Up(prefix, skeleton_resolution, benchmark)) return;
@@ -308,12 +308,22 @@ void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, lon
 
     // I/O filenames
     char input_filename[4096];
-    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
-    else sprintf(input_filename, "skeletons/%s/downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
+    if (strlen(params)) {
+        if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-%s-%03ldx%03ldx%03ld-downsample-%s-skeleton.pts", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], params);
+        else sprintf(input_filename, "skeletons/%s/%s-%03ldx%03ldx%03ld-downsample-%s-skeleton.pts", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], params);
+    }
+    else {
+        if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-%s-%03ldx%03ldx%03ld-downsample-skeleton.pts", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+        else sprintf(input_filename, "skeletons/%s/%s-%03ldx%03ldx%03ld-downsample-skeleton.pts", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    }
+
+    char output_params[4096];
+    if (strlen(params)) sprintf(output_params, "%s-%02ld", params, (long)(10 * astar_expansion));
+    else sprintf(output_params, "%02ld", (long)(10 * astar_expansion));
 
     char output_filename[4096];
-    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%ldx%ldx%ld-%s-%02ld-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * max_expansion));
-    else sprintf(output_filename, "skeletons/%s/%ldx%ldx%ld-%s-%02ld-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * max_expansion));
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%s-%03ldx%03ldx%03ld-upsample-%s-skeleton.pts", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], output_params);
+    else sprintf(output_filename, "skeletons/%s/%s-%03ldx%03ldx%03ld-upsample-%s-skeleton.pts", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], output_params);
 
     // open files for read/write
     FILE *rfp = fopen(input_filename, "rb");
@@ -347,51 +357,71 @@ void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, lon
         if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
         if (fwrite(&nelements, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
 
-        //create an empty array for this skeleton
-        skeleton = new unsigned char[down_nentries];
-        for (long iv = 0; iv < down_nentries; ++iv) skeleton[iv] = 0;
+        // just run naive method where endpoints in downsampled are transfered
+        if (astar_expansion < 1.0) {
+            long *down_elements = new long[nelements];
+            if (fread(down_elements, sizeof(long), nelements, rfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
 
-        // find all of the downsampled elements
-        long *down_elements = new long[nelements];
-        if (fread(down_elements, sizeof(long), nelements, rfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-        for (long ie = 0; ie < nelements; ++ie) {
-            if (down_elements[ie] < 0) down_elements[ie] = -1 * down_elements[ie];
-            skeleton[down_elements[ie]] = 1;
-        }
+            long *up_elements = new long[nelements];
+            for (long ie = 0; ie < nelements; ++ie) {
+                long down_index = down_elements[ie];
 
-        // find all skeleton pairs that need to be checked as neighbors
-        for (long ie = 0; ie < nelements; ++ie) {
-            long source_index = down_elements[ie];
-            for (long iv = 13; iv < 26; ++iv) {
-                long target_index = source_index + offsets[iv];
-                if (target_index > down_nentries - 1) continue;
-                if (!skeleton[target_index]) continue;
-
-                if (HasConnectedPath(label, source_index, target_index)) {
-                    connected_joints.insert(std::pair<long, long>(source_index, target_index));
+                if (down_index < 0) {
+                    down_index = -1 * down_index;
+                    up_elements[ie] = -1 * down_to_up[label][down_index];
+                }
+                else {
+                    up_elements[ie] = down_to_up[label][down_index];
                 }
             }
         }
+        else {
+             //create an empty array for this skeleton
+            skeleton = new unsigned char[down_nentries];
+            for (long iv = 0; iv < down_nentries; ++iv) skeleton[iv] = 0;
 
-        // find the upsampled elements
-        long *up_elements = new long[nelements];
-        for (long ie = 0; ie < nelements; ++ie) {
-            long down_index = down_elements[ie];
+            // find all of the downsampled elements
+            long *down_elements = new long[nelements];
+            if (fread(down_elements, sizeof(long), nelements, rfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+            for (long ie = 0; ie < nelements; ++ie) {
+                if (down_elements[ie] < 0) down_elements[ie] = -1 * down_elements[ie];
+                skeleton[down_elements[ie]] = 1;
+            }
 
-            // see if this skeleton location is actually an endpoint
-            up_elements[ie] = down_to_up[label][down_index];
-            if (IsEndpoint(down_index, label)) up_elements[ie] = -1 * up_elements[ie];
-        }
+            // find all skeleton pairs that need to be checked as neighbors
+            for (long ie = 0; ie < nelements; ++ie) {
+                long source_index = down_elements[ie];
+                for (long iv = 13; iv < 26; ++iv) {
+                    long target_index = source_index + offsets[iv];
+                    if (target_index > down_nentries - 1) continue;
+                    if (!skeleton[target_index]) continue;
 
-        if (fwrite(up_elements, sizeof(long), nelements, wfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+                    if (HasConnectedPath(label, source_index, target_index)) {
+                        connected_joints.insert(std::pair<long, long>(source_index, target_index));
+                    }
+                }
+            }
 
-        // clear the set of connected joints
-        connected_joints.clear();
+            // find the upsampled elements
+            long *up_elements = new long[nelements];
+            for (long ie = 0; ie < nelements; ++ie) {
+                long down_index = down_elements[ie];
 
-        // free memory
-        delete[] skeleton;
-        delete[] down_elements;
-        delete[] up_elements;
+                // see if this skeleton location is actually an endpoint
+                up_elements[ie] = down_to_up[label][down_index];
+                if (IsEndpoint(down_index, label)) up_elements[ie] = -1 * up_elements[ie];
+            }
+
+            if (fwrite(up_elements, sizeof(long), nelements, wfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+            // clear the set of connected joints
+            connected_joints.clear();
+        
+            // free memory
+            delete[] skeleton;
+            delete[] down_elements;
+            delete[] up_elements;
+        }       
 
         t2 = clock();
         running_times[label] = (double)(t2 - t1) / CLOCKS_PER_SEC;
@@ -406,7 +436,7 @@ void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, lon
 
     if (benchmark) {
         char running_times_filename[4096];
-        sprintf(running_times_filename, "benchmarks/skeleton/running-times/upsampling-times/%s-%ldx%ldx%ld-%s-%02ld.bytes", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * max_expansion));
+        sprintf(running_times_filename, "benchmarks/skeleton/running-times/upsampling-times/%s-%s-%03ldx%03ldx%03ld-%s.bytes", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], output_params);
 
         FILE *running_times_fp = fopen(running_times_filename, "wb");
         if (!running_times_fp) exit(-1);
@@ -418,96 +448,4 @@ void CppApplyUpsampleOperation(const char *prefix, long *input_segmentation, lon
     }
 
     delete[] running_times;
-}
-
-
-
-// operation that takes skeletons and 
-void CppNaiveUpsampleOperation(const char *prefix, long skeleton_resolution[3], const char *skeleton_algorithm, bool benchmark, double scale, long buffer)
-{
-    // get the mapping from downsampled locations to upsampled ones
-    if (!MapDown2Up(prefix, skeleton_resolution, benchmark)) return;
-
-    // I/O filenames
-    char input_filename[4096];
-    char output_filename[4096];
-    if (!strcmp(skeleton_algorithm, "teaser")) {
-        if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-%s-skeleton-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * scale), buffer);
-        else sprintf(input_filename, "skeletons/%s/downsample-%ldx%ldx%ld-%s-skeleton-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * scale), buffer);
-
-        if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%ldx%ldx%ld-%s-skeleton-naive-upsample-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * scale), buffer);
-        else sprintf(output_filename, "skeletons/%s/%ldx%ldx%ld-%s-skeleton-naive-upsample-%02ld-%02ld.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm, (long)(10 * scale), buffer);
-    }
-    else {
-        if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
-        else sprintf(input_filename, "skeletons/%s/downsample-%ldx%ldx%ld-%s-skeleton.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
-
-        if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%ldx%ldx%ld-%s-skeleton-naive-upsample.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
-        else sprintf(output_filename, "skeletons/%s/%ldx%ldx%ld-%s-skeleton-naive-upsample.pts", prefix, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z], skeleton_algorithm);
-    }
-
-    
-
-    // open files for read/write
-    FILE *rfp = fopen(input_filename, "rb");
-    if (!rfp) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-
-    FILE *wfp = fopen(output_filename, "wb");
-    if (!wfp) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
-
-    // read header
-    long max_label;
-    long input_grid_size[3];
-    if (fread(&(input_grid_size[IB_Z]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-    if (fread(&(input_grid_size[IB_Y]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-    if (fread(&(input_grid_size[IB_X]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-    if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-    
-    // write the header
-    if (fwrite(&(up_grid_size[IB_Z]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
-    if (fwrite(&(up_grid_size[IB_Y]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
-    if (fwrite(&(up_grid_size[IB_X]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
-    if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
-
-
-
-    // go through all skeletons
-    for (long label = 0; label < max_label; ++label) {
-        long nelements;
-        if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-        if (fwrite(&nelements, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
-
-        // find all of the downsampled elements
-        long *down_elements = new long[nelements];
-        if (fread(down_elements, sizeof(long), nelements, rfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
-
-        // find the upsampled elements
-        long *up_elements = new long[nelements];
-        for (long ie = 0; ie < nelements; ++ie) {
-            long down_index = down_elements[ie];
-            
-            // see if this skeleton location is actually an endpoint
-            if (down_index < 0) {
-                down_index = -1 * down_index;
-                up_elements[ie] = -1 * down_to_up[label][down_index];
-            }
-            else {
-                up_elements[ie] = down_to_up[label][down_index];
-            }
-        }
-
-        if (fwrite(up_elements, sizeof(long), nelements, wfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
-
-        // free memory
-        delete[] skeleton;
-        delete[] down_elements;
-        delete[] up_elements;
-    }
-
-    // free memory
-    delete[] down_to_up;
-
-    // close the files
-    fclose(rfp);
-    fclose(wfp);
 }
