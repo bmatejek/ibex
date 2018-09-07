@@ -374,6 +374,12 @@ void CppApplyUpsampleOperation(const char *prefix, const char *params, long *inp
                     up_elements[ie] = down_to_up[label][down_index];
                 }
             }
+            
+            if (fwrite(up_elements, sizeof(long), nelements, wfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+            
+            // free memory
+            delete[] down_elements;
+            delete[] up_elements;
         }
         else {
              //create an empty array for this skeleton
