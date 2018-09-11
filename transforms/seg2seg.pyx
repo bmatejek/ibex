@@ -81,7 +81,7 @@ def ForceConnectivity(segmentation):
 
 
 
-def DownsampleMapping(prefix, output_resolution=(100,100,100), benchmark=False):
+def DownsampleMapping(prefix, output_resolution=(80, 80, 80), benchmark=False):
     # benchmark data uses gold
     if benchmark: segmentation = dataIO.ReadGoldData(prefix)
     else: segmentation = dataIO.ReadSegmentationData(prefix)

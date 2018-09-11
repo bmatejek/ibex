@@ -24,7 +24,7 @@ cdef extern from 'cpp-generate_skeletons.h':
 
 
 # generate skeletons for this volume
-def TopologicalThinning(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, astar_expansion=1.5):
+def TopologicalThinning(prefix, skeleton_resolution=(80, 80, 80), benchmark=False, astar_expansion=0):
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
 
@@ -49,7 +49,7 @@ def TopologicalThinning(prefix, skeleton_resolution=(100, 100, 100), benchmark=F
 
 
 # use scipy skeletonization for thinning
-def MedialAxis(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, astar_expansion=1.5):
+def MedialAxis(prefix, skeleton_resolution=(80, 80, 80), benchmark=False, astar_expansion=0):
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
 
@@ -117,7 +117,7 @@ def MedialAxis(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, ast
 
 
 # use TEASER algorithm to generate skeletons
-def TEASER(prefix, skeleton_resolution=(100, 100, 100), benchmark=False, teaser_scale=1.3, teaser_buffer=2, astar_expansion=0):
+def TEASER(prefix, skeleton_resolution=(80, 80, 80), benchmark=False, teaser_scale=1.3, teaser_buffer=2, astar_expansion=0):
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
 
