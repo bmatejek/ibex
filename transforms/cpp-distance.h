@@ -1,2 +1,2 @@
-float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]);
-long *CppDilateData(long *data, long resolution[3], float distance);
+float *CppTwoDimensionalDistanceTransform(long *data, long grid_size[3]);
+void CppDilateData(long *data, long grid_size[3], float distance);

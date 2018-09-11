@@ -30,27 +30,28 @@ static long IndicesToIndex(long ix, long iy, long iz)
 
 
 
-float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3])
+float *CppTwoDimensionalDistanceTransform(long *data, long grid_size[3])
 {
     // initialize convenient variables for distances
-    nentries = resolution[IB_Z] * resolution[IB_Y] * resolution[IB_X];
-    sheet_size = resolution[IB_Y] * resolution[IB_X];
-    row_size = resolution[IB_X];
-    infinity = resolution[IB_Z] * resolution[IB_Z] + resolution[IB_Y] * resolution[IB_Y] + resolution[IB_X] * resolution[IB_X];
+    nentries = grid_size[IB_Z] * grid_size[IB_Y] * grid_size[IB_X];
+    sheet_size = grid_size[IB_Y] * grid_size[IB_X];
+    row_size = grid_size[IB_X];
+
+    infinity = grid_size[IB_Z] * grid_size[IB_Z] + grid_size[IB_Y] * grid_size[IB_Y] + grid_size[IB_X] * grid_size[IB_X];
 
     float *DBF = new float[nentries];
 
     // allocate memory for bounday map and distance transform
     float *b = new float[nentries];
-    for (long iz = 0; iz < resolution[IB_Z]; ++iz) {
-        for (long iy = 0; iy < resolution[IB_Y]; ++iy) {
-            for (long ix = 0; ix < resolution[IB_X]; ++ix) {
-                long label = segmentation[IndicesToIndex(ix, iy, iz)];
+    for (long iz = 0; iz < grid_size[IB_Z]; ++iz) {
+        for (long iy = 0; iy < grid_size[IB_Y]; ++iy) {
+            for (long ix = 0; ix < grid_size[IB_X]; ++ix) {
+                long label = data[IndicesToIndex(ix, iy, iz)];
 
-                if ((ix > 0 and segmentation[IndicesToIndex(ix - 1, iy, iz)] != label) ||
-                    (iy > 0 and segmentation[IndicesToIndex(ix, iy - 1, iz)] != label) ||
-                    (ix < resolution[IB_X] - 1 and segmentation[IndicesToIndex(ix + 1, iy, iz)] != label) ||
-                    (iy < resolution[IB_Y] - 1 and segmentation[IndicesToIndex(ix, iy + 1, iz)] != label)) {
+                if ((ix > 0 and data[IndicesToIndex(ix - 1, iy, iz)] != label) ||
+                    (iy > 0 and data[IndicesToIndex(ix, iy - 1, iz)] != label) ||
+                    (ix < grid_size[IB_X] - 1 and data[IndicesToIndex(ix + 1, iy, iz)] != label) ||
+                    (iy < grid_size[IB_Y] - 1 and data[IndicesToIndex(ix, iy + 1, iz)] != label)) {
                     b[IndicesToIndex(ix, iy, iz)] = 0;
                 }
                 else {
@@ -61,18 +62,18 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
     }
 
     // go along the y dimension second for every (z, x) coordinate
-    for (long iz = 0; iz < resolution[IB_Z]; ++iz) {
-        for (long ix = 0; ix < resolution[IB_X]; ++ix) {
+    for (long iz = 0; iz < grid_size[IB_Z]; ++iz) {
+        for (long ix = 0; ix < grid_size[IB_X]; ++ix) {
 
             long k = 0;
-            long *v = new long[resolution[IB_Y] + 1];
-            float *z = new float[resolution[IB_Y] + 1];
+            long *v = new long[grid_size[IB_Y] + 1];
+            float *z = new float[grid_size[IB_Y] + 1];
 
             v[0] = 0;
             z[0] = -1 * infinity;
             z[1] = infinity;
 
-            for (long q = 1; q < resolution[IB_Y]; ++q) {
+            for (long q = 1; q < grid_size[IB_Y]; ++q) {
                 // label for jump statement
                 ylabel:
                 float s = ((b[IndicesToIndex(ix, q, iz)] + q * q) - (b[IndicesToIndex(ix, v[k], iz)] + v[k] * v[k])) / (float)(2 * q - 2 * v[k]);
@@ -90,7 +91,7 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
             }
 
             k = 0;
-            for (long q = 0; q < resolution[IB_Y]; ++q) {
+            for (long q = 0; q < grid_size[IB_Y]; ++q) {
                 while (z[k + 1] < q)
                     ++k;
                 DBF[IndicesToIndex(ix, q, iz)] = (q - v[k]) * (q - v[k]) + b[IndicesToIndex(ix, v[k], iz)];
@@ -103,9 +104,9 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
     }
 
     // update the boundary values with this distance
-    for (long iz = 0; iz < resolution[IB_Z]; ++iz) {
-        for (long iy = 0; iy < resolution[IB_Y]; ++iy) {
-            for (long ix = 0; ix < resolution[IB_X]; ++ix) {
+    for (long iz = 0; iz < grid_size[IB_Z]; ++iz) {
+        for (long iy = 0; iy < grid_size[IB_Y]; ++iy) {
+            for (long ix = 0; ix < grid_size[IB_X]; ++ix) {
                 b[IndicesToIndex(ix, iy, iz)] = DBF[IndicesToIndex(ix, iy, iz)];
             }
         }
@@ -113,18 +114,18 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
 
 
     // go along the x dimension last for every (y, z) coordinate
-    for (long iy = 0; iy < resolution[IB_Y]; ++iy) {
-        for (long iz = 0; iz < resolution[IB_Z]; ++iz) {
+    for (long iy = 0; iy < grid_size[IB_Y]; ++iy) {
+        for (long iz = 0; iz < grid_size[IB_Z]; ++iz) {
 
             long k = 0;
-            long *v = new long[resolution[IB_X] + 1];
-            float *z = new float[resolution[IB_X] + 1];
+            long *v = new long[grid_size[IB_X] + 1];
+            float *z = new float[grid_size[IB_X] + 1];
 
             v[0] = 0;
             z[0] = -1 * infinity;
             z[1] = infinity;
 
-            for (long q = 1; q < resolution[IB_X]; ++q) {
+            for (long q = 1; q < grid_size[IB_X]; ++q) {
                 // label for jump statement
                 xlabel:
                 float s = ((b[IndicesToIndex(q, iy, iz)] + q * q) - (b[IndicesToIndex(v[k], iy, iz)] +  v[k] * v[k])) / (float)(2 * q - 2 * v[k]);
@@ -142,7 +143,7 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
             }
 
             k = 0;
-            for (long q = 0;  q < resolution[IB_X]; ++q) {
+            for (long q = 0;  q < grid_size[IB_X]; ++q) {
                 while (z[k + 1] < q)
                     ++k;
 
@@ -166,24 +167,20 @@ float *CppTwoDimensionalDistanceTransform(long *segmentation, long resolution[3]
 }
 
 
-long *CppDilateData(long *data, long resolution[3], float distance)
+
+void CppDilateData(long *data, long grid_size[3], float distance)
 {
     // initialize convenient variables for distances
-    nentries = resolution[IB_Z] * resolution[IB_Y] * resolution[IB_X];
-    sheet_size = resolution[IB_Y] * resolution[IB_X];
-    row_size = resolution[IB_X];
+    nentries = grid_size[IB_Z] * grid_size[IB_Y] * grid_size[IB_X];
 
-    float *distances = CppTwoDimensionalDistanceTransform(data, resolution);
+    // find the distance to each boundary for this data
+    float *distances = CppTwoDimensionalDistanceTransform(data, grid_size);
 
     // mask out distances that are two close
-    long *masked_data = new long[nentries];
     for (long iv = 0; iv < nentries; ++iv) {
-        if (distances[iv] <= distance) masked_data[iv] = 0;
-        else masked_data[iv] = data[iv];
+        if (distances[iv] <= distance) data[iv] = 0;
     }
 
     // free memory
     delete[] distances;
-
-    return masked_data;
 }
