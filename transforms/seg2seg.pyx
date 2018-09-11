@@ -11,8 +11,8 @@ from ibex.utilities import dataIO
 
 cdef extern from 'cpp-seg2seg.h':
     void CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
-    long *CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long nentries)
-    long *CppForceConnectivity(long *segmentation, long grid_size[3])
+    void CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long nentries)
+    void CppForceConnectivity(long *segmentation, long grid_size[3])
     void CppDownsampleMapping(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_grid_size[3], bool benchmark)
     
 
@@ -27,8 +27,6 @@ def MapLabels(segmentation, mapping):
 
     CppMapLabels(&(cpp_segmentation[0,0,0]), &(cpp_mapping[0]), nentries)
 
-    return segmentation
-
 
 
 # remove the components less than min size
@@ -39,11 +37,7 @@ def RemoveSmallConnectedComponents(segmentation, threshold=64):
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation= np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
     
     # call the c++ function
-    cdef long[:] updated_segmentation = <long[:segmentation.size]> CppRemoveSmallConnectedComponents(&(cpp_segmentation[0,0,0]), threshold, nentries)
-
-    # reshape the array to the original shape
-    thresholded_segmentation = np.reshape(np.asarray(updated_segmentation), segmentation.shape)	
-    return np.copy(thresholded_segmentation)
+    CppRemoveSmallConnectedComponents(&(cpp_segmentation[0,0,0]), threshold, nentries)
 
 
 
@@ -81,13 +75,9 @@ def ForceConnectivity(segmentation):
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_grid_size = np.ascontiguousarray(segmentation.shape, dtype=ctypes.c_int64)
 
     # call the c++ function
-    cdef long[:] cpp_components = <long[:segmentation.size]> CppForceConnectivity(&(cpp_segmentation[0,0,0]), &(cpp_grid_size[0]))
-
-    # reshape the array to the original shape
-    components = np.reshape(np.asarray(cpp_components), segmentation.shape).astype(np.int32)
-
-    # find which segments have multiple components
-    return components
+    CppForceConnectivity(&(cpp_segmentation[0,0,0]), &(cpp_grid_size[0]))
+    
+    del cpp_grid_size
 
 
 
@@ -109,5 +99,11 @@ def DownsampleMapping(prefix, output_resolution=(100,100,100), benchmark=False):
 
     # call c++ function
     CppDownsampleMapping(prefix, &(cpp_segmentation[0,0,0]), &(cpp_input_resolution[0]), &(cpp_output_resolution[0]), &(cpp_input_grid_size[0]), benchmark)
+
+    # free memory
+    del cpp_segmentation
+    del cpp_input_resolution
+    del cpp_output_resolution
+    del cpp_input_grid_size
 
     print 'Downsampling to resolution {} in {} seconds'.format(output_resolution, time.time() - start_time)

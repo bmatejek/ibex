@@ -72,7 +72,7 @@ static void PopulateOffsets(void)
 
 
 
-void CppMapLabels(long *segmentation, long *mapping, unsigned long input_nentries)
+void *CppMapLabels(long *segmentation, long *mapping, unsigned long input_nentries)
 {
     for (unsigned long iv = 0; iv < input_nentries; ++iv) {
         segmentation[iv] = mapping[segmentation[iv]];
@@ -81,11 +81,9 @@ void CppMapLabels(long *segmentation, long *mapping, unsigned long input_nentrie
 
 
 
-long *CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long input_nentries)
+void CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long input_nentries)
 {
-    if (threshold == 0) return segmentation;
-
-    long *thresholded_segmentation = new long[input_nentries];
+    if (threshold == 0) return;
 
     // find the maximum label
     long max_segment_label = 0;
@@ -107,23 +105,17 @@ long *CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsig
 
     // create the array for the updated segmentation
     for (unsigned long iv = 0; iv < input_nentries; ++iv) {
-        if (nvoxels_per_segment[segmentation[iv]] < threshold) thresholded_segmentation[iv] = 0;
-        else thresholded_segmentation[iv] = segmentation[iv];
+        if (nvoxels_per_segment[segmentation[iv]] < threshold) segmentation[iv] = 0;
     }
 
     // free memory
     delete[] nvoxels_per_segment;
-
-    return thresholded_segmentation;
 }
 
 
 
 
-
-
-
-long *CppForceConnectivity(long *segmentation, long grid_size[3])
+void CppForceConnectivity(long *segmentation, long grid_size[3])
 {
     // create the new components array
     nentries = grid_size[IB_Z] * grid_size[IB_Y] * grid_size[IB_X];
@@ -217,15 +209,14 @@ long *CppForceConnectivity(long *segmentation, long grid_size[3])
 
     // update the segmentation
     for (long iv = 0; iv < nentries; ++iv) {
-        if (!segmentation[iv]) components[iv] = 0;
-        else components[iv] = comp2seg[components[iv]];
+        if (!segmentation[iv]) segmentation[iv] = 0;
+        else segmentation[iv] = comp2seg[components[iv]];
     }
 
     // free memory
     delete[] seg2comp;
     delete[] comp2seg;
-
-    return components;
+    delete[] components;
 }
 
 
