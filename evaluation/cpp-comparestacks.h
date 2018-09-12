@@ -1,1 +1,1 @@
-void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_ground_truth);
+double *CppEvaluate(long *segmentation, long *gold, long grid_size[3], long *ground_truth_masks, long nmasks);

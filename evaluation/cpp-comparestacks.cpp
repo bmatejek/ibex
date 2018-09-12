@@ -1,8 +1,8 @@
-#include <ctime>
 #include <math.h>
 #include <stdio.h>
 #include <assert.h>
-#include <map>
+#include <unordered_map>
+#include <unordered_set>
 
 
 
@@ -23,23 +23,20 @@ static long NChoose2(long N)
 
 
 
-void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_ground_truth)
+double *CppEvaluate(long *segmentation, long *gold, long grid_size[3], long *ground_truth_masks, long nmasks)
 {
     // get convenient variables
-    long zres = resolution[IB_Z];
-    long yres = resolution[IB_Y];
-    long xres = resolution[IB_X];
-    long nentries = zres * yres * xres;
-    long nnonzero = nentries;
+    long nentries = grid_size[IB_Z] * grid_size[IB_Y] * grid_size[IB_X];
 
-
-    // start stopwatch
-    clock_t t1, t2;
-    t1 = clock();
+    // create a set of invalid ground truth locations
+    std::unordered_set<long> masked_gold_labels = std::unordered_set<long>();
+    for (long iv = 0; iv < nmasks; ++iv)
+        masked_gold_labels.insert(ground_truth_masks[iv]);
 
     // update the number of nonzero if mask is on 
+    long nnonzero = 0;
     for (long iv = 0; iv < nentries; ++iv) {
-        if (!gold[iv]) nnonzero--;
+        if (masked_gold_labels.find(gold[iv]) == masked_gold_labels.end()) nnonzero++;
     }
 
     // get the maximum value for the segmentation and gold volumes
@@ -52,129 +49,58 @@ void CppEvaluate(long *segmentation, long *gold, long resolution[3], bool mask_g
     ++max_segment;
     ++max_gold;
 
-    // get an array for segment values that occur
-    bool *segment_exists = new bool[max_segment];
-    bool *gold_exists = new bool[max_gold];
-    for (long is = 0; is < max_segment; ++is)
-        segment_exists[is] = false;
-    for (long ig = 0; ig < max_gold; ++ig)
-        gold_exists[ig] = false;
+    // create mappings from ij, i, and j to number of elements
+    std::unordered_map<long, long> c = std::unordered_map<long, long>();
+    std::unordered_map<long, long> s = std::unordered_map<long, long>();
+    std::unordered_map<long, long> t = std::unordered_map<long, long>();
     for (long iv = 0; iv < nentries; ++iv) {
-        segment_exists[segmentation[iv]] = true;
-        gold_exists[gold[iv]] = true;
-    }
-    // populate values for joint sets
-    std::map<long, std::map<long, long> > c = std::map<long, std::map<long, long> >();   
-    for (long is = 0; is < max_segment; ++is) {
-        if (segment_exists[is]) {
-            c.insert(std::pair<long, std::map<long, long> >(is, std::map<long, long>()));
-        }
-    }
-    for (long iv = 0; iv < nentries; ++iv)
-        c[segmentation[iv]][gold[iv]]++;
-    std::map<long, long> s = std::map<long, long>();
-    std::map<long, long> t = std::map<long, long>();
-    for (long is = 0; is < max_segment; ++is) {
-        if (not segment_exists[is]) continue;
-        for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
-            if (not gold_exists[ig]) continue;
-            if (not c[is].count(ig)) continue;
-            s[is] += c[is][ig];
-        }
-    }
-    for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
-        if (not gold_exists[ig]) continue;
-        for (long is = 0; is  < max_segment; ++is) {
-            if (not segment_exists[is]) continue;
-            if (not c[is].count(ig)) continue;
-            t[ig] += c[is][ig];
-        }
+        if (masked_gold_labels.find(gold[iv]) != masked_gold_labels.end()) continue;
+
+        c[segmentation[iv] * max_gold + gold[iv]]++;
+        s[segmentation[iv]]++;
+        t[gold[iv]]++;
     }
 
-    /*long **c = new long *[max_segment];
-    for (long is = 0; is < max_segment; ++is) {
-        c[is] = new long[max_gold];
-        for (long ig = 0; ig < max_gold; ++ig) {
-            c[is][ig] = 0;
-        }
-    }
-    for (long iv = 0; iv < nentries; ++iv) {
-        c[segmentation[iv]][gold[iv]]++;
-    }
-
-    // populate values for s and t sets
-    long *s = new long[max_segment];
-    for (long is = 0; is < max_segment; ++is) {
-        s[is] = 0;
-        for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
-            s[is] += c[is][ig];
-        }
-    }
-    long *t = new long[max_gold];
-    for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
-        t[ig] = 0;
-        for (long is = 0; is < max_segment; ++is) {
-            t[ig] += c[is][ig];
-        }
-    }*/
-
-
-    // calculate the number of true and false positives and negatives
     long TP = 0;
-    for (long is = 0; is < max_segment; ++is) {
-        if (not segment_exists[is]) continue;
-        for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
-            if (not gold_exists[is]) continue;
-            if (not c[is].count(ig)) continue;
-            TP += NChoose2(c[is][ig]);
-        }
+    std::unordered_map<long, long>::iterator it;
+    for (it = c.begin(); it != c.end(); ++it) {
+        TP += NChoose2(it->second);
     }
     long TP_FP = 0;
-    for (long is = 0; is < max_segment; ++is) {
-        if (not segment_exists[is]) continue;
-        TP_FP += NChoose2(s[is]);
+    for (it = s.begin(); it != s.end(); ++it) {
+        TP_FP += NChoose2(it->second);
     }
     long TP_FN = 0;
-    for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
-        if (not gold_exists[ig]) continue;
-        TP_FN += NChoose2(t[ig]);
+    for (it = t.begin(); it != t.end(); ++it) {
+        TP_FN += NChoose2(it->second);
     }
     long FP = TP_FP - TP;
     long FN = TP_FN - TP;
 
-    printf("Rand Error Full: %lf\n", (FP + FN) / (double) (NChoose2(nnonzero)));
-    printf("Rand Error Merge: %lf\n", FP / (double) (NChoose2(nnonzero)));
-    printf("Rand Error Split: %lf\n", FN / (double) (NChoose2(nnonzero)));
-
-
-
-    // calculate the variation of information
     double VI_split = 0.0;
     double VI_merge = 0.0;
 
-    for (long is = 0; is < max_segment; ++is) {
-        if (not segment_exists[is]) continue;
+    for (it = c.begin(); it != c.end(); ++it) {
+        long index = it->first;
+
+        // get the segmentation and gold variables
+        long is = index / max_gold;
+        long ig = index % max_gold;
+
         double spi = s[is] / (double)nnonzero;
-        for (long ig = mask_ground_truth; ig < max_gold; ++ig) {
-            if (not gold_exists[is]) continue;
-            if (not c[is].count(ig)) continue;
-            double tpj = t[ig] / (double)nnonzero;
-            double pij = c[is][ig] / (double)nnonzero;
+        double tpj = t[ig] / (double)nnonzero;
+        double pij = it->second / (double)nnonzero;
 
-            VI_split = VI_split - pij * log(pij / tpj);
-            VI_merge = VI_merge - pij * log(pij / spi);
-        }
+        VI_split -= pij * log2(pij / tpj);
+        VI_merge -= pij * log2(pij / spi);
     }
+    
+    // populate the results array and return
+    double *results = new double[4];
+    results[0] = FP / (double) (NChoose2(nnonzero));
+    results[1] = FN / (double) (NChoose2(nnonzero));
+    results[2] = VI_merge;
+    results[3] = VI_split;
 
-    printf("Variation of Information Full: %lf\n", VI_split + VI_merge);
-    printf("Variation of Information Merge: %lf\n", VI_merge);
-    printf("Variation of Information Split: %lf\n", VI_split);
-
-    // free memory
-    delete[] segment_exists;
-    delete[] gold_exists;
-
-    // end stopwatch
-    t2 = clock();
-    printf("\n running time: %lf\n", ((float)t2 - (float)t1) / CLOCKS_PER_SEC);
+    return results;
 }
