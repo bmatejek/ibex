@@ -4,9 +4,9 @@ import numpy as np
 import ctypes
 
 cdef extern from 'cpp-seg2gold.h':
-    long *CppMapping(long *segmentation, int *gold, long nentries, double match_threshold, double nonzero_threshold)
+    long *CppMapping(long *segmentation, long *gold, long nentries, double match_threshold, double nonzero_threshold)
 
-def Mapping(segmentation, gold, match_threshold=0.70, nonzero_threshold=0.40):
+def Mapping(segmentation, gold, match_threshold=0.80, nonzero_threshold=0.40):
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
     cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
     cdef np.ndarray[int, ndim=3, mode='c'] cpp_gold
