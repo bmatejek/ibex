@@ -94,7 +94,7 @@ double *CppEvaluate(long *segmentation, long *gold, long grid_size[3], long *gro
         VI_split -= pij * log2(pij / tpj);
         VI_merge -= pij * log2(pij / spi);
     }
-    
+
     // populate the results array and return
     double *results = new double[4];
     results[0] = FP / (double) (NChoose2(nnonzero));

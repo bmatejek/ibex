@@ -15,9 +15,9 @@ cdef extern from 'cpp-comparestacks.h':
 
 def VariationOfInformation(input_segmentation, input_gold, dilate_ground_truth=2, input_ground_truth_masks=[0], filtersize=0):
     # need to copy the data since there are mutable opeartions below
-    segmentation = np.copy(input_segmentation)
-    gold = np.copy(input_gold)
-    ground_truth_masks = np.copy(input_ground_truth_masks)
+    segmentation = np.copy(input_segmentation).astype(np.int64)
+    gold = np.copy(input_gold).astype(np.int64)
+    ground_truth_masks = np.copy(input_ground_truth_masks).astype(np.int64)
     assert (segmentation.shape == gold.shape)
 
     # remove all small connected components
