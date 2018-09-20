@@ -53,10 +53,10 @@ long *CppMapping(long *segmentation, long *gold, long nentries, double match_thr
             }
         }
 
-        // the number of matching gold values divided by the number of non zero pixels must be greater than the match threshold or it is a merge error
-        if (gold_max_value / (double)(nvoxels_per_segment[is] - seg2gold_overlap[is][0]) < match_threshold) segmentation_to_gold[is] = -1;
         // number of non zero pixels must be greater than the nonzero threshold
-        else if ((double)(nvoxels_per_segment[is] - seg2gold_overlap[is][0]) / nvoxels_per_segment[is] < nonzero_threshold) segmentation_to_gold[is] = 0;
+        if ((double)(nvoxels_per_segment[is] - seg2gold_overlap[is][0]) / nvoxels_per_segment[is] < nonzero_threshold) segmentation_to_gold[is] = 0;
+        // the number of matching gold values divided by the number of non zero pixels must be greater than the match threshold or it is a merge error
+        else if (gold_max_value / (double)(nvoxels_per_segment[is] - seg2gold_overlap[is][0]) < match_threshold) segmentation_to_gold[is] = -1;
         else segmentation_to_gold[is] = gold_id;
     }
 

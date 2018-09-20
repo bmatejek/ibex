@@ -18,7 +18,7 @@ static long sheet_size;
 
 
 
-void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
+static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
 {
     iz = iv / sheet_size;
     iy = (iv - iz * sheet_size) / row_size;
@@ -27,7 +27,7 @@ void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
 
 
 
-long IndiciesToIndex(long ix, long iy, long iz)
+static long IndiciesToIndex(long ix, long iy, long iz)
 {
     return iz * sheet_size + iy * row_size + ix;
 }

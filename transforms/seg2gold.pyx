@@ -9,8 +9,8 @@ cdef extern from 'cpp-seg2gold.h':
 def Mapping(segmentation, gold, match_threshold=0.80, nonzero_threshold=0.40):
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation
     cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
-    cdef np.ndarray[int, ndim=3, mode='c'] cpp_gold
-    cpp_gold = np.ascontiguousarray(gold, dtype=ctypes.c_int32)
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_gold
+    cpp_gold = np.ascontiguousarray(gold, dtype=ctypes.c_int64)
 
     max_segmentation = np.amax(segmentation) + 1
 
