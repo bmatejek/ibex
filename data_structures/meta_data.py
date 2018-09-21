@@ -29,7 +29,7 @@ class MetaData:
                 if comment == '# resolution in nm':
                     # separate into individual dimensions
                     samples = value.split('x')
-                    self.resolution = (int(samples[2]), int(samples[1]), int(samples[0]))
+                    self.resolution = (float(samples[2]), float(samples[1]), float(samples[0]))
                 elif comment == '# affinity filename':
                     self.affinity_filename = value
                 elif comment == '# boundary filename':
