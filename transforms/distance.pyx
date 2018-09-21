@@ -12,6 +12,9 @@ cdef extern from 'cpp-distance.h':
 
 # get the two dimensional distance transform
 def TwoDimensionalDistanceTransform(data):
+    # convert segmentation to int64
+    if not data.dtype == np.int64: data = data.astype(np.int64)
+
     # convert numpy array to c++
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_data = np.ascontiguousarray(data, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_grid_size = np.ascontiguousarray(data.shape, dtype=ctypes.c_int64)
@@ -27,6 +30,9 @@ def TwoDimensionalDistanceTransform(data):
 
 # dilate segments from boundaries
 def DilateData(data, distance):
+    # convert segmentation to int64
+    if not data.dtype == np.int64: data = data.astype(np.int64)
+
     # convert numpy array to c++
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_data = np.ascontiguousarray(data, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_grid_size = np.ascontiguousarray(data.shape, dtype=ctypes.c_int64)

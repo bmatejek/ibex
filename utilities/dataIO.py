@@ -33,9 +33,9 @@ def ReadH5File(filename, dataset=None):
         if dataset == None: data = np.array(hf[hf.keys()[0]])
         else: data = np.array(hf[dataset])
 
-    # return the data
-    return data
-
+    # allow affinities and images to not be int64, everything else gets converted
+    if data.dtype == np.float32 or data.dtype == np.uint8: return data
+    else: return data.astype(np.int64)
 
 
 def IsIsotropic(prefix):

@@ -14,7 +14,7 @@ static long row_size;
 
 
 
-static double threshold = 0.5;
+static double threshold = 0.2;
 
 
 static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
@@ -33,63 +33,91 @@ static long IndiciesToIndex(long ix, long iy, long iz)
 
 
 
-struct Singleton {
-    Singleton(void) { xy_indices = NULL; nvoxels = 0; iz = -1; }
-    Singleton(long nelements) { xy_indices = new long[nelements]; nvoxels = 0; iz = -1; }
-    ~Singleton() {  }
-
-    long *xy_indices;
-    long nvoxels;
-    long iz;
-};
+static long offsets[26];
 
 
 
-long *CppFindZSingletons(long *segmentation, long grid_size[3])
+static void PopulateOffsets(void)
+{
+    offsets[0] = -1 * sheet_size - row_size - 1;
+    offsets[1] = -1 * sheet_size - row_size;
+    offsets[2] = -1 * sheet_size - row_size + 1;
+    offsets[3] = -1 * sheet_size - 1;
+    offsets[4] = -1 * sheet_size;
+    offsets[5] = -1 * sheet_size + 1;
+    offsets[6] = -1 * sheet_size + row_size - 1;
+    offsets[7] = -1 * sheet_size + row_size;
+    offsets[8] = -1 * sheet_size + row_size + 1;
+
+    offsets[9] = -1 * row_size - 1;
+    offsets[10] = -1 * row_size;
+    offsets[11] = -1 * row_size + 1;
+    offsets[12] = - 1;
+    offsets[13] = + 1;
+    offsets[14] = row_size - 1;
+    offsets[15] = row_size;
+    offsets[16] = row_size + 1;
+
+    offsets[17] = sheet_size - row_size - 1;
+    offsets[18] = sheet_size - row_size;
+    offsets[19] = sheet_size - row_size + 1;
+    offsets[20] = sheet_size - 1;
+    offsets[21] = sheet_size;
+    offsets[22] = sheet_size + 1;
+    offsets[23] = sheet_size + row_size - 1;
+    offsets[24] = sheet_size + row_size;
+    offsets[25] = sheet_size + row_size + 1;
+}
+
+
+
+long *CppLocateSingletons(long *segmentation, long grid_size[3])
 {
     // set useful global variables
     nentries = grid_size[IB_Z] * grid_size[IB_Y] * grid_size[IB_X];
     sheet_size = grid_size[IB_Y] * grid_size[IB_X];
     row_size = grid_size[IB_X];
 
-    // get the maximum label
+    // find the total number of labels
     long maximum_label = 0;
     for (long iv = 0; iv < nentries; ++iv) {
         if (segmentation[iv] > maximum_label) maximum_label = segmentation[iv];
     }
     ++maximum_label;
 
-    // count the number of voxels per segment
-    long *nvoxels_per_segment = new long[maximum_label];
-    for (long iv = 0; iv < maximum_label; ++iv)
-        nvoxels_per_segment[iv] = 0;
+    // every label will start with long -2, as soon as it appears in a z slice it will be updated with that value
+    // as soon as another z slice appears for this segment (i.e., singleton[segmentation[iv]] != -1 or iz), it is not a singleton (label -1)
+    long *singleton = new long[maximum_label];
+    for (long is = 0; is < maximum_label; ++is)
+        singleton[is] = -2;
 
-    std::unordered_set<long> *zslices_per_label = new std::unordered_set<long>[maximum_label];
+    long iv = 0;
+    for (long iz = 0; iz < grid_size[IB_Z]; ++iz) {
+        for (long iy = 0; iy < grid_size[IB_Y]; ++iy) {
+            for (long ix = 0; ix < grid_size[IB_X]; ++ix, ++iv) {
+                long label = segmentation[iv];
+                if (singleton[label] == -2) singleton[label] = iz;
+                else if (singleton[label] != iz) singleton[label] = -1;
+            }
+        }
+    }
+
+    long nsingletons = 0;
     for (long is = 0; is < maximum_label; ++is) {
-        zslices_per_label[is] = std::unordered_set<long>();
+        if (singleton[is] >= 0) nsingletons++;
     }
 
-    // add each corresponding z slice for each segment
-    for (long iv = 0; iv < nentries; ++iv) {
-        long ix, iy, iz;
-        IndexToIndicies(iv, ix, iy, iz);
+    printf("No. singletons: %ld\n", nsingletons);
 
-        long segment = segmentation[iv];
 
-        zslices_per_label[segment].insert(iz);
 
-        nvoxels_per_segment[segment] += 1;
-    }
 
-    // count the number of segments that have only one z slice
-    bool *is_singleton = new bool[maximum_label];
-    for (long is = 0; is < maximum_label; ++is) {
-        if (zslices_per_label[is].size() == 1) is_singleton[is] = true;
-    }
 
-    // free memory  
-    delete[] zslices_per_label;
 
+
+
+
+/*
     std::unordered_map<long, long> voxel_matches = std::unordered_map<long, long>();
 
     for (long iz = 0; iz < grid_size[IB_Z] - 1; ++iz) {
@@ -134,11 +162,11 @@ long *CppFindZSingletons(long *segmentation, long grid_size[3])
 
     long *matches = new long[pairs.size() + 1];
     matches[0] = pairs.size();
-    for (long iv = 0; iv < pairs.size(); ++iv) {
+    for (unsigned long iv = 0; iv < pairs.size(); ++iv) {
         matches[iv + 1] = pairs[iv];
     }
 
     delete[] nvoxels_per_segment;
-
-    return matches;
+*/
+    return NULL;
 }

@@ -1,1 +1,1 @@
-long *CppFindZSingletons(long *segmentation, long grid_size[3]);
+long *CppLocateSingletons(long *segmentation, long grid_size[3]);

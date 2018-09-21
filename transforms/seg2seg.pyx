@@ -19,6 +19,10 @@ cdef extern from 'cpp-seg2seg.h':
 
 # map the labels from this segmentation
 def MapLabels(segmentation, mapping):
+    # convert segmentation to int64
+    if not segmentation.dtype == np.int64: segmentation = segmentation.astype(np.int64)
+    mapping = np.copy(mapping).astype(np.int64)
+
     # get the size of the data
     nentries = segmentation.size
 
@@ -30,8 +34,11 @@ def MapLabels(segmentation, mapping):
 
 
 # remove the components less than min size
-def RemoveSmallConnectedComponents(segmentation, threshold=64):
+def RemoveSmallConnectedComponents(segmentation, threshold=64):  
     if threshold == 0: return segmentation
+
+    # convert segmentation to int64
+    if not segmentation.dtype == np.int64: segmentation = segmentation.astype(np.int64)
 
     nentries = segmentation.size
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation= np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
@@ -70,6 +77,9 @@ def ReduceLabels(segmentation):
 
 
 def ForceConnectivity(segmentation):
+    # convert segmentation to int64
+    if not segmentation.dtype == np.int64: segmentation = segmentation.astype(np.int64)
+
     # transform into c array
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_grid_size = np.ascontiguousarray(segmentation.shape, dtype=ctypes.c_int64)
@@ -85,6 +95,9 @@ def DownsampleMapping(prefix, output_resolution=(80, 80, 80), benchmark=False):
     # benchmark data uses gold
     if benchmark: segmentation = dataIO.ReadGoldData(prefix)
     else: segmentation = dataIO.ReadSegmentationData(prefix)
+
+    # convert segmentation to int64
+    if not segmentation.dtype == np.int64: segmentation = segmentation.astype(np.int64)
 
     # ignore time to read data
     start_time = time.time()
