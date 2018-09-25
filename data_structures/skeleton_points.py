@@ -12,7 +12,7 @@ class Skeleton:
         self.joints = joints
         self.endpoints = endpoints
 
-    def Size(self):
+    def NPoints(self):
         return len(self.joints) + len(self.endpoints)
 
     def Endpoints2Array(self):
@@ -54,8 +54,8 @@ class Skeleton:
         return array
 
 
-class ReadSkeletons:
-    def __init__(self, prefix, skeleton_algorithm='thinning', downsample_resolution=(80, 80, 80), benchmark=False, parmas='00'):
+class Skeletons:
+    def __init__(self, prefix, skeleton_algorithm, downsample_resolution, benchmark, params):
         self.skeletons = []
 
         # read in all of the skeleton points
@@ -87,3 +87,10 @@ class ReadSkeletons:
                     else: joints.append((iz, iy, ix))
 
                 self.skeletons.append(Skeleton(label, joints, endpoints))
+
+    def NSkeletons(self):
+        return len(self.skeletons)
+
+
+    def KthSkeleton(self, k):
+        return self.skeletons[k]

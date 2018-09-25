@@ -77,8 +77,8 @@ def ReadImageData(prefix):
 
 
 
-def ReadSkeletons(prefix, skeleton_algorithm='thinning', downsample_resolution=(100, 100, 100), benchmark=False):
-    skeletons = skeleton_points.Skeletons(prefix, skeleton_algorithm, downsample_resolution, benchmark)
+def ReadSkeletons(prefix, skeleton_algorithm='thinning', downsample_resolution=(80, 80, 80), benchmark=False, params='00'):
+    skeletons = skeleton_points.Skeletons(prefix, skeleton_algorithm, downsample_resolution, benchmark, params)
 
     return skeletons
 
