@@ -28,6 +28,9 @@ def TopologicalThinning(prefix, skeleton_resolution=(80, 80, 80), benchmark=Fals
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
 
+    if benchmark and not os.path.isdir('benchmarks/skeleton'): os.mkdir('benchmarks/skeleton')
+    elif not benchmark and not os.path.isdir('skeletons/{}'.format(prefix)): os.mkdir('skeletons/{}'.format(prefix))
+
     # convert segmentation to int64
     if not input_segmentation.dtype == np.int64: input_segmentation = input_segmentation.astype(np.int64)
 
@@ -55,6 +58,9 @@ def TopologicalThinning(prefix, skeleton_resolution=(80, 80, 80), benchmark=Fals
 def MedialAxis(prefix, skeleton_resolution=(80, 80, 80), benchmark=False, astar_expansion=0):
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
+
+    if benchmark and not os.path.isdir('benchmarks/skeleton'): os.mkdir('benchmarks/skeleton')
+    elif not benchmark and not os.path.isdir('skeletons/{}'.format(prefix)): os.mkdir('skeletons/{}'.format(prefix))
 
     # convert segmentation to int64
     if not input_segmentation.dtype == np.int64: input_segmentation = input_segmentation.astype(np.int64)
@@ -126,6 +132,9 @@ def MedialAxis(prefix, skeleton_resolution=(80, 80, 80), benchmark=False, astar_
 def TEASER(prefix, skeleton_resolution=(80, 80, 80), benchmark=False, teaser_scale=1.3, teaser_buffer=2, astar_expansion=0):
     if benchmark: input_segmentation = dataIO.ReadGoldData(prefix)
     else: input_segmentation = dataIO.ReadSegmentationData(prefix)
+
+    if benchmark and not os.path.isdir('benchmarks/skeleton'): os.mkdir('benchmarks/skeleton')
+    elif not benchmark and not os.path.isdir('skeletons/{}'.format(prefix)): os.mkdir('skeletons/{}'.format(prefix))
 
     # convert segmentation to int64
     if not input_segmentation.dtype == np.int64: input_segmentation = input_segmentation.astype(np.int64)

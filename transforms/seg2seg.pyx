@@ -5,6 +5,7 @@ from libcpp cimport bool
 import numpy as np
 import scipy.ndimage
 import time
+import os
 
 from ibex.utilities import dataIO
 
@@ -95,6 +96,9 @@ def DownsampleMapping(prefix, output_resolution=(80, 80, 80), benchmark=False):
     # benchmark data uses gold
     if benchmark: segmentation = dataIO.ReadGoldData(prefix)
     else: segmentation = dataIO.ReadSegmentationData(prefix)
+
+    if benchmark and not os.path.isdir('benchmarks/skeleton'): os.mkdir('benchmarks/skeleton')
+    elif not benchmark and not os.path.isdir('skeletons/{}'.format(prefix)): os.mkdir('skeletons/{}'.format(prefix))
 
     # convert segmentation to int64
     if not segmentation.dtype == np.int64: segmentation = segmentation.astype(np.int64)
