@@ -1,7 +1,7 @@
 import os
 import h5py
 import numpy as np
-from ibex.data_structures import meta_data, skeleton
+from ibex.data_structures import meta_data, skeleton_points
 from ibex.utilities.constants import *
 from PIL import Image
 import imageio
@@ -78,7 +78,7 @@ def ReadImageData(prefix):
 
 
 def ReadSkeletons(prefix, skeleton_algorithm='thinning', downsample_resolution=(100, 100, 100), benchmark=False):
-    skeletons = skeleton.Skeletons(prefix, skeleton_algorithm, downsample_resolution, benchmark)
+    skeletons = skeleton_points.Skeletons(prefix, skeleton_algorithm, downsample_resolution, benchmark)
 
     return skeletons
 
