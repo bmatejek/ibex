@@ -15,6 +15,12 @@ class Skeleton:
     def NPoints(self):
         return len(self.joints) + len(self.endpoints)
 
+    def NEndpoints(self):
+        return len(self.endpoints)
+
+    def NJoints(self):
+        return len(self.joints)
+
     def Endpoints2Array(self):
         nendpoints = len(self.endpoints)
 
@@ -48,7 +54,7 @@ class Skeleton:
             array[index] = (endpoint[IB_Z] * resolution[IB_Z], endpoint[IB_Y] * resolution[IB_Y], endpoint[IB_X] * resolution[IB_X])
             index += 1
         for joint in self.joints:
-            array[index] = (joint[IB_Z] * resolution[IB_Z], endpoint[IB_Y] * resolution[IB_Y], endpoint[IB_X] * resolution[IB_X])
+            array[index] = (joint[IB_Z] * resolution[IB_Z], joint[IB_Y] * resolution[IB_Y], joint[IB_X] * resolution[IB_X])
             index += 1
 
         return array
