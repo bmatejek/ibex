@@ -4,7 +4,7 @@
 \documentclass[runningheads]{llncs}
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb} % define this before the line numbering.
-%\usepackage{ruler}
+\usepackage{ruler}
 \usepackage{color}
 \usepackage{subfig}
 \usepackage{times}
@@ -35,8 +35,12 @@
 
 %\titlerunning{Biologically-Constrained Region Merging for Connectome Reconstruction}
 %\authorrunning{B. Matejek et al.}
-\title{Biologically-Constrained Region Merging for Connectome Reconstruction}
-
+\title{Rebuttal: Biologically-Constrained Region Merging for Connectome Reconstruction }
+\def\ECCV18SubNumber{534}  % Insert your submission number here
+\titlerunning{ECCV-18 submission ID \ECCV18SubNumber}
+\authorrunning{ECCV-18 submission ID \ECCV18SubNumber}
+\author{Anonymous ECCV submission}
+\institute{Paper ID \ECCV18SubNumber}
 %\author{Brian Matejek, Daniel Haehn, Donglai Wei, Toufiq Parag, Hanspeter Pfister}
 %\institute{Harvard University, Cambridge, MA 02138, USA\\
 %	\email{bmatejek,haehn,donglai,paragt,pfister@seas.harvard.edu}}
@@ -44,9 +48,66 @@
 \newcommand\TODO[1]{\textcolor{red}{#1}}
 
 \maketitle
+% \textcolor{red}{Toufiq's comment on skeletons, feel free to polish, correct,fill in.}
+% Skeletonization is a fundamental step in our algorithm that makes it practical and differentiates out effirt from all others in the community. 
 
-Hello World
-	
+\noindent
+We would like to thank the reviewers for their valuable feedback.
+
+\noindent
+\textbf{[R1]} There is a benefit to our method to improving the understanding of the biology.
+One of the main goals of connectomics is to extract the wiring diagram from a brain.
+This requires identifying individual neurons and the synapses between them.
+These pre-synaptic connections occur on dendritic spines and therefore it is essential to correctly segment the spiny components from the main neuron.
+Figure [ADD] in Section [ADD] shows how we improve the segmentation of one of these dendrites.
+
+\noindent
+\textbf{[R2]} The skeleton-based graph generation approach greatly reduces the number of edges in our graph. 
+It also enables us to detect neuronal processes that have non-adjacent labels. 
+This can occur if there is a deformation or image artifact in the corresponding image region.
+We discuss this in Section 5.1 under Graph Generation and show examples in Figure 7, bottom.
+Additionally, since there are is a computational dependence for each subsequent step in the pipeline, it is important to prune the graph of edges between correctly segment processes.
+We discuss the effectiveness of this strategy in Table 1 of the submission.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\linewidth]{./figures/CNN-Input.pdf}
+\caption{An example input to our 3D CNN with the three different channels (left). We do not use the skeletons as input into our CNN because of some artifacts from the skeletonization algorithm (right).}
+\label{fig:cnn-input}
+\end{figure}
+
+\noindent
+\textbf{[R1, R2]} Figure~\ref{fig:cnn-input}, left, shows a typical input example given to our CNN. 
+We extract a cubic region of interest (ROI) with 1200 nanometer sides.
+The center of the ROI is determined by the skeletons of the corresponding segments.
+We upsample and downsample the ROI as needed to fit the CNN input size of $84\times84\times26$ voxels.
+We have three input channels to our network, shown below the input example.  
+Channel 1 is 0.5 if the corresponding voxel belongs to label 1, channel 2 is 0.5 if the corresponding voxel belongs to label 2, and channel 3 is 0.5 if the voxel belongs to either label 1 or label 2.
+Voxels that do not match the label requirements for a given channel are set to -0.5.
+
+We randomize which label is designated as ``1'' or ``2''. 
+The purpose of the first two channels is to learn typical local shapes for each segment while the third channel learns the local shape for a correctly segmented neuronal processes.
+
+\noindent
+\textbf{[R2]}
+Benefits to using heuristic over integer program
+
+\noindent
+\textbf{[R2]}
+We find long range affinities by running Dijkstra's algorithm on the graph we extract from the skeletons (Sections 3.1 and 3.2). 
+We will clarify this in our revision.
+
+\noindent
+\textbf{[R2, R3]}
+Compare linear program to greedy-edge
+Talk about the heuristic for constraint
+
+\noindent
+\textbf{[R1, R2]}
+CREMI/SNEMI
+
+
+
 \bibliographystyle{splncs}
 \bibliography{egbib}
 
