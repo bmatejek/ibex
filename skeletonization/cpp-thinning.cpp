@@ -120,7 +120,7 @@ static void PopulateOffsets(void)
 
 
 
-static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
+static void IndexToIndices(long iv, long &ix, long &iy, long &iz)
 {
     iz = iv / sheet_size;
     iy = (iv - iz * sheet_size) / row_size;
@@ -516,7 +516,7 @@ static void SequentialThinning(void)
 static bool IsEndpoint(long iv)
 {
     long ix, iy, iz;
-    IndexToIndicies(iv, ix, iy, iz);
+    IndexToIndices(iv, ix, iy, iz);
 
     short nnneighbors = 0;
     for (long iw = iz - 1; iw <= iz + 1; ++iw) {

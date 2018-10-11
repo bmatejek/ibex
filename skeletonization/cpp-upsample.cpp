@@ -1,5 +1,6 @@
 /* c++ file to upsample the skeletons to full resolution */
 
+#include <math.h>
 #include <unordered_set>
 #include <map>
 #include <queue>
@@ -33,6 +34,16 @@ static long down_grid_size[3];
 static long down_nentries;
 static long down_sheet_size;
 static long down_row_size;
+
+
+
+// conver the index to indices
+static void IndexToIndices(long iv, long &ix, long &iy, long &iz)
+{
+    iz = iv / down_sheet_size;
+    iy = (iv - iz * down_sheet_size) / down_row_size;
+    ix = iv % down_row_size;
+}
 
 
 
@@ -279,8 +290,176 @@ static int MapDown2Up(const char *prefix, long skeleton_resolution[3], bool benc
 
 
 
+static void FindEndpointVector(long index, double &vx, double &vy, double &vz)
+{
+    std::vector<long> path_from_endpoint = std::vector<long>();
+    path_from_endpoint.push_back(index);
+
+    while (path_from_endpoint.size() < 4) {
+        short nneighbors = 0;
+        long only_neighbor = -1;
+        for (long iv = 0; iv < 26; ++iv) {
+            long neighbor_index = index + offsets[iv];
+            if (neighbor_index < 0 or neighbor_index > down_nentries - 1) continue;
+            if (!skeleton[neighbor_index]) continue;
+
+            nneighbors += 1;
+            only_neighbor = neighbor_index;
+        }
+
+        // if there were no neighbors break since there are no more endpoints
+        if (not nneighbors) break;
+        // if there are two neighbors break since there is a split
+        else if (nneighbors > 1) break;  
+        else {
+            // mask out this skeleton point so next iteration works
+            skeleton[index] = 0;
+            // reset the index to the neighbors value
+            index = only_neighbor;
+            // add this neighbor to the path
+            path_from_endpoint.push_back(index);
+        }
+    }
+
+    // reset the skeletons
+    for (unsigned long iv = 0; iv < path_from_endpoint.size(); ++iv) {
+        skeleton[path_from_endpoint[iv]] = 1;
+    }
+
+    // find the vector
+    if (path_from_endpoint.size() == 1) {
+        vx = 0.0;
+        vy = 0.0;
+        vz = 0.0;
+
+        // cannot normalize
+        return;
+    }
+    else {
+        long ix, iy, iz, ii, ij, ik;
+        IndexToIndices(path_from_endpoint[0], ix, iy, iz);
+        IndexToIndices(path_from_endpoint[path_from_endpoint.size() - 1], ii, ij, ik);
+
+        vx = ix - ii;
+        vy = iy - ij;
+        vz = iz - ik;
+    }
+
+    // perform normalization so that the vector follows anisotropic patterns
+    vy *= (ydown / xdown);
+    vz *= (zdown / xdown);
+
+    double normalization = sqrt(vx * vx + vy * vy + vz * vz);
+    vx = vx / normalization;
+    vy = vy / normalization;
+    vz = vz / normalization;
+}
+
+
+
+void CppFindEndpointVectors(const char *prefix, long skeleton_resolution[3], float output_resolution[3], const char *skeleton_algorithm, bool benchmark)
+{
+    // get the mapping from downsampled locations to upsampled ones
+    if (!MapDown2Up(prefix, skeleton_resolution, benchmark)) return;
+
+    // get downsample ratios
+    zdown = ((float) skeleton_resolution[IB_Z]) / output_resolution[IB_Z];
+    ydown = ((float) skeleton_resolution[IB_Y]) / output_resolution[IB_Y];
+    xdown = ((float) skeleton_resolution[IB_X]) / output_resolution[IB_X];
+
+    // set global variables
+    up_nentries = up_grid_size[IB_Z] * up_grid_size[IB_Y] * up_grid_size[IB_X];
+    up_sheet_size = up_grid_size[IB_Y] * up_grid_size[IB_X];
+    up_row_size = up_grid_size[IB_X];
+
+    down_nentries = down_grid_size[IB_Z] * down_grid_size[IB_Y] * down_grid_size[IB_X];
+    down_sheet_size = down_grid_size[IB_Y] * down_grid_size[IB_X];
+    down_row_size = down_grid_size[IB_X];
+
+    // create offset array
+    PopulateOffsets();
+
+    // I/O filenames
+    char input_filename[4096];
+    if (benchmark) sprintf(input_filename, "benchmarks/skeleton/%s-%s-%03ldx%03ldx%03ld-downsample-skeleton.pts", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    else sprintf(input_filename, "skeletons/%s/%s-%03ldx%03ldx%03ld-downsample-skeleton.pts", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+
+    char output_filename[4096];
+    if (benchmark) sprintf(output_filename, "benchmarks/skeleton/%s-%s-%03ldx%03ldx%03ld-endpoint-vectors.vec", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+    else sprintf(output_filename, "skeletons/%s/%s-%03ldx%03ldx%03ld-endpoint-vectors.vec", prefix, skeleton_algorithm, skeleton_resolution[IB_X], skeleton_resolution[IB_Y], skeleton_resolution[IB_Z]);
+
+    // open files for read/write
+    FILE *rfp = fopen(input_filename, "rb");
+    if (!rfp) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+
+    FILE *wfp = fopen(output_filename, "wb");
+    if (!wfp) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+    // read header
+    long max_label;
+    long input_grid_size[3];
+    if (fread(&(input_grid_size[IB_Z]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fread(&(input_grid_size[IB_Y]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fread(&(input_grid_size[IB_X]), sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    if (fread(&max_label, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+    
+    // write the header
+    if (fwrite(&(up_grid_size[IB_Z]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+    if (fwrite(&(up_grid_size[IB_Y]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+    if (fwrite(&(up_grid_size[IB_X]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+    if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write %s\n", output_filename); return; }
+
+    for (long label = 0; label < max_label; ++label) {
+        long nelements;
+        if (fread(&nelements, sizeof(long), 1, rfp) != 1) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+
+        skeleton = new unsigned char[down_nentries];
+        for (long iv = 0; iv < down_nentries; ++iv) skeleton[iv] = 0;
+
+        // find all of the downsampled elements
+        long *down_elements = new long[nelements];
+        if (fread(down_elements, sizeof(long), nelements, rfp) != (unsigned long)nelements) { fprintf(stderr, "Failed to read %s\n", input_filename); return; }
+        
+        long nendpoints = 0;
+        for (long ie = 0; ie < nelements; ++ie) {
+            if (down_elements[ie] < 0) {
+                skeleton[-1 * down_elements[ie]] = 1;
+                nendpoints++;
+            }
+            else skeleton[down_elements[ie]] = 1;
+        }
+        if (fwrite(&nendpoints, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); return; }
+
+        // go through all down elements to find endpoints
+        for (long ie = 0; ie < nelements; ++ie) {
+            if (down_elements[ie] > 0) continue;
+
+            double vx, vy, vz;
+            FindEndpointVector(-1 * down_elements[ie], vx, vy, vz);
+
+            // get the corresponding up element for this endpoint
+            long up_element = down_to_up[label][-1 * down_elements[ie]];
+
+            // save the up element with the vector
+            if (fwrite(&up_element, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); return; }
+            if (fwrite(&vz, sizeof(double), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); return; }
+            if (fwrite(&vy, sizeof(double), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); return; }
+            if (fwrite(&vx, sizeof(double), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); return; }
+        }
+
+
+        delete[] skeleton;
+    }    
+
+    // close the file
+    fclose(rfp);
+    fclose(wfp);
+}
+
+
+
 // operation that takes skeletons and 
-void CppApplyUpsampleOperation(const char *prefix, const char *params, long *input_segmentation, long skeleton_resolution[3], long output_resolution[3], const char *skeleton_algorithm, double astar_expansion, bool benchmark)
+void CppApplyUpsampleOperation(const char *prefix, const char *params, long *input_segmentation, long skeleton_resolution[3], float output_resolution[3], const char *skeleton_algorithm, double astar_expansion, bool benchmark)
 {
     // get the mapping from downsampled locations to upsampled ones
     if (!MapDown2Up(prefix, skeleton_resolution, benchmark)) return;

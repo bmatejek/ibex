@@ -4,7 +4,6 @@ import struct
 import scipy.spatial, scipy.optimize
 import numpy as np
 
-from ibex.data_structures import skeleton
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
 
@@ -75,7 +74,7 @@ def FindEndpointMatches(prefix, algorithm, params, resolution, ground_truth):
     assert (len(ground_truth) == len(proposed))
 
     # don't allow points to be connected over this distance
-    max_distance = 800
+    max_distance = 400
     
     # go through every label
     max_label = len(ground_truth)
@@ -151,10 +150,12 @@ def EvaluateEndpoints(prefix):
     # get the human labeled ground truth
     gt_endpoints = ReadGroundTruth(prefix, max_label)
 
+    best_fscore_precision = 0.0
+    best_fscore_recall = 0.0
     best_fscore = 0.0
     algorithm = ''
 
-    min_precision, min_recall =  (0.85, 0.85)
+    min_precision, min_recall =  (0.80, 0.90)
 
     # go through all possible configurations
     for resolution in resolutions:
@@ -170,6 +171,8 @@ def EvaluateEndpoints(prefix):
 
             if (fscore > best_fscore): 
                 best_fscore = fscore
+                best_fscore_precision = precision
+                best_fscore_recall = recall
                 algorithm = 'thinning-{:03d}x{:03d}x{:03d}-{:02d}'.format(resolution[IB_X], resolution[IB_Y], resolution[IB_Z], astar_expansion)
             
 
@@ -183,6 +186,8 @@ def EvaluateEndpoints(prefix):
 
             if (fscore > best_fscore): 
                 best_fscore = fscore
+                best_fscore_precision = precision
+                best_fscore_recall = recall
                 algorithm = 'medial-axis-{:03d}x{:03d}x{:03d}-{:02d}'.format(resolution[IB_X], resolution[IB_Y], resolution[IB_Z], astar_expansion)
 
         for tscale in [7, 9, 11, 13, 15, 17]:
@@ -198,12 +203,15 @@ def EvaluateEndpoints(prefix):
 
                 if (fscore > best_fscore): 
                     best_fscore = fscore
+                    best_fscore_precision = precision
+                    best_fscore_recall = recall
                     algorithm = 'teaser-{:03d}x{:03d}x{:03d}-{:02d}-{:02d}-00'.format(resolution[IB_X], resolution[IB_Y], resolution[IB_Z], tscale, tbuffer)
 
 
     print 'Best method: {}'.format(algorithm)
     print 'F1-Score: {}'.format(best_fscore)
-
+    print 'Precision: {}'.format(best_fscore_precision)
+    print 'Recall: {}'.format(best_fscore_recall)
 
 
 # find skeleton benchmark information

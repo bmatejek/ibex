@@ -27,13 +27,6 @@ static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
 
 
 
-static long IndiciesToIndex(long ix, long iy, long iz)
-{
-    return iz * sheet_size + iy * row_size + ix;
-}
-
-
-
 static long offsets[26];
 
 
@@ -72,7 +65,7 @@ static void PopulateOffsets(void)
 
 
 
-void *CppMapLabels(long *segmentation, long *mapping, unsigned long input_nentries)
+void CppMapLabels(long *segmentation, long *mapping, unsigned long input_nentries)
 {
     for (unsigned long iv = 0; iv < input_nentries; ++iv) {
         segmentation[iv] = mapping[segmentation[iv]];
@@ -221,7 +214,7 @@ void CppForceConnectivity(long *segmentation, long grid_size[3])
 
 
 
-void CppDownsampleMapping(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_grid_size[3], bool benchmark)
+void CppDownsampleMapping(const char *prefix, long *segmentation, float input_resolution[3], long output_resolution[3], long input_grid_size[3], bool benchmark)
 {
     // get the number of entries 
     long input_nentries = input_grid_size[IB_Z] * input_grid_size[IB_Y] * input_grid_size[IB_X];

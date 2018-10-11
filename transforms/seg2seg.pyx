@@ -14,7 +14,7 @@ cdef extern from 'cpp-seg2seg.h':
     void CppMapLabels(long *segmentation, long *mapping, unsigned long nentries)
     void CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsigned long nentries)
     void CppForceConnectivity(long *segmentation, long grid_size[3])
-    void CppDownsampleMapping(const char *prefix, long *segmentation, long input_resolution[3], long output_resolution[3], long input_grid_size[3], bool benchmark)
+    void CppDownsampleMapping(const char *prefix, long *segmentation, float input_resolution[3], long output_resolution[3], long input_grid_size[3], bool benchmark)
     
 
 
@@ -92,25 +92,19 @@ def ForceConnectivity(segmentation):
 
 
 
-def DownsampleMapping(prefix, output_resolution=(80, 80, 80), benchmark=False):
-    # benchmark data uses gold
-    if benchmark: segmentation = dataIO.ReadGoldData(prefix)
-    else: segmentation = dataIO.ReadSegmentationData(prefix)
+def DownsampleMapping(prefix, segmentation, output_resolution=(80, 80, 80), benchmark=False):
+    # everything needs to be long ints to work with c++
+    assert (segmentation.dtype == np.int64)
 
     if benchmark and not os.path.isdir('benchmarks/skeleton'): os.mkdir('benchmarks/skeleton')
     elif not benchmark and not os.path.isdir('skeletons/{}'.format(prefix)): os.mkdir('skeletons/{}'.format(prefix))
 
-    # convert segmentation to int64
-    if not segmentation.dtype == np.int64: segmentation = segmentation.astype(np.int64)
-
     # ignore time to read data
     start_time = time.time()
 
-    input_resolution = dataIO.Resolution(prefix)
-
     # convert numpy arrays to c++ format
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
-    cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_resolution = np.ascontiguousarray(input_resolution, dtype=ctypes.c_int64)
+    cdef np.ndarray[float, ndim=1, mode='c'] cpp_input_resolution = np.ascontiguousarray(dataIO.Resolution(prefix), dtype=ctypes.c_float)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_output_resolution = np.ascontiguousarray(output_resolution, dtype=ctypes.c_int64)
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_grid_size = np.ascontiguousarray(segmentation.shape, dtype=ctypes.c_int64)
 
