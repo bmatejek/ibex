@@ -20,8 +20,8 @@ cdef extern from 'cpp-seg2seg.h':
 
 # map the labels from this segmentation
 def MapLabels(segmentation, mapping):
-    # convert segmentation to int64
-    if not segmentation.dtype == np.int64: segmentation = segmentation.astype(np.int64)
+    # everything needs to be long ints to work with c++
+    assert (segmentation.dtype == np.int64)
     mapping = np.copy(mapping).astype(np.int64)
 
     # get the size of the data
@@ -78,8 +78,8 @@ def ReduceLabels(segmentation):
 
 
 def ForceConnectivity(segmentation):
-    # convert segmentation to int64
-    if not segmentation.dtype == np.int64: segmentation = segmentation.astype(np.int64)
+    # everything needs to be long ints to work with c++
+    assert (segmentation.dtype == np.int64)
 
     # transform into c array
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
