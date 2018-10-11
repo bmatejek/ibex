@@ -1,1 +1,0 @@
-long *CppLocateSingletons(long *segmentation, long grid_size[3]);
