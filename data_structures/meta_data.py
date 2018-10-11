@@ -1,6 +1,7 @@
 import sys
 from ibex.geometry import ib3shapes
-from ibex.utilities.constants import *
+
+
 
 class MetaData:
     def __init__(self, prefix):
@@ -29,6 +30,7 @@ class MetaData:
                 if comment == '# resolution in nm':
                     # separate into individual dimensions
                     samples = value.split('x')
+                    # need to use 2, 1, and 0 here since the outward facing convention is x,y,z, not z, y, x
                     self.resolution = (float(samples[2]), float(samples[1]), float(samples[0]))
                 elif comment == '# affinity filename':
                     self.affinity_filename = value
@@ -69,6 +71,9 @@ class MetaData:
 
                     # save the bounding box
                     self.bounding_box = ib3shapes.IBBox(mins, maxs)
+                elif comment == '# grid size':
+                    samples = value.split('x')
+                    self.grid_size = (int(samples[2]), int(samples[1]), int(samples[0]))
                 else:
                     sys.stderr.write('Unrecognized attribute in {}: {}\n'.format(prefix, comment))
                     sys.exit()
@@ -103,3 +108,6 @@ class MetaData:
             return 'affinities/{}_affinities.h5'.format(self.prefix), 'main'
         else:
             return self.affinity_filename.split()[0], self.affinity_filename.split()[1]
+
+    def GridSize(self):
+        return self.grid_size
