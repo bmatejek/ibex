@@ -85,9 +85,9 @@ def ExtractFeature(segmentation, candidate, width, radii, augment=True):
     zmin = max(0, zpoint - zradius)
     ymin = max(0, ypoint - yradius)
     xmin = max(0, xpoint - xradius)
-    zmax = min(zres - 1, zpoint + zradius + 1)
-    ymax = min(yres - 1, ypoint + yradius + 1)
-    xmax = min(xres - 1, xpoint + xradius + 1)
+    zmax = min(zres, zpoint + zradius + 1)
+    ymax = min(yres, ypoint + yradius + 1)
+    xmax = min(xres, xpoint + xradius + 1)
 
     example = np.zeros((2 * zradius + 1, 2 * yradius + 1, 2 * xradius + 1), dtype=np.int32)
     segment = segmentation[zmin:zmax,ymin:ymax,xmin:xmax]
