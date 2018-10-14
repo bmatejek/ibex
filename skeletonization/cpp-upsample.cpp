@@ -47,42 +47,6 @@ static void IndexToIndices(long iv, long &ix, long &iy, long &iz)
 
 
 
-// convenient variables for traversing arrays
-static long offsets[26];
-static void PopulateOffsets(void)
-{
-    offsets[0] = -1 * down_sheet_size - down_row_size - 1;
-    offsets[1] = -1 * down_sheet_size - down_row_size;
-    offsets[2] = -1 * down_sheet_size - down_row_size + 1;
-    offsets[3] = -1 * down_sheet_size - 1;
-    offsets[4] = -1 * down_sheet_size;
-    offsets[5] = -1 * down_sheet_size + 1;
-    offsets[6] = -1 * down_sheet_size + down_row_size - 1;
-    offsets[7] = -1 * down_sheet_size + down_row_size;
-    offsets[8] = -1 * down_sheet_size + down_row_size + 1;
-
-    offsets[9] = -1 * down_row_size - 1;
-    offsets[10] = -1 * down_row_size;
-    offsets[11] = -1 * down_row_size + 1;
-    offsets[12] = - 1;
-    offsets[13] = + 1;
-    offsets[14] = down_row_size - 1;
-    offsets[15] = down_row_size;
-    offsets[16] = down_row_size + 1;
-
-    offsets[17] = down_sheet_size - down_row_size - 1;
-    offsets[18] = down_sheet_size - down_row_size;
-    offsets[19] = down_sheet_size - down_row_size + 1;
-    offsets[20] = down_sheet_size - 1;
-    offsets[21] = down_sheet_size;
-    offsets[22] = down_sheet_size + 1;
-    offsets[23] = down_sheet_size + down_row_size - 1;
-    offsets[24] = down_sheet_size + down_row_size;
-    offsets[25] = down_sheet_size + down_row_size + 1;
-}
-
-
-
 void CppAStarSetMaxExpansion(double input_max_expansion)
 {
     max_expansion = input_max_expansion;
@@ -214,16 +178,27 @@ static bool HasConnectedPath(long label, long source_index, long target_index)
 static bool IsEndpoint(long source_index, long label)
 {
     short nneighbors = 0;
-    for (long iv = 0; iv < 26; ++iv) {
-        long target_index = source_index + offsets[iv];
-        if (target_index < 0 or target_index > down_nentries - 1) continue;
-        if (!skeleton[target_index]) continue;
-        
-        std::pair<long, long> query;
-        if (source_index < target_index) query = std::pair<long, long>(source_index, target_index);
-        else query = std::pair<long, long>(target_index, source_index);
 
-        if (connected_joints.find(query) != connected_joints.end()) nneighbors++;
+    long ix, iy, iz;
+    IndexToIndices(source_index, ix, iy, iz);
+
+    for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+        if (iw < 0 or iw >= down_grid_size[IB_Z]) continue;
+        for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+            if (iv < 0 or iv >= down_grid_size[IB_Y]) continue;
+            for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                if (iu < 0 or iu >= down_grid_size[IB_X]) continue;
+
+                long target_index = iw * down_grid_size[IB_Y] * down_grid_size[IB_X] + iv * down_grid_size[IB_X] + iu;
+                if (!skeleton[target_index]) continue;
+
+                std::pair<long, long> query;
+                if (source_index < target_index) query = std::pair<long, long>(source_index, target_index);
+                else query = std::pair<long, long>(target_index, source_index);
+
+                if (connected_joints.find(query) != connected_joints.end()) nneighbors++;
+            }
+        }
     }
 
     // return if there is one neighbor (other than iv) that is 1
@@ -298,13 +273,24 @@ static void FindEndpointVector(long index, double &vx, double &vy, double &vz)
     while (path_from_endpoint.size() < 4) {
         short nneighbors = 0;
         long only_neighbor = -1;
-        for (long iv = 0; iv < 26; ++iv) {
-            long neighbor_index = index + offsets[iv];
-            if (neighbor_index < 0 or neighbor_index > down_nentries - 1) continue;
-            if (!skeleton[neighbor_index]) continue;
+        
+        long ix, iy, iz;
+        IndexToIndices(index, ix, iy, iz);
 
-            nneighbors += 1;
-            only_neighbor = neighbor_index;
+        for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+            if (iw < 0 or iw >= down_grid_size[IB_Z]) continue;
+            for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+                if (iv < 0 or iv >= down_grid_size[IB_Y]) continue;
+                for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                    if (iu < 0 or iu >= down_grid_size[IB_X]) continue;
+
+                    long neighbor_index = iw * down_grid_size[IB_Y] * down_grid_size[IB_X] + iv * down_grid_size[IB_X] + iu;
+                    if (!skeleton[neighbor_index]) continue;
+
+                nneighbors += 1;
+                only_neighbor = neighbor_index;
+                }
+            }
         }
 
         // if there were no neighbors break since there are no more endpoints
@@ -375,9 +361,6 @@ void CppFindEndpointVectors(const char *prefix, long skeleton_resolution[3], flo
     down_nentries = down_grid_size[IB_Z] * down_grid_size[IB_Y] * down_grid_size[IB_X];
     down_sheet_size = down_grid_size[IB_Y] * down_grid_size[IB_X];
     down_row_size = down_grid_size[IB_X];
-
-    // create offset array
-    PopulateOffsets();
 
     // I/O filenames
     char input_filename[4096];
@@ -454,6 +437,8 @@ void CppFindEndpointVectors(const char *prefix, long skeleton_resolution[3], flo
     // close the file
     fclose(rfp);
     fclose(wfp);
+
+    delete[] down_to_up;
 }
 
 
@@ -480,10 +465,6 @@ void CppApplyUpsampleOperation(const char *prefix, const char *params, long *inp
     down_nentries = down_grid_size[IB_Z] * down_grid_size[IB_Y] * down_grid_size[IB_X];
     down_sheet_size = down_grid_size[IB_Y] * down_grid_size[IB_X];
     down_row_size = down_grid_size[IB_X];
-
-    // create offset array
-    PopulateOffsets();
-
 
     // I/O filenames
     char input_filename[4096];
@@ -576,13 +557,23 @@ void CppApplyUpsampleOperation(const char *prefix, const char *params, long *inp
             // find all skeleton pairs that need to be checked as neighbors
             for (long ie = 0; ie < nelements; ++ie) {
                 long source_index = down_elements[ie];
-                for (long iv = 13; iv < 26; ++iv) {
-                    long target_index = source_index + offsets[iv];
-                    if (target_index > down_nentries - 1) continue;
-                    if (!skeleton[target_index]) continue;
+                long ix, iy, iz;
+                IndexToIndices(source_index, ix, iy, iz);
+                
+                for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+                    if (iw < 0 or iw >= down_grid_size[IB_Z]) continue;
+                    for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+                        if (iv < 0 or iv >= down_grid_size[IB_Y]) continue;
+                        for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                            if (iu < 0 or iu >= down_grid_size[IB_X]) continue;
 
-                    if (HasConnectedPath(label, source_index, target_index)) {
-                        connected_joints.insert(std::pair<long, long>(source_index, target_index));
+                            long target_index = iw * down_grid_size[IB_Y] * down_grid_size[IB_X] + iv * down_grid_size[IB_X] + iu;
+                            if (target_index <= source_index) continue;
+                            if (!skeleton[target_index]) continue;
+                            if (HasConnectedPath(label, source_index, target_index)) {
+                                connected_joints.insert(std::pair<long, long>(source_index, target_index));
+                            }        
+                        }
                     }
                 }
             }

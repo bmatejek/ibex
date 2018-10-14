@@ -572,7 +572,7 @@ void CppTopologicalThinning(const char *prefix, long skeleton_resolution[3], con
     if (fwrite(&(grid_size[IB_X]), sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
     if (fwrite(&max_label, sizeof(long), 1, wfp) != 1) { fprintf(stderr, "Failed to write to %s\n", output_filename); exit(-1); }
 
-    // add padding around each segment
+    // add padding around each segment (only way that populate offsets works!!)
     grid_size[IB_Z] += 2;
     grid_size[IB_Y] += 2;
     grid_size[IB_X] += 2;

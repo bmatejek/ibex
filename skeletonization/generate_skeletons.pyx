@@ -33,21 +33,21 @@ def TopologicalThinning(prefix, input_segmentation, skeleton_resolution=(80, 80,
     elif not benchmark and not os.path.isdir('skeletons/{}'.format(prefix)): os.mkdir('skeletons/{}'.format(prefix))
 
     start_time = time.time()
-
+    
     # convert the numpy arrays to c++
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_skeleton_resolution = np.ascontiguousarray(skeleton_resolution, dtype=ctypes.c_int64)
     lut_directory = os.path.dirname(__file__)
 
     # call the topological skeleton algorithm
     CppTopologicalThinning(prefix, &(cpp_skeleton_resolution[0]), lut_directory, benchmark)
-
+    
     # call the upsampling operation
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_input_segmentation = np.ascontiguousarray(input_segmentation, dtype=ctypes.c_int64)
     cdef np.ndarray[float, ndim=1, mode='c'] cpp_output_resolution = np.ascontiguousarray(dataIO.Resolution(prefix), dtype=ctypes.c_float)
     params = ""
 
     CppApplyUpsampleOperation(prefix, params, &(cpp_input_segmentation[0,0,0]), &(cpp_skeleton_resolution[0]), &(cpp_output_resolution[0]), 'thinning', astar_expansion, benchmark)
-
+        
     print 'Topological thinning time for {}: {}'.format((skeleton_resolution[0], skeleton_resolution[1], skeleton_resolution[2]), time.time() - start_time)
 
 
