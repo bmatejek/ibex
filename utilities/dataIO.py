@@ -41,14 +41,16 @@ def ReadH5File(filename, dataset=None):
         if dataset == None: data = np.array(hf[hf.keys()[0]])
         else: data = np.array(hf[dataset])
 
-    # allow affinities and images to not be int64, everything else gets converted
-    if data.dtype == np.float32 or data.dtype == np.uint8: return data
-    else: return data.astype(np.int64)
+        # allow affinities and images to not be int64, everything else gets converted
+        if data.dtype == np.float32 or data.dtype == np.uint8: return data
+        else: return data.astype(np.int64)
+
 
 
 def IsIsotropic(prefix):
     resolution = Resolution(prefix)
     return (resolution[IB_Z] == resolution[IB_Y]) and (resolution[IB_Z] == resolution[IB_X])
+
 
 
 def WriteH5File(data, filename, dataset):
@@ -58,10 +60,17 @@ def WriteH5File(data, filename, dataset):
         else: hf.create_dataset(dataset, data=data, compression='gzip')
 
 
+
 def ReadAffinityData(prefix):
     filename, dataset = meta_data.MetaData(prefix).AffinityFilename()
 
-    return ReadH5File(filename, dataset).astype(np.float32)
+    affinities = ReadH5File(filename, dataset).astype(np.float32)
+
+    # create the dataset so it is (z, y, x, c)
+    if affinities.shape[0] == 3: affinities = np.moveaxis(affinities, 0, 3)
+
+    return affinities
+
 
 
 def ReadSegmentationData(prefix):
@@ -132,7 +141,7 @@ def ReadImage(filename):
 
 
 def WriteImage(filename, image):
-   imageio.imwrite(filename, image)
+    imageio.imwrite(filename, image)
 
 
 
@@ -168,12 +177,12 @@ def PNG2H5(directory, filename, dataset, dtype=np.int32):
         if not iz:
             if len(im.shape) == 2: yres, xres = im.shape
             else: yres, xres, _ = im.shape
-            
-            h5output = np.zeros((zres, yres, xres), dtype=dtype)
+
+        h5output = np.zeros((zres, yres, xres), dtype=dtype)
 
         # add this element
         if len(im.shape) == 3 and dtype == np.int32: h5output[iz,:,:] = 65536 * im[:,:,0] + 256 * im[:,:,1] + im[:,:,2]
         elif len(im.shape) == 3 and dtype == np.uint8: h5output[iz,:,:] = ((im[:,:,0].astype(np.uint16) + im[:,:,1].astype(np.uint16) + im[:,:,2].astype(np.uint16)) / 3).astype(np.uint8)
         else: h5output[iz,:,:] = im[:,:]
 
-    WriteH5File(h5output, filename, dataset)
+        WriteH5File(h5output, filename, dataset)

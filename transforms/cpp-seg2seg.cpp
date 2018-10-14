@@ -27,40 +27,9 @@ static void IndexToIndicies(long iv, long &ix, long &iy, long &iz)
 
 
 
-static long offsets[26];
-
-
-
-static void PopulateOffsets(void)
+static long IndicesToIndex(long ix, long iy, long iz)
 {
-    offsets[0] = -1 * sheet_size - row_size - 1;
-    offsets[1] = -1 * sheet_size - row_size;
-    offsets[2] = -1 * sheet_size - row_size + 1;
-    offsets[3] = -1 * sheet_size - 1;
-    offsets[4] = -1 * sheet_size;
-    offsets[5] = -1 * sheet_size + 1;
-    offsets[6] = -1 * sheet_size + row_size - 1;
-    offsets[7] = -1 * sheet_size + row_size;
-    offsets[8] = -1 * sheet_size + row_size + 1;
-
-    offsets[9] = -1 * row_size - 1;
-    offsets[10] = -1 * row_size;
-    offsets[11] = -1 * row_size + 1;
-    offsets[12] = - 1;
-    offsets[13] = + 1;
-    offsets[14] = row_size - 1;
-    offsets[15] = row_size;
-    offsets[16] = row_size + 1;
-
-    offsets[17] = sheet_size - row_size - 1;
-    offsets[18] = sheet_size - row_size;
-    offsets[19] = sheet_size - row_size + 1;
-    offsets[20] = sheet_size - 1;
-    offsets[21] = sheet_size;
-    offsets[22] = sheet_size + 1;
-    offsets[23] = sheet_size + row_size - 1;
-    offsets[24] = sheet_size + row_size;
-    offsets[25] = sheet_size + row_size + 1;
+    return iz * sheet_size + iy * row_size + ix;
 }
 
 
@@ -115,8 +84,6 @@ void CppForceConnectivity(long *segmentation, long grid_size[3])
     sheet_size = grid_size[IB_Y] * grid_size[IB_X];
     row_size = grid_size[IB_X];
 
-    PopulateOffsets();
-
     long *components = new long[nentries];
     for (long iv = 0; iv < nentries; ++iv)
         components[iv] = 0;
@@ -142,12 +109,19 @@ void CppForceConnectivity(long *segmentation, long grid_size[3])
             long iz, iy, ix;
             IndexToIndicies(pixel, ix, iy, iz);
 
-            for (long iv = 0; iv < 26; ++iv) {
-                long neighbor = pixel + offsets[iv];
-                if (neighbor < 0 or neighbor >= nentries) continue;
-                if (segmentation[pixel] == segmentation[neighbor] && !components[neighbor]) {
-                    components[neighbor] = current_label;
-                    pixels.push(neighbor);
+            for (long iw = iz - 1; iw <= iz + 1; ++iw) {
+                if (iw < 0 or iw >= grid_size[IB_Z]) continue;
+                for (long iv = iy - 1; iv <= iy + 1; ++iv) {
+                    if (iv < 0 or iv >= grid_size[IB_Y]) continue;
+                    for (long iu = ix - 1; iu <= ix + 1; ++iu) {
+                        if (iu < 0 or iu >= grid_size[IB_X]) continue;
+                        long neighbor = IndicesToIndex(iu, iv, iw);
+
+                        if (segmentation[pixel] == segmentation[neighbor] && !components[neighbor]) {
+                            components[neighbor] = current_label;
+                            pixels.push(neighbor);
+                        }
+                    }        
                 }
             }
         }

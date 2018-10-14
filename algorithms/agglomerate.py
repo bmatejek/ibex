@@ -86,7 +86,7 @@ def MergeGroundTruth(prefix, model_prefix):
     mapping = seg2gold.Mapping(segmentation, gold)
 
     # get the maximum segmentation value
-    max_value = np.amax(segmentation)
+    max_value = np.amax(segmentation) + 1
 
     # create union find data structure
     union_find = [UnionFind.UnionFindElement(iv) for iv in range(max_value)]
