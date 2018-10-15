@@ -415,7 +415,7 @@ void CppFindEndpointVectors(const char *prefix, long skeleton_resolution[3], flo
 
         // go through all down elements to find endpoints
         for (long ie = 0; ie < nelements; ++ie) {
-            if (down_elements[ie] > 0) continue;
+            if (down_elements[ie] >= 0) continue;
 
             double vx, vy, vz;
             FindEndpointVector(-1 * down_elements[ie], vx, vy, vz);
