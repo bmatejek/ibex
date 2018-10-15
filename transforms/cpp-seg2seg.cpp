@@ -281,9 +281,9 @@ void CppDownsampleMapping(const char *prefix, long *segmentation, float input_re
             long ymin = (long) (ydown * iy);
             long xmin = (long) (xdown * ix);
 
-            long zmax = std::min((long) ceil(zdown * (iz + 1)), input_grid_size[IB_Z]);
-            long ymax = std::min((long) ceil(ydown * (iy + 1)), input_grid_size[IB_Y]);
-            long xmax = std::min((long) ceil(xdown * (ix + 1)), input_grid_size[IB_X]);
+            long zmax = std::min((long) ceil(zdown * (iz + 1) + 1), input_grid_size[IB_Z]);
+            long ymax = std::min((long) ceil(ydown * (iy + 1) + 1), input_grid_size[IB_Y]);
+            long xmax = std::min((long) ceil(xdown * (ix + 1) + 1), input_grid_size[IB_X]);
 
             double closest_to_center = input_grid_size[IB_Z] * input_grid_size[IB_Y] * input_grid_size[IB_X];
             long upsample_index = -1;
@@ -296,6 +296,7 @@ void CppDownsampleMapping(const char *prefix, long *segmentation, float input_re
                 for (long iv = ymin; iv < ymax; ++iv) {
                     for (long iu = xmin; iu < xmax; ++iu) {
                         long linear_index = iw * input_grid_size[IB_Y] * input_grid_size[IB_X] + iv * input_grid_size[IB_X] + iu;
+
 
                         // find the closest point to the center
                         if (segmentation[linear_index] != label) continue;
