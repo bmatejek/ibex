@@ -118,7 +118,6 @@ def ReadSkeletons(prefix, skeleton_algorithm='thinning', downsample_resolution=(
             nelements, = struct.unpack('q', sfd.read(8))
             for _ in range(nelements):
                 index, = struct.unpack('q', sfd.read(8))
-
                 if (index < 0): endpoints.append(-1 * index)
                 else: joints.append(index)
 
