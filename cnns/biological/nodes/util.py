@@ -28,7 +28,8 @@ def GenerateExampleFromSegment(segment, width, indices):
                         example[0,iz,iy,ix] = 1
                         example[indices[1],iz,iy,ix] = 1
 
-    return example
+    # subtract 0.5 so that the values are {-0.5, 0.5}
+    return example - 0.5
 
 
 
