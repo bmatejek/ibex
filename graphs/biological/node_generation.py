@@ -10,6 +10,27 @@ from ibex.transforms import seg2seg
 
 
 
+# simple function to create directory structure for all of the features
+def CreateDirectoryStructure(widths, radius, subsets):
+    for width in widths:
+        # make sure directory structure exists
+        sub_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
+        if not os.path.exists(sub_directory):
+            os.mkdir(sub_directory)
+
+        # add all subsets
+        for subset in subsets:
+            sub_directory = '{}/{}'.format(sub_directory, subset)
+            if not os.path.exists(sub_directory):
+                os.mkdir(sub_directory)
+            # there are three possible labels per subset
+            labelings = ['positives', 'negatives', 'unknowns']
+            for labeling in labelings:
+                if not os.path.exists('{}/{}'.format(sub_directory, labeling)):
+                    os.mkdir('{}/{}'.format(sub_directory, labeling))
+      
+
+
 @jit(nopython=True)
 def FindSmallSegments(segmentation, threshold):
     # create lists for small and large nodes
@@ -96,35 +117,54 @@ def FindMiddleBoundary(segmentation):
 
 
 @jit(nopython=True)
+def ScaleFeature(segment, width, label_one, label_two):
+    # get the size of the extracted segment
+    zres, yres, xres = segment.shape
+
+    example = np.zeros((width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.float32)
+
+    # iterate over the example coordinates
+    for iz in range(width[IB_Z]):
+        for iy in range(width[IB_Y]):
+            for ix in range(width[IB_X]):
+                # get the global coordiantes from segment
+                iw = int(float(zres) / float(width[IB_Z]) * iz)
+                iv = int(float(yres) / float(width[IB_Y]) * iy)
+                iu = int(float(xres) / float(width[IB_X]) * ix)
+
+                if segment[iw,iv,iu] == label_one:
+                    example[iz,iy,ix] = 1
+                elif segment[iw,iv,iu] == label_two:
+                    example[iz,iy,ix] = 2
+
+    example = example - 0.5
+
+    return example
+
+
+
+@jit(nopython=True)
 def ExtractExample(segment, label_one, label_two):
     zres, yres, xres = segment.shape
 
     for iz in range(zres):
         for iy in range(yres):
             for ix in range(xres):
-                if segment[iz,iy,ix] == label_one:
-                    segment[iz,iy,ix] = 1
-                elif segment[iz,iy,ix] == label_two:
-                    segment[iz,iy,ix] = 2
-                else:
+                if (not segment[iz,iy,ix] == label_one) and (not segment[iz,iy,ix] == label_two):
                     segment[iz,iy,ix] = 0
 
     return segment
-    
+
+
 
 
 def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radius=600, subset='training'):
-    # make sure directory structure exists
-    sub_directory = 'features/biological/nodes-{}nm'.format(radius)
-    if not os.path.exists(sub_directory):
-        os.mkdir(sub_directory)
-    sub_directory = '{}/{}'.format(sub_directory, subset)
-    if not os.path.exists(sub_directory):
-        os.mkdir(sub_directory)
-    labelings = ['positives', 'negatives', 'unknowns']
-    for labeling in labelings:
-        if not os.path.exists('{}/{}'.format(sub_directory, labeling)):
-            os.mkdir('{}/{}'.format(sub_directory, labeling))
+    # possible widths for the neural network
+    widths = [(18, 52, 52), (20, 60, 60)]
+
+    # create the directory structure to save the features in
+    # forward is needed for training and validation data that is cropped
+    CreateDirectoryStructure(widths, radius, ['training', 'validation', 'testing', 'forward'])
 
     # get the complete adjacency graph shows all neighboring edges
     adjacency_graph = edge_generation.ExtractAdjacencyMatrix(segmentation)
@@ -140,6 +180,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
     (zradius, yradius, xradius) = (int(radius / resolution[IB_Z]), int(radius / resolution[IB_Y]), int(radius / resolution[IB_X]))
     zres, yres, xres = segmentation.shape
 
+    # crop the subset if it overlaps with testing data
     if subset == 'training' or subset == 'validation':
         ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = dataIO.CroppingBox(prefix)
     elif subset == 'testing':
@@ -155,10 +196,11 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
             ypoint = int(ymean[label_one,label_two])
             xpoint = int(xmean[label_one,label_two])
 
-            # if the center of the point falls outside the cropped box do not include it 
-            if (zpoint < cropped_zmin or cropped_zmax <= zpoint): continue
-            if (ypoint < cropped_ymin or cropped_ymax <= ypoint): continue
-            if (xpoint < cropped_xmin or cropped_xmax <= xpoint): continue
+            # if the center of the point falls outside the cropped box do not include it in training or validation (allow it for forward inference)
+            example_subset = subset
+            if (zpoint < cropped_zmin or cropped_zmax <= zpoint): example_subset = 'forward'
+            if (ypoint < cropped_ymin or cropped_ymax <= ypoint): example_subset = 'forward'
+            if (xpoint < cropped_xmin or cropped_xmax <= xpoint): example_subset = 'forward'
 
             # need to make sure that bounding box does not leave location so sizes are correct
             zmin = max(0, zpoint - zradius)
@@ -173,7 +215,6 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
 
             # get the valid location around this point
             segment = ExtractExample(segmentation[zmin:zmax,ymin:ymax,xmin:xmax].copy(), label_one, label_two)
-            print segment.shape
 
             if example.shape == segment.shape:
                 example = segment
@@ -190,18 +231,24 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
                 # the second and third channels are one if the corresponding voxels belong to the individual segments
                 example[zstart:zstart+segment.shape[IB_Z],ystart:ystart+segment.shape[IB_Y],xstart:xstart+segment.shape[IB_X]] = segment
 
-            # see if these two segments belong to the same node
-            gold_one = seg2gold_mapping[label_one]
-            gold_two = seg2gold_mapping[label_two]
+            for width in widths:
+                # get this subdirectory for this CNN width
+                sub_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
+                scaled_example = ScaleFeature(example, width, label_one, label_two)
 
-            # save the data in the appropriate location
-            if gold_one < 1 or gold_two < 1: 
-                output_directory = 'features/biological/nodes-{}nm/{}/unknowns'.format(radius, subset)
-            elif gold_one == gold_two:
-                output_directory = 'features/biological/nodes-{}nm/{}/positives'.format(radius, subset)
-            else: 
-                output_directory = 'features/biological/nodes-{}nm/{}/negatives'.format(radius, subset)
-            output_filename = '{}/{}-{}-{}.h5'.format(output_directory, prefix, label_one, label_two)
+                # see if these two segments belong to the same node
+                gold_one = seg2gold_mapping[label_one]
+                gold_two = seg2gold_mapping[label_two]
 
-            # write this example
-            dataIO.WriteH5File(example, output_filename, 'main')
+                # save the data in the appropriate location
+                if gold_one < 1 or gold_two < 1: 
+                    output_directory = '{}/{}/unknowns'.format(sub_directory, example_subset)
+                elif gold_one == gold_two:
+                    output_directory = '{}/{}/positives'.format(sub_directory, example_subset)
+                else: 
+                    output_directory = '{}/{}/negatives'.format(sub_directory, example_subset)
+
+                output_filename = '{}/{}-{}-{}.h5'.format(output_directory, prefix, label_one, label_two)
+
+                # write this example
+                dataIO.WriteH5File(scaled_example, output_filename, 'main')
