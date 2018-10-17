@@ -3,7 +3,6 @@ import matplotlib
 matplotlib.use('Agg')
 import random
 
-import scipy
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -187,7 +186,7 @@ def NodeGenerator(parameters, width, radius, subset):
         for iv in range(batch_size / 2):
             positive_candidate = dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filenames[positive_index]), 'main')
             negative_candidate = dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filenames[negative_index]), 'main')
-            
+
             examples[2*iv,:,:,:,:] = AugmentFeature(positive_candidate, width)
             labels[2*iv] = True
             examples[2*iv+1,:,:,:,:] = AugmentFeature(negative_candidate, width)
@@ -208,17 +207,10 @@ def NodeGenerator(parameters, width, radius, subset):
 
 def Train(parameters, model_prefix, width, radius):
     # identify convenient variables
-    nchannels = width[0]
     starting_epoch = parameters['starting_epoch']
     batch_size = parameters['batch_size']
-    initial_learning_rate = parameters['initial_learning_rate']
-    decay_rate = parameters['decay_rate']
     examples_per_epoch = parameters['examples_per_epoch']
-
-    # architecture parameters
-    activation = parameters['activation']
     weights = parameters['weights']
-    betas = parameters['betas']
 
     model = NodeNetwork(parameters, width)
 
@@ -257,7 +249,7 @@ def Train(parameters, model_prefix, width, radius):
     if starting_epoch:
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
 
-    history = model.fit_generator(NodeGenerator(parameters, width, radius, 'training'),(examples_per_epoch / batch_size), epochs=1000, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), validation_steps=(examples_per_epoch / batch_size), initial_epoch=starting_epoch)
+    history = model.fit_generator(NodeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), epochs=1000, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), validation_steps=(examples_per_epoch / batch_size), initial_epoch=starting_epoch)
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))

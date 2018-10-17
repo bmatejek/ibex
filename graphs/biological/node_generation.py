@@ -173,6 +173,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
 
             # get the valid location around this point
             segment = ExtractExample(segmentation[zmin:zmax,ymin:ymax,xmin:xmax].copy(), label_one, label_two)
+            print segment.shape
 
             if example.shape == segment.shape:
                 example = segment

@@ -1,8 +1,11 @@
 import random
 import numpy as np
+import scipy
 
 from numba import jit
 
+
+from ibex.utilities.constants import *
 
 
 @jit(nopython=True)
@@ -47,5 +50,5 @@ def AugmentFeature(segment, width):
 
     angle = random.uniform(0, 360)
     example = scipy.ndimage.interpolation.rotate(example, angle, axes=(IB_X + 2, IB_Y + 2), reshape=False, order=0, mode='constant', cval=-0.5)
-    
+
     return example
