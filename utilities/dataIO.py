@@ -22,6 +22,12 @@ def GridSize(prefix):
     return meta_data.MetaData(prefix).GridSize()
 
 
+def CroppingBox(prefix):
+    # return which locations are valid for training and validation
+    return meta_data.MetaData(prefix).CroppingBox()
+
+
+
 def ReadMetaData(prefix):
     # return the meta data for this prefix
     return meta_data.MetaData(prefix)

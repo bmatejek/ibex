@@ -16,6 +16,12 @@ class MetaData:
         self.mask_filename = None
         self.rhoana_filename = None
         self.synapse = None
+        self.crop_xmin = None
+        self.crop_xmax = None
+        self.crop_ymin = None
+        self.crop_ymax = None
+        self.crop_zmin = None
+        self.crop_zmax = None
 
         # open the meta data txt file
         filename = 'meta/{}.meta'.format(prefix)
@@ -74,10 +80,22 @@ class MetaData:
                 elif comment == '# grid size':
                     samples = value.split('x')
                     self.grid_size = (int(samples[2]), int(samples[1]), int(samples[0]))
+                elif comment == '# train/val/test crop':
+                    samples = value.split('x')
+                    self.crop_xmin = int(samples[0].split(':')[0])
+                    self.crop_xmax = int(samples[0].split(':')[1])
+                    self.crop_ymin = int(samples[1].split(':')[0])
+                    self.crop_ymax = int(samples[1].split(':')[1])
+                    self.crop_zmin = int(samples[2].split(':')[0])
+                    self.crop_zmax = int(samples[2].split(':')[1])
                 else:
                     sys.stderr.write('Unrecognized attribute in {}: {}\n'.format(prefix, comment))
                     sys.exit()
 
+    def CroppingBox(self):
+        if self.crop_xmin == None:
+            return ((0, self.grid_size[IB_Z]), (0, self.grid_size[IB_Y]), (0, self.grid_size[IB_X]))
+        return ((self.crop_zmin, self.crop_zmax), (self.crop_ymin, self.crop_ymax), (self.crop_xmin, self.crop_xmax))
 
     def WorldBBox(self):
         return self.bounding_box
