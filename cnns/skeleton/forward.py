@@ -3,7 +3,6 @@ import time
 import struct
 import random
 import os
-from numba import jit
 
 from keras.models import model_from_json
 
