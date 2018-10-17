@@ -14,13 +14,13 @@ from ibex.transforms import seg2seg
 def CreateDirectoryStructure(widths, radius, subsets):
     for width in widths:
         # make sure directory structure exists
-        sub_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
-        if not os.path.exists(sub_directory):
-            os.mkdir(sub_directory)
+        directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
+        if not os.path.exists(directory):
+            os.mkdir(directory)
 
         # add all subsets
         for subset in subsets:
-            sub_directory = '{}/{}'.format(sub_directory, subset)
+            sub_directory = '{}/{}'.format(directory, subset)
             if not os.path.exists(sub_directory):
                 os.mkdir(sub_directory)
             # there are three possible labels per subset
@@ -196,8 +196,9 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
             ypoint = int(ymean[label_one,label_two])
             xpoint = int(xmean[label_one,label_two])
 
-            # if the center of the point falls outside the cropped box do not include it in training or validation (allow it for forward inference)
+            # if the center of the point falls outside the cropped box do not include it in training or validation 
             example_subset = subset
+            # however, you allow it for forward inference
             if (zpoint < cropped_zmin or cropped_zmax <= zpoint): example_subset = 'forward'
             if (ypoint < cropped_ymin or cropped_ymax <= ypoint): example_subset = 'forward'
             if (xpoint < cropped_xmin or cropped_xmax <= xpoint): example_subset = 'forward'
