@@ -96,30 +96,26 @@ def FindMiddleBoundary(segmentation):
 
 
 @jit(nopython=True)
-def ScaleSegment(segment, width, labels):
+def ExtractExample(segment, label_one, label_two):
     zres, yres, xres = segment.shape
-    label_one, label_two = labels
-    
-    example = np.zeros((width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.float32)
-    
-    for iz in range(width[IB_Z]):
-        for iy in range(width[IB_Y]):
-            for ix in range(width[IB_X]):
-                # get the global coordinates from segment
-                iw = int(float(zres) / float(width[IB_Z]) * iz)
-                iv = int(float(yres) / float(width[IB_Y]) * iy)
-                iu = int(float(xres) / float(width[IB_X]) * ix)
-                
-                if segment[iw,iv,iu] == label_one or segment[iw,iv,iu] == label_two:
-                    example[iz,iy,ix] = 1
-                    
-    return example
 
+    for iz in range(zres):
+        for iy in range(yres):
+            for ix in range(xres):
+                if segment[iz,iy,ix] == label_one:
+                    segment[iz,iy,ix] = 1
+                elif segment[iz,iy,ix] == label_two:
+                    segment[iz,iy,ix] = 2
+                else:
+                    segment[iz,iy,ix] = 0
+
+    return segment
+    
 
 
 def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radius=600, subset='training'):
     # make sure directory structure exists
-    sub_directory = 'features/biological/nodes'
+    sub_directory = 'features/biological/nodes-{}nm'.format(radius)
     if not os.path.exists(sub_directory):
         os.mkdir(sub_directory)
     sub_directory = '{}/{}'.format(sub_directory, subset)
@@ -139,21 +135,32 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
     # get the locations around a possible merge
     zmean, ymean, xmean = FindMiddleBoundary(segmentation)
 
-    resolution = [40, 3.6, 3.6] #dataIO.Resolution(prefix)
-    radii = (int(radius / resolution[IB_Z]), int(radius / resolution[IB_Y]), int(radius / resolution[IB_X]))
-
-    # hardcoded for now
-    width = (18, 52, 52)
-
-    zradius, yradius, xradius = radii
+    # get the radius along each dimensions in terms of voxels
+    resolution = dataIO.Resolution(prefix)
+    (zradius, yradius, xradius) = (int(radius / resolution[IB_Z]), int(radius / resolution[IB_Y]), int(radius / resolution[IB_X]))
     zres, yres, xres = segmentation.shape
 
-    for (label_one, label_two) in adjacency_graph:
+    if subset == 'training' or subset == 'validation':
+        ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = dataIO.CroppingBox(prefix)
+    elif subset == 'testing':
+        ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = ((0, zres), (0, yres), (0, xres))
+    else:
+        sys.stderr.write('Unrecognized subset: {}'.format(subset))
+
+    old_segmentation = np.copy(segmentation)
+
+    for iv, (label_one, label_two) in enumerate(adjacency_graph):
         if (label_one in small_segments) ^ (label_two in small_segments):
             zpoint = int(zmean[label_one,label_two])
             ypoint = int(ymean[label_one,label_two])
             xpoint = int(xmean[label_one,label_two])
 
+            # if the center of the point falls outside the cropped box do not include it 
+            if (zpoint < cropped_zmin or cropped_zmax <= zpoint): continue
+            if (ypoint < cropped_ymin or cropped_ymax <= ypoint): continue
+            if (xpoint < cropped_xmin or cropped_xmax <= xpoint): continue
+
+            # need to make sure that bounding box does not leave location so sizes are correct
             zmin = max(0, zpoint - zradius)
             ymin = max(0, ypoint - yradius)
             xmin = max(0, xpoint - xradius)
@@ -161,8 +168,11 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
             ymax = min(yres, ypoint + yradius + 1)
             xmax = min(xres, xpoint + xradius + 1)
 
+            # create the empty example file with three channels corresponding to the value of segment
             example = np.zeros((2 * zradius + 1, 2 * yradius + 1, 2 * xradius + 1), dtype=np.int32)
-            segment = segmentation[zmin:zmax,ymin:ymax,xmin:xmax]
+
+            # get the valid location around this point
+            segment = ExtractExample(segmentation[zmin:zmax,ymin:ymax,xmin:xmax].copy(), label_one, label_two)
 
             if example.shape == segment.shape:
                 example = segment
@@ -176,21 +186,21 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radiu
                 if xmin == 0: xstart = xradius - xpoint
                 else: xstart = 0
 
+                # the second and third channels are one if the corresponding voxels belong to the individual segments
                 example[zstart:zstart+segment.shape[IB_Z],ystart:ystart+segment.shape[IB_Y],xstart:xstart+segment.shape[IB_X]] = segment
 
-            example = ScaleSegment(example, width, (label_one, label_two))
-
+            # see if these two segments belong to the same node
             gold_one = seg2gold_mapping[label_one]
             gold_two = seg2gold_mapping[label_two]
 
+            # save the data in the appropriate location
             if gold_one < 1 or gold_two < 1: 
-                output_directory = 'features/biological/nodes/{}/unknowns'.format(subset)
+                output_directory = 'features/biological/nodes-{}nm/{}/unknowns'.format(radius, subset)
             elif gold_one == gold_two:
-                output_directory = 'features/biological/nodes/{}/positives'.format(subset)
+                output_directory = 'features/biological/nodes-{}nm/{}/positives'.format(radius, subset)
             else: 
-                output_directory = 'features/biological/nodes/{}/negatives'.format(subset)
-
-            # save this example
+                output_directory = 'features/biological/nodes-{}nm/{}/negatives'.format(radius, subset)
             output_filename = '{}/{}-{}-{}.h5'.format(output_directory, prefix, label_one, label_two)
 
+            # write this example
             dataIO.WriteH5File(example, output_filename, 'main')
