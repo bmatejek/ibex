@@ -155,7 +155,6 @@ def ExtractExample(segment, label_one, label_two):
 
 
 
-
 def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=20000, radius=600):
     # possible widths for the neural network
     widths = [(18, 52, 52), (20, 60, 60)]
@@ -167,7 +166,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=2000
     # get the complete adjacency graph shows all neighboring edges
     adjacency_graph = edge_generation.ExtractAdjacencyMatrix(segmentation)
 
-    # get the list of nodes over and under 20K
+    # get the list of nodes over and under the threshold
     small_segments, large_segments = FindSmallSegments(segmentation, threshold)
 
     # get the locations around a possible merge
@@ -185,8 +184,6 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=2000
         ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = ((0, zres), (0, yres), (0, xres))
     else:
         sys.stderr.write('Unrecognized subset: {}'.format(subset))
-
-    old_segmentation = np.copy(segmentation)
 
     for iv, (label_one, label_two) in enumerate(adjacency_graph):
         if (label_one in small_segments) ^ (label_two in small_segments):
