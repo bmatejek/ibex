@@ -249,7 +249,7 @@ def Train(parameters, model_prefix, width, radius):
     if starting_epoch:
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
 
-    history = model.fit_generator(NodeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), epochs=1000, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), validation_steps=(examples_per_epoch / batch_size) / 10, initial_epoch=starting_epoch)
+    history = model.fit_generator(NodeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), epochs=250, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), validation_steps=(examples_per_epoch / batch_size) / 10, initial_epoch=starting_epoch)
 
     # save the fully trained model
     model.save_weights('{}.h5'.format(model_prefix))
