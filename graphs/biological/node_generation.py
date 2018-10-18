@@ -156,7 +156,7 @@ def ExtractExample(segment, label_one, label_two):
 
 
 
-def GenerateNodes(prefix, segmentation, seg2gold_mapping, threshold=20000, radius=600, subset='training'):
+def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=20000, radius=600):
     # possible widths for the neural network
     widths = [(18, 52, 52), (20, 60, 60)]
 
