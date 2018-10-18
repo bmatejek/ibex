@@ -145,7 +145,7 @@ def ReadImage(filename):
 
 
 
-def WriteImage(filename, image):
+def WriteImage(image, filename):
     imageio.imwrite(filename, image)
 
 
