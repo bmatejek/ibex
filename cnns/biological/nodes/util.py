@@ -14,6 +14,7 @@ def GenerateExampleFromSegment(segment, width, indices):
 
     example = np.zeros((nchannels, zres, yres, xres), dtype=np.float32)
 
+    # go through every element and set the appropriate channel values
     for iz in range(zres):
         for iy in range(yres):
             for ix in range(xres):
@@ -21,6 +22,7 @@ def GenerateExampleFromSegment(segment, width, indices):
                     if segment[iz,iy,ix]:
                         example[0,iz,iy,ix] = 1
                 else:
+                    # use indices array to avoid learning label one and label two differences
                     if segment[iz,iy,ix] == 1:
                         example[0,iz,iy,ix] = 1
                         example[indices[0],iz,iy,ix] = 1
