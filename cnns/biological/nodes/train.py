@@ -161,7 +161,7 @@ def WriteLogfiles(model, model_prefix, parameters):
 def NodeGenerator(parameters, width, radius, subset):
     # get the directories corresponding to this radius and subset
     positive_directory = 'features/biological/nodes-{}nm-{}x{}x{}/{}/positives'.format(radius, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1], subset)
-    negative_directory = 'features/biological/nodes-{}nm-{}x{}x{}/{}/positives'.format(radius, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1], subset)
+    negative_directory = 'features/biological/nodes-{}nm-{}x{}x{}/{}/negatives'.format(radius, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1], subset)
 
     # get all the positive candidate filenames
     positive_filenames = os.listdir(positive_directory)
