@@ -1,13 +1,21 @@
+cimport cython
+cimport numpy as np
+
 import os
 import numpy as np
-from numba import jit
+import ctypes
 
+
+from ibex.graphs.biological.util import ExtractExample, FindSmallSegments, ScaleFeature, FindMiddleBoundaries
 from ibex.graphs.biological import edge_generation
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
-from ibex.data_structures import unionfind;
-from ibex.transforms import seg2seg
 
+
+
+cdef extern from 'cpp-node-generation.h':
+    void CppFindMiddleBoundaries(long *segmentation, long grid_size[3])
+    void CppGetMiddleBoundaryLocation(long label_one, long label_two, float &zpoint, float &ypoint, float &xpoint)
 
 
 # simple function to create directory structure for all of the features
@@ -31,127 +39,33 @@ def CreateDirectoryStructure(widths, radius, subsets):
       
 
 
-@jit(nopython=True)
-def FindSmallSegments(segmentation, threshold):
-    # create lists for small and large nodes
-    small_segments = set()
-    large_segments = set()
 
-    zres, yres, xres = segmentation.shape
+def FindMiddleBoundaries2(segmentation):
+    # everything needs to be long ints to work with c++
+    assert (segmentation.dtype == np.int64)
 
-    # create a count for each label
-    max_label = np.amax(segmentation) + 1
-    counts = np.zeros(max_label, dtype=np.int64)
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_grid_size = np.ascontiguousarray(segmentation.shape, dtype=ctypes.c_int64)
 
-    for iz in range(zres):
-        for iy in range(yres):
-            for ix in range(xres):
-                counts[segmentation[iz,iy,ix]] += 1
+    CppFindMiddleBoundaries(&(cpp_segmentation[0,0,0]), &(cpp_grid_size[0]))
 
-    for label in range(max_label):
-        if not counts[label]: continue
-
-        if (counts[label] < threshold): small_segments.add(label)
-        else: large_segments.add(label)
-
-    return small_segments, large_segments
+    # free memory
+    del cpp_segmentation
+    del cpp_grid_size
 
 
 
-@jit(nopython=True)
-def FindMiddleBoundary(segmentation):
-    zres, yres, xres = segmentation.shape
+def GetMiddleBoundary(label_one, label_two):
+    cpp_label_one = min(label_one, label_two)
+    cpp_label_two = max(label_one, label_two)
 
-    max_label = np.amax(segmentation) + 1
+    # the center point on the boundary sent to cython
+    cdef np.ndarray[float, ndim=1, mode='c'] cpp_point = np.zeros(3, dtype=ctypes.c_float)
 
-    zmean = np.zeros((max_label, max_label), dtype=np.float32)
-    ymean = np.zeros((max_label, max_label), dtype=np.float32)
-    xmean = np.zeros((max_label, max_label), dtype=np.float32)
-    counts = np.zeros((max_label, max_label), dtype=np.float32)
+    CppGetMiddleBoundaryLocation(label_one, label_two, cpp_point[0], cpp_point[1], cpp_point[2])
+    
+    return (cpp_point[IB_Z], cpp_point[IB_Y], cpp_point[IB_X])
 
-    zdiff = segmentation[1:,:,:] != segmentation[:-1,:,:]
-    ydiff = segmentation[:,1:,:] != segmentation[:,:-1,:]
-    xdiff = segmentation[:,:,1:] != segmentation[:,:,:-1]
-
-    for iz in range(zres):
-        for iy in range(yres):
-            for ix in range(xres):
-                if iz < zres - 1 and zdiff[iz,iy,ix]:
-                    label_one = min(segmentation[iz,iy,ix], segmentation[iz+1,iy,ix])
-                    label_two = max(segmentation[iz,iy,ix], segmentation[iz+1,iy,ix])  
-                    zmean[label_one,label_two] += (iz + 0.5)
-                    ymean[label_one,label_two] += iy
-                    xmean[label_one,label_two] += ix
-                    counts[label_one,label_two] += 1
-                    
-                if iy < yres - 1 and ydiff[iz,iy,ix]:
-                    label_one = min(segmentation[iz,iy,ix], segmentation[iz,iy+1,ix])
-                    label_two = max(segmentation[iz,iy,ix], segmentation[iz,iy+1,ix])
-                    zmean[label_one,label_two] += iz
-                    ymean[label_one,label_two] += (iy + 0.5)
-                    xmean[label_one,label_two] += ix
-                    counts[label_one,label_two] += 1
-                    
-                if ix < xres - 1 and xdiff[iz,iy,ix]:
-                    label_one = min(segmentation[iz,iy,ix], segmentation[iz,iy,ix+1])
-                    label_two = max(segmentation[iz,iy,ix], segmentation[iz,iy,ix+1])
-                    zmean[label_one,label_two] += iz
-                    ymean[label_one,label_two] += iy
-                    xmean[label_one,label_two] += (ix + 0.5)
-                    counts[label_one,label_two] += 1
-
-    for is1 in range(max_label):
-        for is2 in range(is1 + 1, max_label):
-            if not counts[is1,is2]: continue 
-            zmean[is1,is2] /= counts[is1,is2]
-            ymean[is1,is2] /= counts[is1,is2]
-            xmean[is1,is2] /= counts[is1,is2]
-
-            zmean[is2,is1] = zmean[is1,is2]
-            ymean[is2,is1] = ymean[is1,is2]
-            xmean[is2,is1] = xmean[is1,is2]
-            counts[is2,is1] = counts[is1,is2]
-
-    return zmean, ymean, xmean
-
-
-
-@jit(nopython=True)
-def ScaleFeature(segment, width, label_one, label_two):
-    # get the size of the extracted segment
-    zres, yres, xres = segment.shape
-
-    example = np.zeros((width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.int8)
-
-    # iterate over the example coordinates
-    for iz in range(width[IB_Z]):
-        for iy in range(width[IB_Y]):
-            for ix in range(width[IB_X]):
-                # get the global coordiantes from segment
-                iw = int(float(zres) / float(width[IB_Z]) * iz)
-                iv = int(float(yres) / float(width[IB_Y]) * iy)
-                iu = int(float(xres) / float(width[IB_X]) * ix)
-
-                if segment[iw,iv,iu] == label_one:
-                    example[iz,iy,ix] = 1
-                elif segment[iw,iv,iu] == label_two:
-                    example[iz,iy,ix] = 2
-
-    return example
-
-
-
-@jit(nopython=True)
-def ExtractExample(segment, label_one, label_two):
-    zres, yres, xres = segment.shape
-
-    for iz in range(zres):
-        for iy in range(yres):
-            for ix in range(xres):
-                if (not segment[iz,iy,ix] == label_one) and (not segment[iz,iy,ix] == label_two):
-                    segment[iz,iy,ix] = 0
-
-    return segment
 
 
 
@@ -170,7 +84,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=2000
     small_segments, large_segments = FindSmallSegments(segmentation, threshold)
 
     # get the locations around a possible merge
-    zmean, ymean, xmean = FindMiddleBoundary(segmentation)
+    zmean, ymean, xmean = FindMiddleBoundaries(segmentation)
 
     # get the radius along each dimensions in terms of voxels
     resolution = dataIO.Resolution(prefix)
