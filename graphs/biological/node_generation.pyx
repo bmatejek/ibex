@@ -6,7 +6,7 @@ import numpy as np
 import ctypes
 
 
-from ibex.graphs.biological.util import ExtractExample, FindSmallSegments, ScaleFeature, FindMiddleBoundaries
+from ibex.graphs.biological.util import ExtractExample, FindSmallSegments, ScaleFeature
 from ibex.graphs.biological import edge_generation
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
@@ -16,6 +16,7 @@ from ibex.utilities.constants import *
 cdef extern from 'cpp-node-generation.h':
     void CppFindMiddleBoundaries(long *segmentation, long grid_size[3])
     void CppGetMiddleBoundaryLocation(long label_one, long label_two, float &zpoint, float &ypoint, float &xpoint)
+
 
 
 # simple function to create directory structure for all of the features
@@ -40,7 +41,7 @@ def CreateDirectoryStructure(widths, radius, subsets):
 
 
 
-def FindMiddleBoundaries2(segmentation):
+def FindMiddleBoundaries(segmentation):
     # everything needs to be long ints to work with c++
     assert (segmentation.dtype == np.int64)
 
@@ -64,7 +65,7 @@ def GetMiddleBoundary(label_one, label_two):
 
     CppGetMiddleBoundaryLocation(label_one, label_two, cpp_point[0], cpp_point[1], cpp_point[2])
     
-    return (cpp_point[IB_Z], cpp_point[IB_Y], cpp_point[IB_X])
+    return (int(cpp_point[IB_Z]), int(cpp_point[IB_Y]), int(cpp_point[IB_X]))
 
 
 
@@ -84,7 +85,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=2000
     small_segments, large_segments = FindSmallSegments(segmentation, threshold)
 
     # get the locations around a possible merge
-    zmean, ymean, xmean = FindMiddleBoundaries(segmentation)
+    FindMiddleBoundaries(segmentation)
 
     # get the radius along each dimensions in terms of voxels
     resolution = dataIO.Resolution(prefix)
@@ -101,9 +102,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=2000
 
     for iv, (label_one, label_two) in enumerate(adjacency_graph):
         if (label_one in small_segments) ^ (label_two in small_segments):
-            zpoint = int(zmean[label_one,label_two])
-            ypoint = int(ymean[label_one,label_two])
-            xpoint = int(xmean[label_one,label_two])
+            zpoint, ypoint, xpoint = GetMiddleBoundary(label_one, label_two)
 
             # if the center of the point falls outside the cropped box do not include it in training or validation 
             example_subset = subset

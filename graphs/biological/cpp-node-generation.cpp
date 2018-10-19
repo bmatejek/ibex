@@ -9,6 +9,7 @@
 
 
 // useful global variables
+
 static long nentries;
 static long sheet_size;
 static long row_size;
@@ -16,6 +17,7 @@ static long row_size;
 
 
 // random access variables
+
 static long max_label = -1;
 static std::unordered_map<long, float> zmean = std::unordered_map<long, float>();
 static std::unordered_map<long, float> ymean = std::unordered_map<long, float>();
@@ -42,7 +44,10 @@ void CppFindMiddleBoundaries(long *segmentation, long grid_size[3])
     zmean.clear();
     ymean.clear();
     xmean.clear();
-    
+        
+    // clear the max_label to get an accurate maximum when called twice
+    max_label = -1;
+
     // create mapping for the counts
     std::unordered_map<long, long> counts = std::unordered_map<long, long>();
 
