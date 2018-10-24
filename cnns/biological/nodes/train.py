@@ -180,7 +180,7 @@ def NodeGenerator(parameters, width, radius, subset):
 
     random.shuffle(positive_filenames)
     random.shuffle(negative_filenames)
-        
+
     while True:
         for iv in range(batch_size / 2):
             positive_candidate = dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filenames[positive_index]), 'main')
