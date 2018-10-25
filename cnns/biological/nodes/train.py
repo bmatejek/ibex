@@ -253,7 +253,7 @@ def Train(parameters, model_prefix, width, radius):
 
     # train the model
     history = model.fit_generator(NodeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), 
-        epochs=1000, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), 
+        epochs=2000, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), 
         validation_steps=(nvalidation_examples / batch_size), initial_epoch=starting_epoch)
 
     # save the fully trained model
