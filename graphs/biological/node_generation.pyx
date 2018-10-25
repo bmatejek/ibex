@@ -72,8 +72,9 @@ def GetMiddleBoundary(label_one, label_two):
 
 def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=20000, radius=600):
     # possible widths for the neural network
-    widths = [(18, 52, 52), (20, 60, 60)]
-
+    #widths = [(18, 52, 52), (20, 60, 60)]
+    widths = [(22, 68, 68), (24, 76, 76)]
+    
     # create the directory structure to save the features in
     # forward is needed for training and validation data that is cropped
     CreateDirectoryStructure(widths, radius, ['training', 'validation', 'testing', 'forward'])
