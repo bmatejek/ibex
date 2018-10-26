@@ -56,6 +56,7 @@ def FindMiddleBoundaries(segmentation):
 
 
 
+
 def GetMiddleBoundary(label_one, label_two):
     cpp_label_one = min(label_one, label_two)
     cpp_label_two = max(label_one, label_two)
@@ -70,10 +71,9 @@ def GetMiddleBoundary(label_one, label_two):
 
 
 
-def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=20000, radius=600):
+def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, threshold=20000):
     # possible widths for the neural network
-    #widths = [(18, 52, 52), (20, 60, 60)]
-    widths = [(22, 68, 68), (24, 76, 76)]
+    widths = [(18, 52, 52), (20, 60, 60), (22, 68, 68), (24, 76, 76)]
     
     # create the directory structure to save the features in
     # forward is needed for training and validation data that is cropped
@@ -161,4 +161,4 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, threshold=2000
                 output_filename = '{}/{}-{}-{}.h5'.format(output_directory, prefix, label_one, label_two)
 
                 # write this example
-                dataIO.WriteH5File(scaled_example, output_filename, 'main')
+                dataIO.WriteH5File(scaled_example, output_filename, 'main', compression=False)
