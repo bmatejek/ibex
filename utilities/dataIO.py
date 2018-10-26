@@ -59,11 +59,12 @@ def IsIsotropic(prefix):
 
 
 
-def WriteH5File(data, filename, dataset):
+def WriteH5File(data, filename, dataset, compression=True):
     with h5py.File(filename, 'w') as hf:
         # should cover all cases of affinities/images
         if data.dtype == np.float32 or data.dtype == np.uint8: hf.create_dataset(dataset, data=data)
-        else: hf.create_dataset(dataset, data=data, compression='gzip')
+        elif compression: hf.create_dataset(dataset, data=data, compression='gzip')
+        else: hf.create_dataset(dataset, data=data)
 
 
 
