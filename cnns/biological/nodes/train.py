@@ -175,16 +175,27 @@ def NodeGenerator(parameters, width, radius, subset):
     examples = np.zeros((batch_size, width[0], width[IB_Z+1], width[IB_Y+1], width[IB_X+1]), dtype=np.float32)
     labels = np.zeros(batch_size, dtype=np.float32)
 
+    positive_candidates = np.zeros((npositive_candidates, width[IB_Z+1], width[IB_Y+1], width[IB_X+1]), dtype=np.int32)
+    negative_candidates = np.zeros((nnegative_candidates, width[IB_Z+1], width[IB_Y+1], width[IB_X+1]), dtype=np.int32)
+
+    for positive_index in range(npositive_candidates):
+        positive_candidates[positive_index,:,:,:] = dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filenames[positive_index]), 'main').astype(np.int32)
+    for negative_index in range(nnegative_candidates):
+        negative_candidates[negative_index,:,:,:] = dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filenames[negative_index]), 'main').astype(np.int32)
+
+    positive_order = range(npositive_candidates)
+    negative_order = range(nnegative_candidates)
+
+    random.shuffle(positive_order)
+    random.shuffle(negative_order)
+
     positive_index = 0
     negative_index = 0
 
-    random.shuffle(positive_filenames)
-    random.shuffle(negative_filenames)
-
     while True:
         for iv in range(batch_size / 2):
-            positive_candidate = dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filenames[positive_index]), 'main')
-            negative_candidate = dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filenames[negative_index]), 'main')
+            positive_candidate = positive_candidates[positive_order[positive_index]]
+            negative_candidate = negative_candidates[negative_order[negative_index]]
 
             examples[2*iv,:,:,:,:] = AugmentFeature(positive_candidate, width)
             labels[2*iv] = True
@@ -193,11 +204,11 @@ def NodeGenerator(parameters, width, radius, subset):
 
             positive_index += 1
             if positive_index == npositive_candidates:
-                random.shuffle(positive_filenames)
+                random.shuffle(positive_order)
                 positive_index = 0
             negative_index += 1
             if negative_index == nnegative_candidates:
-                random.shuffle(negative_filenames)
+                random.shuffle(negative_order)
                 negative_index = 0
 
         yield (examples, labels)
@@ -253,7 +264,7 @@ def Train(parameters, model_prefix, width, radius):
 
     # train the model
     history = model.fit_generator(NodeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), 
-        epochs=2000, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), 
+        epochs=250, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), 
                                   validation_steps=(nvalidation_examples / batch_size), initial_epoch=starting_epoch)
 
     # save the fully trained model
