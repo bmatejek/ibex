@@ -137,6 +137,9 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
     # get the locations around a possible merge
     FindMiddleBoundaries(segmentation)
 
+    # get the size of the data
+    zres, yres, xres = segmentation.shape
+
     # crop the subset if it overlaps with testing data
     if subset == 'training' or subset == 'validation':
         ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = dataIO.CroppingBox(prefix)
