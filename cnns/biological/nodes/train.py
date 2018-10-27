@@ -198,6 +198,7 @@ def NodeGenerator(parameters, width, radius, subset):
             negative_index += 1
             if negative_index == nnegative_candidates:
                 random.shuffle(negative_filenames)
+                negative_index = 0
 
         yield (examples, labels)
 
