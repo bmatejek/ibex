@@ -48,7 +48,7 @@ def ReadH5File(filename, dataset=None):
         else: data = np.array(hf[dataset])
 
         # allow affinities and images to not be int64, everything else gets converted
-        if data.dtype == np.float32 or data.dtype == np.uint8: return data
+        if data.dtype == np.float32 or data.dtype == np.uint8 or data.dtype == np.int64: return data
         else: return data.astype(np.int64)
 
 
