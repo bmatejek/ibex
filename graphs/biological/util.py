@@ -39,7 +39,7 @@ def ScaleFeature(segment, width, label_one, label_two):
     # get the size of the extracted segment
     zres, yres, xres = segment.shape
 
-    example = np.zeros((width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.int8)
+    example = np.zeros((width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
 
     # iterate over the example coordinates
     for iz in range(width[IB_Z]):

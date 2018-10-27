@@ -70,6 +70,55 @@ def GetMiddleBoundary(label_one, label_two):
 
 
 
+def GenerateExamplesArray(prefix, segmentation, examples, width, radius):
+    # get the radius along each dimensions in terms of voxels
+    resolution = dataIO.Resolution(prefix)
+    (zradius, yradius, xradius) = (int(radius / resolution[IB_Z]), int(radius / resolution[IB_Y]), int(radius / resolution[IB_X]))
+    zres, yres, xres = segmentation.shape
+
+    # find the number of examples
+    nexamples = len(examples)
+
+    # create the empty array of examples
+    examples_array = np.zeros((nexamples, width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
+
+    for index, (zpoint, ypoint, xpoint, label_one, label_two) in enumerate(examples):
+        # need to make sure that bounding box does not leave location so sizes are correct
+        zmin = max(0, zpoint - zradius)
+        ymin = max(0, ypoint - yradius)
+        xmin = max(0, xpoint - xradius)
+        zmax = min(zres, zpoint + zradius + 1)
+        ymax = min(yres, ypoint + yradius + 1)
+        xmax = min(xres, xpoint + xradius + 1)
+
+        # create the empty example file with three channels corresponding to the value of segment
+        example = np.zeros((2 * zradius + 1, 2 * yradius + 1, 2 * xradius + 1), dtype=np.int32)
+
+        # get the valid location around this point
+        segment = ExtractExample(segmentation[zmin:zmax,ymin:ymax,xmin:xmax].copy(), label_one, label_two)
+
+        if example.shape == segment.shape:
+            example = segment
+        else:
+            if zmin == 0: zstart = zradius - zpoint
+            else: zstart = 0
+
+            if ymin == 0: ystart = yradius - ypoint
+            else: ystart = 0
+
+            if xmin == 0: xstart = xradius - xpoint
+            else: xstart = 0
+
+            # the second and third channels are one if the corresponding voxels belong to the individual segments
+            example[zstart:zstart+segment.shape[IB_Z],ystart:ystart+segment.shape[IB_Y],xstart:xstart+segment.shape[IB_X]] = segment
+
+        # scale the feature to the appropriate width
+        examples_array[index,:,:,:] = ScaleFeature(example, width, label_one, label_two)
+
+    # return the examples
+    return examples_array
+
+
 
 def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, threshold=20000):
     # possible widths for the neural network
@@ -88,11 +137,6 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
     # get the locations around a possible merge
     FindMiddleBoundaries(segmentation)
 
-    # get the radius along each dimensions in terms of voxels
-    resolution = dataIO.Resolution(prefix)
-    (zradius, yradius, xradius) = (int(radius / resolution[IB_Z]), int(radius / resolution[IB_Y]), int(radius / resolution[IB_X]))
-    zres, yres, xres = segmentation.shape
-
     # crop the subset if it overlaps with testing data
     if subset == 'training' or subset == 'validation':
         ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = dataIO.CroppingBox(prefix)
@@ -101,64 +145,74 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
     else:
         sys.stderr.write('Unrecognized subset: {}'.format(subset))
 
+    # create list for all relevant examples
+    positive_examples = []
+    negative_examples = []
+    unknown_examples = []
+    forward_positive_examples = []
+    forward_negative_examples = []
+    forward_unknown_examples = []
+
     for iv, (label_one, label_two) in enumerate(adjacency_graph):
         if (label_one in small_segments) ^ (label_two in small_segments):
             zpoint, ypoint, xpoint = GetMiddleBoundary(label_one, label_two)
 
             # if the center of the point falls outside the cropped box do not include it in training or validation 
-            example_subset = subset
+            forward = False
             # however, you allow it for forward inference
-            if (zpoint < cropped_zmin or cropped_zmax <= zpoint): example_subset = 'forward'
-            if (ypoint < cropped_ymin or cropped_ymax <= ypoint): example_subset = 'forward'
-            if (xpoint < cropped_xmin or cropped_xmax <= xpoint): example_subset = 'forward'
+            if (zpoint < cropped_zmin or cropped_zmax <= zpoint): forward = True
+            if (ypoint < cropped_ymin or cropped_ymax <= ypoint): forward = True
+            if (xpoint < cropped_xmin or cropped_xmax <= xpoint): forward = True
 
-            # need to make sure that bounding box does not leave location so sizes are correct
-            zmin = max(0, zpoint - zradius)
-            ymin = max(0, ypoint - yradius)
-            xmin = max(0, xpoint - xradius)
-            zmax = min(zres, zpoint + zradius + 1)
-            ymax = min(yres, ypoint + yradius + 1)
-            xmax = min(xres, xpoint + xradius + 1)
-
-            # create the empty example file with three channels corresponding to the value of segment
-            example = np.zeros((2 * zradius + 1, 2 * yradius + 1, 2 * xradius + 1), dtype=np.int32)
-
-            # get the valid location around this point
-            segment = ExtractExample(segmentation[zmin:zmax,ymin:ymax,xmin:xmax].copy(), label_one, label_two)
-
-            if example.shape == segment.shape:
-                example = segment
-            else:
-                if zmin == 0: zstart = zradius - zpoint
-                else: zstart = 0
-
-                if ymin == 0: ystart = yradius - ypoint
-                else: ystart = 0
-
-                if xmin == 0: xstart = xradius - xpoint
-                else: xstart = 0
-
-                # the second and third channels are one if the corresponding voxels belong to the individual segments
-                example[zstart:zstart+segment.shape[IB_Z],ystart:ystart+segment.shape[IB_Y],xstart:xstart+segment.shape[IB_X]] = segment
-
-            for width in widths:
-                # get this subdirectory for this CNN width
-                sub_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
-                scaled_example = ScaleFeature(example, width, label_one, label_two)
-
-                # see if these two segments belong to the same node
-                gold_one = seg2gold_mapping[label_one]
-                gold_two = seg2gold_mapping[label_two]
-
-                # save the data in the appropriate location
+            # see if these two segments belong to the same node
+            gold_one = seg2gold_mapping[label_one]
+            gold_two = seg2gold_mapping[label_two]
+                
+            # create lists of locations where these point occur
+            if forward:
                 if gold_one < 1 or gold_two < 1: 
-                    output_directory = '{}/{}/unknowns'.format(sub_directory, example_subset)
+                    forward_unknown_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
                 elif gold_one == gold_two:
-                    output_directory = '{}/{}/positives'.format(sub_directory, example_subset)
+                    forward_positive_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
                 else: 
-                    output_directory = '{}/{}/negatives'.format(sub_directory, example_subset)
+                    forward_negative_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
+            else:
+                if gold_one < 1 or gold_two < 1: 
+                    unknown_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
+                elif gold_one == gold_two:
+                    positive_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
+                else: 
+                    negative_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
 
-                output_filename = '{}/{}-{}-{}.h5'.format(output_directory, prefix, label_one, label_two)
+    for width in widths:
+        parent_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
 
-                # write this example
-                dataIO.WriteH5File(scaled_example, output_filename, 'main', compression=False)
+        if len(positive_examples):
+            positive_examples_array = GenerateExamplesArray(prefix, segmentation, positive_examples, width, radius)
+            dataIO.WriteH5File(positive_examples_array, '{}/{}/positives/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
+            del positive_examples_array
+
+        if len(negative_examples):
+            negative_examples_array = GenerateExamplesArray(prefix, segmentation, negative_examples, width, radius)
+            dataIO.WriteH5File(negative_examples_array, '{}/{}/negatives/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
+            del negative_examples_array
+
+        if len(unknown_examples):
+            unknown_examples_array = GenerateExamplesArray(prefix, segmentation, unknown_examples, width, radius)
+            dataIO.WriteH5File(unknown_examples_array, '{}/{}/unknowns/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
+            del unknown_examples_array
+
+        if len(forward_positive_examples):
+            forward_positive_examples_array = GenerateExamplesArray(prefix, segmentation, forward_positive_examples, width, radius)
+            dataIO.WriteH5File(forward_positive_examples_array, '{}/forward/positives/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
+            del forward_positive_examples_array            
+
+        if len(forward_negative_examples):
+            forward_negative_examples_array = GenerateExamplesArray(prefix, segmentation, forward_negative_examples, width, radius)
+            dataIO.WriteH5File(forward_negative_examples_array, '{}/forward/negatives/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
+            del forward_negative_examples_array
+
+        if len(forward_unknown_examples):
+            forward_unknown_examples_array = GenerateExamplesArray(prefix, segmentation, forward_unknown_examples, width, radius)
+            dataIO.WriteH5File(forward_unknown_examples_array, '{}/forward/unknowns/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
+            del forward_unknown_examples_array

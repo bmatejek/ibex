@@ -2,6 +2,7 @@ import os
 import matplotlib
 matplotlib.use('Agg')
 import random
+import time
 
 import numpy as np
 
@@ -87,6 +88,8 @@ class PlotLosses(keras.callbacks.Callback):
         self.val_losses.append(logs.get('val_loss'))
         self.i = self.i + 1
         
+        plt.ylabel('Training/Validation Loss')
+        plt.xlabel('Number of Epochs')
         plt.plot(self.x, self.losses, label="loss")
         plt.plot(self.x, self.val_losses, label="val_loss")
         plt.legend()
@@ -162,26 +165,34 @@ def NodeGenerator(parameters, width, radius, subset):
     positive_directory = 'features/biological/nodes-{}nm-{}x{}x{}/{}/positives'.format(radius, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1], subset)
     negative_directory = 'features/biological/nodes-{}nm-{}x{}x{}/{}/negatives'.format(radius, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1], subset)
 
+    start_time = time.time()
+
     # get all the positive candidate filenames
     positive_filenames = os.listdir(positive_directory)
-    npositive_candidates = len(positive_filenames)
+    positive_candidates = []
+    for positive_filename in positive_filenames:
+        positive_candidates.append(dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filename), 'main'))
+    positive_candidates = np.concatenate(positive_candidates, axis=0)
+
+    print 'Read {} candidates in {} seconds'.format(positive_candidates.shape[0], time.time() - start_time)
+    start_time = time.time()
 
     # get all the negative candidate filenames
     negative_filenames = os.listdir(negative_directory) 
-    nnegative_candidates = len(negative_filenames)
+    negative_candidates = []
+    for negative_filename in negative_filenames:
+        negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filenames), 'main'))
+    negative_candidates = np.concatenate(negative_candidates, axis=0)
+    print 'Read {} candidates in {} seconds'.format(negative_candidates.shape[0], time.time() - start_time)
+
+    # create easy access to the numbers of candidates
+    npositive_candidates = positive_candidates.shape[0]
+    nnegative_candidates = negative_candidates.shape[0]
 
     batch_size = parameters['batch_size']
 
     examples = np.zeros((batch_size, width[0], width[IB_Z+1], width[IB_Y+1], width[IB_X+1]), dtype=np.float32)
     labels = np.zeros(batch_size, dtype=np.float32)
-
-    positive_candidates = np.zeros((npositive_candidates, width[IB_Z+1], width[IB_Y+1], width[IB_X+1]), dtype=np.int32)
-    negative_candidates = np.zeros((nnegative_candidates, width[IB_Z+1], width[IB_Y+1], width[IB_X+1]), dtype=np.int32)
-
-    for positive_index in range(npositive_candidates):
-        positive_candidates[positive_index,:,:,:] = dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filenames[positive_index]), 'main').astype(np.int32)
-    for negative_index in range(nnegative_candidates):
-        negative_candidates[negative_index,:,:,:] = dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filenames[negative_index]), 'main').astype(np.int32)
 
     positive_order = range(npositive_candidates)
     negative_order = range(nnegative_candidates)
