@@ -4,6 +4,8 @@ cimport numpy as np
 import os
 import numpy as np
 import ctypes
+import struct
+import sys
 
 
 from ibex.graphs.biological.util import ExtractExample, FindSmallSegments, ScaleFeature
@@ -187,35 +189,78 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
                 else: 
                     negative_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
 
+
     for width in widths:
         parent_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
 
         if len(positive_examples):
+            # save the examples
+            positive_filename = '{}/{}/positives/{}.examples'.format(parent_directory, subset, prefix)
+            with open(positive_filename, 'wb') as fd:
+                fd.write(struct.pack('q', len(positive_examples)))
+                for example in positive_examples:
+                    fd.write(struct.pack('qq', example[3], example[4]))
+
             positive_examples_array = GenerateExamplesArray(prefix, segmentation, positive_examples, width, radius)
             dataIO.WriteH5File(positive_examples_array, '{}/{}/positives/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
             del positive_examples_array
 
         if len(negative_examples):
+            # save the examples
+            negative_filename = '{}/{}/negatives/{}.examples'.format(parent_directory, subset, prefix)
+            with open(negative_filename, 'wb') as fd:
+                fd.write(struct.pack('q', len(negative_examples)))
+                for example in negative_examples:
+                    fd.write(struct.pack('qq', example[3], example[4]))
+
             negative_examples_array = GenerateExamplesArray(prefix, segmentation, negative_examples, width, radius)
             dataIO.WriteH5File(negative_examples_array, '{}/{}/negatives/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
             del negative_examples_array
 
         if len(unknown_examples):
+            # save the examples
+            unknown_filename = '{}/{}/unknowns/{}.examples'.format(parent_directory, subset, prefix)
+            with open(unknown_filename, 'wb') as fd:
+                fd.write(struct.pack('q', len(unknown_examples)))
+                for example in unknown_examples:
+                    fd.write(struct.pack('qq', example[3], example[4]))
+
             unknown_examples_array = GenerateExamplesArray(prefix, segmentation, unknown_examples, width, radius)
             dataIO.WriteH5File(unknown_examples_array, '{}/{}/unknowns/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
             del unknown_examples_array
 
         if len(forward_positive_examples):
+            # save the examples
+            forward_positive_filename = '{}/forward/positives/{}.examples'.format(parent_directory, prefix)
+            with open(forward_positive_filename, 'wb') as fd:
+                fd.write(struct.pack('q', len(forward_positive_examples)))
+                for example in forward_positive_examples:
+                    fd.write(struct.pack('qq', example[3], example[4]))
+            
             forward_positive_examples_array = GenerateExamplesArray(prefix, segmentation, forward_positive_examples, width, radius)
             dataIO.WriteH5File(forward_positive_examples_array, '{}/forward/positives/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
             del forward_positive_examples_array            
 
         if len(forward_negative_examples):
+            # save the examples
+            forward_negative_filename = '{}/forward/negatives/{}.examples'.format(parent_directory, prefix)
+            with open(forward_negative_filename, 'wb') as fd:
+                fd.write(struct.pack('q', len(forward_negative_examples)))
+                for example in forward_negative_examples:
+                    fd.write(struct.pack('qq', example[3], example[4]))
+
             forward_negative_examples_array = GenerateExamplesArray(prefix, segmentation, forward_negative_examples, width, radius)
             dataIO.WriteH5File(forward_negative_examples_array, '{}/forward/negatives/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
             del forward_negative_examples_array
 
         if len(forward_unknown_examples):
+            # save the examples
+            forward_unknown_filename = '{}/forward/unknowns/{}.examples'.format(parent_directory, prefix)
+            with open(forward_unknown_filename, 'wb') as fd:
+                fd.write(struct.pack('q', len(forward_unknown_examples)))
+                for example in forward_unknown_examples:
+                    fd.write(struct.pack('qq', example[3], example[4]))
+
             forward_unknown_examples_array = GenerateExamplesArray(prefix, segmentation, forward_unknown_examples, width, radius)
             dataIO.WriteH5File(forward_unknown_examples_array, '{}/forward/unknowns/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
             del forward_unknown_examples_array
