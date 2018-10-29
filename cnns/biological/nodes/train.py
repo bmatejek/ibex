@@ -169,6 +169,7 @@ def NodeGenerator(parameters, width, radius, subset):
     positive_filenames = os.listdir(positive_directory)
     positive_candidates = []
     for positive_filename in positive_filenames:
+        if not positive_filename[:-3] == '.h5': continue
         positive_candidates.append(dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filename), 'main'))
     positive_candidates = np.concatenate(positive_candidates, axis=0)
 
@@ -176,6 +177,7 @@ def NodeGenerator(parameters, width, radius, subset):
     negative_filenames = os.listdir(negative_directory) 
     negative_candidates = []
     for negative_filename in negative_filenames:
+        if not negative_filenames[:-3] == '.h5': continue
         negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filename), 'main'))
     negative_candidates = np.concatenate(negative_candidates, axis=0)
 
