@@ -7,7 +7,7 @@ from ibex.utilities.constants import *
 
 
 @jit(nopython=True)
-def FindSmallSegments(segmentation, threshold):
+def FindSmallSegments(segmentation, threshold=20000):
     # create lists for small and large nodes
     small_segments = set()
     large_segments = set()
