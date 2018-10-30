@@ -54,17 +54,17 @@ def CollectExamples(prefix, width, radius, subset):
     forward_positive_filename = '{}/forward/positives/{}-examples.h5'.format(parent_directory, prefix)
     if os.path.exists(forward_positive_filename):
         forward_positive_examples = dataIO.ReadH5File(forward_positive_filename, 'main')
-        examples = np.concanate((examples, forward_positive_examples), axis=0)
+        examples = np.concatenate((examples, forward_positive_examples), axis=0)
 
     forward_negative_filename = '{}/forward/negatives/{}-examples.h5'.format(parent_directory, prefix)
     if os.path.exists(forward_negative_filename):
         forward_negative_examples = dataIO.ReadH5File(forward_negative_filename, 'main')
-        examples = np.concanate((examples, forward_negative_examples), axis=0)
+        examples = np.concatenate((examples, forward_negative_examples), axis=0)
 
     forward_unknowns_filename = '{}/forward/unknowns/{}-examples.h5'.format(parent_directory, prefix)
     if os.path.exists(forward_unknowns_filename):
         forward_unknowns_examples = dataIO.ReadH5File(forward_unknowns_filename, 'main')
-        examples = np.concanate((examples, forward_unknowns_examples), axis=0)
+        examples = np.concatenate((examples, forward_unknowns_examples), axis=0)
 
     return examples, positive_examples.shape[0], negative_examples.shape[0]
 
@@ -227,7 +227,7 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     
     # get the model name (first component is architecture and third is node-)
     model_name = model_prefix.split('/')[1]
-    output_filename = 'rhoana/{}-reduced-nodes-{}.h5'.format(prefix, model_name)
+    output_filename = 'rhoana/{}-reduced-{}.h5'.format(prefix, model_name)
     dataIO.WriteH5File(segmentation, output_filename, 'main')
 
     if evaluate:
@@ -237,7 +237,7 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
         rand_error, vi = comparestacks.VariationOfInformation(segmentation, gold)
 
         # write the output file
-        with open('node-results/{}-reduced-nodes-{}.txt'.format(prefix, model_name), 'w') as fd:
+        with open('node-results/{}-reduced-{}.txt'.format(prefix, model_name), 'w') as fd:
             fd.write('Rand Error Full: {}\n'.format(rand_error[0] + rand_error[1]))
             fd.write('Rand Error Merge: {}\n'.format(rand_error[0]))
             fd.write('Rand Error Split: {}\n'.format(rand_error[1]))
