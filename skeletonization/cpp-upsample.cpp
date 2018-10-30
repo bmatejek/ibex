@@ -287,8 +287,11 @@ static void FindEndpointVector(long index, double &vx, double &vy, double &vz)
                     long neighbor_index = iw * down_grid_size[IB_Y] * down_grid_size[IB_X] + iv * down_grid_size[IB_X] + iu;
                     if (!skeleton[neighbor_index]) continue;
 
-                nneighbors += 1;
-                only_neighbor = neighbor_index;
+                    // skip if the neighbor is this index (i.e., it is not a neighbor)
+                    if (neighbor_index == index) continue;
+
+                    nneighbors += 1;
+                    only_neighbor = neighbor_index;
                 }
             }
         }
