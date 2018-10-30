@@ -1,5 +1,4 @@
 import os
-import time
 import numpy as np
 import sys
 import struct
@@ -19,16 +18,10 @@ from ibex.evaluation import comparestacks
 # generator for the inference of the neural network
 def NodeGenerator(examples, width):
     index = 0
-    start_time = time.time()
 
-    while True:
-        # print out the progress
-        if index and not (index % 1000):
-            print '{}/{} in {:0.4f} seconds'.format(index, examples.shape[0], time.time() - start_time)
-                                    
+    while True:                      
         # prevent overflow of the queue (these examples will not go through)
-        if index == examples.shape[0]:
-            index = 0
+        if index == examples.shape[0]: index = 0
 
         # augment the feature
         example = AugmentFeature(examples[index], width)
@@ -215,10 +208,16 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
         if seg2gold_mapping[small_segment] == seg2gold_mapping[best_large_segment]: ncorrect_merges += 1
         else: nincorrect_merges += 1
 
-    print 'Results: '
+    print '\nResults:'
     print '  Correctly Merged: {}'.format(ncorrect_merges)
     print '  Incorrectly Merged: {}'.format(nincorrect_merges)
     
+    with open(output_filename, 'a') as fd:
+        fd.write('\nResults:\n')
+        fd.write('  Correctly Merged: {}\n'.format(ncorrect_merges))
+        fd.write('  Incorrectly Merged: {}\n'.format(nincorrect_merges))
+    
+
     # initiate the mapping to eliminate small segments
     seg2seg.MapLabels(segmentation, mapping)
 
@@ -234,15 +233,15 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     if evaluate:
         gold = dataIO.ReadGoldData(prefix)
 
-        sys.stdout = open('nodes/{}-reduced-nodes-{}.txt'.format(prefix, model_name), 'w')
-
         # run the evaluation framework
         rand_error, vi = comparestacks.VariationOfInformation(segmentation, gold)
 
-        print 'Rand Error Full: {}'.format(rand_error[0] + rand_error[1])
-        print 'Rand Error Merge: {}'.format(rand_error[0])
-        print 'Rand Error Split: {}'.format(rand_error[1])
+        # write the output file
+        with open('node-results/{}-reduced-nodes-{}.txt'.format(prefix, model_name), 'w') as fd:
+            fd.write('Rand Error Full: {}\n'.format(rand_error[0] + rand_error[1]))
+            fd.write('Rand Error Merge: {}\n'.format(rand_error[0]))
+            fd.write('Rand Error Split: {}\n'.format(rand_error[1]))
 
-        print 'Variation of Information Full: {}'.format(vi[0] + vi[1])
-        print 'Variation of Information Merge: {}'.format(vi[0])
-        print 'Variation of Information Split: {}'.format(vi[1])
+            fd.write('Variation of Information Full: {}\n'.format(vi[0] + vi[1]))
+            fd.write('Variation of Information Merge: {}\n'.format(vi[0]))
+            fd.write('Variation of Information Split: {}\n'.format(vi[1]))
