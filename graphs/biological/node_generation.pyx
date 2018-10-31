@@ -22,10 +22,10 @@ cdef extern from 'cpp-node-generation.h':
 
 
 # simple function to create directory structure for all of the features
-def CreateDirectoryStructure(widths, radius, subsets):
+def CreateDirectoryStructure(widths, network_radius, subsets):
     for width in widths:
         # make sure directory structure exists
-        directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
+        directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(network_radius, width[IB_Z], width[IB_Y], width[IB_X])
         if not os.path.exists(directory):
             os.mkdir(directory)
 
@@ -72,10 +72,10 @@ def GetMiddleBoundary(label_one, label_two):
 
 
 
-def GenerateExamplesArray(prefix, segmentation, examples, width, radius):
+def GenerateExamplesArray(prefix, segmentation, examples, width, network_radius):
     # get the radius along each dimensions in terms of voxels
     resolution = dataIO.Resolution(prefix)
-    (zradius, yradius, xradius) = (int(radius / resolution[IB_Z]), int(radius / resolution[IB_Y]), int(radius / resolution[IB_X]))
+    (zradius, yradius, xradius) = (int(network_radius / resolution[IB_Z]), int(network_radius / resolution[IB_Y]), int(network_radius / resolution[IB_X]))
     zres, yres, xres = segmentation.shape
 
     # find the number of examples
@@ -122,13 +122,13 @@ def GenerateExamplesArray(prefix, segmentation, examples, width, radius):
 
 
 
-def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, threshold=20000):
+def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius, threshold=20000):
     # possible widths for the neural network
     widths = [(18, 52, 52), (20, 60, 60), (22, 68, 68), (24, 76, 76)]
     
     # create the directory structure to save the features in
     # forward is needed for training and validation data that is cropped
-    CreateDirectoryStructure(widths, radius, ['training', 'validation', 'testing', 'forward'])
+    CreateDirectoryStructure(widths, network_radius, ['training', 'validation', 'testing', 'forward'])
 
     # get the complete adjacency graph shows all neighboring edges
     adjacency_graph = edge_generation.ExtractAdjacencyMatrix(segmentation)
@@ -191,7 +191,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
 
 
     for width in widths:
-        parent_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(radius, width[IB_Z], width[IB_Y], width[IB_X])
+        parent_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(network_radius, width[IB_Z], width[IB_Y], width[IB_X])
 
         if len(positive_examples):
             # save the examples
@@ -201,7 +201,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
                 for example in positive_examples:
                     fd.write(struct.pack('qq', example[3], example[4]))
 
-            positive_examples_array = GenerateExamplesArray(prefix, segmentation, positive_examples, width, radius)
+            positive_examples_array = GenerateExamplesArray(prefix, segmentation, positive_examples, width, network_radius)
             dataIO.WriteH5File(positive_examples_array, '{}/{}/positives/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
             del positive_examples_array
 
@@ -213,7 +213,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
                 for example in negative_examples:
                     fd.write(struct.pack('qq', example[3], example[4]))
 
-            negative_examples_array = GenerateExamplesArray(prefix, segmentation, negative_examples, width, radius)
+            negative_examples_array = GenerateExamplesArray(prefix, segmentation, negative_examples, width, network_radius)
             dataIO.WriteH5File(negative_examples_array, '{}/{}/negatives/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
             del negative_examples_array
 
@@ -225,7 +225,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
                 for example in unknown_examples:
                     fd.write(struct.pack('qq', example[3], example[4]))
 
-            unknown_examples_array = GenerateExamplesArray(prefix, segmentation, unknown_examples, width, radius)
+            unknown_examples_array = GenerateExamplesArray(prefix, segmentation, unknown_examples, width, network_radius)
             dataIO.WriteH5File(unknown_examples_array, '{}/{}/unknowns/{}-examples.h5'.format(parent_directory, subset, prefix), 'main', compression=True)
             del unknown_examples_array
 
@@ -237,7 +237,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
                 for example in forward_positive_examples:
                     fd.write(struct.pack('qq', example[3], example[4]))
             
-            forward_positive_examples_array = GenerateExamplesArray(prefix, segmentation, forward_positive_examples, width, radius)
+            forward_positive_examples_array = GenerateExamplesArray(prefix, segmentation, forward_positive_examples, width, network_radius)
             dataIO.WriteH5File(forward_positive_examples_array, '{}/forward/positives/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
             del forward_positive_examples_array            
 
@@ -249,7 +249,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
                 for example in forward_negative_examples:
                     fd.write(struct.pack('qq', example[3], example[4]))
 
-            forward_negative_examples_array = GenerateExamplesArray(prefix, segmentation, forward_negative_examples, width, radius)
+            forward_negative_examples_array = GenerateExamplesArray(prefix, segmentation, forward_negative_examples, width, network_radius)
             dataIO.WriteH5File(forward_negative_examples_array, '{}/forward/negatives/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
             del forward_negative_examples_array
 
@@ -261,6 +261,6 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, radius, thresh
                 for example in forward_unknown_examples:
                     fd.write(struct.pack('qq', example[3], example[4]))
 
-            forward_unknown_examples_array = GenerateExamplesArray(prefix, segmentation, forward_unknown_examples, width, radius)
+            forward_unknown_examples_array = GenerateExamplesArray(prefix, segmentation, forward_unknown_examples, width, network_radius)
             dataIO.WriteH5File(forward_unknown_examples_array, '{}/forward/unknowns/{}-examples.h5'.format(parent_directory, prefix), 'main', compression=True)
             del forward_unknown_examples_array

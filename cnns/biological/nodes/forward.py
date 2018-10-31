@@ -197,10 +197,13 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
             if probability > best_probability:
                 best_probability = probability
                 best_large_segment = large_segment
-                
+        
+        # this should almost never happen but if it does just continue
+        if best_large_segment == -1:
+            mapping[small_segment] = small_segment
         # get all of the best large segments
-        assert (not best_large_segment == -1)
-        mapping[small_segment] = large_segment
+        else:
+            mapping[small_segment] = best_large_segment
 
         # don't consider undetermined locations
         if seg2gold_mapping[small_segment] < 1 or seg2gold_mapping[best_large_segment] < 1: continue
@@ -217,6 +220,8 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
         fd.write('  Correctly Merged: {}\n'.format(ncorrect_merges))
         fd.write('  Incorrectly Merged: {}\n'.format(nincorrect_merges))
     
+    # save the node mapping in the cache for later
+    end2end_mapping = [mapping[iv] for iv in range(max_label)]
 
     # initiate the mapping to eliminate small segments
     seg2seg.MapLabels(segmentation, mapping)
@@ -224,11 +229,22 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     # reduce the labels and map again
     mapping, _ = seg2seg.ReduceLabels(segmentation)
     seg2seg.MapLabels(segmentation, mapping)
+
+    # update the end to end mapping with the reduced labels
+    for iv in range(max_label):
+        end2end_mapping[iv] = mapping[end2end_mapping[iv]]
     
     # get the model name (first component is architecture and third is node-)
     model_name = model_prefix.split('/')[1]
     output_filename = 'rhoana/{}-reduced-{}.h5'.format(prefix, model_name)
     dataIO.WriteH5File(segmentation, output_filename, 'main')
+
+    # save the end to end mapping in the cache
+    mapping_filename = 'cache/{}-reduced-{}-end2end.map'.format(prefix, model_name)
+    with open(mapping_filename, 'wb') as fd:
+        fd.write(struct.pack('q', max_label))
+        for label in max_label:
+            fd.write(struct.pack('q', end2end_mapping[label]))
 
     if evaluate:
         gold = dataIO.ReadGoldData(prefix)
