@@ -243,7 +243,7 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     mapping_filename = 'cache/{}-reduced-{}-end2end.map'.format(prefix, model_name)
     with open(mapping_filename, 'wb') as fd:
         fd.write(struct.pack('q', max_label))
-        for label in max_label:
+        for label in range(max_label):
             fd.write(struct.pack('q', end2end_mapping[label]))
 
     if evaluate:
