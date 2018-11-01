@@ -8,7 +8,7 @@ import struct
 import sys
 
 
-from ibex.graphs.biological.util import ExtractExample, FindSmallSegments, ScaleFeature
+from ibex.graphs.biological.util import CreateDirectoryStructure, ExtractExample, FindSmallSegments, ScaleFeature
 from ibex.graphs.biological import edge_generation
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
@@ -18,28 +18,6 @@ from ibex.utilities.constants import *
 cdef extern from 'cpp-node-generation.h':
     void CppFindMiddleBoundaries(long *segmentation, long grid_size[3])
     void CppGetMiddleBoundaryLocation(long label_one, long label_two, float &zpoint, float &ypoint, float &xpoint)
-
-
-
-# simple function to create directory structure for all of the features
-def CreateDirectoryStructure(widths, network_radius, subsets):
-    for width in widths:
-        # make sure directory structure exists
-        directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(network_radius, width[IB_Z], width[IB_Y], width[IB_X])
-        if not os.path.exists(directory):
-            os.mkdir(directory)
-
-        # add all subsets
-        for subset in subsets:
-            sub_directory = '{}/{}'.format(directory, subset)
-            if not os.path.exists(sub_directory):
-                os.mkdir(sub_directory)
-            # there are three possible labels per subset
-            labelings = ['positives', 'negatives', 'unknowns']
-            for labeling in labelings:
-                if not os.path.exists('{}/{}'.format(sub_directory, labeling)):
-                    os.mkdir('{}/{}'.format(sub_directory, labeling))
-      
 
 
 
@@ -128,7 +106,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius
     
     # create the directory structure to save the features in
     # forward is needed for training and validation data that is cropped
-    CreateDirectoryStructure(widths, network_radius, ['training', 'validation', 'testing', 'forward'])
+    CreateDirectoryStructure(widths, network_radius, ['training', 'validation', 'testing', 'forward'], 'nodes')
 
     # get the complete adjacency graph shows all neighboring edges
     adjacency_graph = edge_generation.ExtractAdjacencyMatrix(segmentation)
