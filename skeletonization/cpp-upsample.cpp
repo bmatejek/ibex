@@ -334,9 +334,9 @@ static void FindEndpointVector(long index, double &vx, double &vy, double &vz)
         vz = iz - ik;
     }
 
-    // perform normalization so that the vector follows anisotropic patterns
-    vy *= (ydown / xdown);
-    vz *= (zdown / xdown);
+    // we do not change the coordinate system for the vectors from anisotropic to isotropic
+    // this allows us to easily compute edges because we can multiply by the resolutions to convert
+    // anisotropic coordinates to isotropic ones
 
     double normalization = sqrt(vx * vx + vy * vy + vz * vz);
     vx = vx / normalization;
