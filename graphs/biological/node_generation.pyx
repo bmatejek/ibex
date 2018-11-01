@@ -8,7 +8,7 @@ import struct
 import sys
 
 
-from ibex.graphs.biological.util import CreateDirectoryStructure, ExtractExample, FindSmallSegments, ScaleFeature
+from ibex.graphs.biological.util import CreateDirectoryStructure, ExtractExample, FindSmallSegments, GenerateExamplesArray, ScaleFeature
 from ibex.graphs.biological import edge_generation
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
@@ -48,55 +48,6 @@ def GetMiddleBoundary(label_one, label_two):
     
     return (int(cpp_point[IB_Z]), int(cpp_point[IB_Y]), int(cpp_point[IB_X]))
 
-
-
-def GenerateExamplesArray(prefix, segmentation, examples, width, network_radius):
-    # get the radius along each dimensions in terms of voxels
-    resolution = dataIO.Resolution(prefix)
-    (zradius, yradius, xradius) = (int(network_radius / resolution[IB_Z]), int(network_radius / resolution[IB_Y]), int(network_radius / resolution[IB_X]))
-    zres, yres, xres = segmentation.shape
-
-    # find the number of examples
-    nexamples = len(examples)
-
-    # create the empty array of examples
-    examples_array = np.zeros((nexamples, width[IB_Z], width[IB_Y], width[IB_X]), dtype=np.uint8)
-
-    for index, (zpoint, ypoint, xpoint, label_one, label_two) in enumerate(examples):
-        # need to make sure that bounding box does not leave location so sizes are correct
-        zmin = max(0, zpoint - zradius)
-        ymin = max(0, ypoint - yradius)
-        xmin = max(0, xpoint - xradius)
-        zmax = min(zres, zpoint + zradius + 1)
-        ymax = min(yres, ypoint + yradius + 1)
-        xmax = min(xres, xpoint + xradius + 1)
-
-        # create the empty example file with three channels corresponding to the value of segment
-        example = np.zeros((2 * zradius + 1, 2 * yradius + 1, 2 * xradius + 1), dtype=np.int32)
-
-        # get the valid location around this point
-        segment = ExtractExample(segmentation[zmin:zmax,ymin:ymax,xmin:xmax].copy(), label_one, label_two)
-
-        if example.shape == segment.shape:
-            example = segment
-        else:
-            if zmin == 0: zstart = zradius - zpoint
-            else: zstart = 0
-
-            if ymin == 0: ystart = yradius - ypoint
-            else: ystart = 0
-
-            if xmin == 0: xstart = xradius - xpoint
-            else: xstart = 0
-
-            # the second and third channels are one if the corresponding voxels belong to the individual segments
-            example[zstart:zstart+segment.shape[IB_Z],ystart:ystart+segment.shape[IB_Y],xstart:xstart+segment.shape[IB_X]] = segment
-
-        # scale the feature to the appropriate width
-        examples_array[index,:,:,:] = ScaleFeature(example, width, label_one, label_two)
-
-    # return the examples
-    return examples_array
 
 
 
