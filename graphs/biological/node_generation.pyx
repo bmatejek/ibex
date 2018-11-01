@@ -120,13 +120,11 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius
     # get the size of the data
     zres, yres, xres = segmentation.shape
 
+    # make sure the subset is one of three categories
+    assert (subset == 'training' or subset == 'validation' or subset == 'testing')
+
     # crop the subset if it overlaps with testing data
-    if subset == 'training' or subset == 'validation':
-        ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = dataIO.CroppingBox(prefix)
-    elif subset == 'testing':
-        ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = ((0, zres), (0, yres), (0, xres))
-    else:
-        sys.stderr.write('Unrecognized subset: {}'.format(subset))
+    ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = dataIO.CroppingBox(prefix)
 
     # create list for all relevant examples
     positive_examples = []
