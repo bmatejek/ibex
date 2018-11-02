@@ -48,7 +48,6 @@ def CollectExamples(prefix, width, radius, subset):
 
     # concatenate all of the examples together
     examples = np.concatenate((positive_examples, negative_examples, unknowns_example), axis=0)
-    #examples = np.concatenate((positive_examples, negative_examples), axis=0)
     
     # add in information needed for forward inference [regions masked out for training and validation]
     forward_positive_filename = '{}/forward/positives/{}-examples.h5'.format(parent_directory, prefix)
@@ -127,7 +126,7 @@ def CollectLargeSmallPairs(prefix, width, radius, subset):
 
 
 
-def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=True):
+def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=False):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
