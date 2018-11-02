@@ -8,7 +8,7 @@ from keras.models import model_from_json
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
 from ibex.transforms import seg2seg, seg2gold
-from ibex.cnns.biological.nodes.util import AugmentFeature
+from ibex.cnns.biological.util import AugmentFeature
 from ibex.evaluation.classification import Prob2Pred, PrecisionAndRecall
 from ibex.graphs.biological.util import FindSmallSegments
 from ibex.evaluation import comparestacks

@@ -17,7 +17,7 @@ import keras
 
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
-from ibex.cnns.biological.nodes.util import AugmentFeature
+from ibex.cnns.biological.util import AugmentFeature
 
 
 # add a convolutional layer to the model
