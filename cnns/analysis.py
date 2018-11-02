@@ -1,134 +1,118 @@
 import glob
 import os
-
-class NetworkResult:
-    def __init__(self, name, architecture, parameters, results):
-        self.name = name
-        self.architecture = architecture
-        self.parameters = parameters
-        self.results = results
-
-    def Precision(self):
-        return [result.precision for result in self.results]
-
-    def Recall(self):
-        return [result.recall for result in self.results]
-
-    def Accuracy(self):
-        return [result.accuracy for result in self.results]
-
-    def Prefixes(self):
-        return [result.prefix for result in self.results]
-
-    def __cmp__(self, other):
-        if self.name > other.name: return 1
-        else: return -1
+import sys
 
 
 
-class Result:
-    def __init__(self, prefix, true_positives, false_negatives, false_positives, true_negatives):
-        self.prefix = prefix
-        self.true_positives = true_positives
-        self.false_positives = false_positives
-        self.false_negatives = false_negatives
-        self.true_negatives = true_negatives
-        if true_positives + false_positives > 0: self.precision = float(true_positives) / (true_positives + false_positives)
-        else: self.precision = float('nan')
-        if true_positives + false_negatives > 0: self.recall = float(true_positives) / (true_positives + false_negatives)
-        else: self.recall = float('nan')
-        self.accuracy = float(true_positives + true_negatives) / (true_positives + false_negatives + false_positives + true_negatives)
-
-
-
-class Layer:
-    def __init__(self, function, input_size, output_size):
-        self.function = function
-        self.input_size = input_size
-        self.output_size = output_size
-
-
-
-class Architecture:
-    def __init__(self, layers):
-        self.layers = layers
-        self.input_size = layers[0].input_size
-        self.nlayers = len(layers)
-        for iv in range(self.nlayers):
-            if layers[iv+1].function == 'flatten':
-                self.output_size = layers[iv].output_size
-                break
-
-
-
-
-def ParseResults(filename):
-    prefix = '-'.join(filename.split('skeleton-')[1].split('-')[:-4])
-
-    # open the results filename
+def ParseInferenceFile(filename):
     with open(filename, 'r') as fd:
-        for line in fd.readlines():
-            # read the important information from the results
-            if 'Merge | ' in line:
-                true_positives = int(line.split()[3])
-                false_negatives = int(line.split()[4])
-            elif 'Split | ' in line:
-                false_positives = int(line.split()[3])
-                true_negatives = int(line.split()[4])
+        lines = fd.readlines()
 
-    return Result(prefix, true_positives, false_negatives, false_positives, true_negatives)
+        # get the number of positive and negative examples
+        npositives = int(lines[0].split(':')[1].strip())
+        nnegatives = int(lines[1].split(':')[1].strip())
+
+        # get TP, FN, FP, and TN
+        true_merge = lines[7].split('|')[2]
+        true_split = lines[9].split('|')[2]
+
+        true_positives = int(true_merge.split()[0].strip())
+        false_negatives = int(true_merge.split()[1].strip())
+
+        false_positives = int(true_split.split()[0].strip())
+        true_negatives = int(true_split.split()[1].strip())
+
+        # get the precision, accuracy, and recall
+        precision = float(lines[11].split(':')[1].strip())
+        recall = float(lines[12].split(':')[1].strip())
+        accuracy = float(lines[13].split(':')[1].strip())
+
+        return true_positives, false_negatives, false_positives, true_negatives
 
 
 
-def ParseLogFile(filename):
-    parameters = {}
-    layers = []
+def PrintResults(results, name):
+    print '  {}'.format(name)
 
-    with open(filename, 'r') as fd:
-        reading_parameters = False
-        for line in fd.readlines():
-            line = line.strip()
+    # get the total precision and recall
+    (TP, FN, FP, TN) = (0, 0, 0, 0)
 
-            if reading_parameters: 
-                components = line.split(': ')
-                parameters[components[0]] = components[1]
-            elif not len(line): 
-                reading_parameters = True
-            else:
-                function = line.split('_')[0]
-                input_size = line.split('_')[-1].split(' -> ')[0].replace('None, ', '')
-                input_size = input_size[input_size.index(' ')+1:]
-                output_size = line.split('_')[-1].split(' -> ')[1].replace('None, ', '')
+    # go through all results and add
+    for result in results:
+        TP += result[0]
+        FN += result[1]
+        FP += result[2]
+        TN += result[3]
 
-                layers.append(Layer(function, input_size, output_size))
-
-    return Architecture(layers), parameters
+    # format the output string
+    print '    Positive Examples: {}'.format(TP + FN)
+    print '    Negative Examples: {}\n'.format(FP + TN)
+    print '    +--------------+----------------+'
+    print '    |{:14s}|{:3s}{:13s}|'.format('', '', 'Prediction')
+    print '    +--------------+----------------+'
+    print '    |{:14s}|  {:7s}{:7s}|'.format('', 'Merge', 'Split')
+    print '    |{:8s}{:5s} |{:7d}{:7d}  |'.format('', 'Merge', TP, FN)
+    print '    | {:13s}|{:7s}{:7s}  |'.format('Truth', '', '')
+    print '    |{:8s}{:5s} |{:7d}{:7d}  |'.format('', 'Split', FP, TN)
+    print '    +--------------+----------------+'
+    if TP + FP == 0: print '    Precision: NaN'
+    else: print '    Precision: {}'.format(float(TP) / float(TP + FP))
+    if TP + FN == 0: print '    Recall: NaN'
+    else: print '    Recall: {}'.format(float(TP) / float(TP + FN))
+    if TP + FN + FP + TN == 0: print '    Accuracy: NaN\n'
+    else: print '    Accuracy: {}\n'.format(float(TP + TN) / float(TP + FP + FN + TN))
 
 
 
 def CNNResults(problem):
     # get all of the trained networks for this problem
-    parent_directory = 'architectures/{}'.format(problem)
-    network_names = os.listdir(parent_directory)
+    network_names = sorted(glob.glob('architectures/{}*'.format(problem)))
 
-    # create a set of all of the trained networks
-    networks = []
+    # hardcoded for PNI data, create new method to store this
+    subsets = {
+        'train-one': 'training',
+        'train-two': 'training',
+        'train-three': 'training',
+        'train-four': 'training',
+        'train-five': 'validation',
+        'train-six': 'validation',
+        'validation-one': 'validation',
+        'test-one': 'testing',
+        'test-two': 'testing'
+    }
 
-    # iterate over all networks
-    for name in network_names:
-        directory = '{}/{}'.format(parent_directory, name)
+    for network in network_names:
+        inference_filenames = sorted(glob.glob('{}/*inference.txt'.format(network)))
+        
+        training_results = []
+        validation_results = []
+        testing_results = []
 
-        # there needs to be a log file for this to work
-        logfile = glob.glob('{}/*.log'.format(directory))[0]
-        result_files = sorted(glob.glob('{}/*.results'.format(directory)))
+        # parse each of the inference filenames
+        for filename in inference_filenames:
+            prefix = '-'.join(filename.split('/')[-1].split('-')[1:-1])
 
-        # parse the results and logfiles
-        architecture, parameters = ParseLogFile(logfile)
-
-        results = []
-        for filename in result_files:
-            results.append(ParseResults(filename))
+            # get the dataset from the prefix name
+            dataset = '-'.join(prefix.split('-')[1:3])
             
-        networks.append(NetworkResult(name, architecture, parameters, results))
+            # get the subset this belongs to 
+            subset = subsets[dataset]
 
-    return sorted(networks)
+            # parse the inference file
+            TP, FN, FP, TN = ParseInferenceFile(filename)
+
+            if subset == 'training':
+                training_results.append((TP, FN, FP, TN))
+            elif subset == 'validation':
+                validation_results.append((TP, FN, FP, TN))
+            elif subset == 'testing':
+                testing_results.append((TP, FN, FP, TN))
+            else:
+                sys.stderr.write('Unrecognized subset {}'.format(subset))
+                sys.exit()
+
+        # agglomerate all results
+        print '{}'.format(network.split('/')[1])
+        PrintResults(training_results, 'Training')
+        PrintResults(validation_results, 'Validation')
+        PrintResults(testing_results, 'Teseting')
