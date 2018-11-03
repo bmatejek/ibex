@@ -290,8 +290,8 @@ def Train(parameters, model_prefix, width, radius, finetune=False):
     else: nepochs = 2000
 
     # train the model
-    history = model.fit_generator(NodeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), 
-        epochs=nepochs, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation'), 
+    history = model.fit_generator(EdgeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), 
+        epochs=nepochs, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=EdgeGenerator(parameters, width, radius, 'validation'), 
                                   validation_steps=(nvalidation_examples / batch_size), initial_epoch=starting_epoch)
     
     with open('{}-history.pickle'.format(model_prefix), 'w') as fd:
