@@ -223,6 +223,9 @@ def NodeGenerator(parameters, width, radius, subset):
 
 
 def Train(parameters, model_prefix, width, radius):
+    # make sure the model prefix does not contain nodes (to prevent overwriting files)
+    assert (not 'edges' in model_prefix)
+    
     # identify convenient variables
     starting_epoch = parameters['starting_epoch']
     batch_size = parameters['batch_size']
