@@ -19,7 +19,7 @@ from ibex.evaluation import comparestacks
 def NodeGenerator(examples, width):
     index = 0
 
-    while True:                      
+    while True:             
         # prevent overflow of the queue (these examples will not go through)
         if index == examples.shape[0]: index = 0
 
