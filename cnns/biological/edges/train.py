@@ -234,7 +234,7 @@ def Train(parameters, model_prefix, width, radius, finetune=False):
 
     # the initial learning rate is less if finetuning
     if finetune:
-        parameters['initial_learning_rate'] = 0.1 * parameters['initial_learning_rate']
+        parameters['initial_learning_rate'] = 0.5 * parameters['initial_learning_rate']
 
     model = EdgeNetwork(parameters, width)
 
@@ -285,13 +285,9 @@ def Train(parameters, model_prefix, width, radius, finetune=False):
     # there are two thousand validation examples per epoch (standardized)
     nvalidation_examples = 2000
 
-    # fewer epochs on finetuned networks
-    if finetune: nepochs = 500
-    else: nepochs = 2000
-
     # train the model
     history = model.fit_generator(EdgeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), 
-        epochs=nepochs, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=EdgeGenerator(parameters, width, radius, 'validation'), 
+        epochs=2000, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=EdgeGenerator(parameters, width, radius, 'validation'), 
                                   validation_steps=(nvalidation_examples / batch_size), initial_epoch=starting_epoch)
     
     with open('{}-history.pickle'.format(model_prefix), 'w') as fd:

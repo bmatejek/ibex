@@ -2,6 +2,7 @@ import os
 import numpy as np
 import sys
 import struct
+import time
 
 from keras.models import model_from_json
 
@@ -16,7 +17,12 @@ from ibex.evaluation.classification import Prob2Pred, PrecisionAndRecall
 def EdgeGenerator(examples, width):
     index = 0
 
-    while True:                      
+    start_time = time.time()
+
+    while True:
+        if index and not (index % 1000):
+            print '{}/{} in {:0.2f} seconds'.format(index, examples.shape[0], time.time() - start_time)
+            start_time = time.time()
         # prevent overflow of the queue (these examples will not go through)
         if index == examples.shape[0]: index = 0
 
@@ -132,7 +138,7 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     examples, npositives, nnegatives = CollectExamples(prefix, width, radius, subset)
 
     # get all of the probabilities 
-    probabilities = model.predict_generator(NodeGenerator(examples, width), examples.shape[0])
+    probabilities = model.predict_generator(EdgeGenerator(examples, width), examples.shape[0])
 
     # create the correct labels for the ground truth
     ground_truth = np.zeros(npositives + nnegatives, dtype=np.bool)
