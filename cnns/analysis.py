@@ -62,8 +62,11 @@ def PrintResults(results, name):
     if TP + FN + FP + TN == 0: print '    Accuracy: NaN\n'
     else: print '    Accuracy: {}\n'.format(float(TP + TN) / float(TP + FP + FN + TN))
 
-
-
+    if TP + FN + FP + TN == 0: return float('nan')
+    else: return float(TP + TN) / float(TP + FP + FN + TN)
+    
+    
+    
 def CNNResults(problem):
     # get all of the trained networks for this problem
     network_names = sorted(glob.glob('architectures/{}*'.format(problem)))
@@ -81,6 +84,13 @@ def CNNResults(problem):
         'test-two': 'testing'
     }
 
+    optimal_training_accuracy = 0.0
+    optimal_training_network = ''
+    optimal_validation_accuracy = 0.0
+    optimal_validation_network = ''
+    optimal_testing_accuracy = 0.0
+    optimal_testing_network = ''
+    
     for network in network_names:
         inference_filenames = sorted(glob.glob('{}/*inference.txt'.format(network)))
         
@@ -113,6 +123,25 @@ def CNNResults(problem):
 
         # agglomerate all results
         print '{}'.format(network.split('/')[1])
-        PrintResults(training_results, 'Training')
-        PrintResults(validation_results, 'Validation')
-        PrintResults(testing_results, 'Teseting')
+        training_accuracy = PrintResults(training_results, 'Training')
+        validation_accuracy = PrintResults(validation_results, 'Validation')
+        testing_accuracy = PrintResults(testing_results, 'Testing')
+
+        if training_accuracy > optimal_training_accuracy:
+            optimal_training_accuracy = training_accuracy
+            optimal_training_network = network
+        if validation_accuracy > optimal_validation_accuracy:
+            optimal_validation_accuracy = validation_accuracy
+            optimal_validation_network = network
+        if testing_accuracy > optimal_testing_accuracy:
+            optimal_testing_accuracy = testing_accuracy
+            optimal_testing_network = network
+
+    print 'Optimal Training Accuracy: {}'.format(optimal_training_accuracy)
+    print '  {}\n'.format(optimal_training_network)
+
+    print 'Optimal Validation Accuracy: {}'.format(optimal_validation_accuracy)
+    print '  {}\n'.format(optimal_validation_network)
+
+    print 'Optimal Testing Accuracy: {}'.format(optimal_testing_accuracy)
+    print '  {}\n'.format(optimal_testing_network)
