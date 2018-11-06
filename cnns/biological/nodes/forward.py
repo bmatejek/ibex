@@ -169,7 +169,6 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     # go through each pairing
     for pairing, probability in zip(pairings, probabilities):
         label_one, label_two = pairing
-        #print '{} {}'.format(label_one, label_two)
         # make sure that either label one or two is small and the other is large
         assert ((label_one in small_segments) ^ (label_two in small_segments))
 
