@@ -142,6 +142,7 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
 
     # get all of the large-small pairings
     pairings = CollectLargeSmallPairs(prefix, width, radius, subset)
+    assert (len(pairings) == examples.shape[0])
 
     # get the list of nodes over and under the threshold
     small_segments, large_segments = FindSmallSegments(segmentation)
