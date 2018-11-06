@@ -13,10 +13,8 @@ cdef extern from 'cpp-comparestacks.h':
 
 
 
-# since the Variation of Information function changes the gold and segmentation data
-# it can only run once, use this function to guarantee an error if run twice
-@run_function_once
-def VariationOfInformation(segmentation, gold, dilate_ground_truth=2, input_ground_truth_masks=[0], filtersize=0):
+# with the cache we can now safely run the function consecutive times in a row since we will just read the new ground truth
+def VariationOfInformation(prefix, segmentation, gold, dilate_ground_truth=2, input_ground_truth_masks=[0], filtersize=0):
     # need to copy the data since there are mutable opeartions below
     ground_truth_masks = np.copy(input_ground_truth_masks).astype(np.int64)
     assert (segmentation.dtype == np.int64)
@@ -30,7 +28,7 @@ def VariationOfInformation(segmentation, gold, dilate_ground_truth=2, input_grou
         seg2seg.RemoveSmallConnectedComponents(gold, filtersize)
     
     if dilate_ground_truth > 0:
-        distance.DilateData(gold, dilate_ground_truth)
+        distance.DilateGoldData(prefix, gold, dilate_ground_truth)
 
     # convert to c++ arrays
     cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
@@ -50,17 +48,3 @@ def VariationOfInformation(segmentation, gold, dilate_ground_truth=2, input_grou
     del results
 
     return (rand_error, vi)
-
-
-
-def run_function_once(func):
-    def wrapper(*args, **kwargs):
-        if not wrapper.has_run_once:
-            wrapper.has_run_once = True
-            return func(*args, **kwargs)
-        else:
-            assert ('Can only run this function once')
-
-    wrapper.has_run_once = False
-    
-    return wrapper

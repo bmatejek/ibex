@@ -1,13 +1,16 @@
 cimport cython
 cimport numpy as np
 
+import os
 import ctypes
 import numpy as np
+from ibex.utilities import dataIO
+
 
 
 cdef extern from 'cpp-distance.h':
     float *CppTwoDimensionalDistanceTransform(long *data, long grid_size[3])
-    void CppDilateData(long *data, long grid_size[3], float distance)
+    void CppDilateGoldData(long *data, long grid_size[3], float distance)
 
 
 # get the two dimensional distance transform
@@ -29,7 +32,16 @@ def TwoDimensionalDistanceTransform(data):
 
 
 # dilate segments from boundaries
-def DilateData(data, distance):
+def DilateGoldData(prefix, data, distance):
+    # see if a cache exists for this file
+    gold_filename = dataIO.GetGoldFilename(prefix)
+    cached_filename = '{}-dilated-{}.h5'.format(gold_filename[:-3], distance)
+
+    # read the cached file and leave the function    
+    if os.path.exists(cached_filename):
+        gold = dataIO.ReadH5File(cached_filename, 'main')
+        return
+
     # convert segmentation to int64
     if not data.dtype == np.int64: data = data.astype(np.int64)
 
@@ -38,6 +50,9 @@ def DilateData(data, distance):
     cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_grid_size = np.ascontiguousarray(data.shape, dtype=ctypes.c_int64)
 
     # dilate the data by distance
-    CppDilateData(&(cpp_data[0,0,0]), &(cpp_input_grid_size[0]), float(distance))
+    CppDilateGoldData(&(cpp_data[0,0,0]), &(cpp_input_grid_size[0]), float(distance))
 
     del cpp_input_grid_size
+
+    # save this data
+    dataIO.WriteH5File(data, cached_filename, 'main')

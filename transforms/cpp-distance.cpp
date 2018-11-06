@@ -168,7 +168,7 @@ float *CppTwoDimensionalDistanceTransform(long *data, long grid_size[3])
 
 
 
-void CppDilateData(long *data, long grid_size[3], float distance)
+void CppDilateGoldData(long *data, long grid_size[3], float distance)
 {
     // initialize convenient variables for distances
     nentries = grid_size[IB_Z] * grid_size[IB_Y] * grid_size[IB_X];

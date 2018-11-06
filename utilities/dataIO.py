@@ -40,6 +40,13 @@ def Resolution(prefix):
 
 
 
+def GetGoldFilename(prefix):
+    filename, _ = meta_data.MetaData(prefix).GoldFilename()
+
+    return filename
+
+
+
 def ReadH5File(filename, dataset=None):
     # read the h5py file
     with h5py.File(filename, 'r') as hf:
