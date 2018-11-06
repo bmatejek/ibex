@@ -205,7 +205,6 @@ def EndpointTraversal(prefix, segmentation, seg2gold_mapping, maximum_distance):
 
     # create a set of labels to consider
     edges = []
-    generated_adjacency_graph = set()
 
     # go through every skeletons endpoints
     for skeleton in skeletons:
@@ -225,12 +224,8 @@ def EndpointTraversal(prefix, segmentation, seg2gold_mapping, maximum_distance):
                 # append this to this list of edges
                 edges.append((zpoint, ypoint, xpoint, label, neighbor_label, ie))
 
-                # use a set here to not double count edges
-                if label < neighbor_label: generated_adjacency_graph.add((label, neighbor_label))
-                else: generated_adjacency_graph.add((neighbor_label, label))
 
-    return edges, generated_adjacency_graph
-
+    return edges
 
 
 
@@ -252,7 +247,7 @@ def GenerateEdges(prefix, segmentation, seg2gold_mapping, subset, network_radius
     ((cropped_zmin, cropped_zmax), (cropped_ymin, cropped_ymax), (cropped_xmin, cropped_xmax)) = dataIO.CroppingBox(prefix)
     
     # call the function to actually generate the edges
-    edges, generated_adjacency_graph = EndpointTraversal(prefix, segmentation, seg2gold_mapping, maximum_distance)
+    edges = EndpointTraversal(prefix, segmentation, seg2gold_mapping, maximum_distance)
 
     # create list for all relevant examples
     positive_examples = []
