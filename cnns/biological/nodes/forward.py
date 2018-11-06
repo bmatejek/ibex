@@ -147,7 +147,7 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     small_segments, large_segments = FindSmallSegments(segmentation)
  
     # get all of the probabilities 
-    probabilities = model.predict_generator(NodeGenerator(examples, width), examples.shape[0])
+    probabilities = model.predict_generator(NodeGenerator(examples, width), examples.shape[0], max_q_size=1000)
 
     # create the correct labels for the ground truth
     ground_truth = np.zeros(npositives + nnegatives, dtype=np.bool)
