@@ -13,12 +13,16 @@ cdef extern from 'cpp-comparestacks.h':
 
 
 
-def VariationOfInformation(input_segmentation, input_gold, dilate_ground_truth=2, input_ground_truth_masks=[0], filtersize=0):
+# since the Variation of Information function changes the gold and segmentation data
+# it can only run once, use this function to guarantee an error if run twice
+@run_function_once
+def VariationOfInformation(segmentation, gold, dilate_ground_truth=2, input_ground_truth_masks=[0], filtersize=0):
     # need to copy the data since there are mutable opeartions below
-    segmentation = input_segmentation.astype(np.int64)
-    gold = input_gold.astype(np.int64)
     ground_truth_masks = np.copy(input_ground_truth_masks).astype(np.int64)
+    assert (segmentation.dtype == np.int64)
+    assert (gold.dtype == np.int64)
     assert (segmentation.shape == gold.shape)
+
 
     # remove all small connected components
     if filtersize > 0:
@@ -46,3 +50,17 @@ def VariationOfInformation(input_segmentation, input_gold, dilate_ground_truth=2
     del results
 
     return (rand_error, vi)
+
+
+
+def run_function_once(func):
+    def wrapper(*args, **kwargs):
+        if not wrapper.has_run_once:
+            wrapper.has_run_once = True
+            return func(*args, **kwargs)
+        else:
+            assert ('Can only run this function once')
+
+    wrapper.has_run_once = False
+    
+    return wrapper
