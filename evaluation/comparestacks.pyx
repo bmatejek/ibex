@@ -15,6 +15,9 @@ cdef extern from 'cpp-comparestacks.h':
 
 # with the cache we can now safely run the function consecutive times in a row since we will just read the new ground truth
 def VariationOfInformation(prefix, segmentation, gold, dilate_ground_truth=2, input_ground_truth_masks=[0], filtersize=0):
+    # make sure not to dilate the ground truth for Fib-25 (already taken care of)
+    assert (not 'Fib-25' in prefix or not dilate_ground_truth)
+
     # need to copy the data since there are mutable opeartions below
     ground_truth_masks = np.copy(input_ground_truth_masks).astype(np.int64)
     assert (segmentation.dtype == np.int64)
@@ -26,7 +29,7 @@ def VariationOfInformation(prefix, segmentation, gold, dilate_ground_truth=2, in
     if filtersize > 0:
         seg2seg.RemoveSmallConnectedComponents(segmentation, filtersize)
         seg2seg.RemoveSmallConnectedComponents(gold, filtersize)
-    
+   
     if dilate_ground_truth > 0:
         distance.DilateGoldData(prefix, gold, dilate_ground_truth)
 
