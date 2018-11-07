@@ -51,7 +51,7 @@ def GetMiddleBoundary(label_one, label_two):
 
 
 
-def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius, threshold=20000):
+def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius=400, threshold=20000):
     # possible widths for the neural network
     widths = [(18, 52, 52), (20, 60, 60), (22, 68, 68), (24, 76, 76)]
     
