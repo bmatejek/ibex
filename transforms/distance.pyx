@@ -39,7 +39,7 @@ def DilateGoldData(prefix, data, distance):
 
     # read the cached file and leave the function    
     if os.path.exists(cached_filename):
-        gold = dataIO.ReadH5File(cached_filename, 'main')
+        data = dataIO.ReadH5File(cached_filename, 'main')
         return
 
     # convert segmentation to int64
