@@ -100,14 +100,12 @@ void CppFindMiddleBoundaries(long *segmentation, long grid_size[3])
         }
     }
 
-    for (long is1 = 0; is1 < max_label; ++is1) {
-        for (long is2 = is1 + 1; is2 < max_label; ++is2) {
-            if (not counts.count(is1 * max_label + is2)) continue;
+    for (std::unordered_map<long, long>::iterator it = counts.begin(); it != counts.end(); ++it) {
+        long index = it->first;
 
-            zmean[is1 * max_label + is2] /= counts[is1 * max_label + is2];
-            ymean[is1 * max_label + is2] /= counts[is1 * max_label + is2];
-            xmean[is1 * max_label + is2] /= counts[is1 * max_label + is2];
-        }
+        zmean[index] /= counts[index];
+        ymean[index] /= counts[index];
+        xmean[index] /= counts[index];
     }
 }
 

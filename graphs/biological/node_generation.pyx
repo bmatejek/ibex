@@ -116,7 +116,6 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius
                 else: 
                     negative_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
 
-
     for width in widths:
         parent_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(network_radius, width[IB_Z], width[IB_Y], width[IB_X])
 
