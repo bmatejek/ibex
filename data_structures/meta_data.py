@@ -1,6 +1,7 @@
 import sys
-from ibex.geometry import ib3shapes
 
+from ibex.geometry import ib3shapes
+from ibex.utilities.constants import dataIO
 
 
 class MetaData:
