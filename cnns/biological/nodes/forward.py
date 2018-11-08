@@ -145,10 +145,17 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     assert (len(pairings) == examples.shape[0])
 
     # get the list of nodes over and under the threshold
-    small_segments, large_segments = FindSmallSegments(segmentation)
+    #small_segments, large_segments = FindSmallSegments(segmentation)
  
     # get all of the probabilities 
     probabilities = model.predict_generator(NodeGenerator(examples, width), examples.shape[0], max_q_size=1000)
+
+    # save the probabilities to a file
+    output_filename = '{}-{}.probabilities'.format(model_prefix, prefix)
+    with open(output_filename, 'wb') as fd:
+        fd.write(struct.pack('q', examples.shape[0]))
+        for ie, (label_one, label_two) in enumerate(pairings):
+            fd.write(struct.pack('qqd', label_one, label_two, probabilities[ie]))
 
     # create the correct labels for the ground truth
     ground_truth = np.zeros(npositives + nnegatives, dtype=np.bool)
