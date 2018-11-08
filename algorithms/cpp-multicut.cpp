@@ -6,7 +6,6 @@
 
 // andres graph includes
 #include "andres/graph/graph.hxx"
-#include "andres/graph/multicut/kernighan-lin.hxx"
 #include "andres/graph/multicut/greedy-additive.hxx"
 
 
@@ -34,10 +33,10 @@ unsigned char *CppMulticut(long nvertices, long nedges, long *vertex_ones, long 
     andres::graph::multicut::greedyAdditiveEdgeContraction(graph, weights, edge_labels);
     
     // turn vector into char array and return
-    unsigned char *maintain_edges = new unsigned char[nedges];
+    unsigned char *maintained_edges = new unsigned char[nedges];
     for (unsigned long ie = 0; ie < nedges; ++ie) {
-        maintain_edges[ie] = edge_labels[ie];
+        maintained_edges[ie] = edge_labels[ie];
     }
 
-    return maintain_edges;
+    return maintained_edges;
 }

@@ -1,92 +1,63 @@
-import numpy as np
-import scipy
-import math
-
 cimport cython
 cimport numpy as np
-import ctypes
 
-from util import CollapseGraph, RetrieveCandidates
-from ibex.transforms import seg2seg, seg2gold
-from ibex.utilities import dataIO
-from ibex.evaluation import comparestacks
-from ibex.evaluation.classification import *
+import math
+import numpy as np
+import ctypes
+import scipy
+
+from ibex.algorithms.util import PrintResults, ReadCandidates, CollapseGraph
 
 
 
 # c++ external definition
 cdef extern from 'cpp-lifted-multicut.h':
-    unsigned char *CppLiftedMulticut(unsigned long nvertices, unsigned long nedges, unsigned long *vertex_ones, unsigned long *vertex_twos, double *lifted_weights, double beta, unsigned int heuristic)
+    unsigned char *CppLiftedMulticut(long nvertices, long nedges, long *vertex_ones, long *vertex_twos, double *edge_weights, double beta)
+
 
 
 
 def GenerateLiftedEdges(vertex_ones, vertex_twos, edge_weights, nvertices):
+    # get the number of normal edges
     nedges = edge_weights.size
-    updated_edge_weights = np.zeros(nedges, dtype=np.float32)
-    for ie in range(nedges):
-        updated_edge_weights[ie] = -math.log(edge_weights[ie])
 
-    sparse_graph = scipy.sparse.coo_matrix((updated_edge_weights, (vertex_ones, vertex_twos)), shape=(nvertices, nvertices))
+    # up the edge weights to be the negative log likelihood for dijkstra
+    negative_log_weights = np.zeros(nedges, dtype=np.float32)
+    for ie in range(nedges):
+        negative_log_weights[ie] = -math.log(edge_weights[ie])
+
+    # create a sparse graph with these edges
+    sparse_graph = scipy.sparse.coo_matrix((negative_log_weights, (vertex_ones, vertex_twos)), shape=(nvertices, nvertices))
     dijkstra_distance = scipy.sparse.csgraph.dijkstra(sparse_graph, directed=False)
 
+    # need to convert back to probabilities from negative log likelihoods
     return np.exp(-1 * dijkstra_distance)
 
 
 
 
-def LiftedMulticut(prefix, candidates, edge_weights, beta, threshold, heuristic):
-    # read in the segmentation for this prefix
-    segmentation = dataIO.ReadSegmentationData(prefix)
-    segmentation = seg2seg.RemoveSmallConnectedComponents(segmentation, threshold)
+def LiftedMulticut(prefix, segmentation, model_prefix, beta):
+    # get the possible candidates
+    vertex_ones, vertex_twos, edge_weights = ReadCandidates(prefix, model_prefix)
 
-    forward_mapping, reverse_mapping = seg2seg.ReduceLabels(segmentation)
-    
     # get the number of vertices and edges
-    nvertices = reverse_mapping.size + 1
-    nedges = edge_weights.size
+    nvertices = np.amax(segmentation) + 1
+    nedges = edge_weights.shape[0]
 
-    # convert the candidate labels to vertices
-    vertex_ones = np.zeros(nedges, dtype=np.uint64)
-    vertex_twos = np.zeros(nedges, dtype=np.uint64)
-
-    # populate vertex arrays
-    for iv, candidate in enumerate(candidates):
-        label_one, label_two = candidate.labels
-        vertex_ones[iv] = forward_mapping[label_one]
-        vertex_twos[iv] = forward_mapping[label_two]
+    lifted_edge_weights = GenerateLiftedEdges(vertex_ones, vertex_twos, edge_weights, nvertices)
 
     # convert to c++ arrays
-    cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_ones = np.ascontiguousarray(vertex_ones, dtype=ctypes.c_uint64)
-    cdef np.ndarray[unsigned long, ndim=1, mode='c'] cpp_vertex_twos = np.ascontiguousarray(vertex_twos, dtype=ctypes.c_uint64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_vertex_ones = np.ascontiguousarray(vertex_ones, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_vertex_twos = np.ascontiguousarray(vertex_twos, dtype=ctypes.c_int64)
+    cdef np.ndarray[double, ndim=2, mode='c'] cpp_lifted_edge_weights = np.ascontiguousarray(lifted_edge_weights, dtype=ctypes.c_double)
 
-    # generate the lifted edges
-    lifted_weights = GenerateLiftedEdges(vertex_ones, vertex_twos, edge_weights, nvertices)
-    cdef np.ndarray[double, ndim=2, mode='c'] cpp_lifted_weights = np.ascontiguousarray(lifted_weights, dtype=ctypes.c_double)
+    # run multicut algorithm to get the edges that should collapse
+    cdef unsigned char *cpp_maintained_edges = CppLiftedMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_lifted_edge_weights[0,0]), beta)
+    cdef unsigned char[:] tmp_maintained_edges = <unsigned char[:nedges]> cpp_maintained_edges
+    maintained_edges = np.asarray(tmp_maintained_edges).astype(dtype=np.bool)
 
-    # run multicut algorithm
-    cdef unsigned char *cpp_collapsed_edges = CppLiftedMulticut(nvertices, nedges, &(cpp_vertex_ones[0]), &(cpp_vertex_twos[0]), &(cpp_lifted_weights[0,0]), beta, heuristic)
-    cdef unsigned char[:] tmp_collapsed_edges = <unsigned char[:nedges]> cpp_collapsed_edges
-    maintain_edges = np.asarray(tmp_collapsed_edges).astype(dtype=np.bool)
-    
-    ncandidates = len(candidates)
-    #labels = np.zeros(ncandidates, dtype=np.uint8)
-    #for ie, candidate in enumerate(candidates):
-    #    labels[ie] = candidate.ground_truth
+    # output the results
+    PrintResults(prefix, vertex_ones, vertex_twos, edge_weights, maintained_edges)
 
-    #print '\nAfter Multicut\n'
-
-    #PrecisionAndRecall(labels, 1 - maintain_edges)
-
-    # collapse the edges returned from multicut
-    output_filename = 'multicuts/{}-{:0.2f}-lifted.results'.format(prefix, beta)
-    CollapseGraph(segmentation, candidates, maintain_edges, edge_weights, output_filename)
-   
-
-
-# function ro run multicut algorithm
-def RunLiftedMulticut(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance, beta, heuristic=1):
-    # read the candidates
-    candidates, edge_weights = RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance)
-
-    # run the multicut algorithm
-    LiftedMulticut(prefix, candidates, edge_weights, beta, threshold, heuristic)
+    # collapse the graph and save the result
+    CollapseGraph(prefix, segmentation, vertex_ones, vertex_twos, maintained_edges, 'lifted-multicut-{}'.format(int(100 * beta)))

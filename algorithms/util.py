@@ -5,6 +5,7 @@ import numpy as np
 from ibex.transforms import seg2gold, seg2seg
 from ibex.data_structures import unionfind
 from ibex.evaluation.classification import *
+from ibex.evaluation import comparestacks
 from ibex.utilities import dataIO
 
 
@@ -93,102 +94,38 @@ def CollapseGraph(prefix, segmentation, vertex_ones, vertex_twos, maintained_edg
     # apply the mapping and save the result
     seg2seg.MapLabels(segmentation, mapping)
 
-    output_filename = 'rhoana/{}-{}.h5'.format(prefix, algorithm)
-    dataIO.WriteH5File(segmentation, output_filename, 'main')
+    rhoana_filename = 'rhoana/{}-{}.h5'.format(prefix, algorithm)
+    dataIO.WriteH5File(segmentation, rhoana_filename, 'main')
 
-# import struct
-# import numpy as np
+    # spawn a new meta file
+    dataIO.SpawnMetaFile(prefix, rhoana_filename, 'main')
 
-# import ibex.cnns.skeleton.util
-# from ibex.evaluation.classification import *
-# from ibex.data_structures import unionfind
-# from ibex.transforms import seg2seg
-# from ibex.utilities import dataIO
-# from ibex.evaluation import comparestacks
+    # get the variation of information for this result
+    new_prefix = rhoana_filename.split('/')[1][:-3]
 
+    # read in the new gold data
+    gold = dataIO.ReadGoldData(prefix)
 
+    rand_error, vi = comparestacks.VariationOfInformation(new_prefix, segmentation, gold)
 
-# def RetrieveCandidates(prefix, model_prefix, threshold, maximum_distance, endpoint_distance, network_distance):
-#     # get all of the candidates for this brain
-#     positive_candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'positive')
-#     negative_candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'negative')
-#     undetermined_candidates = ibex.cnns.skeleton.util.FindCandidates(prefix, threshold, maximum_distance, endpoint_distance, network_distance, 'undetermined')
-    
-#     candidates = positive_candidates + negative_candidates + undetermined_candidates
-#     ncandidates = len(candidates)
+    print 'Rand Error Full: {}'.format(rand_error[0] + rand_error[1])
+    print 'Rand Error Merge: {}'.format(rand_error[0])
+    print 'Rand Error Split: {}'.format(rand_error[1])
 
-#     # read the probabilities foor this candidate
-#     probabilities_filename = '{}-{}-{}-{}nm-{}nm-{}nm.probabilities'.format(model_prefix, prefix, threshold, maximum_distance, endpoint_distance, network_distance)
-#     with open(probabilities_filename, 'rb') as fd:
-#         nprobabilities, = struct.unpack('i', fd.read(4))
-#         assert (nprobabilities == ncandidates)
-#         edge_weights = np.zeros(nprobabilities, dtype=np.float64)
-#         for iv in range(nprobabilities):
-#             edge_weights[iv], = struct.unpack('d', fd.read(8))
+    print 'Variation of Information Full: {}'.format(vi[0] + vi[1])
+    print 'Variation of Information Merge: {}'.format(vi[0])
+    print 'Variation of Information Split: {}'.format(vi[1])
 
-#     return candidates, edge_weights
+    # make sure that the options are either multicut or lifted-multicut
+    if 'lifted-multicut' in algorithm: output_folder = 'lifted-multicut'
+    elif 'multicut' in algorithm: output_folder = 'multicut'
+    else: assert (False)
 
+    with open('{}-results/{}.txt'.format(output_folder, prefix), 'w') as fd:
+        fd.write('Rand Error Full: {}\n'.format(rand_error[0] + rand_error[1]))
+        fd.write('Rand Error Merge: {}\n'.format(rand_error[0]))
+        fd.write('Rand Error Split: {}\n'.format(rand_error[1]))
 
-
-# # collapse the edges from multicut
-# def CollapseGraph(segmentation, candidates, maintain_edges, probabilities, output_filename):
-#     ncandidates = len(candidates)
-
-#     # get the ground truth and the predictions
-#     labels = np.zeros(ncandidates, dtype=np.bool)
-#     for iv in range(ncandidates):
-#         labels[iv] = candidates[iv].ground_truth
-
-#     # create an empty union find data structure
-#     max_value = np.amax(segmentation) + 1
-#     union_find = [unionfind.UnionFindElement(iv) for iv in range(max_value)]
-
-#     # create adjacency sets for the elements in the segment
-#     adjacency_sets = [set() for _ in range(max_value)]
-
-#     for candidate in candidates:
-#         label_one = candidate.labels[0]
-#         label_two = candidate.labels[1]
-
-#         adjacency_sets[label_one].add(label_two)
-#         adjacency_sets[label_two].add(label_one)
-
-#     # iterate over the candidates in order of decreasing probability
-#     zipped = zip(probabilities, [ie for ie in range(ncandidates)])
-
-#     for probability, ie in sorted(zipped, reverse=True):
-#         # skip if the edge is not collapsed
-#         if maintain_edges[ie]: continue
-#         # skip if this creates a cycle
-#         label_one, label_two = candidates[ie].labels
-
-#         # get the parent of this label
-#         label_two_union_find = unionfind.Find(union_find[label_two]).label
-
-#         # make sure none of the other adjacent nodes already has this label
-#         for neighbor_label in adjacency_sets[label_one]:
-#             if neighbor_label == label_two: continue
-
-#         if unionfind.Find(union_find[neighbor_label]).label == label_two_union_find: 
-#             maintain_edges[ie] = True
-
-#         # skip if the edge is no longer collapsed
-#         if maintain_edges[ie]: continue
-#         unionfind.Union(union_find[label_one], union_find[label_two])
-
-#     print '\nBorder Constraints\n'
-#     PrecisionAndRecall(labels, 1 - maintain_edges)
-
-#     # for every edge, save if the edge is collapsed
-#     with open(output_filename, 'wb') as fd:
-#         fd.write(struct.pack('q', ncandidates))
-#         for ie in range(ncandidates):
-#             fd.write(struct.pack('?', maintain_edges[ie]))
-
-#     mapping = np.zeros(max_value, dtype=np.int64)
-#     for iv in range(max_value):
-#         mapping[iv] = unionfind.Find(union_find[iv]).label
-
-#     segmentation = seg2seg.MapLabels(segmentation, mapping)
-#     gold = dataIO.ReadGoldData('SNEMI3D_train')
-#     print comparestacks.adapted_rand(segmentation, gold, all_stats=False, dilate_ground_truth=2, filtersize=0)
+        fd.write('Variation of Information Full: {}\n'.format(vi[0] + vi[1]))
+        fd.write('Variation of Information Merge: {}\n'.format(vi[0]))
+        fd.write('Variation of Information Split: {}\n'.format(vi[1]))
