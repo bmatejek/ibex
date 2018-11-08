@@ -47,26 +47,34 @@ def ExtractAdjacencyMatrix(segmentation):
     
 
 
-def BaselineGraph(segmentation, seg2gold_mapping):
+def BaselineGraph(prefix, segmentation, seg2gold_mapping):
     # get the adjacency matrix
     adjacency_graph = ExtractAdjacencyMatrix(segmentation)
 
     positive_candidates = []
     negative_candidates = []
-    undetermined_candidates = []
+    unknown_candidates = []
 
     for (label_one, label_two) in adjacency_graph:
         gold_one = seg2gold_mapping[label_one]
         gold_two = seg2gold_mapping[label_two]
 
-        if gold_one < 1 or gold_two < 1: undetermined_candidates.append((label_one, label_two))
+        if gold_one < 1 or gold_two < 1: unknown_candidates.append((label_one, label_two))
         elif gold_one == gold_two: positive_candidates.append((label_one, label_two))
         else: negative_candidates.append((label_one, label_two))
 
-    print 'Baseline Adjacency Graph'
+    print 'Baseline Adjacency Graph Results'
     print '  Number positive edges {}'.format(len(positive_candidates))
     print '  Number negative edges {}'.format(len(negative_candidates))
-    print '  Number undetermined edges {}'.format(len(undetermined_candidates))
+    print '  Number unknowns edges {}'.format(len(unknown_candidates))
+
+    baseline_filename = 'edge-baselines/{}-edge-baselines.txt'.format(prefix)
+    with open(baseline_filename, 'w') as fd:
+        fd.write('Baseline Adjacency Graph Results\n')
+        fd.write('  Number positive edges {}\n'.format(len(positive_candidates)))
+        fd.write('  Number negative edges {}\n'.format(len(negative_candidates)))
+        fd.write('  Number unknowns edges {}\n'.format(len(unknown_candidates)))
+
 
 
 

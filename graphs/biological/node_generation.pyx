@@ -74,7 +74,7 @@ def GetMeanAffinity(label_one, label_two):
 def BaselineNodes(prefix, segmentation, seg2gold_mapping, affinities, threshold_volume=10368000):
     # get the threshold in terms of number of voxels
     resolution = dataIO.Resolution(prefix)
-    threshold = int(threshold_volume / (resolution[IB_Z] * resolution[IB_X] * resolution[IB_X]))
+    threshold = int(threshold_volume / (resolution[IB_Z] * resolution[IB_Y] * resolution[IB_X]))
 
     # get the complete adjacency graph with all neighboring edges
     adjacency_graph = edge_generation.ExtractAdjacencyMatrix(segmentation)
@@ -140,7 +140,7 @@ def BaselineNodes(prefix, segmentation, seg2gold_mapping, affinities, threshold_
 def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius=400, threshold_volume=10368000):
     # get the threshold in terms of number of voxels
     resolution = dataIO.Resolution(prefix)
-    threshold = int(threshold_volume / (resolution[IB_Z] * resolution[IB_X] * resolution[IB_X]))
+    threshold = int(threshold_volume / (resolution[IB_Z] * resolution[IB_Y] * resolution[IB_X]))
 
     # possible widths for the neural network
     widths = [(20, 60, 60)] # Use the optimal width found through network validation
