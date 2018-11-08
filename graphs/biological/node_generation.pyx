@@ -18,7 +18,9 @@ from ibex.utilities.constants import *
 cdef extern from 'cpp-node-generation.h':
     void CppFindMiddleBoundaries(long *segmentation, long grid_size[3])
     void CppGetMiddleBoundaryLocation(long label_one, long label_two, float &zpoint, float &ypoint, float &xpoint)
-
+    void CppFindMeanAffinities(long *segmentation, float *affinities, long grid_size[3])
+    float CppGetMeanAffinity(long label_one, long label_two)
+    
 
 
 def FindMiddleBoundaries(segmentation):
@@ -30,10 +32,19 @@ def FindMiddleBoundaries(segmentation):
 
     CppFindMiddleBoundaries(&(cpp_segmentation[0,0,0]), &(cpp_grid_size[0]))
 
-    # free memory
-    del cpp_segmentation
-    del cpp_grid_size
 
+
+def FindMeanAffinities(segmentation, affinities):
+    # everything needs to be long ints to work with c++
+    assert (segmentation.dtype == np.int64)
+    # affinities need to be z, y, x, c
+    assert (affinities.shape[3] == 3)
+
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
+    cdef np.ndarray[float, ndim=4, mode='c'] cpp_affinities = np.ascontiguousarray(affinities, dtype=ctypes.c_float)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_grid_size = np.ascontiguousarray(segmentation.shape, dtype=ctypes.c_int64)
+
+    CppFindMeanAffinities(&(cpp_segmentation[0,0,0]), &(cpp_affinities[0,0,0,0]), &(cpp_grid_size[0]))
 
 
 
@@ -49,7 +60,75 @@ def GetMiddleBoundary(label_one, label_two):
     return (int(cpp_point[IB_Z]), int(cpp_point[IB_Y]), int(cpp_point[IB_X]))
 
 
+    
+def GetMeanAffinity(label_one, label_two):
+    cpp_label_one = min(label_one, label_two)
+    cpp_lable_two = max(label_one, label_two)
 
+    cpp_mean_affinity = CppGetMeanAffinity(label_one, label_two)
+    
+    return cpp_mean_affinity   
+    
+
+
+def BaselineNodes(prefix, segmentation, seg2gold_mapping, affinities, threshold=20000):
+    # get the complete adjacency graph with all neighboring edges
+    adjacency_graph = edge_generation.ExtractAdjacencyMatrix(segmentation)
+    
+    # get the list of nodes over and under the threshold
+    small_segments, large_segments = FindSmallSegments(segmentation, threshold)
+
+    # get the mean affinities between all neighbors
+    FindMeanAffinities(segmentation, affinities)
+
+    small_segment_best_affinity = {}
+    small_segment_best_neighbor = {}
+    
+    # go through all of the small segments
+    for (label_one, label_two) in adjacency_graph:
+        if (label_one in small_segments) ^ (label_two in small_segments):
+            mean_affinity = GetMeanAffinity(label_one, label_two)
+  
+            # get the actual label that is small
+            if label_one in small_segments:
+                small_segment = label_one
+                large_segment = label_two
+            else:
+                small_segment = label_two
+                large_segment = label_one
+    
+            if not small_segment in small_segment_best_neighbor:
+                small_segment_best_affinity[small_segment] = mean_affinity
+                small_segment_best_neighbor[small_segment] = large_segment
+            elif mean_affinity > small_segment_best_affinity[small_segment]:
+                small_segment_best_affinity[small_segment] = mean_affinity
+                small_segment_best_neighbor[small_segment] = large_segment
+
+    # keep track of the number of correct merges
+    ncorrect_merges = 0
+    nincorrect_merges = 0
+    
+    # see how many small segments are correctly merges
+    for small_segment in small_segments:
+        large_segment = small_segment_best_neighbor[small_segment]
+
+        if seg2gold_mapping[small_segment] < 1 or seg2gold_mapping[large_segment] < 1: continue
+
+        if seg2gold_mapping[small_segment] == seg2gold_mapping[large_segment]: ncorrect_merges += 1
+        else: nincorrect_merges += 1
+
+    print 'Baseline Results:'
+    print '  Correctly Merged: {}'.format(ncorrect_merges)
+    print '  Incorrectly Merged: {}'.format(nincorrect_merges)
+
+    baseline_filename = 'node-baselines/{}-node-baselines.txt'.format(prefix)
+    with open(baseline_filename, 'w') as fd:
+        fd.write('Baseline Results:\n')
+        fd.write('  Correctly Merged: {}\n'.format(ncorrect_merges))
+        fd.write('  Incorrectly Merged: {}\n'.format(nincorrect_merges))
+
+
+        
 
 def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius=400, threshold=20000):
     # possible widths for the neural network
@@ -115,6 +194,11 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius
                     positive_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
                 else: 
                     negative_examples.append((zpoint, ypoint, xpoint, label_one, label_two))
+
+    print 'No. Positives {}'.format(len(positive_examples))
+    print 'No. Negatives {}'.format(len(negative_examples))
+    print 'No. unknowns {}'.format(len(unknown_examples))
+    return
 
     for width in widths:
         parent_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(network_radius, width[IB_Z], width[IB_Y], width[IB_X])
