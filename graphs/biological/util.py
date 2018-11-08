@@ -8,7 +8,7 @@ from ibex.utilities import dataIO
 
 
 @jit(nopython=True)
-def FindSmallSegments(segmentation, threshold=20000):
+def FindSmallSegments(segmentation, threshold):
     # create lists for small and large nodes
     small_segments = set()
     large_segments = set()
