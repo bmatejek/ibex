@@ -1,11 +1,13 @@
 cimport cython
 cimport numpy as np
+
 import ctypes
 from libcpp cimport bool
 import numpy as np
 import scipy.ndimage
 import time
 import os
+import pandas as pd
 
 from ibex.utilities import dataIO
 
@@ -52,7 +54,7 @@ def RemoveSmallConnectedComponents(segmentation, threshold=64):
 # reduce the labeling
 def ReduceLabels(segmentation):
     # get the unique labels
-    unique = np.unique(segmentation)
+    unique = sorted(pd.unique(segmentation.flatten()))
 
     # get the maximum label for the segment
     maximum_label = np.amax(segmentation) + 1
@@ -99,7 +101,6 @@ def DownsampleMapping(prefix, segmentation, output_resolution=(80, 80, 80), benc
     if benchmark and not os.path.isdir('benchmarks/skeleton'): os.mkdir('benchmarks/skeleton')
     elif not benchmark and not os.path.isdir('skeletons/{}'.format(prefix)): os.mkdir('skeletons/{}'.format(prefix))
 
-    # ignore time to read data
     start_time = time.time()
 
     # convert numpy arrays to c++ format
