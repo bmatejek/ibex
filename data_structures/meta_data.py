@@ -79,10 +79,12 @@ class MetaData:
                     # save the bounding box
                     self.bounding_box = ib3shapes.IBBox(mins, maxs)
                 elif comment == '# grid size':
+                    # read the grid size in x, y, z order
                     samples = value.split('x')
                     self.grid_size = (int(samples[2]), int(samples[1]), int(samples[0]))
                 elif comment == '# train/val/test crop':
                     samples = value.split('x')
+                    # read the crop in x, y, z order
                     self.crop_xmin = int(samples[0].split(':')[0])
                     self.crop_xmax = int(samples[0].split(':')[1])
                     self.crop_ymin = int(samples[1].split(':')[0])
@@ -130,3 +132,46 @@ class MetaData:
 
     def GridSize(self):
         return self.grid_size
+
+    def WriteMetaFile(self):
+        meta_filename = 'meta/{}.meta'.format(self.prefix)
+
+        with open(meta_filename, 'w') as fd:
+            # write the resolution in x, y, z order
+            fd.write('# resolution in nm\n')
+            fd.write('{}x{}x{}\n'.format(self.resolution[2], self.resolution[1], self.resolution[0]))
+
+            fd.write('# affinity filename\n')
+            fd.write('{}\n'.format(self.affinity_filename))
+
+            fd.write('# boundary filename\n')
+            fd.write('{}\n'.format(self.boundary_filename))
+
+            fd.write('# gold filename\n')
+            fd.write('{}\n'.format(self.gold_filename))
+
+            fd.write('# image filename\n')
+            fd.write('{}\n'.format(self.image_filename))
+
+            fd.write('# mask filename\n')
+            fd.write('{}\n'.format(self.mask_filename))
+
+            fd.write('# rhoana filename\n')
+            fd.write('{}\n'.format(self.rhoana_filename))
+
+            fd.write('# synapse filename\n')
+            fd.write('{}\n'.format(self.synapse_filename))
+
+            ### TEMPORARY HACK ###
+            fd.write('# world bounding box\n')
+            fd.write('None\n')
+
+            # write the grid size in x, y, z order
+            fd.write('# grid size\n')
+            fd.write('{}x{}x{}\n'.format(self.grid_size[2], self.grid_size[1], self.grid_size[0]))
+
+            # write the crop in x, y, z order
+            fd.write('# train/val/test crop\n')
+            # need to call the function here so that we get the grid size if there was non in the original meta file
+            (crop_zmin, crop_zmax), (crop_ymin, crop_ymax), (crop_xmin, crop_xmax) = self.CroppingBox()
+            fd.write('{}:{}x{}:{}x{}:{}\n'.format(crop_xmin, crop_xmax, crop_ymin, crop_ymax, crop_zmin, crop_zmax))

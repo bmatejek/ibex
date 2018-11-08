@@ -198,3 +198,17 @@ def PNG2H5(directory, filename, dataset, dtype=np.int32):
         else: h5output[iz,:,:] = im[:,:]
 
         WriteH5File(h5output, filename, dataset)
+
+
+
+def SpawnMetaFile(prefix, rhoana_filename, rhoana_dataset):
+    meta = meta_data.MetaData(prefix)
+
+    # get the new prefix for the data from the rhoana file
+    new_prefix = rhoana_filename.split('/')[1][:-3]
+
+    # update the values for this meta data
+    meta.prefix = new_prefix
+    meta.rhoana_filename = '{} {}'.format(rhoana_filename, rhoana_dataset)
+
+    meta.WriteMetaFile()
