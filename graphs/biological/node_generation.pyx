@@ -83,7 +83,7 @@ def BaselineNodes(prefix, segmentation, seg2gold_mapping, affinities, threshold=
 
     small_segment_best_affinity = {}
     small_segment_best_neighbor = {}
-    
+        
     # go through all of the small segments
     for (label_one, label_two) in adjacency_graph:
         if (label_one in small_segments) ^ (label_two in small_segments):
@@ -110,6 +110,9 @@ def BaselineNodes(prefix, segmentation, seg2gold_mapping, affinities, threshold=
     
     # see how many small segments are correctly merges
     for small_segment in small_segments:
+        # skip if there are no large neighboring segments
+        if not small_segment in small_segment_best_neighbor: continue
+    
         large_segment = small_segment_best_neighbor[small_segment]
 
         if seg2gold_mapping[small_segment] < 1 or seg2gold_mapping[large_segment] < 1: continue
