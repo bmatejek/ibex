@@ -145,7 +145,7 @@ def NodeNetwork(parameters, width):
 
 
 # write all relevant information to the log file
-def WriteLogfiles(model, model_prefix, parameters):
+def WriteLogFiles(model, model_prefix, parameters):
     logfile = '{}.log'.format(model_prefix)
 
     with open(logfile, 'w') as fd:
@@ -169,6 +169,7 @@ def NodeGenerator(parameters, width, radius, subset):
     positive_filenames = os.listdir(positive_directory)
     positive_candidates = []
     for positive_filename in positive_filenames:
+        if not 'PNI' in positive_filename: continue
         if not positive_filename[-3:] == '.h5': continue
         positive_candidates.append(dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filename), 'main'))
     positive_candidates = np.concatenate(positive_candidates, axis=0)
@@ -177,6 +178,7 @@ def NodeGenerator(parameters, width, radius, subset):
     negative_filenames = os.listdir(negative_directory) 
     negative_candidates = []
     for negative_filename in negative_filenames:
+        if not 'PNI' in negative_filename: continue
         if not negative_filename[-3:] == '.h5': continue
         negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filename), 'main'))
     negative_candidates = np.concatenate(negative_candidates, axis=0)
@@ -223,9 +225,9 @@ def NodeGenerator(parameters, width, radius, subset):
 
 
 def Train(parameters, model_prefix, width, radius):
-    # make sure the model prefix does not contain nodes (to prevent overwriting files)
+    # make sure the model prefix does not contain edges (to prevent overwriting files)
     assert (not 'edges' in model_prefix)
-    
+
     # identify convenient variables
     starting_epoch = parameters['starting_epoch']
     batch_size = parameters['batch_size']
@@ -245,7 +247,7 @@ def Train(parameters, model_prefix, width, radius):
     logfile = '{}.log'.format(model_prefix)
 
     # write out the network parameters to a file
-    WriteLogfiles(model, model_prefix, parameters)
+    WriteLogFiles(model, model_prefix, parameters)
 
     # create a set of keras callbacks
     callbacks = []
