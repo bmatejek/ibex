@@ -21,7 +21,8 @@ def NodeGenerator(parameters, width, radius, subset, dataset):
     positive_filenames = os.listdir(positive_directory)
     positive_candidates = []
     for positive_filename in positive_filenames:
-        if not dataset in positive_filename: continue
+        if not all(restriction in positive_filename for restriction in dataset): continue
+        print positive_filename
         if not positive_filename[-3:] == '.h5': continue
         positive_candidates.append(dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filename), 'main'))
     positive_candidates = np.concatenate(positive_candidates, axis=0)
@@ -30,7 +31,8 @@ def NodeGenerator(parameters, width, radius, subset, dataset):
     negative_filenames = os.listdir(negative_directory) 
     negative_candidates = []
     for negative_filename in negative_filenames:
-        if not dataset in negative_filename: continue
+        if not all(restriction in negative_filename for restriction in dataset): continue
+        print negative_filename
         if not negative_filename[-3:] == '.h5': continue
         negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filename), 'main'))
     negative_candidates = np.concatenate(negative_candidates, axis=0)
@@ -91,7 +93,7 @@ def Finetune(parameters, trained_network_prefix, width, radius, dataset):
     model.load_weights('{}-best-loss.h5'.format(trained_network_prefix))
 
     root_location = trained_network_prefix.rfind('/')
-    output_folder = '{}-{}'.format(trained_network_prefix[:root_location], dataset)
+    output_folder = '{}-{}'.format(trained_network_prefix[:root_location], '-'.join(dataset))
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
