@@ -67,7 +67,7 @@ def PrintResults(results, name):
     
     
     
-def CNNResults(problem):
+def CNNResultsSupplemental(problem):
     # get all of the trained networks for this problem
     network_names = sorted(glob.glob('architectures/{}*'.format(problem)))
 
@@ -90,8 +90,13 @@ def CNNResults(problem):
     optimal_validation_network = ''
     optimal_testing_accuracy = 0.0
     optimal_testing_network = ''
+
+    training_accuracies = {}
+    validation_accuracies = {}
+    testing_accuracies = {}
     
     for network in network_names:
+        if 'Kasthuri' in network: continue
         inference_filenames = sorted(glob.glob('{}/*inference.txt'.format(network)))
         
         training_results = []
@@ -137,6 +142,10 @@ def CNNResults(problem):
             optimal_testing_accuracy = testing_accuracy
             optimal_testing_network = network
 
+        training_accuracies[network] = training_accuracy
+        validation_accuracies[network] = validation_accuracy
+        testing_accuracies[network] = testing_accuracy
+        
     print 'Optimal Training Accuracy: {}'.format(optimal_training_accuracy)
     print '  {}\n'.format(optimal_training_network)
 
@@ -145,3 +154,28 @@ def CNNResults(problem):
 
     print 'Optimal Testing Accuracy: {}'.format(optimal_testing_accuracy)
     print '  {}\n'.format(optimal_testing_network)
+
+    prev_diameter = ''
+
+    for network in network_names:
+        if 'Kasthuri' in network: continue
+
+        network_params = network.split('/')[1].split('-')
+
+        diameter = 2 * int(network_params[1].strip('nm'))
+        input_diameter = '{}nm'.format(diameter)
+        width = '({})'.format(network_params[2].replace('x', ', '))
+
+
+        if input_diameter != prev_diameter:
+            if len(prev_diameter): print '\\end{tabular}'
+            print '\\centering'
+            print '\\caption{Results on \\SI{' + str(diameter) + '}{\\nano\\meter} diameter extracted regions of interest.}'
+            print '\\begin{tabular}{c c c c} \\hline'
+            print '\\textbf{Input Size} & \\textbf{Training Accuracy} & \\textbf{Validation Accuracy} & \\textbf{Testing Accuracy}  \\\\ \\hline'        
+        print '{} & {:0.4f} & {:0.4f} & {:0.4f} \\\\'.format(width, training_accuracies[network], validation_accuracies[network], testing_accuracies[network])
+
+        prev_diameter = input_diameter
+
+    print '\\end{tabular}'
+    print '\\end{table*}'

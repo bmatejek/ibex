@@ -45,15 +45,15 @@ def CollectExamples(prefix, width, radius, subset):
     
     positive_filename = '{}/{}/positives/{}-examples.h5'.format(parent_directory, subset, prefix)
     positive_examples = dataIO.ReadH5File(positive_filename, 'main')
-
+    
     negative_filename = '{}/{}/negatives/{}-examples.h5'.format(parent_directory, subset, prefix)
     negative_examples = dataIO.ReadH5File(negative_filename, 'main')
     
     unknowns_filename = '{}/{}/unknowns/{}-examples.h5'.format(parent_directory, subset, prefix)
-    unknowns_example = dataIO.ReadH5File(unknowns_filename, 'main')
-
+    unknowns_examples = dataIO.ReadH5File(unknowns_filename, 'main')
+    
     # concatenate all of the examples together
-    examples = np.concatenate((positive_examples, negative_examples, unknowns_example), axis=0)
+    examples = np.concatenate((positive_examples, negative_examples, unknowns_examples), axis=0)
     
     # add in information needed for forward inference [regions masked out for training and validation]
     forward_positive_filename = '{}/forward/positives/{}-examples.h5'.format(parent_directory, prefix)
@@ -132,7 +132,7 @@ def CollectLargeSmallPairs(prefix, width, radius, subset):
 
 
 
-def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=False):
+def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=False, threshold_volume=10368000):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
@@ -143,9 +143,13 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     # get all of the large-small pairings
     pairings = CollectLargeSmallPairs(prefix, width, radius, subset)
     assert (len(pairings) == examples.shape[0])
+    
+    # get the threshold in terms of number of voxels
+    resolution = dataIO.Resolution(prefix)
+    threshold = int(threshold_volume / (resolution[IB_Z] * resolution[IB_Y] * resolution[IB_X]))
 
     # get the list of nodes over and under the threshold
-    small_segments, large_segments = FindSmallSegments(segmentation)
+    small_segments, large_segments = FindSmallSegments(segmentation, threshold)
  
     # get all of the probabilities 
     probabilities = model.predict_generator(NodeGenerator(examples, width), examples.shape[0], max_q_size=1000)
@@ -161,14 +165,14 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     ground_truth = np.zeros(npositives + nnegatives, dtype=np.bool)
     for iv in range(npositives):
         ground_truth[iv] = True
-
+    
     # get the results with labeled data
     predictions = Prob2Pred(np.squeeze(probabilities[:npositives+nnegatives]))
-
+    
     # print the confusion matrix
     output_filename = '{}-{}-inference.txt'.format(model_prefix, prefix)
     PrecisionAndRecall(ground_truth, predictions, output_filename)
-
+    
     # create a mapping 
     small_segment_predictions = dict()
     for small_segment in small_segments:
