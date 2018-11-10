@@ -255,6 +255,9 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
     output_filename = 'rhoana/{}-reduced-{}.h5'.format(prefix, model_name)
     dataIO.WriteH5File(segmentation, output_filename, 'main')
 
+    # spawn a new meta file
+    dataIO.SpawnMetaFile(prefix, output_filename, 'main')
+    
     # save the end to end mapping in the cache
     mapping_filename = 'cache/{}-reduced-{}-end2end.map'.format(prefix, model_name)
     with open(mapping_filename, 'wb') as fd:
