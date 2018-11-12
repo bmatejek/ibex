@@ -293,9 +293,13 @@ def GenerateEdges(prefix, segmentation, seg2gold_mapping, subset, network_radius
                 unknown_examples.append(edge)
             elif gold_one == gold_two:
                 positive_examples.append(edge)
-            else: 
+            else:
                 negative_examples.append(edge)
 
+    print 'No. Positive Edges: {}'.format(len(positive_examples))
+    print 'No. Negative Edges: {}'.format(len(negative_examples))
+    print 'No. Unknown Edges: {}'.format(len(unknown_examples))
+                
     for width in widths:
         parent_directory = 'features/biological/edges-{}nm-{}x{}x{}'.format(network_radius, width[IB_Z], width[IB_Y], width[IB_X])
 

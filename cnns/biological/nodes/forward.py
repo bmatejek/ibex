@@ -54,7 +54,7 @@ def CollectExamples(prefix, width, radius, subset):
     
     # concatenate all of the examples together
     examples = np.concatenate((positive_examples, negative_examples, unknowns_examples), axis=0)
-    
+
     # add in information needed for forward inference [regions masked out for training and validation]
     forward_positive_filename = '{}/forward/positives/{}-examples.h5'.format(parent_directory, prefix)
     if os.path.exists(forward_positive_filename):
@@ -139,10 +139,10 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
 
     # get all of the examples
     examples, npositives, nnegatives = CollectExamples(prefix, width, radius, subset)
-
+    
     # get all of the large-small pairings
     pairings = CollectLargeSmallPairs(prefix, width, radius, subset)
-    assert (len(pairings) == examples.shape[0])
+    #assert (len(pairings) == examples.shape[0])
     
     # get the threshold in terms of number of voxels
     resolution = dataIO.Resolution(prefix)

@@ -210,7 +210,7 @@ def GenerateNodes(prefix, segmentation, seg2gold_mapping, subset, network_radius
     print 'No. Positives {}'.format(len(positive_examples))
     print 'No. Negatives {}'.format(len(negative_examples))
     print 'No. unknowns {}'.format(len(unknown_examples))
-
+    
     for width in widths:
         parent_directory = 'features/biological/nodes-{}nm-{}x{}x{}'.format(network_radius, width[IB_Z], width[IB_Y], width[IB_X])
 

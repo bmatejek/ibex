@@ -105,6 +105,8 @@ def CNNResultsSupplemental(problem):
 
         # parse each of the inference filenames
         for filename in inference_filenames:
+            if not 'PNI' in filename: continue 
+            
             prefix = '-'.join(filename.split('/')[-1].split('-')[1:-1])
 
             # get the dataset from the prefix name
