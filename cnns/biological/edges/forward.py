@@ -129,7 +129,7 @@ def CollectEdges(prefix, width, radius, subset):
 
 
 
-def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=False):
+def Forward(prefix, model_prefix, width, radius, subset, evaluate=False):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
