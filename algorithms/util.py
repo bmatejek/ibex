@@ -121,7 +121,7 @@ def CollapseGraph(prefix, segmentation, vertex_ones, vertex_twos, maintained_edg
     elif 'multicut' in algorithm: output_folder = 'multicut'
     else: assert (False)
 
-    with open('{}-results/{}.txt'.format(output_folder, prefix), 'w') as fd:
+    with open('{}-results/{}-{}.txt'.format(output_folder, algorithm, prefix), 'w') as fd:
         fd.write('Rand Error Full: {}\n'.format(rand_error[0] + rand_error[1]))
         fd.write('Rand Error Merge: {}\n'.format(rand_error[0]))
         fd.write('Rand Error Split: {}\n'.format(rand_error[1]))
