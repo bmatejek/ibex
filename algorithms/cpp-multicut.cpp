@@ -34,7 +34,7 @@ unsigned char *CppMulticut(long nvertices, long nedges, long *vertex_ones, long 
     
     // turn vector into char array and return
     unsigned char *maintained_edges = new unsigned char[nedges];
-    for (unsigned long ie = 0; ie < nedges; ++ie) {
+    for (long ie = 0; ie < nedges; ++ie) {
         maintained_edges[ie] = edge_labels[ie];
     }
 

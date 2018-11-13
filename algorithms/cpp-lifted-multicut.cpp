@@ -36,7 +36,7 @@ unsigned char *CppLiftedMulticut(long nvertices, long nedges, long *vertex_ones,
         }
     }
     // populate all of the normal weights with their regular values
-    for ( long ie = 0; ie < nedges; ++ie) {
+    for (long ie = 0; ie < nedges; ++ie) {
         long vertex_one = vertex_ones[ie];
         long vertex_two = vertex_twos[ie];
         double probability = lifted_weights[vertex_one * nvertices + vertex_two];
@@ -52,7 +52,7 @@ unsigned char *CppLiftedMulticut(long nvertices, long nedges, long *vertex_ones,
 
     // turn vector into char array and return
     unsigned char *maintained_edges = new unsigned char[nedges];
-    for (unsigned long ie = 0; ie < nedges; ++ie) {
+    for (long ie = 0; ie < nedges; ++ie) {
         maintained_edges[ie] = edge_labels[lifted_graph.findEdge(vertex_ones[ie], vertex_twos[ie]).second];
     }
 

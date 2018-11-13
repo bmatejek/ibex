@@ -35,5 +35,8 @@ def Multicut(prefix, segmentation, model_prefix, beta):
     # output the results
     PrintResults(prefix, vertex_ones, vertex_twos, edge_weights, maintained_edges)
 
+    # create a copy of the segmentaiton before collapsing
+    segmentation = np.copy(segmentation)
+    
     # collapse the graph and save the result
     CollapseGraph(prefix, segmentation, vertex_ones, vertex_twos, maintained_edges, 'multicut-{}'.format(int(100 * beta)))
