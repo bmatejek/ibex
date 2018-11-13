@@ -23,6 +23,7 @@ def EdgeGenerator(parameters, width, radius, subset, dataset):
     for positive_filename in positive_filenames:
         if not all(restriction in positive_filename for restriction in dataset): continue
         if not positive_filename[-3:] == '.h5': continue
+        print positive_filename
         positive_candidates.append(dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filename), 'main'))
     positive_candidates = np.concatenate(positive_candidates, axis=0)
 
@@ -32,6 +33,7 @@ def EdgeGenerator(parameters, width, radius, subset, dataset):
     for negative_filename in negative_filenames:
         if not all(restriction in negative_filename for restriction in dataset): continue
         if not negative_filename[-3:] == '.h5': continue
+        print negative_filename
         negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filename), 'main'))
     negative_candidates = np.concatenate(negative_candidates, axis=0)
 

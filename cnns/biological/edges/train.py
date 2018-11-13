@@ -145,7 +145,7 @@ def EdgeNetwork(parameters, width):
 
 
 # write all relevant information to the log file
-def WriteLogfiles(model, model_prefix, parameters):
+def WriteLogFiles(model, model_prefix, parameters):
     logfile = '{}.log'.format(model_prefix)
 
     with open(logfile, 'w') as fd:
