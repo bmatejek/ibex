@@ -17,7 +17,7 @@ unsigned char *CppLiftedMulticut(long nvertices, long nedges, long *vertex_ones,
     andres::graph::Graph<> original_graph(nvertices);
 
     // insert edges for all of the adjacent vertices
-    for (unsigned long ie = 0; ie < nedges; ++ie) {
+    for (long ie = 0; ie < nedges; ++ie) {
         original_graph.insertEdge(vertex_ones[ie], vertex_twos[ie]);
     }
 
