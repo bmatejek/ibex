@@ -215,8 +215,9 @@ def Forward(prefix, model_prefix, segmentation, width, radius, subset, evaluate=
                 best_large_segment = large_segment
         
         # this should almost never happen but if it does just continue
-        if best_large_segment == -1:
+        if best_large_segment == -1 or best_probability < 0.5:
             mapping[small_segment] = small_segment
+            continue
         # get all of the best large segments
         else:
             mapping[small_segment] = best_large_segment
