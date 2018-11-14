@@ -57,7 +57,7 @@ def LiftedMulticut(prefix, segmentation, model_prefix, beta):
     maintained_edges = np.asarray(tmp_maintained_edges).astype(dtype=np.bool)
 
     # output the results
-    PrintResults(prefix, vertex_ones, vertex_twos, edge_weights, maintained_edges)
+    PrintResults(prefix, vertex_ones, vertex_twos, edge_weights, maintained_edges, 'lifted-multicut-{}'.format(100 * beta))
 
     # create a copy of the segmentation before collapsing
     segmentation = np.copy(segmentation)

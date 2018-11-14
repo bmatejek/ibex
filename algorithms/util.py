@@ -10,7 +10,7 @@ from ibex.utilities import dataIO
 
 
 
-def PrintResults(prefix, vertex_ones, vertex_twos, edge_weights, maintained_edges):
+def PrintResults(prefix, vertex_ones, vertex_twos, edge_weights, maintained_edges, algorithm):
     # get the ground truth and print out the results
     seg2gold_mapping = seg2gold.Mapping(prefix)
 
@@ -42,8 +42,16 @@ def PrintResults(prefix, vertex_ones, vertex_twos, edge_weights, maintained_edge
 
     print 'CNN Results:'
     PrecisionAndRecall(np.array(labels), np.array(cnn_results))
+
+    # make sure that the options are either multicut or lifted-multicut
+    if 'lifted-multicut' in algorithm: output_folder = 'lifted-multicut'
+    elif 'multicut' in algorithm: output_folder = 'multicut'
+    elif 'graph-baseline' in algorithm: output_folder = 'graph-baselines'
+    else: assert (False)
+
     print 'Multicut Results'
-    PrecisionAndRecall(np.array(labels), np.array(multicut_results))
+    output_filename = '{}-results/{}-{}-inference.txt'.format(output_folder, algorithm, prefix)
+    PrecisionAndRecall(np.array(labels), np.array(multicut_results), output_filename)
 
 
 
@@ -119,6 +127,7 @@ def CollapseGraph(prefix, segmentation, vertex_ones, vertex_twos, maintained_edg
     # make sure that the options are either multicut or lifted-multicut
     if 'lifted-multicut' in algorithm: output_folder = 'lifted-multicut'
     elif 'multicut' in algorithm: output_folder = 'multicut'
+    elif 'graph-baseline' in algorithm: output_folder = 'graph-baselines'
     else: assert (False)
 
     with open('{}-results/{}-{}.txt'.format(output_folder, algorithm, prefix), 'w') as fd:
