@@ -140,7 +140,7 @@ def Forward(prefix, model_prefix, width, radius, subset, evaluate=False):
     # get the correspond edges
     edges = CollectEdges(prefix, width, radius, subset)
     assert (len(edges) == examples.shape[0])
-
+    
     # get all of the probabilities 
     probabilities = model.predict_generator(EdgeGenerator(examples, width), examples.shape[0], max_q_size=1000)
 
