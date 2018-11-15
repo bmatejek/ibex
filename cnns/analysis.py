@@ -96,7 +96,7 @@ def CNNResultsSupplemental(problem):
     testing_accuracies = {}
     
     for network in network_names:
-        if 'Kasthuri' in network: continue
+        if 'Kasthuri' in network or 'Fib25' in network: continue
         inference_filenames = sorted(glob.glob('{}/*inference.txt'.format(network)))
         
         training_results = []
@@ -159,8 +159,9 @@ def CNNResultsSupplemental(problem):
 
     prev_diameter = ''
 
+    print '\\begin{table*}'
     for network in network_names:
-        if 'Kasthuri' in network: continue
+        if 'Kasthuri' in network or 'Fib25' in network: continue
 
         network_params = network.split('/')[1].split('-')
 
