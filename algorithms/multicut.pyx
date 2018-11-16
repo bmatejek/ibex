@@ -14,7 +14,7 @@ cdef extern from 'cpp-multicut.h':
 
 
 
-def Multicut(prefix, segmentation, model_prefix, beta):
+def Multicut(prefix, segmentation, model_prefix, beta=0.95):
     # get the possible candidates
     vertex_ones, vertex_twos, edge_weights = ReadCandidates(prefix, model_prefix)
 

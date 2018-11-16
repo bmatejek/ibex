@@ -36,7 +36,7 @@ def GenerateLiftedEdges(vertex_ones, vertex_twos, edge_weights, nvertices):
 
 
 
-def LiftedMulticut(prefix, segmentation, model_prefix, beta):
+def LiftedMulticut(prefix, segmentation, model_prefix, beta=0.95):
     # get the possible candidates
     vertex_ones, vertex_twos, edge_weights = ReadCandidates(prefix, model_prefix)
 

@@ -3,7 +3,7 @@ import numpy as np
 from ibex.algorithms.util import CollapseGraph, PrintResults, ReadCandidates
 
 
-def GraphBaseline(prefix, segmentation, model_prefix, beta):
+def GraphBaseline(prefix, segmentation, model_prefix, beta=0.95):
     vertex_ones, vertex_twos, edge_weights = ReadCandidates(prefix, model_prefix)
 
     maintained_edges = np.zeros(edge_weights.size, dtype=np.uint8)
