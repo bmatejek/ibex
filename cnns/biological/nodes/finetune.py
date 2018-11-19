@@ -13,6 +13,11 @@ from ibex.cnns.biological.nodes.train import NodeNetwork, PlotLosses, WriteLogFi
 
 # node generation function is similar except that it only reads files that have dataset in the name
 def NodeGenerator(parameters, width, radius, subset, dataset):
+    # SNEMI3D hack
+    if subset == 'validation': validation = True
+    else: validation = False
+    subset = 'training'
+
     # get the directories corresponding to this radius and subset
     positive_directory = 'features/biological/nodes-{}nm-{}x{}x{}/{}/positives'.format(radius, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1], subset)
     negative_directory = 'features/biological/nodes-{}nm-{}x{}x{}/{}/negatives'.format(radius, width[IB_Z + 1], width[IB_Y + 1], width[IB_X + 1], subset)
@@ -34,6 +39,13 @@ def NodeGenerator(parameters, width, radius, subset, dataset):
         if not negative_filename[-3:] == '.h5': continue
         negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filename), 'main'))
     negative_candidates = np.concatenate(negative_candidates, axis=0)
+
+    if validation: 
+        positive_candidates = positive_candidates[int(0.7 * positive_candidates.shape[0]):]
+        negative_candidates = negative_candidates[int(0.7 * negative_candidates.shape[0]):]
+    else:
+        positive_candidates = positive_candidates[:int(0.7 * positive_candidates.shape[0])]
+        negative_candidates = negative_candidates[:int(0.7 * negative_candidates.shape[0])]
 
     # create easy access to the numbers of candidates
     npositive_candidates = positive_candidates.shape[0]
@@ -80,6 +92,8 @@ def NodeGenerator(parameters, width, radius, subset, dataset):
 def Finetune(parameters, trained_network_prefix, width, radius, dataset):
     # make sure the model prefix does not contain edges (to prevent overwriting files)
     assert (not 'edges' in trained_network_prefix)
+
+    assert (dataset[0] == 'SNEMI3D')
 
     # identify convenient variables
     starting_epoch = parameters['starting_epoch']
@@ -131,7 +145,7 @@ def Finetune(parameters, trained_network_prefix, width, radius, dataset):
 
     # train the model
     history = model.fit_generator(NodeGenerator(parameters, width, radius, 'training', dataset), steps_per_epoch=(examples_per_epoch / batch_size), 
-        epochs=500, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation', dataset), 
+        epochs=250, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=NodeGenerator(parameters, width, radius, 'validation', dataset), 
                                   validation_steps=(nvalidation_examples / batch_size), initial_epoch=starting_epoch)
     
     with open('{}-history.pickle'.format(model_prefix), 'w') as fd:

@@ -237,7 +237,7 @@ def EndpointTraversal(prefix, segmentation, seg2gold_mapping, maximum_distance):
 
 
 
-def GenerateEdges(prefix, segmentation, seg2gold_mapping, subset, network_radius, maximum_distance=500):
+def GenerateEdges(prefix, segmentation, seg2gold_mapping, subset, network_radius=600, maximum_distance=500):
     # possible widths for the neural network
     widths = [(18, 52, 52)]#[(18, 52, 52), (20, 60, 60), (22, 68, 68), (24, 76, 76)]
     

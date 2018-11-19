@@ -74,7 +74,7 @@ def FindEndpointMatches(prefix, algorithm, params, resolution, ground_truth):
     assert (len(ground_truth) == len(proposed))
 
     # don't allow points to be connected over this distance
-    max_distance = 400
+    max_distance = 800
     
     # go through every label
     max_label = len(ground_truth)
