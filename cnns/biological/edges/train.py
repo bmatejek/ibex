@@ -258,7 +258,7 @@ def Train(parameters, model_prefix, width, radius, finetune=False):
     logfile = '{}.log'.format(model_prefix)
 
     # write out the network parameters to a file
-    WriteLogfiles(model, model_prefix, parameters)
+    WriteLogFiles(model, model_prefix, parameters)
 
     # create a set of keras callbacks
     callbacks = []
