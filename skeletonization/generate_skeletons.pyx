@@ -123,7 +123,7 @@ def MedialAxis(prefix, input_segmentation, skeleton_resolution=(80, 80, 80), ben
 
 
 # use TEASER algorithm to generate skeletons
-def TEASER(prefix, segmentation, skeleton_resolution=(80, 80, 80), benchmark=False, teaser_scale=1.3, teaser_buffer=2, astar_expansion=0):
+def TEASER(prefix, input_segmentation, skeleton_resolution=(80, 80, 80), benchmark=False, teaser_scale=1.3, teaser_buffer=2, astar_expansion=0):
     # everything needs to be long ints to work with c++
     assert (input_segmentation.dtype == np.int64)
 
