@@ -1,5 +1,6 @@
 import numpy as np
 import imageio
+from numba import jit
 
 from ibex.utilities.constants import *
 
@@ -71,6 +72,20 @@ def H52Gif(filename, stack, duration=0.5, axis=IB_Z):
 def Images2Gif(filename, images, duration=0.5):
     imageio.mimsave(filename, images, duration=duration)
 
+@jit(nopython=True)
+def SmartOverlay(segmentation, image, alpha):
+    overlay = np.zeros(image.shape, dtype=np.uint8)
+
+    yres, xres,_ = image.shape
+
+    epsilon = 1e-2
+    for iy in range(yres):
+        for ix in range(xres):
+            if np.sum(segmentation[iy,ix,:]) < epsilon:
+                overlay[iy,ix,:] = image[iy,ix,:]
+            else:
+                overlay[iy,ix,:] = alpha * segmentation[iy,ix,:] + (1 - alpha) * image[iy,ix,:]
+    return overlay
 
 def Overlay(segmentation, image, alpha):
     assert (segmentation.shape == image.shape)
@@ -84,5 +99,5 @@ def Overlay(segmentation, image, alpha):
         sys.stderr.write('Unrecognized number of dimensions: %d\n'.format(len(segmentation.shape)))
         sys.exit()
 
-    return np.uint8(alpha * segmentation + (1 - alpha) * image)
+    return SmartOverlay(segmentation, image, alpha)
 
