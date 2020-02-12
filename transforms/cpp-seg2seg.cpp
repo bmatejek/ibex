@@ -121,7 +121,7 @@ void CppForceConnectivity(long *segmentation, long grid_size[3])
                             components[neighbor] = current_label;
                             pixels.push(neighbor);
                         }
-                    }        
+                    }
                 }
             }
         }
@@ -190,7 +190,7 @@ void CppForceConnectivity(long *segmentation, long grid_size[3])
 
 void CppDownsampleMapping(const char *prefix, long *segmentation, float input_resolution[3], long output_resolution[3], long input_grid_size[3], bool benchmark)
 {
-    // get the number of entries 
+    // get the number of entries
     long input_nentries = input_grid_size[IB_Z] * input_grid_size[IB_Y] * input_grid_size[IB_X];
 
     // get downsample ratios
