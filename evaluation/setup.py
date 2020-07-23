@@ -7,12 +7,12 @@ extensions = [
         name='comparestacks',
         include_dirs=[np.get_include()],
         sources=['comparestacks.pyx', 'cpp-comparestacks.cpp'],
-        extra_compile_args=['-O4', '-std=c++0x'],
+        extra_compile_args=['-O4', '-std=c++11'],
         language='c++'
     ),
 ]
 
 setup(
     name='comparestacks',
-    ext_modules = cythonize(extensions)
+    ext_modules=cythonize(extensions)
 )
