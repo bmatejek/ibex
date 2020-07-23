@@ -3,13 +3,27 @@ cimport numpy as np
 import numpy as np
 import ctypes
 import scipy.sparse as sparse
-    
-from ibex.utilities import dataIO
+from libcpp.unordered_map cimport unordered_map
+import h5py
 from ibex.transforms import distance, seg2seg
 
 
 
 cdef extern from 'cpp-comparestacks.h':
+    struct EvaluationStats:
+        unordered_map[long, unordered_map[long, long]] c
+        unordered_map[long, long] s
+        unordered_map[long, long] t
+        long nnonzero
+
+    EvaluationStats *allocate_stats()
+
+    void deallocate_stats(EvaluationStats *pointer)
+
+    void CppGetStatsFromVolume(EvaluationStats *output, long *segmentation, long *gold, long grid_size[3], long *ground_truth_masks, long nmasks)
+
+    double *CppEvaluateStat(EvaluationStats *stat)
+
     double *CppEvaluate(long *segmentation, long *gold, long grid_size[3], long *ground_truth_masks, long nmasks)
 
 def adapted_rand(prefix, seg, gt, all_stats=False, dilate_ground_truth=2, filtersize=0):
@@ -82,6 +96,52 @@ def adapted_rand(prefix, seg, gt, all_stats=False, dilate_ground_truth=2, filter
        return (are, precision, recall)
     else:
        return are
+
+def VariationOfInformation(input_segmentation_fn, input_gold_fn, chunk_size, dataset=None, dilate_ground_truth=2, input_ground_truth_masks=[0], filtersize=0):
+    input_segmentation_f = h5py.File(input_segmentation_fn, 'r')[dataset]
+    input_gold_f = h5py.File(input_gold_fn, 'r')[dataset]
+    assert (input_segmentation_f.shape == input_gold_f.shape)
+    cdef EvaluationStats *stats = allocate_stats()
+    array_len = len(input_segmentation_f)
+    array_shape = [array_len, input_gold_f.shape[1], input_gold_f.shape[2]]
+    ground_truth_masks = np.copy(input_ground_truth_masks).astype(np.int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_ground_truth_masks = np.ascontiguousarray(ground_truth_masks, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_segmentation = np.zeros(array_shape, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=3, mode='c'] cpp_gold = np.zeros(array_shape, dtype=ctypes.c_int64)
+    cdef np.ndarray[long, ndim=1, mode='c'] cpp_input_grid_size = np.zeros(array_shape, dtype=ctypes.c_int64)
+
+    for i in range(chunk_size):
+        print("Processing stack %d/%d" % (i + 1, chunk_size))
+        segmentation = np.array(input_segmentation_f[array_len * i: array_len * (i + 1)], dtype=np.int64)
+        gold = np.array(input_gold_f[array_len * i: array_len * (i + 1)], dtype=np.int64)
+
+        # remove all small connected components
+        if filtersize > 0:
+            seg2seg.RemoveSmallConnectedComponents(segmentation, filtersize)
+            seg2seg.RemoveSmallConnectedComponents(gold, filtersize)
+
+        if dilate_ground_truth > 0:
+            distance.DilateData(gold, dilate_ground_truth)
+
+        # convert to c++ arrays
+        cpp_segmentation = np.ascontiguousarray(segmentation, dtype=ctypes.c_int64)
+        cpp_gold = np.ascontiguousarray(gold, dtype=ctypes.c_int64)
+        cpp_input_grid_size = np.ascontiguousarray(segmentation.shape, dtype=ctypes.c_int64)
+        CppGetStatsFromVolume(stats, &(cpp_segmentation[0,0,0]), &(cpp_gold[0,0,0]), &(cpp_input_grid_size[0]), &(cpp_ground_truth_masks[0]), \
+            ground_truth_masks.size)
+    cdef double[:] results = <double[:4]>CppEvaluateStat(stats)
+    rand_error = (results[0], results[1])
+    vi = (results[2], results[3])
+
+    del cpp_input_grid_size
+    del cpp_segmentation
+    del cpp_gold
+    del cpp_ground_truth_masks
+    del results
+    deallocate_stats(stats)
+
+    return (rand_error, vi)
+
 
        
 
