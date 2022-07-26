@@ -77,14 +77,14 @@ void CppRemoveSmallConnectedComponents(long *segmentation, int threshold, unsign
 
 
 
-void CppForceConnectivity(long *segmentation, long grid_size[3])
+void CppForceConnectivity(char *segmentation, long grid_size[3])
 {
     // create the new components array
     nentries = grid_size[IB_Z] * grid_size[IB_Y] * grid_size[IB_X];
     sheet_size = grid_size[IB_Y] * grid_size[IB_X];
     row_size = grid_size[IB_X];
 
-    long *components = new long[nentries];
+    short *components = new short[nentries];
     for (long iv = 0; iv < nentries; ++iv)
         components[iv] = 0;
 
