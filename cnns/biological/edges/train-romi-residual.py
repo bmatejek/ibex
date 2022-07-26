@@ -22,6 +22,40 @@ from ibex.cnns.biological.util import AugmentFeature
 from tensorflow.python.client import device_lib
 from keras.utils import multi_gpu_model
 
+
+# Adapted from: https://sebastianwallkoetter.wordpress.com/2018/04/08/layered-layers-residual-blocks-in-the-sequential-keras-api/
+class Residual(Layer):
+    def __init__(self, old_filter_size, new_filter_size, kernel_size, padding, activation, normalization, **kwargs):
+        super(Residual, self).__init__(**kwargs)
+        self.old_filter_size = old_filter_size
+        self.new_filter_size = new_filter_size
+        self.kernel_size = kernel_size
+        self.padding = padding
+        self.activation = activation
+        self.normalization = normalization
+
+    def call(self, x):
+        first_layer = x
+        x = Convolution3D(self.old_filter_size, self.kernel_size, padding=self.padding, dilation_rate=1, strides=1)(first_layer)
+        if self.activation == 'LeakyReLU':
+            x = LeakyReLU(alpha=0.001)(x)
+        elif self.activation == 'ELU':
+            x = ELU()(x)
+        else:
+            x = Activation(self.activation)(x)
+    
+        if self.normalization:
+            x = BatchNormalization()(x)
+        x = Convolution3D(self.new_filter_size, self.kernel_size, padding=self.padding, dilation_rate=1, strides=1)(x)
+        
+        residual = Add()([x, first_layer])
+        return residual
+
+    def compute_output_shape(self, input_shape):
+        return input_shape
+
+def ResidualLayer(model, old_filter_size, new_filter_size, kernel_size, padding, activation, normalization):
+    model.add(Residual(old_filter_size, new_filter_size, kernel_size, padding, activation, normalization))
  
 # add a convolutional layer to the model
 def ConvolutionalLayer(model, filter_size, kernel_size, padding, activation, normalization, input_shape=None):
@@ -119,24 +153,26 @@ def EdgeNetwork(parameters, width):
 
     model = Sequential()
 
-    ConvolutionalLayer(model, filter_sizes[0], (3, 3, 3), 'same', activation, normalization, width)
-    ConvolutionalLayer(model, filter_sizes[0], (3, 3, 3), 'same', activation, normalization)
+    ResidualLayer(model, filter_sizes[0], filter_sizes[0], (3, 3, 3), 'same', activation, normalization)
+    #ConvolutionalLayer(model, filter_sizes[0], (3, 3, 3), 'same', activation, normalization, width)
+    #ConvolutionalLayer(model, filter_sizes[0], (3, 3, 3), 'same', activation, normalization)
     PoolingLayer(model, (1, 2, 2), 0.2, normalization)
 
-    ConvolutionalLayer(model, filter_sizes[1], (3, 3, 3), 'same', activation, normalization)
-    ConvolutionalLayer(model, filter_sizes[1], (3, 3, 3), 'same', activation, normalization)
+    ResidualLayer(model, filter_sizes[0], filter_sizes[0], (3,3,3), 'same', activation, normalization)
+    #ConvolutionalLayer(model, filter_sizes[1], (3, 3, 3), 'same', activation, normalization)
+    #ConvolutionalLayer(model, filter_sizes[1], (3, 3, 3), 'same', activation, normalization)
     PoolingLayer(model, (1, 2, 2), 0.2, normalization)
 
-    ConvolutionalLayer(model, filter_sizes[2], (3, 3, 3), 'same', activation, normalization)
-    ConvolutionalLayer(model, filter_sizes[2], (3, 3, 3), 'same', activation, normalization)
+    ResidualLayer(model, filter_sizes[1], filter_sizes[1], (3, 3, 3), 'same', activation, normalization)
+    #ConvolutionalLayer(model, filter_sizes[2], (3, 3, 3), 'same', activation, normalization)
+    #ConvolutionalLayer(model, filter_sizes[2], (3, 3, 3), 'same', activation, normalization)
     PoolingLayer(model, (2, 2, 2), 0.2, normalization)
 
-    index = 3
-    while index < depth:
-        ConvolutionalLayer(model, filter_sizes[index], (3, 3, 3), 'same', activation, normalization)
-        ConvolutionalLayer(model, filter_sizes[index], (3, 3, 3), 'same', activation, normalization)
+    if depth > 3:
+        ConvolutionalLayer(model, filter_sizes[3], (3, 3, 3), 'same', activation, normalization)
+        ConvolutionalLayer(model, filter_sizes[3], (3, 3, 3), 'same', activation, normalization)
         PoolingLayer(model, (2, 2, 2), 0.2, normalization)
-        index += 1
+
 
     FlattenLayer(model)
     DenseLayer(model, 512, 0.2, activation, normalization)
@@ -144,10 +180,17 @@ def EdgeNetwork(parameters, width):
 
     if optimizer == 'adam': opt = Adam(lr=initial_learning_rate, decay=decay_rate, beta_1=betas[0], beta_2=betas[1], epsilon=1e-08)
     elif optimizer == 'nesterov': opt = SGD(lr=initial_learning_rate, decay=decay_rate, momentum=0.99, nesterov=True)
-
-    parallel_model = multi_gpu_model(model, gpus=2)
+    #print("available devices:")
+    #print(device_lib.list_local_devices())
+    #parallel_model = multi_gpu_model(model, gpus=2)
     model.compile(loss=loss_function, optimizer=opt, metrics=['accuracy'])
-    parallel_model.compile(loss=loss_function, optimizer=opt, metrics=['accuracy'])
+    #parallel_model.compile(loss=loss_function, optimizer=opt, metrics=['accuracy'])
+    print 'Paramters: {}'.format(model.count_params())
+    for layer in model.layers:
+        print '{} {} -> {}'.format(layer.get_config()['name'], layer.input_shape, layer.output_shape)
+        print 
+    for parameter in parameters:
+        print '{}: {}'.format(parameter, parameters[parameter])
     
     return model
 
@@ -181,7 +224,6 @@ def EdgeGenerator(parameters, width, radius, subset):
     positive_candidates = []
     for positive_filename in positive_filenames:
         if not positive_filename[-3:] == '.h5': continue
-        print '{} - {}'.format(subset, positive_filename)
         positive_candidates.append(dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filename), 'main'))
     positive_candidates = np.concatenate(positive_candidates, axis=0)
 
@@ -190,7 +232,6 @@ def EdgeGenerator(parameters, width, radius, subset):
     negative_candidates = []
     for negative_filename in negative_filenames:
         if not negative_filename[-3:] == '.h5': continue
-        print '{} - {}'.format(subset, negative_filename)
         negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filename), 'main'))
     negative_candidates = np.concatenate(negative_candidates, axis=0)
 
@@ -296,7 +337,7 @@ def Train(parameters, model_prefix, width, radius, finetune=False):
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
 
     # there are two thousand validation examples per epoch (standardized)
-    nvalidation_examples = 5000
+    nvalidation_examples = 2000
 
     # train the model
     history = model.fit_generator(EdgeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), 

@@ -40,13 +40,6 @@ def NodeGenerator(parameters, width, radius, subset, dataset):
         negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filename), 'main'))
     negative_candidates = np.concatenate(negative_candidates, axis=0)
 
-    if validation: 
-        positive_candidates = positive_candidates[int(0.7 * positive_candidates.shape[0]):]
-        negative_candidates = negative_candidates[int(0.7 * negative_candidates.shape[0]):]
-    else:
-        positive_candidates = positive_candidates[:int(0.7 * positive_candidates.shape[0])]
-        negative_candidates = negative_candidates[:int(0.7 * negative_candidates.shape[0])]
-
     # create easy access to the numbers of candidates
     npositive_candidates = positive_candidates.shape[0]
     nnegative_candidates = negative_candidates.shape[0]

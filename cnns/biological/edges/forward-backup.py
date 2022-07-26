@@ -6,7 +6,6 @@ import time
 
 from keras.models import model_from_json
 
-#from ibex.cnns.biological.edges.train import EdgeNetwork
 from ibex.utilities import dataIO
 from ibex.utilities.constants import *
 from ibex.cnns.biological.util import AugmentFeature
@@ -133,7 +132,6 @@ def CollectEdges(prefix, width, radius, subset):
 def Forward(prefix, model_prefix, width, radius, subset, evaluate=False):
     # read in the trained model
     model = model_from_json(open('{}.json'.format(model_prefix), 'r').read())
-    #model = EdgeNetwork(parameters, width)
     model.load_weights('{}-best-loss.h5'.format(model_prefix))
 
     # get all of the examples

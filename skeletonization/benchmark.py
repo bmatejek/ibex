@@ -45,6 +45,7 @@ def ReadGroundTruth(prefix, max_label):
 
     with open(examples_filename, "rb") as fd: 
         cutoff, = struct.unpack('q', fd.read(8))
+
         for iv in range(cutoff):
             label, = struct.unpack('q', fd.read(8))
 

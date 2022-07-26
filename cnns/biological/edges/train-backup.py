@@ -1,16 +1,17 @@
 import os
+import sys
 import matplotlib
 import pickle
-matplotlib.use('Agg')
+import glob
 import random
 
 import numpy as np
-
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
 from keras.models import Sequential
-from keras.layers import Layer, Activation, BatchNormalization, Convolution3D, Add, Dense, Dropout, Flatten, MaxPooling3D
+from keras.layers import Activation, BatchNormalization, Convolution3D, Dense, Dropout, Flatten, MaxPooling3D
 from keras.layers.advanced_activations import LeakyReLU, ELU
 from keras.optimizers import Adam, SGD
 import keras
@@ -19,14 +20,11 @@ from ibex.utilities import dataIO
 from ibex.utilities.constants import *
 from ibex.cnns.biological.util import AugmentFeature
 
-from tensorflow.python.client import device_lib
-from keras.utils import multi_gpu_model
 
- 
 # add a convolutional layer to the model
 def ConvolutionalLayer(model, filter_size, kernel_size, padding, activation, normalization, input_shape=None):
-    if not input_shape == None: model.add(Convolution3D(filter_size, kernel_size, padding=padding, input_shape=input_shape, dilation_rate=1, strides=1))
-    else: model.add(Convolution3D(filter_size, kernel_size, padding=padding, dilation_rate=1, strides=1))
+    if not input_shape == None: model.add(Convolution3D(filter_size, kernel_size, padding=padding, input_shape=input_shape))
+    else: model.add(Convolution3D(filter_size, kernel_size, padding=padding))
 
     # add activation layer
     if activation == 'LeakyReLU': model.add(LeakyReLU(alpha=0.001))
@@ -127,16 +125,15 @@ def EdgeNetwork(parameters, width):
     ConvolutionalLayer(model, filter_sizes[1], (3, 3, 3), 'same', activation, normalization)
     PoolingLayer(model, (1, 2, 2), 0.2, normalization)
 
-    ConvolutionalLayer(model, filter_sizes[2], (3, 3, 3), 'same', activation, normalization)
-    ConvolutionalLayer(model, filter_sizes[2], (3, 3, 3), 'same', activation, normalization)
-    PoolingLayer(model, (2, 2, 2), 0.2, normalization)
-
-    index = 3
+    index = 2
     while index < depth:
         ConvolutionalLayer(model, filter_sizes[index], (3, 3, 3), 'same', activation, normalization)
         ConvolutionalLayer(model, filter_sizes[index], (3, 3, 3), 'same', activation, normalization)
         PoolingLayer(model, (2, 2, 2), 0.2, normalization)
+        
+        # increase the index
         index += 1
+
 
     FlattenLayer(model)
     DenseLayer(model, 512, 0.2, activation, normalization)
@@ -144,10 +141,7 @@ def EdgeNetwork(parameters, width):
 
     if optimizer == 'adam': opt = Adam(lr=initial_learning_rate, decay=decay_rate, beta_1=betas[0], beta_2=betas[1], epsilon=1e-08)
     elif optimizer == 'nesterov': opt = SGD(lr=initial_learning_rate, decay=decay_rate, momentum=0.99, nesterov=True)
-
-    parallel_model = multi_gpu_model(model, gpus=2)
     model.compile(loss=loss_function, optimizer=opt, metrics=['accuracy'])
-    parallel_model.compile(loss=loss_function, optimizer=opt, metrics=['accuracy'])
     
     return model
 
@@ -158,8 +152,6 @@ def WriteLogFiles(model, model_prefix, parameters):
     logfile = '{}.log'.format(model_prefix)
 
     with open(logfile, 'w') as fd:
-        print 'Paramters: {}'.format(model.count_params())
-        fd.write('Parameters: {}\n'.format(model.count_params()))
         for layer in model.layers:
             print '{} {} -> {}'.format(layer.get_config()['name'], layer.input_shape, layer.output_shape)
             fd.write('{} {} -> {}\n'.format(layer.get_config()['name'], layer.input_shape, layer.output_shape))
@@ -181,19 +173,21 @@ def EdgeGenerator(parameters, width, radius, subset):
     positive_candidates = []
     for positive_filename in positive_filenames:
         if not positive_filename[-3:] == '.h5': continue
-        print '{} - {}'.format(subset, positive_filename)
+        if not '23' in positive_filename: continue
         positive_candidates.append(dataIO.ReadH5File('{}/{}'.format(positive_directory, positive_filename), 'main'))
+        print positive_filename
     positive_candidates = np.concatenate(positive_candidates, axis=0)
-
+    
     # get all the negative candidate filenames
     negative_filenames = os.listdir(negative_directory) 
     negative_candidates = []
     for negative_filename in negative_filenames:
         if not negative_filename[-3:] == '.h5': continue
-        print '{} - {}'.format(subset, negative_filename)
+        if not '23' in negative_filename: continue
         negative_candidates.append(dataIO.ReadH5File('{}/{}'.format(negative_directory, negative_filename), 'main'))
+        print negative_filename
     negative_candidates = np.concatenate(negative_candidates, axis=0)
-
+    
     # create easy access to the numbers of candidates
     npositive_candidates = positive_candidates.shape[0]
     nnegative_candidates = negative_candidates.shape[0]
@@ -266,6 +260,10 @@ def Train(parameters, model_prefix, width, radius, finetune=False):
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
+    # do not overwrite completely trained models
+    elif len(glob.glob('{}-*history.pickle'.format(model_prefix))):
+        sys.stderr.write('Model architecture already trained.\n')
+        sys.exit(-1)
 
     # open up the log file with no buffer
     logfile = '{}.log'.format(model_prefix)
@@ -296,11 +294,11 @@ def Train(parameters, model_prefix, width, radius, finetune=False):
         model.load_weights('{}-{:03d}.h5'.format(model_prefix, starting_epoch))
 
     # there are two thousand validation examples per epoch (standardized)
-    nvalidation_examples = 5000
+    nvalidation_examples = 2000
 
     # train the model
     history = model.fit_generator(EdgeGenerator(parameters, width, radius, 'training'), steps_per_epoch=(examples_per_epoch / batch_size), 
-        epochs=2000, verbose=2, class_weight=weights, callbacks=callbacks, validation_data=EdgeGenerator(parameters, width, radius, 'validation'), 
+        epochs=2000, verbose=1, class_weight=weights, callbacks=callbacks, validation_data=EdgeGenerator(parameters, width, radius, 'validation'), 
                                   validation_steps=(nvalidation_examples / batch_size), initial_epoch=starting_epoch)
     
     with open('{}-history.pickle'.format(model_prefix), 'w') as fd:

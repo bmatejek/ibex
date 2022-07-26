@@ -59,17 +59,29 @@ def PrintResults(results, name):
     else: print '    Precision: {}'.format(float(TP) / float(TP + FP))
     if TP + FN == 0: print '    Recall: NaN'
     else: print '    Recall: {}'.format(float(TP) / float(TP + FN))
-    if TP + FN + FP + TN == 0: print '    Accuracy: NaN\n'
-    else: print '    Accuracy: {}\n'.format(float(TP + TN) / float(TP + FP + FN + TN))
+    if TP + FN + FP + TN == 0: print '    Accuracy: NaN'
+    else: print '    Accuracy: {}'.format(float(TP + TN) / float(TP + FP + FN + TN))
 
-    if TP + FN + FP + TN == 0: return float('nan')
-    else: return float(TP + TN) / float(TP + FP + FN + TN)
+    if TP + FP == 0 or TP + FN == 0:
+        print '    F1 Score: NaN\n'
+        return float('nan')
+    
+    precision = float(TP) / float(TP + FP)
+    recall = float(TP) / float(TP + FN)
+    f1_score = 2 * (precision * recall) / (precision + recall)
+
+    print '    F1 Score: {}\n'.format(f1_score)
+    
+    return f1_score
     
     
     
 def CNNResultsSupplemental(problem):
-    # get all of the trained networks for this problem
-    network_names = sorted(glob.glob('architectures/{}*'.format(problem)))
+    # get all of the trained networks for this problem that have some finished inference
+    network_names = [model for model in sorted(glob.glob('architectures/{}*'.format(problem))) if len(glob.glob('{}/*inference.txt'.format(model)))]
+    if not len(network_names):
+        sys.stderr.write('No results found.\n')
+        return
 
     # hardcoded for PNI data, create new method to store this
     subsets = {
@@ -84,16 +96,16 @@ def CNNResultsSupplemental(problem):
         'test-two': 'testing'
     }
 
-    optimal_training_accuracy = 0.0
+    optimal_training_f1_score = 0.0
     optimal_training_network = ''
-    optimal_validation_accuracy = 0.0
+    optimal_validation_f1_score = 0.0
     optimal_validation_network = ''
-    optimal_testing_accuracy = 0.0
+    optimal_testing_f1_score = 0.0
     optimal_testing_network = ''
 
-    training_accuracies = {}
-    validation_accuracies = {}
-    testing_accuracies = {}
+    training_f1_scores = {}
+    validation_f1_scores = {}
+    testing_f1_scores = {}
     
     for network in network_names:
         if 'Kasthuri' in network or 'Fib25' in network: continue
@@ -130,31 +142,31 @@ def CNNResultsSupplemental(problem):
 
         # agglomerate all results
         print '{}'.format(network.split('/')[1])
-        training_accuracy = PrintResults(training_results, 'Training')
-        validation_accuracy = PrintResults(validation_results, 'Validation')
-        testing_accuracy = PrintResults(testing_results, 'Testing')
+        training_f1_score = PrintResults(training_results, 'Training')
+        validation_f1_score = PrintResults(validation_results, 'Validation')
+        testing_f1_score = PrintResults(testing_results, 'Testing')
 
-        if training_accuracy > optimal_training_accuracy:
-            optimal_training_accuracy = training_accuracy
+        if training_f1_score > optimal_training_f1_score:
+            optimal_training_f1_score = training_f1_score
             optimal_training_network = network
-        if validation_accuracy > optimal_validation_accuracy:
-            optimal_validation_accuracy = validation_accuracy
+        if validation_f1_score > optimal_validation_f1_score:
+            optimal_validation_f1_score = validation_f1_score
             optimal_validation_network = network
-        if testing_accuracy > optimal_testing_accuracy:
-            optimal_testing_accuracy = testing_accuracy
+        if testing_f1_score > optimal_testing_f1_score:
+            optimal_testing_f1_score = testing_f1_score
             optimal_testing_network = network
 
-        training_accuracies[network] = training_accuracy
-        validation_accuracies[network] = validation_accuracy
-        testing_accuracies[network] = testing_accuracy
+        training_f1_scores[network] = training_f1_score
+        validation_f1_scores[network] = validation_f1_score
+        testing_f1_scores[network] = testing_f1_score
         
-    print 'Optimal Training Accuracy: {}'.format(optimal_training_accuracy)
+    print 'Optimal Training F1 Score: {}'.format(optimal_training_f1_score)
     print '  {}\n'.format(optimal_training_network)
 
-    print 'Optimal Validation Accuracy: {}'.format(optimal_validation_accuracy)
+    print 'Optimal Validation F1 Score: {}'.format(optimal_validation_f1_score)
     print '  {}\n'.format(optimal_validation_network)
 
-    print 'Optimal Testing Accuracy: {}'.format(optimal_testing_accuracy)
+    print 'Optimal Testing F1 Score: {}'.format(optimal_testing_f1_score)
     print '  {}\n'.format(optimal_testing_network)
 
     prev_diameter = ''
@@ -175,8 +187,9 @@ def CNNResultsSupplemental(problem):
             print '\\centering'
             print '\\caption{Results on \\SI{' + str(diameter) + '}{\\nano\\meter} diameter extracted regions of interest.}'
             print '\\begin{tabular}{c c c c} \\hline'
-            print '\\textbf{Input Size} & \\textbf{Training Accuracy} & \\textbf{Validation Accuracy} & \\textbf{Testing Accuracy}  \\\\ \\hline'        
-        print '{} & {:0.4f} & {:0.4f} & {:0.4f} \\\\'.format(width, training_accuracies[network], validation_accuracies[network], testing_accuracies[network])
+            print '\\textbf{Input Size} & \\textbf{Training F1 Score} & \\textbf{Validation F1 Score} & \\textbf{Testing F1 Score}  \\\\ \\hline'      
+        print '%{}'.format(network)
+        print '{} & {:0.4f} & {:0.4f} & {:0.4f} \\\\'.format(width, training_f1_scores[network], validation_f1_scores[network], testing_f1_scores[network])
 
         prev_diameter = input_diameter
 

@@ -207,6 +207,7 @@ def EndpointTraversal(prefix, segmentation, seg2gold_mapping, maximum_distance):
 
     # get the maximum label
     max_label = np.amax(segmentation) + 1
+    labels = set(np.unique(segmentation))
 
     # read in all of the skeletons
     skeletons = dataIO.ReadSkeletons(prefix)
@@ -217,6 +218,9 @@ def EndpointTraversal(prefix, segmentation, seg2gold_mapping, maximum_distance):
     # go through every skeletons endpoints
     for skeleton in skeletons:
         label = skeleton.label
+
+        # for edge only network where some labels are missing
+        if not label in labels: continue
 
         for ie, endpoint in enumerate(skeleton.endpoints):
             # get the (x, y, z) location
@@ -237,9 +241,73 @@ def EndpointTraversal(prefix, segmentation, seg2gold_mapping, maximum_distance):
 
 
 
+def MedialAxisBaseline(prefix, segmentation, seg2gold_mapping, maximum_distance=800, angle_buffer = -1 / math.sqrt(2)):
+    # read the skeletons for these labels
+    skeletons = dataIO.ReadSkeletons(prefix)
+
+    # go through all pairs of labels
+    max_label = np.amax(segmentation) + 1
+
+    correctly_matched = set()
+    incorrectly_matched = set()
+
+    resolution = dataIO.Resolution(prefix)
+
+    for is1 in range(max_label):
+        if not is1: continue
+        if seg2gold_mapping[is1] < 1: continue
+
+        # get the endpoints for this label
+        endpoints_one = skeletons[is1].endpoints
+
+        for is2 in range(is1 + 1, max_label):
+            if not is2: continue
+            if seg2gold_mapping[is2] < 1: continue
+
+            ground_truth = (seg2gold_mapping[is1] == seg2gold_mapping[is2])
+
+            # get the endpoints for the second label
+            endpoints_two = skeletons[is2].endpoints
+
+            # go through all pairs of endpoints
+            for endpoint_one in endpoints_one:
+                center_one = (endpoint_one.iz, endpoint_one.iy, endpoint_one.ix)
+                vector_one = (endpoint_one.vector)
+                for endpoint_two in endpoints_two:
+                    center_two = (endpoint_two.iz, endpoint_two.iy, endpoint_two.ix)
+                    vector_two = (endpoint_two.vector)
+
+                    zdiff = resolution[IB_Z] * (center_two[IB_Z] - center_one[IB_Z])
+                    ydiff = resolution[IB_Y] * (center_two[IB_Y] - center_one[IB_Y])
+                    xdiff = resolution[IB_X] * (center_two[IB_X] - center_one[IB_X])
+
+                    distance = math.sqrt(zdiff * zdiff + ydiff * ydiff + xdiff * xdiff)
+                    if distance > maximum_distance: continue
+                    
+                    # get the distance between the two vectors
+                    dot_product = vector_one[IB_Z] * vector_two[IB_Z] + vector_one[IB_Y] * vector_two[IB_Y] + vector_one[IB_X] * vector_two[IB_X]
+                    
+                    if dot_product > angle_buffer: continue
+
+                    if ground_truth: correctly_matched.add((is1, is2))
+                    else: incorrectly_matched.add((is1, is2))
+    
+    npositives = 504
+    nnegatives = 5006
+
+    TP = len(correctly_matched)
+    FP = len(incorrectly_matched)
+    FN = npositives - len(correctly_matched) 
+    TN = nnegatives - len(incorrectly_matched)
+    precision = TP / float(TP + FP)
+    recall = TP / float(TP + FN)
+    
+    print 2 * precision * recall / (precision + recall)
+
+
 def GenerateEdges(prefix, segmentation, seg2gold_mapping, subset, network_radius=600, maximum_distance=500):
     # possible widths for the neural network
-    widths = [(18, 52, 52)]#[(18, 52, 52), (20, 60, 60), (22, 68, 68), (24, 76, 76)]
+    widths = [(24, 96, 96)]#[(18, 52, 52), (20, 60, 60), (22, 68, 68), (24, 76, 76)]
     
     # create the directory structure to save the features in
     # forward is needed for training and validation data that is cropped
